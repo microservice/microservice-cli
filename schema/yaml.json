@@ -142,6 +142,22 @@
           "additionalProperties": false
         }
       }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "ssl": {
+          "type": "boolean"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "uri": {
+          "type": "string"
+        }
+      },
+      "required": ["port", "uri"],
+      "additionalProperties": false
     }
   },
   "additionalProperties": false
