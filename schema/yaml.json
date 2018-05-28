@@ -101,7 +101,29 @@
       "required": ["type", "port", "command"]
     },
     "environment": {
-      "type": "object"
+      "type": "object",
+      "patternProperties": {
+        "^[A-Za-z]+$": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "required": {
+              "type": "boolean"
+            },
+            "help": {
+              "type": "string"
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        }
+      }
     }
   },
   "additionalProperties": false
