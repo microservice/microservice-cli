@@ -1,0 +1,108 @@
+{
+  "properties": {
+    "commands": {
+      "type": "object",
+      "patternProperties": {
+        "^[A-Za-z]+$": {
+          "type": "object",
+          "properties": {
+            "help": {
+              "type": "string"
+            },
+            "format": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "object",
+              "patternProperties": {
+                "^\\w+$": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
+                    },
+                    "pattern": {
+                      "type": "string"
+                    },
+                    "enum": {
+                      "type:": "array"
+                    },
+                    "range": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    "required": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "http": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "enum": ["get", "post", "put", "delete"]
+                },
+                "endpoint": {
+                  "type": "string"
+                }
+              },
+              "required": ["method", "endpoint"]
+            },
+            "server": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "integer"
+                },
+                "command": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": ["type", "port", "command"]
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "server": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["type", "port", "command"]
+    },
+    "environment": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

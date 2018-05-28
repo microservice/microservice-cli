@@ -1,0 +1,12 @@
+{
+  "name": "cli",
+  "version": "0.0.1",
+  "main": "cli.js",
+  "repository": "git@github.com:microservice-guide/cli.git",
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^6.5.0",
+    "commander": "^2.15.1",
+    "yamljs": "^0.3.0"
+  }
+}
