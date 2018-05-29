@@ -281,6 +281,12 @@
         }
       },
       "additionalProperties": false
+    },
+    "cap": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "additionalProperties": false
