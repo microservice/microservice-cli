@@ -2,6 +2,9 @@
   "name": "microservice-guide-cli",
   "version": "0.0.2",
   "main": "cli.js",
+  "scripts": {
+    "test": "gulp test"
+  },
   "bin": {
     "microservice-guide-cli": "./cli.js"
   },
@@ -11,5 +14,12 @@
     "ajv": "^6.5.0",
     "commander": "^2.15.1",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^6.0.0",
+    "mocha": "^5.2.0",
+    "yargs": "^11.0.0"
   }
 }

@@ -8,7 +8,7 @@ const validate = require('./schema/schema');
 program
   .version('0.0.1')
   .command('validate <path>').action((path) => {
-    validate(YAML.parse(fs.readFileSync(path).toString()));
+    process.stdout.write(JSON.stringify(validate(YAML.parse(fs.readFileSync(path).toString())), null, 2));
   });
 
 

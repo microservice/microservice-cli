@@ -9,12 +9,12 @@ const rawValidate = ajv.compile(schema);
 
 function validate(json) {
   const valid = rawValidate(json);
-  process.stdout.write(JSON.stringify({
+  return {
     valid: valid,
     microsericeYaml: json,
-    errors: ajv.errors,
-    errorsText: ajv.errorsText()
-  }));
+    errors: rawValidate.errors,
+    // errorsText: rawValidate.errorsText()
+  };
 }
 
 module.exports = validate;
