@@ -158,6 +158,44 @@
       },
       "required": ["port", "uri"],
       "additionalProperties": false
+    },
+    "system": {
+      "type": "object",
+      "properties": {
+        "requests": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "integer"
+            },
+            "gpu": {
+              "type": "integer"
+            },
+            "memory": {
+              "type": "string",
+              "pattern": "[0-9]+[MB|GB]."
+            }
+          },
+          "additionalProperties": false
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "integer"
+            },
+            "gpu": {
+              "type": "integer"
+            },
+            "memory": {
+              "type": "string",
+              "pattern": "[0-9]+[MB|GB]."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false
