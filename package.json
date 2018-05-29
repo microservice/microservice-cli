@@ -1,9 +1,9 @@
 {
-  "name": "microservice-cli",
+  "name": "microservice-guide-cli",
   "version": "0.0.1",
   "main": "cli.js",
   "bin": {
-    "microservice-cli": "./cli.js"
+    "microservice-guide-cli": "./cli.js"
   },
   "repository": "git@github.com:microservice-guide/cli.git",
   "license": "MIT",
