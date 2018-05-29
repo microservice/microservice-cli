@@ -11,5 +11,4 @@ program
     process.stdout.write(JSON.stringify(validate(YAML.parse(fs.readFileSync(path).toString())), null, 2));
   });
 
-
 program.parse(process.argv);
