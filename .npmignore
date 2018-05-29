@@ -1,8 +1,10 @@
 .idea/
 node_modules/
 __test__/
+coverage/
 gulpfile.js
 .npmignore
 .gitignore
 Dockerfile
 microservice.yml
+.DS_Store

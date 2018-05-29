@@ -13,7 +13,6 @@ function validate(json) {
     valid: valid,
     microsericeYaml: json,
     errors: rawValidate.errors,
-    // errorsText: rawValidate.errorsText()
   };
 }
 

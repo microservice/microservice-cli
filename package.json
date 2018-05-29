@@ -3,7 +3,9 @@
   "version": "0.0.2",
   "main": "cli.js",
   "scripts": {
-    "test": "gulp test"
+    "test": "jest",
+    "coverage": "jest --coverage && open coverage/index.html",
+    "ci": "jest --coverage"
   },
   "bin": {
     "microservice-guide-cli": "./cli.js"
@@ -16,10 +18,16 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
-    "gulp": "^3.9.1",
-    "gulp-mocha": "^6.0.0",
-    "mocha": "^5.2.0",
-    "yargs": "^11.0.0"
+    "jest": "^23.0.1"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "cli.js",
+      "schema/**/*.js"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "html"
+    ]
   }
 }
