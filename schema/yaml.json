@@ -92,7 +92,7 @@
           "type": "integer"
         },
         "command": {
-          "type": "array",
+          "type": ["string", "array"],
           "items": {
             "type": "string"
           }
@@ -210,28 +210,74 @@
         },
         "metric_interval": {
           "type": "integer",
-          "min": "1",
-          "max": "600000"
+          "minimum": 1,
+          "maximum": 600000
         },
         "metric_target": {
           "type": "integer",
-          "min": "1"
+          "minimum": 1
         },
         "min": {
           "type": "integer",
-          "min": "1"
+          "minimum": 1
         },
         "max": {
           "type": "integer",
-          "min": "1"
+          "minimum": 1
         },
         "desired": {
           "type": "integer",
-          "min": "1"
+          "minimum": 1
         },
         "cooldown": {
           "type": "integer",
-          "min": "1"
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "lifecycle": {
+      "type": "object",
+      "properties": {
+        "startup": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": ["string", "array"],
+              "items": {
+                "type": "string"
+              }
+            },
+            "timeout": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "port": {
+              "type": "integer"
+            }
+          },
+          "required": ["command", "timeout"],
+          "additionalProperties": false
+        },
+        "shutdown": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": ["string", "array"],
+              "items": {
+                "type": "string"
+              }
+            },
+            "timeout": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "port": {
+              "type": "integer"
+            }
+          },
+          "required": ["command", "timeout"],
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
