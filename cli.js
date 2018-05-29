@@ -9,6 +9,7 @@ program
   .version('0.0.1')
   .command('validate <path>').action((path) => {
     validate(YAML.parse(fs.readFileSync(path).toString()));
-});
+  });
+
 
 program.parse(process.argv);

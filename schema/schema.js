@@ -8,12 +8,12 @@ const rawValidate = ajv.compile(schema);
 
 function validate(json) {
   const valid = rawValidate(json);
-  console.log({
+  process.stdout.write(JSON.stringify({
     valid: valid,
-    microsericeYaml: JSON.stringify(json),
+    microsericeYaml: json,
     errors: ajv.errors,
     errorsText: ajv.errorsText()
-  });
+  }));
 }
 
 module.exports = validate;
