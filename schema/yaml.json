@@ -196,6 +196,45 @@
         }
       },
       "additionalProperties": false
+    },
+    "scale": {
+      "type": "object",
+      "properties": {
+        "metric_type": {
+          "type": "string",
+          "enum": ["cpu", "mem"]
+        },
+        "metric_agg": {
+          "type": "string",
+          "enum": ["avg", "min", "max", "mean", "mode"]
+        },
+        "metric_interval": {
+          "type": "integer",
+          "min": "1",
+          "max": "600000"
+        },
+        "metric_target": {
+          "type": "integer",
+          "min": "1"
+        },
+        "min": {
+          "type": "integer",
+          "min": "1"
+        },
+        "max": {
+          "type": "integer",
+          "min": "1"
+        },
+        "desired": {
+          "type": "integer",
+          "min": "1"
+        },
+        "cooldown": {
+          "type": "integer",
+          "min": "1"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false
