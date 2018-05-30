@@ -9,5 +9,8 @@ jobs:
           name: yarn-install
           command: yarn install
       - run:
+          name: eslint
+          command: yarn eslint
+      - run:
           name: test
           command: yarn test

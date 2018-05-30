@@ -26,10 +26,10 @@ describe('schema.js', () => {
           dataPath: '.metrics.port',
           schemaPath: '#/properties/metrics/properties/port/type',
           params: {
-            type: 'integer'
+            type: 'integer',
           },
-          message: 'should be integer'
-        }
+          message: 'should be integer',
+        },
       ]);
     });
   });
