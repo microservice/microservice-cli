@@ -10,14 +10,21 @@ const schemaValidator = require('../schema/schema');
  * @return {string} The stringified JSON result
  */
 function validate(path) {
-  const json = YAML.parse(fs.readFileSync(path).toString());
-  const valid = schemaValidator(json);
+  try {
+    const json = YAML.parse(fs.readFileSync(path).toString());
+    const valid = schemaValidator(json);
 
-  return JSON.stringify({
-    valid,
-    microsericeYaml: json,
-    errors: schemaValidator.errors,
-  }, null, 2);
+    return JSON.stringify({
+      valid,
+      microsericeYaml: json,
+      errors: schemaValidator.errors,
+    }, null, 2);
+  } catch (e) {
+    return JSON.stringify({
+      error: 'Unable to parse file',
+      info: e
+    })
+  }
 }
 
 module.exports = validate;
