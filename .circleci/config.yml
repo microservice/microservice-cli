@@ -1,11 +1,16 @@
-machine:
-  node:
-    version: 9.7.0
-
-dependencies:
-  override:
-    - npm install
-
-test:
-  override:
-    - npm test
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:9.7
+    steps:
+      - checkout
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - run:
+          name: install-npm-wee
+          command: npm install
+      - run:
+          name: test
+          command: npm test
