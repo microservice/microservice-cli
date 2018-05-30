@@ -6,11 +6,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
+          name: get-yarn
+          command: 'sudo apt-get update && sudo apt-get install yarn'
       - run:
-          name: install-npm-wee
-          command: npm install
+          name: get-the-deps
+          command: yarn install
       - run:
           name: test
           command: npm test
