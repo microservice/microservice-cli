@@ -4,9 +4,8 @@
   "main": "cli.js",
   "scripts": {
     "test": "jest",
-    "coverage": "jest --coverage && open coverage/index.html",
-    "eslint": "eslint . --ignore-pattern coverage/ --quiet",
-    "ci": "jest --coverage"
+    "coverage": "jest --coverage",
+    "eslint": "eslint . --ignore-pattern coverage/ --quiet"
   },
   "bin": {
     "microservice-guide-cli": "./cli.js"
