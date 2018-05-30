@@ -6,9 +6,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: get-yarn
-          command: 'sudo apt-get update && sudo apt-get install yarn'
-      - run:
           name: get-the-deps
           command: yarn install
       - run:
