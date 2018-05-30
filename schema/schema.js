@@ -4,16 +4,6 @@ const Ajv = require('ajv');
 
 const schema = JSON.parse(fs.readFileSync(path.join(__dirname, './yaml.json')));
 const ajv = new Ajv({allErrors: true});
-const rawValidate = ajv.compile(schema);
+const schemaValidator = ajv.compile(schema);
 
-
-function validate(json) {
-  const valid = rawValidate(json);
-  return {
-    valid: valid,
-    microsericeYaml: json,
-    errors: rawValidate.errors,
-  };
-}
-
-module.exports = validate;
+module.exports = schemaValidator;

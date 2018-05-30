@@ -23,7 +23,8 @@
   "jest": {
     "collectCoverageFrom": [
       "cli.js",
-      "schema/**/*.js"
+      "schema/**/*.js",
+      "commands/**/*.js"
     ],
     "coverageReporters": [
       "lcov",

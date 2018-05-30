@@ -1,24 +1,25 @@
 const fs = require('fs');
 const path = require('path');
-const validate = require('../../schema/schema');
+const YAML = require('yamljs');
+const validate = require('../../commands/validate');
 
 describe('schema.js', () => {
-  describe('validate(json)', () => {
+  describe('validate(path)', () => {
     test('correctly validates a valid json structure', () => {
-      const validJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/valid.json'), 'utf8'));
-      const valid = validate(validJson);
+      const valid = JSON.parse(validate(path.join(__dirname, '../assets/valid.yml')));
+      const jsonOfYaml = YAML.parse(fs.readFileSync(path.join(__dirname, '../assets/valid.yml')).toString());
 
       expect(valid.valid).toBeTruthy();
-      expect(valid.microsericeYaml).toBe(validJson);
+      expect(valid.microsericeYaml).toEqual(jsonOfYaml);
       expect(valid.errors).toBeNull();
     });
 
     test('correctly invalidates an invalid json structure', () => {
-      const invalidJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/invalid.json'), 'utf8'));
-      const valid = validate(invalidJson);
+      const valid = JSON.parse(validate(path.join(__dirname, '../assets/invalid.yml')));
+      const jsonOfYaml = YAML.parse(fs.readFileSync(path.join(__dirname, '../assets/invalid.yml')).toString());
 
       expect(valid.valid).toBeFalsy();
-      expect(valid.microsericeYaml).toBe(invalidJson);
+      expect(valid.microsericeYaml).toEqual(jsonOfYaml);
       expect(valid.errors).toEqual([
         {
           keyword: 'type',
