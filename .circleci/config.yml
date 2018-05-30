@@ -6,8 +6,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: get-the-deps
+          name: yarn-install
           command: yarn install
       - run:
           name: test
-          command: npm test
+          command: yarn test
