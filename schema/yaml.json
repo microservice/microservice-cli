@@ -41,6 +41,9 @@
                     },
                     "required": {
                       "type": "boolean"
+                    },
+                    "default": {
+                      "type": ["boolean", "integer", "number", "array", "string"]
                     }
                   },
                   "required": ["type"],
@@ -100,6 +103,9 @@
                   "type": "string",
                   "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
                 },
+                "help": {
+                  "type": "string"
+                },
                 "pattern": {
                   "type": "string"
                 },
@@ -116,23 +122,27 @@
                 },
                 "required": {
                   "type": "boolean"
+                },
+                "default": {
+                  "type": ["boolean", "integer", "number", "array", "string"]
                 }
               },
               "required": ["type"],
               "additionalProperties": false
             }
-          }
+          },
+          "additionalProperties": false
         }
       }
     },
     "environment": {
       "type": "object",
       "patternProperties": {
-        "^[A-Za-z]+$": {
+        "^[A-Za-z|_]+$": {
           "type": "object",
           "properties": {
             "type": {
-              "type": "string",
+              "type": ["string", "array"],
               "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
             },
             "pattern": {
@@ -141,6 +151,9 @@
             "required": {
               "type": "boolean"
             },
+            "default": {
+              "type": ["boolean", "integer", "number", "array", "string"]
+            },
             "help": {
               "type": "string"
             }
@@ -148,7 +161,8 @@
           "required": ["type"],
           "additionalProperties": false
         }
-      }
+      },
+      "additionalProperties": false
     },
     "volumes": {
       "type": "object",
@@ -166,7 +180,8 @@
           "required": ["target"],
           "additionalProperties": false
         }
-      }
+      },
+      "additionalProperties": false
     },
     "metrics": {
       "type": "object",
