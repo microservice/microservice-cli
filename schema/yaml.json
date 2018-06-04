@@ -22,6 +22,9 @@
                       "type": "string",
                       "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
                     },
+                    "help": {
+                      "type": "string"
+                    },
                     "pattern": {
                       "type": "string"
                     },
