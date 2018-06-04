@@ -84,6 +84,44 @@
       },
       "additionalProperties": false
     },
+    "entrypoint": {
+      "type": "object",
+      "properties": {
+        "arguments": {
+          "type": "object",
+          "patternProperties": {
+            "^\\w+$": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
+                },
+                "pattern": {
+                  "type": "string"
+                },
+                "enum": {
+                  "type:": "array"
+                },
+                "range": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "required": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": false
+            }
+          }
+        }
+      }
+    },
     "environment": {
       "type": "object",
       "patternProperties": {
