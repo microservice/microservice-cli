@@ -22,8 +22,8 @@ function validate(path) {
   } catch (e) {
     return JSON.stringify({
       error: 'Unable to parse file',
-      info: e
-    })
+      info: e,
+    });
   }
 }
 
