@@ -3,7 +3,7 @@
     "commands": {
       "type": "object",
       "patternProperties": {
-        "^[A-Za-z]+$": {
+        "^[A-Za-z|_]+$": {
           "type": "object",
           "properties": {
             "help": {
@@ -33,7 +33,7 @@
                       "type": "string"
                     },
                     "enum": {
-                      "type:": "array"
+                      "type": "array"
                     },
                     "range": {
                       "type": "array",
@@ -67,7 +67,8 @@
                   "type": "string"
                 }
               },
-              "required": ["method", "endpoint"]
+              "required": ["method", "endpoint"],
+              "additionalProperties": false
             },
             "server": {
               "type": "object",
@@ -87,9 +88,11 @@
                   }
                 }
               },
-              "required": ["type", "port", "command"]
+              "required": ["type", "port", "command"],
+              "additionalProperties": false
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
