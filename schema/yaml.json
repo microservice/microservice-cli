@@ -36,12 +36,16 @@
                       "type": "array"
                     },
                     "range": {
-                      "type": "array",
-                      "items": {
-                        "type": "integer"
+                      "type": "object",
+                      "properties": {
+                        "min": {
+                          "type": "integer"
+                        },
+                        "max": {
+                          "type": "integer"
+                        }
                       },
-                      "minItems": 2,
-                      "maxItems": 2
+                      "additionalProperties": false
                     },
                     "required": {
                       "type": "boolean"
@@ -124,12 +128,16 @@
                   "type:": "array"
                 },
                 "range": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer"
+                  "type": "object",
+                  "properties": {
+                    "min": {
+                      "type": "integer"
+                    },
+                    "max": {
+                      "type": "integer"
+                    }
                   },
-                  "minItems": 2,
-                  "maxItems": 2
+                  "additionalProperties": false
                 },
                 "required": {
                   "type": "boolean"
