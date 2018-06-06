@@ -1,4 +1,6 @@
 const Arguments = require('./Arguments');
+const Http = require('./Http');
+const Server = require('./Server');
 
 class Command {
   constructor(name, rawCommand) {
@@ -12,8 +14,8 @@ class Command {
         this._argumentsMap[_arguments[i]] = new Arguments(_arguments[i], rawCommand.arguments[_arguments[i]]);
       }
     }
-    this._http = rawCommand.http || null; // TODO maybe a class
-    this._getServer = rawCommand.server || null; // TODO maybe a class
+    this._http = ((rawCommand.http) ? new Http(rawCommand.http) : null);
+    this._server = ((rawCommand.server) ? new Server(rawCommand.server) : null);
   }
 
   getHelp() {
@@ -25,19 +27,25 @@ class Command {
   }
 
   getArguments() {
-
+    if (this._argumentsMap === null) {
+      return [];
+    }
+    return Object.keys(this._argumentsMap);
   }
 
-  getRequiredArguments() {
-
+  getArgument(argument) {
+    if ((this._argumentsMap === null) || (!this._argumentsMap[argument])) {
+      throw 'Argument does not exist';
+    }
+    return this._argumentsMap[argument];
   }
 
   getHttp() {
-
+    return this._http;
   }
 
   getServer() {
-
+    return this._server
   }
 }
 

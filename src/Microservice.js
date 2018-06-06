@@ -11,7 +11,6 @@ const Lifecycle = require('./Lifecycle');
 const Cap = require('./Cap');
 const validator = require('../commands/validate');
 
-// TODO what if the Commands or entrypint arent defined. need to handle that
 class Microservice {
   constructor(pathToMicroserviceYaml) {
     const valid = JSON.parse(validator(pathToMicroserviceYaml));
@@ -20,10 +19,7 @@ class Microservice {
       process.exit(1);
     }
     const microserviceYamlJson = valid.microsericeYaml;
-
-
     this._environmentMap = null;
-
     if (microserviceYamlJson.commands) {
       this._commandMap = {};
       const commandList = Object.keys(microserviceYamlJson.commands);
@@ -40,13 +36,6 @@ class Microservice {
         this._environmentMap[environmentList[i]] = new EnvironmentVariable(environmentList[i], microserviceYamlJson.environment[environmentList[i]]);
       }
     }
-
-
-
-
-
-
-
     this._volumes = []; // TODO
     this._metrics = ((microserviceYamlJson.metrics) ? new Metrics(microserviceYamlJson.metrics) : null);
     this._system = ((microserviceYamlJson.system) ? new System(microserviceYamlJson.system) : null);
@@ -56,6 +45,9 @@ class Microservice {
   }
 
   getCommand(command) {
+    if ((this._commandMap === null) || (!this._commandMap[command])) {
+      throw 'Command does not exist';
+    }
     return this._commandMap[command];
   }
 
