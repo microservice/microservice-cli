@@ -3,7 +3,7 @@
 const Command = require('./Command');
 const Entrypoint = require('./Entrypoint');
 const EnvironmentVariable = require('./EnvironmentVariable');
-const Volume = require('./Volumes');
+const Volume = require('./Volume');
 const Metrics = require('./Metrics');
 const System = require('./System');
 const Scale = require('./Scale');
@@ -35,7 +35,14 @@ class Microservice {
         this._environmentMap[environmentList[i]] = new EnvironmentVariable(environmentList[i], microserviceYamlJson.environment[environmentList[i]]);
       }
     }
-    this._volumes = []; // TODO
+    this._volumeMap = null;
+    if (microserviceYamlJson.volumes) {
+      this._volumeMap = {};
+      const volumeList = Object.keys(microserviceYamlJson.volumes);
+      for (let i = 0; i < volumeList.length; i += 1) {
+        this._volumeMap[volumeList[i]] = new Volume(volumeList[i], microserviceYamlJson.volumes[volumeList[i]]);
+      }
+    }
     this._metrics = ((microserviceYamlJson.metrics) ? new Metrics(microserviceYamlJson.metrics) : null);
     this._system = ((microserviceYamlJson.system) ? new System(microserviceYamlJson.system) : null);
     this._scale = ((microserviceYamlJson.scale) ? new Scale(microserviceYamlJson.scale) : null);
@@ -58,8 +65,18 @@ class Microservice {
     return this._environmentMap;
   }
 
-  getVolume() {
-    return this._volumes;
+  getVolumes() {
+    if (this._volumeMap === null) {
+      return [];
+    }
+    return Object.keys(this._volumeMap);
+  }
+
+  getVolume(volume) {
+    if ((this._volumeMap === null) || (!this._volumeMap[volume])) {
+      throw 'Command does not exist';
+    }
+    return this._volumeMap[volume];
   }
 
   getMetrics() {
