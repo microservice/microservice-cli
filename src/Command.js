@@ -1,6 +1,5 @@
 const Arguments = require('./Arguments');
 const Http = require('./Http');
-const Server = require('./Server');
 
 class Command {
   constructor(name, rawCommand) {
@@ -15,7 +14,7 @@ class Command {
       }
     }
     this._http = ((rawCommand.http) ? new Http(rawCommand.http) : null);
-    this._server = ((rawCommand.server) ? new Server(rawCommand.server) : null);
+    // this._server = ((rawCommand.server) ? new Server(rawCommand.server) : null); // TODO
   }
 
   get help() {
