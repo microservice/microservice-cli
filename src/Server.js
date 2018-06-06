@@ -5,15 +5,15 @@ class Server {
     this._command = rawServer.command;
   }
 
-  getType() {
+  get type() {
     return this._type;
   }
 
-  getPort() {
+  get port() {
     return this._port
   }
 
-  getCommand() {
+  get command() {
     return this._command;
   }
 }

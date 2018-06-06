@@ -12,7 +12,7 @@ class Entrypoint {
     }
   }
 
-  getArguments() {
+  get arguments() {
     if (this._argumentsMap === null) {
       return [];
     }

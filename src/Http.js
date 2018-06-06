@@ -4,11 +4,11 @@ class Http {
     this._endpoint = rawHttp.endpoint;
   }
 
-  getMethod() {
+  get method() {
     return this._method;
   }
 
-  getEndpoint() {
+  get endpoint() {
     return this._endpoint;
   }
 

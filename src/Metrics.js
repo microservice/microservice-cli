@@ -9,11 +9,11 @@ class Metrics {
     return this._ssl;
   }
 
-  getPort() {
+  get port() {
     return this._port;
   }
 
-  getUri() {
+  get uri() {
     return this._uri;
   }
 }

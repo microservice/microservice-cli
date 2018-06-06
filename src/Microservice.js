@@ -57,15 +57,15 @@ class Microservice {
     return this._commandMap[command];
   }
 
-  getEntrypoint() {
+  get entrypoint() {
     return this._entrypoint;
   }
 
-  getEnvrionment() {
+  get envrionment() {
     return this._environmentMap;
   }
 
-  getVolumes() {
+  get volumes() {
     if (this._volumeMap === null) {
       return [];
     }
@@ -79,23 +79,23 @@ class Microservice {
     return this._volumeMap[volume];
   }
 
-  getMetrics() {
+  get metrics() {
     return this._metrics;
   }
 
-  getSystem() {
+  get system() {
     return this._system;
   }
 
-  getScale() {
+  get scale() {
     return this._scale;
   }
 
-  getLifecyle() {
+  get lifecyle() {
     return this._lifecycle;
   }
 
-  getCap() {
+  get cap() {
     return this._cap;
   }
 }

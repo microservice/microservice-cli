@@ -1,6 +1,5 @@
 class Scale {
-  constructor(rawScale) {
-  }
+  constructor(rawScale) { }
 }
 
 module.exports = Scale;

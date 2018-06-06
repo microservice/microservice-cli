@@ -5,15 +5,15 @@ class Requirements {
     this._memory = rawRequirements.memory || null;
   }
 
-  getCpu() {
+  get cpu() {
     return this._cpu;
   }
 
-  getGpu() {
+  get gpu() {
     return this._gpu;
   }
 
-  getMemory() {
+  get memory() {
     return this._memory;
   }
 }

@@ -18,15 +18,15 @@ class Command {
     this._server = ((rawCommand.server) ? new Server(rawCommand.server) : null);
   }
 
-  getHelp() {
+  get help() {
     return this._help;
   }
 
-  getFormat() {
+  get format() {
     return this._format;
   }
 
-  getArguments() {
+  get arguments() {
     if (this._argumentsMap === null) {
       return [];
     }
@@ -40,11 +40,11 @@ class Command {
     return this._argumentsMap[argument];
   }
 
-  getHttp() {
+  get http() {
     return this._http;
   }
 
-  getServer() {
+  get server() {
     return this._server
   }
 }

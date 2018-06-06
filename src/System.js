@@ -6,12 +6,12 @@ class System {
     this._limits = ((rawSystem.limits) ? new Requirements(rawSystem.limits) : null);
   }
 
-  getRequested() {
+  get requested() {
     return this._requests;
   }
 
-  getLimits() {
-    return this._requests;
+  get limits() {
+    return this._limits;
   }
 }
 

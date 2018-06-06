@@ -1,8 +1,6 @@
 // TODO some of these methods may not be used and should be cleaned up
 
-
 class Arguments {
-
   constructor(name, rawArguments) {
     this._name = name;
     this._type = rawArguments.type;
@@ -14,32 +12,31 @@ class Arguments {
     this._default = rawArguments.default || null;
   }
 
-  getType() {
+  get type() {
     return this._type;
   }
 
-  getHelp() {
+  get help() {
     return this._help;
   }
 
-  getPattern() {
+  get pattern() {
     return this._pattern;
   }
 
-
-  getEnum() {
+  get enum() {
     return this._enum;
   }
 
-  getRange() {
+  get range() {
     return this._range;
   }
 
-  isRequired() {
-    return this._required
+  get required() {
+    return this._required;
   }
 
-  getDefault() {
+  get default() {
     return this._default;
   }
 }

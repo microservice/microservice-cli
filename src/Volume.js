@@ -5,7 +5,7 @@ class Volume {
     this._persist = rawVolume.persist || false;
   }
 
-  getTarget() {
+  get target() {
     return this._target;
   }
 

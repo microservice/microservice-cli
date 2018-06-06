@@ -18,27 +18,27 @@ class Lifecycle {
     }
   }
 
-  getStartupCommand() {
+  get startupCommand() {
     return this._startupCommand;
   }
 
-  getStartupTimout() {
+  get startupTimout() {
     return this._startupTimout;
   }
 
-  getStartupPort() {
+  get startupPort() {
     return this._startupPort;
   }
 
-  getShutdownCommand() {
+  get shutdownCommand() {
     return this._shutdownCommand;
   }
 
-  getShutdownTimout() {
+  get shutdownTimout() {
     return this._shutdownTimout;
   }
 
-  getShutdownPort() {
+  get shutdownPort() {
     return this._shutdownPort;
   }
 }

@@ -8,11 +8,11 @@ class EnvironmentVariable {
     this._help = rawEnvironment.help || null;
   }
 
-  getType() {
+  get type() {
     return this._type;
   }
 
-  getPattern() {
+  get pattern() {
     return this._pattern;
   }
 
@@ -20,11 +20,11 @@ class EnvironmentVariable {
     return this._required;
   }
 
-  getDefault() {
+  get default() {
     return this._default
   }
 
-  getHelp() {
+  get help() {
     return this._help;
   }
 }
