@@ -11,7 +11,7 @@ const schemaValidator = require('../schema/schema');
  */
 function validate(path) {
   try {
-    const json = YAML.parse(fs.readFileSync(path).toString());
+    const json = YAML.parse(fs.readFileSync(path).toString()); // JOIN THIS
     const valid = schemaValidator(json);
 
     return JSON.stringify({

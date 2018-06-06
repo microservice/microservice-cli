@@ -15,6 +15,7 @@
   "dependencies": {
     "ajv": "^6.5.0",
     "commander": "^2.15.1",
+    "shelljs": "^0.8.2",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
