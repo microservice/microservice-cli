@@ -74,12 +74,9 @@
               "required": ["method", "endpoint"],
               "additionalProperties": false
             },
-            "server": {
+            "startup": {
               "type": "object",
               "properties": {
-                "type": {
-                  "type": "string"
-                },
                 "port": {
                   "type": "integer",
                   "minimum": 5000,
@@ -92,7 +89,7 @@
                   }
                 }
               },
-              "required": ["type", "port", "command"],
+              "required": ["port", "command"],
               "additionalProperties": false
             }
           },

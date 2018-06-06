@@ -32,7 +32,7 @@ class Arguments {
     return this._range;
   }
 
-  get required() {
+  isRequired() {
     return this._required;
   }
 
