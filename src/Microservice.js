@@ -8,7 +8,6 @@ const Metrics = require('./Metrics');
 const System = require('./System');
 const Scale = require('./Scale');
 const Lifecycle = require('./Lifecycle');
-const Cap = require('./Cap');
 const validator = require('../commands/validate');
 
 class Microservice {
@@ -41,7 +40,7 @@ class Microservice {
     this._system = ((microserviceYamlJson.system) ? new System(microserviceYamlJson.system) : null);
     this._scale = ((microserviceYamlJson.scale) ? new Scale(microserviceYamlJson.scale) : null);
     this._lifecycle = ((microserviceYamlJson.lifecycle) ? new Lifecycle(microserviceYamlJson.lifecycle) : null);
-    this._cap = ((microserviceYamlJson.cap) ? new Cap(microserviceYamlJson.cap) : null);
+    this._cap = microserviceYamlJson.cap || null;
   }
 
   getCommand(command) {
