@@ -12,6 +12,10 @@ class Arguments {
     this._default = rawArguments.default || null;
   }
 
+  get name() {
+    return this._name;
+  }
+
   get type() {
     return this._type;
   }

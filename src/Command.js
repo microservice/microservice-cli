@@ -29,7 +29,7 @@ class Command {
     if (this._argumentsMap === null) {
       return [];
     }
-    return Object.keys(this._argumentsMap);
+    return Object.values(this._argumentsMap);
   }
 
   getArgument(argument) {
