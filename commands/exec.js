@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const $ = require('shelljs');
 const Microservice = require('../src/Microservice');
-const { parseArgs } = require('../lib/utils');
 
 function exec(command, args) {
 
@@ -13,7 +12,6 @@ function exec(command, args) {
     process.exit(1)
   }
 
-  // TODO build
   const uuid = build();
 
   const argsObj = parseArgs(args);
@@ -30,7 +28,7 @@ function exec(command, args) {
 // TODO what if the command does http shit
 function runCommand(uuid, cmd, args, command) {
   if (command.arguments.length === 0) {
-    $.exec(`docker run ${uuid} ${cmd}`); // TODO get name of docker container (probs a uuid)
+    $.exec(`docker run ${uuid} ${cmd}`);
   } else {
     if (checkRequiredCommands(Object.keys(args), command)) {
       const dockerRunCommand = formatCommand(uuid, cmd, args);
@@ -69,6 +67,19 @@ function build() {
   const uuid = $.exec('uuidgen', {silent: true }).stdout.trim().toLowerCase();
   $.exec(`docker build -t ${uuid} .`);
   return uuid;
+}
+
+function parseArgs(args) {
+  const dictionary = {};
+  for (let i = 0; i < args.length; i += 1) {
+    const split = args[i].split(':');
+    if (split.length !== 2) {
+      // TODO message
+      process.exit(1)
+    }
+    dictionary[split[0]] = split[1];
+  }
+  return dictionary;
 }
 
 module.exports = exec;
