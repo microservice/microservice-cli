@@ -12,7 +12,7 @@ async function exec(command, args, envs) {
   const uuid = build();
   const argsObj = listToObject(args, ':');
   const envObj = listToObject(envs, '=');
-  await runCommand(uuid, command, argsObj, microservice.getCommand(command), microservice.lifecyle, envObj);
+  await runCommand(uuid, command, microservice, argsObj, envObj);
   return 'Success';
 }
 

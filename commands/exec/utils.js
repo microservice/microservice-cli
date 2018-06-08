@@ -34,23 +34,33 @@ function listToObject(list, delimiter) {
   return dictionary;
 }
 
-async function executeCommand(uuid, cmd, arguments, command, lifecycle, environmentVariables) {
-  // no arguments for this command
-  if (command.arguments.length === 0) {
-    $.exec(`docker run ${uuid} ${cmd}`);
+/**
+ * Executes a command on a given Microservice.
+ *
+ * @param uuid {String} The given uuid of the docker images
+ * @param command {String} The given command to run
+ * @param microservice {Microservice} The given Microservice we are running
+ * @param arguments {Object} The key values arguments
+ * @param environmentVariables {Object} The key value environment variables
+ * @return {Promise<Boolean>} True if the command was executed successfully, otherwise false
+ */
+async function executeCommand(uuid, command, microservice, arguments, environmentVariables) {
+  if (microservice.getCommand(command).arguments.length === 0) {
+    $.exec(`docker run ${uuid} ${command}`);
     return true;
   }
-  if (!checkRequiredCommands(Object.keys(arguments), command)) {
+  if (!checkRequiredCommands(Object.keys(arguments), microservice.getCommand(command))) {
     console.error('error'); // TODO error
     return false;
   }
-  if (command.http === null) {
-    runDockerExecCommand(uuid, cmd, arguments); // TODO env vars here
+  if (microservice.getCommand(command).http === null) {
+    runDockerExecCommand(uuid, command, arguments); // TODO env vars here
   } else {
     // TODO check that lifecycle if provided too (maybe do this in the validation)
-    const server = startServer(lifecycle, uuid, environmentVariables);
-    await httpCommand(server, command, arguments);
+    const server = startServer(microservice.lifecycle, uuid, environmentVariables);
+    await httpCommand(server, microservice.getCommand(command), arguments);
   }
+  return true;
 }
 
 

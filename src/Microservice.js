@@ -93,7 +93,7 @@ class Microservice {
     return this._scale;
   }
 
-  get lifecyle() {
+  get lifecycle() {
     return this._lifecycle;
   }
 
