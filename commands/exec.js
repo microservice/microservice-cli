@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const Microservice = require('../src/Microservice');
-const { parseEnv, parseArgs, build, runCommand } = require('./exec/utils');
+const { build, runCommand, listToObject } = require('./exec/utils');
 
 async function exec(command, args, envs) {
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
@@ -10,8 +10,8 @@ async function exec(command, args, envs) {
   }
   const microservice = new Microservice(path.join(process.cwd(), 'microservice.yml'));
   const uuid = build();
-  const argsObj = parseArgs(args);
-  const envObj = parseEnv(envs);
+  const argsObj = listToObject(args, ':');
+  const envObj = listToObject(envs, '=');
   await runCommand(uuid, command, argsObj, microservice.getCommand(command), microservice.lifecyle, envObj);
   return 'Success';
 }

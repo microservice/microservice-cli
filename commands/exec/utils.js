@@ -1,12 +1,32 @@
 const $ = require('shelljs');
 const axios = require('axios');
 
-function parseEnv(environmentList) {
+/**
+ * Builds the microservice described in the Dockerfile of the current working directory.
+ *
+ * @returns {string} The name of the Docker image (uuid)
+ */
+function build() {
+  console.log('Build started');
+  const uuid = $.exec('uuidgen', { silent: true }).stdout.trim().toLowerCase();
+  $.exec(`docker build -t ${uuid} .`, { silent: true });
+  console.log('Build finished');
+  return uuid;
+}
+
+/**
+ * Turns a list of string with a delimiter to a map.
+ *
+ * @param list {Array<String>} The given list of strings with delimiter
+ * @param delimiter {String} The given delimiter
+ * @return {Object} Key value of the list
+ */
+function listToObject(list, delimiter) {
   const dictionary = {};
-  for (let i = 0; i < environmentList.length; i += 1) {
-    const split = environmentList[i].split('=');
+  for (let i = 0; i < list.length; i += 1) {
+    const split = list[i].split(delimiter);
     if (split.length !== 2) {
-      // TODO message
+      console.error('Unable to parse'); // TODO better message
       process.exit(1)
     }
     dictionary[split[0]] = split[1];
@@ -14,27 +34,40 @@ function parseEnv(environmentList) {
   return dictionary;
 }
 
-// TODO what if the command does http shit
-async function runCommand(uuid, cmd, args, command, lifecycle, envs) {
+async function executeCommand(uuid, cmd, arguments, command, lifecycle, environmentVariables) {
+  // no arguments for this command
   if (command.arguments.length === 0) {
     $.exec(`docker run ${uuid} ${cmd}`);
+    return true;
+  }
+  if (!checkRequiredCommands(Object.keys(arguments), command)) {
+    console.error('error'); // TODO error
+    return false;
+  }
+  if (command.http === null) {
+    runDockerExecCommand(uuid, cmd, arguments); // TODO env vars here
   } else {
-    if (checkRequiredCommands(Object.keys(args), command)) {
-
-      if (command.http === null) {
-        const dockerRunCommand = formatCommand(uuid, cmd, args);
-        $.exec(dockerRunCommand);
-      } else {
-        // TODO check that lifecycle if provided too (maybe do this in the validation)
-        const server = startServer(lifecycle, uuid, envs);
-        await httpCommand(server, command, args);
-      }
-    } else {
-      // TODO error out
-      console.log('error');
-    }
+    // TODO check that lifecycle if provided too (maybe do this in the validation)
+    const server = startServer(lifecycle, uuid, environmentVariables);
+    await httpCommand(server, command, arguments);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 async function helpPost(url, args) { // TODO better
   try {
@@ -112,7 +145,7 @@ function checkRequiredCommands(args, command) { // TODO rename
 }
 
 // TODO format of the command needs to be worked in here somehow
-function formatCommand(uuid, cmd, args) {
+function runDockerExecCommand(uuid, cmd, args) {
   let argString = '';
   const argValues = Object.values(args);
 
@@ -120,32 +153,12 @@ function formatCommand(uuid, cmd, args) {
     argString += argValues[i] + ' ';
   }
 
-  return `docker run ${uuid} ${cmd} ${argString}`;
-}
-
-function build() {
-  const uuid = $.exec('uuidgen', {silent: true }).stdout.trim().toLowerCase();
-  $.exec(`docker build -t ${uuid} .`);
-  return uuid;
-}
-
-function parseArgs(args) {
-  const dictionary = {};
-  for (let i = 0; i < args.length; i += 1) {
-    const split = args[i].split(':');
-    if (split.length !== 2) {
-      // TODO message
-      process.exit(1)
-    }
-    dictionary[split[0]] = split[1];
-  }
-  return dictionary;
+  $.exec(`docker run ${uuid} ${cmd} ${argString}`);
 }
 
 module.exports = {
-  runCommand,
-  parseEnv,
-  parseArgs,
   build,
+  runCommand: executeCommand,
+  listToObject,
 };
 
