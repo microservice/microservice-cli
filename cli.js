@@ -28,7 +28,6 @@ program
   .action(async (command, args, env) => {
     const data = await _exec(command, args, env.environment);
     console.log(data);
-    // console.log(`command: ${command} with args: ${args}`)
   });
 
 program.parse(process.argv);
