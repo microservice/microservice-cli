@@ -15,6 +15,8 @@ class Microservice {
     const valid = JSON.parse(validator(pathToMicroserviceYaml));
     if (!valid.valid) {
       // TODO message
+      console.log('not valid');
+      console.log(valid.errors);
       process.exit(1);
     }
     const microserviceYamlJson = valid.microsericeYaml;

@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const $ = require('shelljs');
+const axios = require('axios');
 const Microservice = require('../src/Microservice');
 
-function exec(command, args) {
+async function exec(command, args) {
 
   // check if we are in a microservice cwd
 
@@ -15,29 +16,99 @@ function exec(command, args) {
   const uuid = build();
 
   const argsObj = parseArgs(args);
+
   // const microservice = new Microservice('/Users/tomped/Desktop/test.yml');
   const microservice = new Microservice(path.join(process.cwd(), 'microservice.yml'));
 
 
-  runCommand(uuid, command, argsObj, microservice.getCommand(command));
+  await runCommand(uuid, command, argsObj, microservice.getCommand(command), microservice.lifecyle);
 
   return '';
 }
 
 
 // TODO what if the command does http shit
-function runCommand(uuid, cmd, args, command) {
+async function runCommand(uuid, cmd, args, command, lifecycle, http) {
   if (command.arguments.length === 0) {
     $.exec(`docker run ${uuid} ${cmd}`);
   } else {
     if (checkRequiredCommands(Object.keys(args), command)) {
-      const dockerRunCommand = formatCommand(uuid, cmd, args);
-      $.exec(dockerRunCommand);
+
+      if (command.http === null) {
+        const dockerRunCommand = formatCommand(uuid, cmd, args);
+        $.exec(dockerRunCommand);
+      } else {
+        // TODO check that lifecycle if provided too (maybe do this in the validation)
+        const server = startServer(lifecycle, uuid);
+        await httpCommand(server, command, args);
+      }
     } else {
       // TODO error out
       console.log('error');
     }
   }
+}
+
+
+async function helpPost(url, args) { // TODO better
+
+  try {
+    await axios.post(url, args);
+  } catch (e) {
+    if (e.code === 'ECONNRESET') {
+      await helpPost(url, args);
+    } else {
+      // TODO
+      console.log(e);
+    }
+  }
+}
+
+
+/**
+ *
+ * @param server
+ * @param command {Command}
+ */
+async function httpCommand(server, command, args) {
+
+  switch (command.http.method) {
+    case 'get':
+      break;
+    case 'post':
+      await helpPost(`http://localhost:${server.port}${command.http.endpoint}`, args);
+      break;
+    case 'put':
+      break;
+    case 'delete':
+      break;
+  }
+}
+
+function startServer(lifecycle, dockerImage) {
+  let openPort = 3000;
+  const environmentVars = getEnvironmentVars();
+  let dockerStart;
+  let dockerServiceId;
+
+  do {
+    dockerStart = `docker run -d -p ${openPort}:${lifecycle.startupPort} ${environmentVars} --entrypoint ${lifecycle.startupCommand.command} ${dockerImage} ${lifecycle.startupCommand.args}`;
+    dockerServiceId = $.exec(dockerStart, { silent: true });
+    openPort += 1;
+  } while (dockerServiceId.stderr !== '');
+
+
+
+  // return dockerServiceId;
+  return {
+    dockerServiceId: dockerServiceId.stdout.trim(),
+    port: openPort - 1,
+    // port: 5000,
+  }
+}
+
+function getEnvironmentVars() {
+  return '-e BOT_TOKEN=\'xoxb-359481089157-367420992610-3RuiJjakC2IfPvkoTzKz84wU\'';
 }
 
 function checkRequiredCommands(args, command) { // TODO rename

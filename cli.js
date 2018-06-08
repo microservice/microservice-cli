@@ -16,8 +16,9 @@ program
 program
   .command('exec <command> [args...]') // TODO how to get the rest of the args
   .description('TODO') // TODO
-  .action((command, args) => {
-    console.log(_exec(command, args));
+  .action(async (command, args) => {
+    const data = await _exec(command, args);
+    console.log(data);
     // console.log(`command: ${command} with args: ${args}`)
   });
 

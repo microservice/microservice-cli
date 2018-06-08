@@ -19,7 +19,14 @@ class Lifecycle {
   }
 
   get startupCommand() {
-    return this._startupCommand;
+    const result = {
+      command: this._startupCommand[0],
+      args: '',
+    };
+    for (let i = 1; i < this._startupCommand.length; i += 1) { // maybe do this is constructor
+      result.args += this._startupCommand[i] + ' ';
+    }
+    return result;
   }
 
   get startupTimout() {

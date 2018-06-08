@@ -39,6 +39,10 @@ class Command {
     return this._argumentsMap[argument];
   }
 
+  /**
+   *
+   * @returns {Http}
+   */
   get http() {
     return this._http;
   }
