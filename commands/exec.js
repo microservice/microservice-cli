@@ -4,7 +4,7 @@ const $ = require('shelljs');
 const axios = require('axios');
 const Microservice = require('../src/Microservice');
 
-async function exec(command, args) {
+async function exec(command, args, envs) {
 
   // check if we are in a microservice cwd
 
@@ -16,19 +16,21 @@ async function exec(command, args) {
   const uuid = build();
 
   const argsObj = parseArgs(args);
+  const envObj = parseEnv(envs);
 
   // const microservice = new Microservice('/Users/tomped/Desktop/test.yml');
   const microservice = new Microservice(path.join(process.cwd(), 'microservice.yml'));
 
 
-  await runCommand(uuid, command, argsObj, microservice.getCommand(command), microservice.lifecyle);
+  await runCommand(uuid, command, argsObj, microservice.getCommand(command), microservice.lifecyle, envObj);
 
   return '';
 }
 
 
 // TODO what if the command does http shit
-async function runCommand(uuid, cmd, args, command, lifecycle, http) {
+async function runCommand(uuid, cmd, args, command, lifecycle, envs) {
+  console.log(envs);
   if (command.arguments.length === 0) {
     $.exec(`docker run ${uuid} ${cmd}`);
   } else {
@@ -39,7 +41,7 @@ async function runCommand(uuid, cmd, args, command, lifecycle, http) {
         $.exec(dockerRunCommand);
       } else {
         // TODO check that lifecycle if provided too (maybe do this in the validation)
-        const server = startServer(lifecycle, uuid);
+        const server = startServer(lifecycle, uuid, envs);
         await httpCommand(server, command, args);
       }
     } else {
@@ -85,16 +87,16 @@ async function httpCommand(server, command, args) {
   }
 }
 
-function startServer(lifecycle, dockerImage) {
-  let openPort = 3000;
-  const environmentVars = getEnvironmentVars();
+function startServer(lifecycle, dockerImage, envs) {
+  let openPort;
+  const environmentVars = getEnvironmentVars(envs);
   let dockerStart;
   let dockerServiceId;
 
   do {
+    openPort = Math.floor(Math.random() * 15000) + 2000;
     dockerStart = `docker run -d -p ${openPort}:${lifecycle.startupPort} ${environmentVars} --entrypoint ${lifecycle.startupCommand.command} ${dockerImage} ${lifecycle.startupCommand.args}`;
     dockerServiceId = $.exec(dockerStart, { silent: true });
-    openPort += 1;
   } while (dockerServiceId.stderr !== '');
 
 
@@ -102,13 +104,21 @@ function startServer(lifecycle, dockerImage) {
   // return dockerServiceId;
   return {
     dockerServiceId: dockerServiceId.stdout.trim(),
-    port: openPort - 1,
-    // port: 5000,
+    port: openPort,
   }
 }
 
-function getEnvironmentVars() {
-  return '-e BOT_TOKEN=\'xoxb-359481089157-367420992610-3RuiJjakC2IfPvkoTzKz84wU\'';
+function getEnvironmentVars(envs) {
+  let result = '';
+  const keys = Object.keys(envs);
+  for (let i = 0; i < keys.length; i += 1) {
+    result += `-e ${keys[i]}="${envs[keys[i]]}" `;
+  }
+  return result;
+}
+
+function checkRequiredEnvironment() {
+  return true;
 }
 
 function checkRequiredCommands(args, command) { // TODO rename
@@ -138,6 +148,19 @@ function build() {
   const uuid = $.exec('uuidgen', {silent: true }).stdout.trim().toLowerCase();
   $.exec(`docker build -t ${uuid} .`);
   return uuid;
+}
+
+function parseEnv(environmentList) {
+  const dictionary = {};
+  for (let i = 0; i < environmentList.length; i += 1) {
+    const split = environmentList[i].split('=');
+    if (split.length !== 2) {
+      // TODO message
+      process.exit(1)
+    }
+    dictionary[split[0]] = split[1];
+  }
+  return dictionary;
 }
 
 function parseArgs(args) {
