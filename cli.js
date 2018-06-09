@@ -27,7 +27,7 @@ program
   .description('TODO') // TODO
   .action(async (command, args, env) => {
     const data = await _exec(command, args, env.environment);
-    console.log(data);
+    // console.log(data);
   });
 
 program.parse(process.argv);

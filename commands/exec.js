@@ -9,7 +9,7 @@ async function exec(command, args, envs) {
     process.exit(1)
   }
   const microservice = new Microservice(path.join(process.cwd(), 'microservice.yml'));
-  const uuid = build();
+  const uuid = await build();
   const argsObj = listToObject(args, ':');
   const envObj = listToObject(envs, '=');
   await runCommand(uuid, command, microservice, argsObj, envObj);

@@ -3,6 +3,7 @@ const Http = require('./Http');
 
 class Command {
   constructor(name, rawCommand) {
+    this._name = name;
     this._help = rawCommand.help || null;
     this._format = rawCommand.format || null;
     this._argumentsMap = null;
@@ -15,6 +16,10 @@ class Command {
     }
     this._http = ((rawCommand.http) ? new Http(rawCommand.http) : null);
     // this._server = ((rawCommand.server) ? new Server(rawCommand.server) : null); // TODO
+  }
+
+  get name () {
+    return this._name;
   }
 
   get help() {
