@@ -12,9 +12,11 @@ class Exec {
   }
 
   /**
+   * Runs the given command.
+   *
    * @param command {String} The given command
    */
-  async executeCommand(command) {
+  async go(command) {
     const spinner = ora(`Running command: ${this._microservice.getCommand(command).name}`).start();
     if (!this._microservice.getCommand(command).areRequiredArguemntsSuplied(this._arguments)) {
       throw {
@@ -46,6 +48,14 @@ class Exec {
       }
     }
   }
+
+  /**
+   * Runs a given command via Docker cli.
+   *
+   * @param command {String} The given command
+   * @return {Promise<String>} stdout if command runs with exit code 0, otherwise stderror
+   * @private
+   */
   async _runDockerExecCommand(command) {
     const argumentList = Object.keys(this._arguments);
     let dockerRunCommand = '';
@@ -67,17 +77,10 @@ class Exec {
     return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${command} ${dockerRunCommand}`);
   }
 
-
-
-
-
-
-
-
   /**
    * Formats an object of environment variables to a `-e KEY='val'` style.
    *
-   * @return {string}
+   * @return {String} The formatted string
    */
   _formatEnvironmentVariables() {
     let result = '';
@@ -88,17 +91,10 @@ class Exec {
     return result.trim();
   }
 
-
-
-
-
   /**
-   * Starts the server for the HTTP command based of the lifecycle provided in the microservice.yml.
+   * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml.
    *
-   * @param lifecycle {Lifecycle} The given Lifecycle, describing how to start the service
-   * @param dockerImage {String} The given docker image
-   * @param environmentVariables {Object} The given environment variables
-   * @return {{dockerServiceId: string, port: number}} An object of the Docker service that was started and the port it was started on
+   * @return {{dockerServiceId: String, port: Number}} An object of the Docker service that was started and the port it was started on
    */
   _startServer() {
     const spinner = ora('Starting Docker container').start();
@@ -119,14 +115,11 @@ class Exec {
     }
   }
 
-
-
   /**
    * Run the given command that interfaces via HTTP.
    *
    * @param server {Object} The given sever started in Docker
-   * @param command {Command} The command to be ran
-   * @param arguments {Object} The given arguments
+   * @param command {String} The given command to be ran
    */
   async _httpCommand(server, command) { // TODO format http request (query params, body, or path params)
     let data;
@@ -156,20 +149,18 @@ class Exec {
     }
   }
 
-  // TODO shutdown command?
   /**
    * Stops a running Docker service
    *
    * @param dockerServiceId {String} The given Docker service id
    */
-  async _serverKill(dockerServiceId) {
+  async _serverKill(dockerServiceId) { // TODO work the shutdown lifecycle in here
     dockerServiceId = dockerServiceId.substring(0, 12);
     const spinner = ora(`Stopping Docker container: ${dockerServiceId}`).start();
     const command = `docker stop ${dockerServiceId}`;
     await exec(command);
     spinner.succeed(`Stopped Docker container: ${dockerServiceId}`);
   }
-
 }
 
 module.exports = Exec;

@@ -33,7 +33,7 @@ program
       // TODO message
       process.exit(1)
     }
-    envs = env.environment;
+    const envs = env.environment;
     if (command.includes(':')) { // what if no args?
       args.unshift(command);
       command = 'entrypoint';
@@ -44,7 +44,7 @@ program
       const argsObj = listToObject(args, ':', 'Unable to parse args');
       const envObj = listToObject(envs, '=', 'Unable to parse envs');
       const e = new Exec(uuid, microservice, argsObj, envObj);
-      await e.executeCommand(command);
+      await e.go(command);
     } catch (error) {
       if (error.spinner) {
         error.spinner.fail(error.message);
