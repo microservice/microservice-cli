@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 
+const fs = require('fs');
+const path = require('path');
 const program = require('commander');
 const validate = require('./commands/validate');
-const _exec = require('./commands/exec');
-
+const { build, listToObject } = require('./commands/utils');
+const Microservice = require('./src/Microservice');
+const Exec = require('./commands/Exec');
 
 program
   .version('0.0.1');
@@ -26,12 +29,30 @@ program
   .option('-e --environment <env>', '', appender(), [])
   .description('TODO') // TODO
   .action(async (command, args, env) => {
+    if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
+      // TODO message
+      process.exit(1)
+    }
+    envs = env.environment;
     if (command.includes(':')) { // what if no args?
       args.unshift(command);
       command = 'entrypoint';
     }
-    const data = await _exec(command, args, env.environment);
-    // console.log(data);
+    try {
+      const microservice = new Microservice(path.join(process.cwd(), 'microservice.yml'));
+      const uuid = await build();
+      const argsObj = listToObject(args, ':', 'Unable to parse args');
+      const envObj = listToObject(envs, '=', 'Unable to parse envs');
+      const e = new Exec(uuid, microservice, argsObj, envObj);
+      await e.executeCommand(command);
+    } catch (error) {
+      if (error.spinner) {
+        error.spinner.fail(error.message);
+      } else {
+        console.error(error.message);
+      }
+      process.exit(1);
+    }
   });
 
 program.parse(process.argv);
