@@ -63,8 +63,11 @@ class Microservice {
     return this._entrypoint;
   }
 
-  get envrionment() {
-    return this._environmentMap;
+  get environmentVariables() {
+    if (this._environmentMap === null) {
+      return [];
+    }
+    return Object.values(this._environmentMap);
   }
 
   get volumes() {
@@ -76,7 +79,7 @@ class Microservice {
 
   getVolume(volume) {
     if ((this._volumeMap === null) || (!this._volumeMap[volume])) {
-      throw 'Command does not exist';
+      throw 'Volume does not exist';
     }
     return this._volumeMap[volume];
   }

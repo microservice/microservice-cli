@@ -11,8 +11,15 @@ async function build() {
   const spinner = ora('Building Docker image').start();
   let uuid = await exec('uuidgen');
   uuid = uuid.toLowerCase().trim();
-  await exec(`docker build -t ${uuid} .`);
-  spinner.succeed(`Build Docker image with name: ${uuid}`);
+  try {
+    await exec(`docker build -t ${uuid} .`);
+    spinner.succeed(`Build Docker image with name: ${uuid}`);
+  } catch (e) {
+    throw {
+      spinner,
+      message: e.toString().trim(),
+    };
+  }
   return uuid;
 }
 
@@ -21,15 +28,17 @@ async function build() {
  *
  * @param list {Array<String>} The given list of strings with delimiter
  * @param delimiter {String} The given delimiter
+ * @param errorMessage {String} The given message to used when unable to parse
  * @return {Object} Key value of the list
  */
-function listToObject(list, delimiter) {
+function parse(list, delimiter, errorMessage) {
   const dictionary = {};
   for (let i = 0; i < list.length; i += 1) {
     const split = list[i].split(delimiter);
     if (split.length !== 2) {
-      console.error('Unable to parse'); // TODO better message
-      process.exit(1)
+      throw {
+        message: errorMessage,
+      };
     }
     dictionary[split[0]] = split[1];
   }
@@ -44,22 +53,20 @@ function listToObject(list, delimiter) {
  * @param microservice {Microservice} The given Microservice we are running
  * @param arguments {Object} The key values arguments
  * @param environmentVariables {Object} The key value environment variables
- * @return {Promise<Boolean>} True if the command was executed successfully, otherwise false
  */
 async function executeCommand(uuid, command, microservice, arguments, environmentVariables) {
   const spinner = ora(`Running command: ${microservice.getCommand(command).name}`).start();
-  if (microservice.getCommand(command).arguments.length === 0) {
-    const output = await exec(`docker run ${uuid} ${command}`);
-    spinner.succeed(`Ran command: ${microservice.getCommand(command).name} with output: ${output.trim()}`);
-    return true;
-  }
   if (!areRequiredArgumentsSupplied(microservice.getCommand(command), arguments)) {
-    console.error('Need to supply required arguments'); // TODO error
-    return false;
+    throw {
+      spinner,
+      message: `Failed command: ${command}. Need to supply required arguments`, // TODO need to say what args
+    }
   }
-  if (!areRequiredEnvironmentVariablesSupplied(microservice.envrionment, environmentVariables)) {
-    console.error('Need to supply required environment variables'); // TODO error
-    return false;
+  if (!areRequiredEnvironmentVariablesSupplied(microservice.environmentVariables, environmentVariables)) {
+    throw {
+      spinner,
+      message: `Failed command: ${command}. Need to supply required environment variables`, // TODO need to say what variables
+    };
   }
   if (microservice.getCommand(command).http === null) {
     const output = await runDockerExecCommand(uuid, command, arguments); // TODO env vars here
@@ -71,7 +78,6 @@ async function executeCommand(uuid, command, microservice, arguments, environmen
     spinner.succeed(`Ran command: ${microservice.getCommand(command).name} with output: ${JSON.stringify(output, null, 2)}`);
     await serverKill(server.dockerServiceId);
   }
-  return true;
 }
 
 
@@ -110,14 +116,11 @@ async function helpPost(url, args) { // TODO better
  * @param command {Command}
  */
 async function httpCommand(server, command, args) {
-  let data;
-  // const spinner = ora(`Running command: ${command.name}`).start();
   switch (command.http.method) {
     case 'get':
       break;
     case 'post':
       return await helpPost(`http://localhost:${server.port}${command.http.endpoint}`, args);
-      break;
     case 'put':
       break;
     case 'delete':
@@ -163,9 +166,18 @@ function getEnvironmentVars(envs) {
   return result;
 }
 
+/**
+ * @param environment {Array}
+ * @param environmentVariables
+ * @return {boolean}
+ */
 function areRequiredEnvironmentVariablesSupplied(environment, environmentVariables) {
-  // console.log(environment);
-  // console.log(environmentVariables);
+  const requiredEnvironmentVariables = environment.filter(env => env.isRequired()).map(env => env.name);
+  for (let i = 0; i < requiredEnvironmentVariables.length; i += 1) {
+    if (!Object.keys(environmentVariables).includes(requiredEnvironmentVariables[i])) {
+      return false;
+    }
+  }
   return true;
 }
 
@@ -219,6 +231,6 @@ function exec(command) {
 module.exports = {
   build,
   runCommand: executeCommand,
-  listToObject,
+  listToObject: parse,
 };
 

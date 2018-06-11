@@ -8,6 +8,10 @@ class EnvironmentVariable {
     this._help = rawEnvironment.help || null;
   }
 
+  get name() {
+    return this._name;
+  }
+
   get type() {
     return this._type;
   }

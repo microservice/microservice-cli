@@ -8,11 +8,20 @@ async function exec(command, args, envs) {
     // TODO message
     process.exit(1)
   }
-  const microservice = new Microservice(path.join(process.cwd(), 'microservice.yml'));
-  const uuid = await build();
-  const argsObj = listToObject(args, ':');
-  const envObj = listToObject(envs, '=');
-  await runCommand(uuid, command, microservice, argsObj, envObj);
+  try {
+    const microservice = new Microservice(path.join(process.cwd(), 'microservice.yml'));
+    const uuid = await build();
+    const argsObj = listToObject(args, ':', 'Unable to parse args');
+    const envObj = listToObject(envs, '=', 'Unable to parse envs');
+    await runCommand(uuid, command, microservice, argsObj, envObj);
+  } catch (error) {
+    if (error.spinner) {
+      error.spinner.fail(error.message);
+    } else {
+      console.error(error.message);
+    }
+    process.exit(1);
+  }
   return 'Success';
 }
 
