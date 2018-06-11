@@ -70,6 +70,16 @@ class Microservice {
     return Object.values(this._environmentMap);
   }
 
+  areRequiredEnvironmentVariablesSupplied(environmentVariables) {
+    const requiredEnvironmentVariable = this.environmentVariables.filter(e => e.isRequired()).map(e => e.name);
+    for (let i = 0; i< requiredEnvironmentVariable.length; i += 1) {
+      if (!Object.keys(environmentVariables).includes(requiredEnvironmentVariable[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   get volumes() {
     if (this._volumeMap === null) {
       return [];

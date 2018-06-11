@@ -56,91 +56,93 @@ function parse(list, delimiter, errorMessage) {
  */
 async function executeCommand(uuid, command, microservice, arguments, environmentVariables) {
   const spinner = ora(`Running command: ${microservice.getCommand(command).name}`).start();
-  if (!areRequiredArgumentsSupplied(microservice.getCommand(command), arguments)) {
+  if (!microservice.getCommand(command).areRequiredArguemntsSuplied(arguments)) {
     throw {
       spinner,
       message: `Failed command: ${command}. Need to supply required arguments`, // TODO need to say what args
     }
   }
-  if (!areRequiredEnvironmentVariablesSupplied(microservice.environmentVariables, environmentVariables)) {
+  if (!microservice.areRequiredEnvironmentVariablesSupplied(environmentVariables)) {
     throw {
       spinner,
       message: `Failed command: ${command}. Need to supply required environment variables`, // TODO need to say what variables
     };
   }
-  if (microservice.getCommand(command).http === null) {
-    const output = await runDockerExecCommand(uuid, command, arguments); // TODO env vars here
-    spinner.succeed(`Ran command: ${microservice.getCommand(command).name} with output: ${output.trim()}`);
-  } else {
-    // TODO check that lifecycle if provided too (maybe do this in the validation)
-    const server = startServer(microservice.lifecycle, uuid, environmentVariables);
-    const output = await httpCommand(server, microservice.getCommand(command), arguments);
-    spinner.succeed(`Ran command: ${microservice.getCommand(command).name} with output: ${JSON.stringify(output, null, 2)}`);
-    await serverKill(server.dockerServiceId);
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-async function helpPost(url, args) { // TODO better
   try {
-    const data = await axios.post(url, args);
-    return data.data;
-  } catch (e) {
-    if (e.code === 'ECONNRESET') {
-      return await helpPost(url, args);
+    if (microservice.getCommand(command).http === null) {
+      const output = await runDockerExecCommand(uuid, command, arguments); // TODO env vars here
+      spinner.succeed(`Ran command: ${microservice.getCommand(command).name} with output: ${output.trim()}`);
     } else {
-      // TODO
-      console.log(e);
+      // TODO check that lifecycle if provided too (maybe do this in the validation)
+      const server = startServer(microservice.lifecycle, uuid, environmentVariables);
+      const output = await httpCommand(server, microservice.getCommand(command), arguments);
+      spinner.succeed(`Ran command: ${microservice.getCommand(command).name} with output: ${JSON.stringify(output, null, 2)}`);
+      await serverKill(server.dockerServiceId);
+    }
+  } catch (e) {
+    throw {
+      spinner,
+      message: `Failed commnad: ${command}. ${e.toString().trim()}`,
     }
   }
 }
 
 /**
+ * Run the given command that interfaces via HTTP.
  *
- * @param server
- * @param command {Command}
+ * @param server {Object} The given sever started in Docker
+ * @param command {Command} The command to be ran
+ * @param arguments {Object} The given arguments
  */
-async function httpCommand(server, command, args) {
-  switch (command.http.method) {
-    case 'get':
-      break;
-    case 'post':
-      return await helpPost(`http://localhost:${server.port}${command.http.endpoint}`, args);
-    case 'put':
-      break;
-    case 'delete':
-      break;
+async function httpCommand(server, command, arguments) { // TODO format http request (query params, body, or path params)
+  let data;
+  const url = `http://localhost:${server.port}${command.http.endpoint}`;
+  try {
+    switch (command.http.method) {
+      case 'get':
+        data = await axios.get(url);
+        break;
+      case 'post':
+        data = await axios.post(url, arguments);
+        break;
+      case 'put':
+        data = await axios.put(url, arguments);
+        break;
+      case 'delete':
+        data = await axios.delete(url);
+        break;
+    }
+    return data.data;
+  } catch (e) {
+    if (e.code === 'ECONNRESET') {
+      return await httpCommand(server, command, arguments);
+    } else {
+      throw e;
+    }
   }
 }
 
-function startServer(lifecycle, dockerImage, envs) {
+// TODO timeout time defined in the microservice.yml
+/**
+ * Starts the server for the HTTP command based of the lifecycle provided in the microservice.yml.
+ *
+ * @param lifecycle {Lifecycle} The given Lifecycle, describing how to start the service
+ * @param dockerImage {String} The given docker image
+ * @param environmentVariables {Object} The given environment variables
+ * @return {{dockerServiceId: string, port: number}} An object of the Docker service that was started and the port it was started on
+ */
+function startServer(lifecycle, dockerImage, environmentVariables) {
   const spinner = ora('Starting Docker container').start();
+  const environmentVars = formatEnvironmentVariables(environmentVariables);
+
   let openPort;
-  const environmentVars = getEnvironmentVars(envs);
   let dockerStart;
   let dockerServiceId;
-
   do {
-    openPort = Math.floor(Math.random() * 15000) + 2000;
+    openPort = Math.floor(Math.random() * 15000) + 2000; // port range 2000 to 17000
     dockerStart = `docker run -d -p ${openPort}:${lifecycle.startupPort} ${environmentVars} --entrypoint ${lifecycle.startupCommand.command} ${dockerImage} ${lifecycle.startupCommand.args}`;
     dockerServiceId = $.exec(dockerStart, { silent: true });
   } while (dockerServiceId.stderr !== '');
-
   spinner.succeed(`Stared Docker container with id: ${dockerServiceId.substring(0, 12)}`);
   return {
     dockerServiceId: dockerServiceId.stdout.trim(),
@@ -149,6 +151,11 @@ function startServer(lifecycle, dockerImage, envs) {
 }
 
 // TODO shutdown command?
+/**
+ * Stops a running Docker service
+ *
+ * @param dockerServiceId {String} The given Docker service id
+ */
 async function serverKill(dockerServiceId) {
   dockerServiceId = dockerServiceId.substring(0, 12);
   const spinner = ora(`Stopping Docker container: ${dockerServiceId}`).start();
@@ -157,45 +164,19 @@ async function serverKill(dockerServiceId) {
   spinner.succeed(`Stopped Docker container: ${dockerServiceId}`);
 }
 
-function getEnvironmentVars(envs) {
+/**
+ * Formats an object of environment variables to a `-e KEY='val'` style.
+ *
+ * @param environmentVariables {Object} The given environment variables
+ * @return {string}
+ */
+function formatEnvironmentVariables(environmentVariables) {
   let result = '';
-  const keys = Object.keys(envs);
+  const keys = Object.keys(environmentVariables);
   for (let i = 0; i < keys.length; i += 1) {
-    result += `-e ${keys[i]}="${envs[keys[i]]}" `;
+    result += `-e ${keys[i]}="${environmentVariables[keys[i]]}" `;
   }
   return result;
-}
-
-/**
- * @param environment {Array}
- * @param environmentVariables
- * @return {boolean}
- */
-function areRequiredEnvironmentVariablesSupplied(environment, environmentVariables) {
-  const requiredEnvironmentVariables = environment.filter(env => env.isRequired()).map(env => env.name);
-  for (let i = 0; i < requiredEnvironmentVariables.length; i += 1) {
-    if (!Object.keys(environmentVariables).includes(requiredEnvironmentVariables[i])) {
-      return false;
-    }
-  }
-  return true;
-}
-
-/**
- * Determines of the required arguments are supplied.
- *
- * @param command {Command} The given Command object
- * @param arguments {Object} The given key value argument to be check
- * @return {boolean} True if all required arguments are supplied, otherwise false
- */
-function areRequiredArgumentsSupplied(command, arguments) {
-  const requiredArguments = command.arguments.filter(argument => argument.isRequired()).map(argument => argument.name);
-  for (let i = 0; i < requiredArguments.length; i += 1) {
-    if (!Object.keys(arguments).includes(requiredArguments[i])) {
-      return false;
-    }
-  }
-  return true;
 }
 
 // TODO format of the command needs to be worked in here somehow
@@ -210,8 +191,6 @@ async function runDockerExecCommand(uuid, cmd, args) {
   return await exec(`docker run ${uuid} ${cmd} ${argString}`);
 }
 
-
-
 function exec(command) {
   return new Promise(function(resolve, reject) {
     $.exec(command, { silent: true }, function(code, stdout, stderr) {
@@ -224,13 +203,8 @@ function exec(command) {
   });
 }
 
-
-
-
-
 module.exports = {
   build,
   runCommand: executeCommand,
   listToObject: parse,
 };
-

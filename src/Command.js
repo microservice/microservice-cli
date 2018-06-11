@@ -30,6 +30,16 @@ class Command {
     return this._format;
   }
 
+  areRequiredArguemntsSuplied(_arguments) {
+    const requiredArguments = this.arguments.filter(argument => argument.isRequired()).map(argument => argument.name);
+    for (let i = 0; i < requiredArguments.length; i += 1) {
+      if (!Object.keys(_arguments).includes(requiredArguments[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   get arguments() {
     if (this._argumentsMap === null) {
       return [];
