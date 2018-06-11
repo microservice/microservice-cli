@@ -1,7 +1,6 @@
 // TODO some of these methods might not be use (then can then be removed along with the class)
 
 const Command = require('./Command');
-const Entrypoint = require('./Entrypoint');
 const EnvironmentVariable = require('./EnvironmentVariable');
 const Volume = require('./Volume');
 const Metrics = require('./Metrics');
@@ -28,7 +27,6 @@ class Microservice {
         this._commandMap[commandList[i]] = new Command(commandList[i], microserviceYamlJson.commands[commandList[i]]);
       }
     }
-    this._entrypoint = ((microserviceYamlJson.entrypoint) ? new Entrypoint(microserviceYamlJson.entrypoint) : null);
     this._environmentMap = null;
     if (microserviceYamlJson.environment) {
       this._environmentMap = {};
@@ -57,10 +55,6 @@ class Microservice {
       throw 'Command does not exist';
     }
     return this._commandMap[command];
-  }
-
-  get entrypoint() {
-    return this._entrypoint;
   }
 
   get environmentVariables() {

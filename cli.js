@@ -22,10 +22,14 @@ function appender(xs) {
 }
 
 program
-  .command('exec <command> [args...]') // TODO how to get the rest of the args
+  .command('exec <command> [args...]')
   .option('-e --environment <env>', '', appender(), [])
   .description('TODO') // TODO
   .action(async (command, args, env) => {
+    if (command.includes(':')) { // what if no args?
+      args.unshift(command);
+      command = 'entrypoint';
+    }
     const data = await _exec(command, args, env.environment);
     // console.log(data);
   });

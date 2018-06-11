@@ -70,7 +70,7 @@ async function executeCommand(uuid, command, microservice, arguments, environmen
   }
   try {
     if (microservice.getCommand(command).http === null) {
-      const output = await runDockerExecCommand(uuid, command, arguments); // TODO env vars here
+      const output = await runDockerExecCommand(uuid, command, arguments, microservice.getCommand(command).format, environmentVariables);
       spinner.succeed(`Ran command: ${microservice.getCommand(command).name} with output: ${output.trim()}`);
     } else {
       // TODO check that lifecycle if provided too (maybe do this in the validation)
@@ -176,21 +176,45 @@ function formatEnvironmentVariables(environmentVariables) {
   for (let i = 0; i < keys.length; i += 1) {
     result += `-e ${keys[i]}="${environmentVariables[keys[i]]}" `;
   }
-  return result;
+  return result.trim();
 }
 
-// TODO format of the command needs to be worked in here somehow
-async function runDockerExecCommand(uuid, cmd, args) {
-  let argString = '';
-  const argValues = Object.values(args);
-
-  for (let i = 0; i < argValues.length; i += 1) {
-    argString += argValues[i] + ' ';
+/**
+ * Formats and runs a command.
+ *
+ * @param uuid {String} The given uuid of the Docker image
+ * @param command {String} The given command to run
+ * @param arguments {Object} The given mapping of arguments
+ * @param format {String} The given formatting style of the command
+ * @return {Promise<String>}
+ */
+async function runDockerExecCommand(uuid, command, arguments, format, environmentVariables) {
+  const argumentList = Object.keys(arguments);
+  let dockerRunCommand = '';
+  if (format === '$args') {
+    for (let i = 0; i < argumentList.length; i += 1) {
+      dockerRunCommand += `--${argumentList[i]} ${arguments[argumentList[i]]} `;
+    }
+  } else if (format === '$json') {
+    dockerRunCommand = JSON.stringify(arguments);
+  } else {
+    dockerRunCommand = `${format}`;
+    for (let i = 0; i < argumentList.length; i += 1) {
+      dockerRunCommand = dockerRunCommand.replace(`{{${argumentList[i]}}}`, arguments[argumentList[i]]);
+    }
   }
-
-  return await exec(`docker run ${uuid} ${cmd} ${argString}`);
+  if (command === 'entrypoint') {
+    return await exec(`docker run ${formatEnvironmentVariables(environmentVariables)} ${uuid} ${dockerRunCommand}`);
+  }
+  return await exec(`docker run ${formatEnvironmentVariables(environmentVariables)} ${uuid} ${command} ${dockerRunCommand}`);
 }
 
+/**
+ * Promise wrapper for the `exec`.
+ *
+ * @param command {String} The command to run
+ * @return {Promise<String>} The stdout if resolved, otherwise stderror
+ */
 function exec(command) {
   return new Promise(function(resolve, reject) {
     $.exec(command, { silent: true }, function(code, stdout, stderr) {
