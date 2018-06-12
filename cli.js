@@ -25,13 +25,16 @@ function appender(xs) {
 }
 
 program
-  .command('exec <command> [args...]')
+  .command('exec [command] [args...]')
   .option('-e --environment <env>', '', appender(), [])
   .description('TODO') // TODO
   .action(async (command, args, env) => {
     if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
       // TODO message
       process.exit(1)
+    }
+    if (!command) {
+      command = 'entrypoint'
     }
     const envs = env.environment;
     if (command.includes(':')) { // what if no args?
