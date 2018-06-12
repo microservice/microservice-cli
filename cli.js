@@ -48,7 +48,7 @@ program
       command = 'entrypoint';
     }
     try {
-      const microservice = new Microservice(path.join(process.cwd(), 'microservice.yml'));
+      const microservice = new Microservice();
       const uuid = await build();
       const argsObj = parse(args, ':', 'Unable to parse args');
       const envObj = parse(envs, '=', 'Unable to parse envs');

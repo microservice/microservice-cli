@@ -3,15 +3,12 @@
 const Command = require('./Command');
 const EnvironmentVariable = require('./EnvironmentVariable');
 const Volume = require('./Volume');
-const Metrics = require('./Metrics');
-const System = require('./System');
-const Scale = require('./Scale');
 const Lifecycle = require('./Lifecycle');
 const validator = require('../commands/validate');
 
 class Microservice {
-  constructor(pathToMicroserviceYaml) {
-    const valid = JSON.parse(validator(pathToMicroserviceYaml));
+  constructor() {
+    const valid = JSON.parse(validator());
     if (!valid.valid) {
       // TODO message
       console.log('not valid');
@@ -43,11 +40,7 @@ class Microservice {
         this._volumeMap[volumeList[i]] = new Volume(volumeList[i], microserviceYamlJson.volumes[volumeList[i]]);
       }
     }
-    this._metrics = ((microserviceYamlJson.metrics) ? new Metrics(microserviceYamlJson.metrics) : null);
-    this._system = ((microserviceYamlJson.system) ? new System(microserviceYamlJson.system) : null);
-    this._scale = ((microserviceYamlJson.scale) ? new Scale(microserviceYamlJson.scale) : null);
     this._lifecycle = ((microserviceYamlJson.lifecycle) ? new Lifecycle(microserviceYamlJson.lifecycle) : null);
-    this._cap = microserviceYamlJson.cap || null;
   }
 
   getCommand(command) {
@@ -88,25 +81,10 @@ class Microservice {
     return this._volumeMap[volume];
   }
 
-  get metrics() {
-    return this._metrics;
-  }
-
-  get system() {
-    return this._system;
-  }
-
-  get scale() {
-    return this._scale;
-  }
-
   get lifecycle() {
     return this._lifecycle;
   }
 
-  get cap() {
-    return this._cap;
-  }
 }
 
 module.exports = Microservice;

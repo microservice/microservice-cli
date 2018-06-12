@@ -4,6 +4,7 @@ class Arguments {
   constructor(name, rawArguments) {
     this._name = name;
     this._type = rawArguments.type;
+    this._location = rawArguments.location || null;
     this._help = rawArguments.help || null;
     this._pattern = rawArguments.pattern || null;
     this._enum = rawArguments.enum || null;
@@ -18,6 +19,10 @@ class Arguments {
 
   get type() {
     return this._type;
+  }
+
+  get location() {
+    return this._location;
   }
 
   get help() {

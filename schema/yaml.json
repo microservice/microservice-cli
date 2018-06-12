@@ -29,6 +29,10 @@
                     "help": {
                       "type": "string"
                     },
+                    "location": {
+                      "type": "string",
+                      "enum": ["query", "path", "body"]
+                    },
                     "pattern": {
                       "type": "string"
                     },
@@ -321,7 +325,7 @@
               "enum": ["run_once", "run_many"]
             }
           },
-          "required": ["command", "timeout"],
+          "required": ["command", "timeout", "method"],
           "additionalProperties": false
         },
         "run": {
@@ -360,7 +364,7 @@
               "enum": ["run_once", "run_many"]
             }
           },
-          "required": ["command", "timeout"],
+          "required": ["command", "timeout", "method"],
           "additionalProperties": false
         }
       },

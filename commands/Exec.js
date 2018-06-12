@@ -1,9 +1,17 @@
 const $ = require('shelljs');
 const ora = require('ora');
 const axios = require('axios');
+const querystring = require('querystring');
 const { exec, stringifyContainerOutput } = require('./utils');
 
 class Exec {
+  /**
+   *
+   * @param dockerImage
+   * @param microservice {Microservice}
+   * @param _arguments
+   * @param environmentVariables
+   */
   constructor(dockerImage, microservice, _arguments, environmentVariables) {
     this._dockerImage = dockerImage;
     this._microservice = microservice;
@@ -125,20 +133,20 @@ class Exec {
    */
   async _httpCommand(server, command) { // TODO format http request (query params, body, or path params)
     let data;
-    const url = `http://localhost:${server.port}${this._microservice.getCommand(command).http.endpoint}`;
+    const httpData = this._formatHttp(server, this._microservice.getCommand(command));
     try {
       switch (this._microservice.getCommand(command).http.method) {
         case 'get':
-          data = await axios.get(url);
+          data = await axios.get(httpData.url);
           break;
         case 'post':
-          data = await axios.post(url, this._arguments);
+          data = await axios.post(httpData.url, httpData.jsonData);
           break;
         case 'put':
-          data = await axios.put(url, this._arguments);
+          data = await axios.put(httpData.url, httpData.jsonData);
           break;
         case 'delete':
-          data = await axios.delete(url);
+          data = await axios.delete(httpData.url);
           break;
       }
       return data.data;
@@ -148,6 +156,40 @@ class Exec {
       } else {
         throw e;
       }
+    }
+  }
+
+  /**
+   *
+   * @param server
+   * @param command
+   * @return {{url: String, jsonData: Object}}
+   * @private
+   */
+  _formatHttp(server, command) {
+    const jsonData = {};
+    const queryParams = {};
+    let url = `http://localhost:${server.port}${command.http.endpoint}`;
+    for (let i = 0; i < command.arguments.length; i += 1) {
+      const argument = command.arguments[i];
+      switch (command.getArgument(argument.name).location) {
+        case 'query':
+          queryParams[argument.name] = this._arguments[argument.name];
+          break;
+        case 'path':
+          url = url.replace(`{{${argument.name}}}`, this._arguments[argument.name]);
+          break;
+        case 'body':
+          jsonData[argument.name] = this._arguments[argument.name];
+          break;
+      }
+    }
+    if (querystring.stringify(queryParams) !== '') {
+      url = `${url}?${querystring.stringify(queryParams)}`;
+    }
+    return {
+      url,
+      jsonData
     }
   }
 
