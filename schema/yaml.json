@@ -74,7 +74,7 @@
               "required": ["method", "endpoint"],
               "additionalProperties": false
             },
-            "startup": {
+            "run": {
               "type": "object",
               "properties": {
                 "port": {
@@ -93,6 +93,7 @@
               "additionalProperties": false
             }
           },
+          "required": ["format"],
           "additionalProperties": false
         }
       },
@@ -101,6 +102,9 @@
     "entrypoint": {
       "type": "object",
       "properties": {
+        "format": {
+          "type": "string"
+        },
         "arguments": {
           "type": "object",
           "patternProperties": {
@@ -149,7 +153,9 @@
           },
           "additionalProperties": false
         }
-      }
+      },
+      "required": ["format"],
+      "additionalProperties": false
     },
     "environment": {
       "type": "object",
@@ -310,13 +316,30 @@
               "type": "integer",
               "minimum": 1
             },
+            "method": {
+              "type": "string",
+              "enum": ["run_once", "run_many"]
+            }
+          },
+          "required": ["command", "timeout"],
+          "additionalProperties": false
+        },
+        "run": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": ["string", "array"],
+              "items": {
+                "type": "string"
+              }
+            },
             "port": {
               "type": "integer",
               "minimum": 5000,
               "maximum": 9000
             }
           },
-          "required": ["command", "timeout"],
+          "required": ["command", "port"],
           "additionalProperties": false
         },
         "shutdown": {
@@ -332,10 +355,9 @@
               "type": "integer",
               "minimum": 1
             },
-            "port": {
-              "type": "integer",
-              "minimum": 5000,
-              "maximum": 9000
+            "method": {
+              "type": "string",
+              "enum": ["run_once", "run_many"]
             }
           },
           "required": ["command", "timeout"],
