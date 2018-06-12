@@ -12,9 +12,15 @@ program
   .version('0.0.1');
 
 program
-  .command('validate <path>')
+  .command('validate')
   .description('Use to validate a microservice.yml')
-  .action((path) => process.stdout.write(validate(path)));
+  .action(() => {
+    if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
+      // TODO message
+      process.exit(1)
+    }
+    process.stdout.write(validate())
+  });
 
 function appender(xs) {
   xs = xs || [];

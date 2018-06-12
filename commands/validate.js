@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const YAML = require('yamljs');
 const schemaValidator = require('../schema/schema');
 
@@ -9,9 +10,9 @@ const schemaValidator = require('../schema/schema');
  * @param {string} path The given path
  * @return {string} The stringified JSON result
  */
-function validate(path) {
+function validate() {
   try {
-    const json = YAML.parse(fs.readFileSync(path).toString()); // JOIN THIS
+    const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString()); // JOIN THIS
     const valid = schemaValidator(json);
 
     return JSON.stringify({
