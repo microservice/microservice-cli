@@ -44,6 +44,14 @@ function parse(list, delimiter, errorMessage) {
   return dictionary;
 }
 
+function stringifyContainerOutput(data) {
+  try {
+    return JSON.stringify(data, null, 2);
+  } catch (e) {
+    return data;
+  }
+}
+
 /**
  * Promise wrapper for the `exec`.
  *
@@ -64,6 +72,7 @@ function exec(command) {
 
 module.exports = {
   build,
-  listToObject: parse,
+  parse,
   exec,
+  stringifyContainerOutput,
 };

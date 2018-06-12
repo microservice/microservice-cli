@@ -1,7 +1,7 @@
 const $ = require('shelljs');
 const ora = require('ora');
 const axios = require('axios');
-const { exec } = require('./utils');
+const { exec, stringifyContainerOutput } = require('./utils');
 
 class Exec {
   constructor(dockerImage, microservice, _arguments, environmentVariables) {
@@ -38,13 +38,13 @@ class Exec {
         // TODO check that lifecycle if provided too (maybe do this in the validation)
         const server = this._startServer();
         const output = await this._httpCommand(server, command);
-        spinner.succeed(`Ran command: ${this._microservice.getCommand(command).name} with output: ${JSON.stringify(output, null, 2)}`);
+        spinner.succeed(`Ran command: ${this._microservice.getCommand(command).name} with output: ${stringifyContainerOutput(output)}`);
         await this._serverKill(server.dockerServiceId);
       }
     } catch (e) {
       throw {
         spinner,
-        message: `Failed commnad: ${command}. ${e.toString().trim()}`,
+        message: `Failed command: ${command}. ${e.toString().trim()}`,
       }
     }
   }

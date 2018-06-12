@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const program = require('commander');
 const validate = require('./commands/validate');
-const { build, listToObject } = require('./commands/utils');
+const { build, parse } = require('./commands/utils');
 const Microservice = require('./src/Microservice');
 const Exec = require('./commands/Exec');
 
@@ -41,8 +41,8 @@ program
     try {
       const microservice = new Microservice(path.join(process.cwd(), 'microservice.yml'));
       const uuid = await build();
-      const argsObj = listToObject(args, ':', 'Unable to parse args');
-      const envObj = listToObject(envs, '=', 'Unable to parse envs');
+      const argsObj = parse(args, ':', 'Unable to parse args');
+      const envObj = parse(envs, '=', 'Unable to parse envs');
       const e = new Exec(uuid, microservice, argsObj, envObj);
       await e.go(command);
     } catch (error) {
