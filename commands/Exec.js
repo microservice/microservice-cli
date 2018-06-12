@@ -18,7 +18,7 @@ class Exec {
    */
   async go(command) {
     const spinner = ora(`Running command: ${this._microservice.getCommand(command).name}`).start();
-    if (!this._microservice.getCommand(command).areRequiredArguemntsSuplied(this._arguments)) {
+    if (!this._microservice.getCommand(command).areRequiredArgumentsSupplied(this._arguments)) {
       throw {
         spinner,
         message: `Failed command: ${command}. Need to supply required arguments`, // TODO need to say what args
@@ -36,7 +36,7 @@ class Exec {
         spinner.succeed(`Ran command: ${this._microservice.getCommand(command).name} with output: ${output.trim()}`);
       } else {
         // TODO check that lifecycle if provided too (maybe do this in the validation)
-        const server = this._startServer();
+        const server = this._startServer(command);
         const output = await this._httpCommand(server, command);
         spinner.succeed(`Ran command: ${this._microservice.getCommand(command).name} with output: ${stringifyContainerOutput(output)}`);
         await this._serverKill(server.dockerServiceId);
@@ -91,21 +91,23 @@ class Exec {
     return result.trim();
   }
 
+  // TODO https://github.com/microservices/microservice-cli/issues/15 this needs to be able to support lifecycle servers too
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml.
    *
    * @return {{dockerServiceId: String, port: Number}} An object of the Docker service that was started and the port it was started on
    */
-  _startServer() {
+  _startServer(command) {
     const spinner = ora('Starting Docker container').start();
     const environmentVars = this._formatEnvironmentVariables();
+    const run = this._microservice.getCommand(command).run;
 
     let openPort;
     let dockerStart;
     let dockerServiceId;
     do {
       openPort = Math.floor(Math.random() * 15000) + 2000; // port range 2000 to 17000
-      dockerStart = `docker run -d -p ${openPort}:${this._microservice.lifecycle.startupPort} ${environmentVars} --entrypoint ${this._microservice.lifecycle.startupCommand.command} ${this._dockerImage} ${this._microservice.lifecycle.startupCommand.args}`;
+      dockerStart = `docker run -d -p ${openPort}:${run.port} ${environmentVars} --entrypoint ${run.command} ${this._dockerImage} ${run.args}`;
       dockerServiceId = $.exec(dockerStart, { silent: true });
     } while (dockerServiceId.stderr !== '');
     spinner.succeed(`Stared Docker container with id: ${dockerServiceId.substring(0, 12)}`);

@@ -328,7 +328,7 @@
           "type": "object",
           "properties": {
             "command": {
-              "type": ["string", "array"],
+              "type": ["array"],
               "items": {
                 "type": "string"
               }

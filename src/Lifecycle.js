@@ -9,12 +9,16 @@ class Lifecycle {
     if (rawLifeCycle.startup) {
       this._startupCommand = rawLifeCycle.startup.command;
       this._startupTimout = rawLifeCycle.startup.timeout;
-      this._startupPort = rawLifeCycle.startup.port || null;
+      this._startupMethod = rawLifeCycle.startup.method || null;
+    }
+    if (rawLifeCycle.run) {
+      this._runCommand = rawLifeCycle.run.command;
+      this._runPort = rawLifeCycle.run.port;
     }
     if (rawLifeCycle.shutdown) {
       this._shutdownCommand = rawLifeCycle.shutdown.command;
       this._shutdownTimout = rawLifeCycle.shutdown.timeout;
-      this._shutdownPort = rawLifeCycle.shutdown.port || null;
+      this._shutdownMethod = rawLifeCycle.shutdown.method || null;
     }
   }
 

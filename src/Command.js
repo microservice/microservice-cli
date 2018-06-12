@@ -15,7 +15,16 @@ class Command {
       }
     }
     this._http = ((rawCommand.http) ? new Http(rawCommand.http) : null);
-    // this._server = ((rawCommand.server) ? new Server(rawCommand.server) : null); // TODO
+    this._runCommand = null;
+    if (rawCommand.run) {
+      this._runCommand = {};
+      this._runCommand.command = rawCommand.run.command[0];
+      this._runCommand.args = '';
+      this._runCommand.port = rawCommand.run.port;
+      for (let i = 1; i < rawCommand.run.command.length; i += 1) {
+        this._runCommand.args += rawCommand.run.command[i] + ' ';
+      }
+    }
   }
 
   get name () {
@@ -30,7 +39,7 @@ class Command {
     return this._format;
   }
 
-  areRequiredArguemntsSuplied(_arguments) {
+  areRequiredArgumentsSupplied(_arguments) {
     const requiredArguments = this.arguments.filter(argument => argument.isRequired()).map(argument => argument.name);
     for (let i = 0; i < requiredArguments.length; i += 1) {
       if (!Object.keys(_arguments).includes(requiredArguments[i])) {
@@ -62,8 +71,12 @@ class Command {
     return this._http;
   }
 
-  get server() {
-    return this._server
+  /**
+   *
+   * @return {null|{command: String, args: String, port: Number}}
+   */
+  get run() {
+    return this._runCommand;
   }
 }
 
