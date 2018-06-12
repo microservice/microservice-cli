@@ -20,11 +20,26 @@ class Exec {
   }
 
   /**
+   *
+   * @param command {Command}
+   * @private
+   */
+  _setDefaultVariables(command) {
+    for (let i = 0; i < command.arguments.length; i += 1) {
+      const argument = command.arguments[i];
+      if (!this._arguments[argument.name]) {
+        this._arguments[argument.name] = argument.default;
+      }
+    }
+  }
+
+  /**
    * Runs the given command.
    *
    * @param command {String} The given command
    */
   async go(command) {
+    this._setDefaultVariables(this._microservice.getCommand(command));
     const spinner = ora(`Running command: ${this._microservice.getCommand(command).name}`).start();
     if (!this._microservice.getCommand(command).areRequiredArgumentsSupplied(this._arguments)) {
       throw {
