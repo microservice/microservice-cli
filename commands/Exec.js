@@ -29,7 +29,9 @@ class Exec {
     for (let i = 0; i < command.arguments.length; i += 1) {
       const argument = command.arguments[i];
       if (!this._arguments[argument.name]) {
-        this._arguments[argument.name] = argument.default;
+        if (argument.default !== null) {
+          this._arguments[argument.name] = argument.default;
+        }
       }
     }
   }
@@ -64,6 +66,7 @@ class Exec {
         // TODO check that lifecycle if provided too (maybe do this in the validation)
         const server = this._startServer(command);
         const output = await this._httpCommand(server, command);
+        Validate.verifyOutputType(this._microservice.getCommand(command), stringifyContainerOutput(output));
         spinner.succeed(`Ran command: ${this._microservice.getCommand(command).name} with output: ${stringifyContainerOutput(output)}`);
         await this._serverKill(server.dockerServiceId);
       }

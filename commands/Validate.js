@@ -11,45 +11,50 @@ class Validate {
     if (!this._valid.valid) {
       return JSON.stringify(this._valid, null, 2);
     }
-    this._microservice = new Microservice();
-    this.validateCommandFormat();
+    new Microservice().commands.forEach(c => {
+      if (c.http === null) {
+        this._validateExecCommandFormat(c);
+      } else {
+        this._validateHttpCommandFormat(c);
+      }
+    });
     return JSON.stringify(this._valid, null, 2);
   }
 
-  validateCommandFormat() {
-    this._microservice.commands.forEach(c => {
-      if ((c.format === null) && (c.arguments.length > 0)) {
-        this._valid.valid = false;
-        this._valid.errors = [{
-          message: 'format not provided for command',
-          command: c.name,
-          missingArguments: [c.arguments.map(a => a.name)],
-        }];
-        return;
+  _validateExecCommandFormat(command) {
+    if ((command.format === null) && (command.arguments.length > 0)) {
+      if (this._valid.errors === null) {
+        this._valid.errors = [];
       }
-      if ((c.format !== '$args') && (c.format !== '$json')) {
-        const missingArguments = [];
-        c.arguments.forEach(a => {
-          if (!c.format.includes(`{{${a.name}}}`)) {
-            missingArguments.push(a.name)
-          }
-        });
-        if (missingArguments.length > 0) {
-          this._valid.valid = false;
-          this._valid.errors = [{
-            message: 'format not valid for command',
-            command: c.name,
-            missingArguments,
-          }]
+      this._valid.valid = false;
+      this._valid.errors.push({
+        message: 'format not provided for command',
+        command: command.name,
+        missingArguments: [command.arguments.map(a => a.name)],
+      });
+    } else if ((command.format !== '$args') && (command.format !== '$json')) {
+      const missingArguments = [];
+      command.arguments.forEach(a => {
+        if (!command.format.includes(`{{${a.name}}}`)) {
+          missingArguments.push(a.name)
         }
+      });
+      if (missingArguments.length > 0) {
+        if (this._valid.errors === null) {
+          this._valid.errors = [];
+        }
+        this._valid.errors.push({
+          message: 'format not valid for command',
+          command: command.name,
+          missingArguments,
+        });
       }
-    });
+    }
   }
 
-  validateHttpCommand() {
+  _validateHttpCommandFormat() {
 
   }
-
 
   /**
    *
