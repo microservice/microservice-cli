@@ -3,10 +3,15 @@
 const Command = require('./Command');
 const EnvironmentVariable = require('./EnvironmentVariable');
 const Volume = require('./Volume');
-const Lifecycle = require('./Lifecycle');
 const validator = require('../schema/schema');
 
+/**
+ * Describes a microservice defined by a `microservice.yml`
+ */
 class Microservice {
+  /**
+   * Builds a {@link Microservice} defined by a `microservice.yml`.
+   */
   constructor() {
     const valid = JSON.parse(validator());
     if (!valid.valid) {
@@ -38,12 +43,12 @@ class Microservice {
         this._volumeMap[volumeList[i]] = new Volume(volumeList[i], microserviceYamlJson.volumes[volumeList[i]]);
       }
     }
-    this._lifecycle = ((microserviceYamlJson.lifecycle) ? new Lifecycle(microserviceYamlJson.lifecycle) : null);
   }
 
   /**
+   * Get a list of {@link Command}s available to this {@link Microservice}.
    *
-   * @return {Array}
+   * @return {Array<Command>} The {@link Command}s
    */
   get commands() {
     if (this._commandMap === null) {
@@ -52,6 +57,13 @@ class Microservice {
     return Object.values(this._commandMap);
   }
 
+  /**
+   * Get's a {@link Command} given the a command name.
+   *
+   * @param {String} command The given command name
+   * @throws {String} If the command does not exists
+   * @return {Command} The {@link Command}
+   */
   getCommand(command) {
     if ((this._commandMap === null) || (!this._commandMap[command])) {
       throw 'Command does not exist';
@@ -59,6 +71,11 @@ class Microservice {
     return this._commandMap[command];
   }
 
+  /**
+   * Get a list of {@link EnvironmentVariable}s used by this {@link Microservice}.
+   *
+   * @return {Array<EnvironmentVariable>} The {@link EnvironmentVariable}s
+   */
   get environmentVariables() {
     if (this._environmentMap === null) {
       return [];
@@ -66,8 +83,14 @@ class Microservice {
     return Object.values(this._environmentMap);
   }
 
+  /**
+   * Checks if the required {@link EnvironmentVariable} are supplied.
+   *
+   * @param {Object} environmentVariables The given mapping of environment variables
+   * @return {Boolean} True if all required environment variables are given, otherwise false
+   */
   areRequiredEnvironmentVariablesSupplied(environmentVariables) {
-    const requiredEnvironmentVariable = this.environmentVariables.filter(e => e.isRequired()).map(e => e.name);
+    const requiredEnvironmentVariable = this.environmentVariables.filter((e) => e.isRequired()).map((e) => e.name);
     for (let i = 0; i< requiredEnvironmentVariable.length; i += 1) {
       if (!Object.keys(environmentVariables).includes(requiredEnvironmentVariable[i])) {
         return false;
@@ -76,6 +99,11 @@ class Microservice {
     return true;
   }
 
+  /**
+   * Get a list of volumes used by this {@link Microservice}.
+   *
+   * @return {Array<Volume>} The {@link Volume}s
+   */
   get volumes() {
     if (this._volumeMap === null) {
       return [];
@@ -83,17 +111,19 @@ class Microservice {
     return Object.keys(this._volumeMap);
   }
 
+  /**
+   * Get's a {@link Volume} based of the given volume name.
+   *
+   * @param {String} volume The given volume name
+   * @throws {String} If the volume does not exists
+   * @return {Volume} The {@link Volume}
+   */
   getVolume(volume) {
     if ((this._volumeMap === null) || (!this._volumeMap[volume])) {
       throw 'Volume does not exist';
     }
     return this._volumeMap[volume];
   }
-
-  get lifecycle() {
-    return this._lifecycle;
-  }
-
 }
 
 module.exports = Microservice;

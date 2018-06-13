@@ -42,14 +42,16 @@
       "google"
     ],
     "rules": {
-      "max-len": 0
+      "max-len": 0,
+      "no-throw-literal": 0
     },
     "env": {
       "jest": true,
-      "node": true
+      "node": true,
+      "es6": true
     },
     "parserOptions": {
-      "ecmaVersion": 6
+      "ecmaVersion": 8
     }
   }
 }

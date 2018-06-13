@@ -3,15 +3,19 @@ const ora = require('ora');
 const axios = require('axios');
 const querystring = require('querystring');
 const Validate = require('./Validate');
-const { exec, stringifyContainerOutput } = require('./utils');
+const {exec, stringifyContainerOutput} = require('./utils');
 
+/**
+ * Describes a way to execute a microservice.
+ */
 class Exec {
   /**
+   * Build an {@link Exec}.
    *
-   * @param dockerImage
-   * @param microservice {Microservice}
-   * @param _arguments
-   * @param environmentVariables
+   * @param {String} dockerImage
+   * @param {Microservice} microservice
+   * @param {Object} _arguments
+   * @param {Object} environmentVariables
    */
   constructor(dockerImage, microservice, _arguments, environmentVariables) {
     this._dockerImage = dockerImage;
@@ -21,8 +25,9 @@ class Exec {
   }
 
   /**
+   * Sets a {@link Command}'s default arguments.
    *
-   * @param command {Command}
+   * @param {Command} command The given {@link Command}
    * @private
    */
   _setDefaultVariables(command) {
@@ -37,9 +42,9 @@ class Exec {
   }
 
   /**
-   * Runs the given command.
+   * Runs the given {@link Command}.
    *
-   * @param command {String} The given command
+   * @param {String} command The given command
    */
   async go(command) {
     const spinner = ora(`Running command: ${this._microservice.getCommand(command).name}`).start();
@@ -48,7 +53,7 @@ class Exec {
       throw {
         spinner,
         message: `Failed command: ${command}. Need to supply required arguments`, // TODO need to say what args
-      }
+      };
     }
     if (!this._microservice.areRequiredEnvironmentVariablesSupplied(this._environmentVariables)) {
       throw {
@@ -60,7 +65,7 @@ class Exec {
       Validate.verifyArgumentTypes(this._microservice.getCommand(command), this._arguments);
       if (this._microservice.getCommand(command).http === null) {
         const output = await this._runDockerExecCommand(command);
-        Validate.verifyOutputType(this._microservice.getCommand(command), output);
+        Validate.verifyOutputType(this._microservice.getCommand(command), output.trim());
         spinner.succeed(`Ran command: ${this._microservice.getCommand(command).name} with output: ${output.trim()}`);
       } else {
         // TODO check that lifecycle if provided too (maybe do this in the validation)
@@ -74,14 +79,14 @@ class Exec {
       throw {
         spinner,
         message: `Failed command: ${command}. ${e.toString().trim()}`,
-      }
+      };
     }
   }
 
   /**
    * Runs a given command via Docker cli.
    *
-   * @param command {String} The given command
+   * @param {String} command  The given command
    * @return {Promise<String>} stdout if command runs with exit code 0, otherwise stderror
    * @private
    */
@@ -90,7 +95,7 @@ class Exec {
     let dockerRunCommand = '';
     if (this._microservice.getCommand(command).format === '$args') {
       for (let i = 0; i < argumentList.length; i += 1) {
-        dockerRunCommand += `--${argumentList[i]} ${arguments[argumentList[i]]} `;
+        dockerRunCommand += `--${argumentList[i]} ${this._arguments[argumentList[i]]} `;
       }
     } else if (this._microservice.getCommand(command).format === '$json') {
       dockerRunCommand = JSON.stringify(this._arguments);
@@ -110,6 +115,7 @@ class Exec {
    * Formats an object of environment variables to a `-e KEY='val'` style.
    *
    * @return {String} The formatted string
+   * @private
    */
   _formatEnvironmentVariables() {
     let result = '';
@@ -124,6 +130,8 @@ class Exec {
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml.
    *
+   * @param {String} command The given command
+   * @private
    * @return {{dockerServiceId: String, port: Number}} An object of the Docker service that was started and the port it was started on
    */
   _startServer(command) {
@@ -137,20 +145,22 @@ class Exec {
     do {
       openPort = Math.floor(Math.random() * 15000) + 2000; // port range 2000 to 17000
       dockerStart = `docker run -d -p ${openPort}:${run.port} ${environmentVars} --entrypoint ${run.command} ${this._dockerImage} ${run.args}`;
-      dockerServiceId = $.exec(dockerStart, { silent: true });
+      dockerServiceId = $.exec(dockerStart, {silent: true});
     } while (dockerServiceId.stderr !== '');
     spinner.succeed(`Stared Docker container with id: ${dockerServiceId.substring(0, 12)}`);
     return {
       dockerServiceId: dockerServiceId.stdout.trim(),
       port: openPort,
-    }
+    };
   }
 
   /**
    * Run the given command that interfaces via HTTP.
    *
-   * @param server {Object} The given sever started in Docker
-   * @param command {String} The given command to be ran
+   * @param {Object} server The given sever started in Docker
+   * @param {String} command The given command to be ran
+   * @return {Promise<Object>} The response of the Http request
+   * @private
    */
   async _httpCommand(server, command) { // TODO format http request (query params, body, or path params)
     let data;
@@ -181,9 +191,10 @@ class Exec {
   }
 
   /**
+   * Formats an Http request based on the given {@link Command}.
    *
-   * @param server
-   * @param command
+   * @param {Object} server The given server info
+   * @param  {Command} command The given {@link Command}
    * @return {{url: String, jsonData: Object}}
    * @private
    */
@@ -210,14 +221,15 @@ class Exec {
     }
     return {
       url,
-      jsonData
-    }
+      jsonData,
+    };
   }
 
   /**
-   * Stops a running Docker service
+   * Stops a running Docker service.
    *
-   * @param dockerServiceId {String} The given Docker service id
+   * @param {String} dockerServiceId The given Docker service id
+   * @private
    */
   async _serverKill(dockerServiceId) { // TODO work the shutdown lifecycle in here
     dockerServiceId = dockerServiceId.substring(0, 12);

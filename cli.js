@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const program = require('commander');
 const Validate = require('./commands/Validate');
-const { build, parse } = require('./commands/utils');
+const {build, parse} = require('./commands/utils');
 const Microservice = require('./src/Microservice');
 const Exec = require('./commands/Exec');
 
@@ -17,17 +17,23 @@ program
   .action(() => {
     if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
       // TODO message
-      process.exit(1)
+      process.exit(1);
     }
     process.stdout.write(new Validate().structure());
   });
 
+/**
+ * Used to append the environment variable options into [args...]
+ *
+ * @param {Array} xs
+ * @return {function(*=): (*|Array)}
+ */
 function appender(xs) {
   xs = xs || [];
-  return function (x) {
+  return function(x) {
     xs.push(x);
     return xs;
-  }
+  };
 }
 
 program
@@ -37,10 +43,10 @@ program
   .action(async (command, args, env) => {
     if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
       // TODO message
-      process.exit(1)
+      process.exit(1);
     }
     if (!command) {
-      command = 'entrypoint'
+      command = 'entrypoint';
     }
     const envs = env.environment;
     if (command.includes(':')) { // what if no args?
@@ -51,11 +57,10 @@ program
     const v = JSON.parse(new Validate().structure());
 
     if (!v.valid) {
-      console.error('microservice.yml is not valid.'); // TODO better error
-      console.log(v);
+      process.stdout.write('microservice.yml is not valid.'); // TODO better error
+      process.stdout.write(JSON.stringify(v, null, 2));
       process.exit(1);
     }
-
 
     try {
       const microservice = new Microservice();
@@ -68,7 +73,7 @@ program
       if (error.spinner) {
         error.spinner.fail(error.message);
       } else {
-        console.error(error.message);
+        process.stderr.write(error.message);
       }
       process.exit(1);
     }

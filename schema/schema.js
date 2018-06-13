@@ -7,6 +7,11 @@ const schema = JSON.parse(fs.readFileSync(path.join(__dirname, './yaml.json')));
 const ajv = new Ajv({allErrors: true});
 const schemaValidator = ajv.compile(schema);
 
+/**
+ * Runs validation on a `microservice.yml`.
+ *
+ * @return {string} Stringified Json of the results
+ */
 function validate() {
   try {
     const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());

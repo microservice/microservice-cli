@@ -11,7 +11,7 @@ The microservice.guide CLI allows you to verify your `microservice.yml` and exec
 ### Validate
 When ran in a directory of a microservice (a directory containing a `microservice.guide`), validation will be ran against that file.
 ```sh
-microservice-guide-cli validate
+microservice-guide-cli utils
 ```
 #### Example output
 ##### Valid `microservice.yml`
@@ -103,7 +103,7 @@ If a command required arguments they can be passed as follows: `key:val`. If req
 
 #### Environment variables
 If the microservice has any required environment variables they must be passed in with the `exec` command. Much like Docker,
-environment variables can be passed as follows: `-e FOO='bar'`
+environment variables can be passed as follows: `-e FOO='bar'`. If a required environment variable is not supplied `exec` will fail.
 
 ### Example `exec` call
 ```sh

@@ -4,7 +4,7 @@ const ora = require('ora');
 /**
  * Builds the microservice described in the Dockerfile of the current working directory.
  *
- * @returns {string} The name of the Docker image (uuid)
+ * @return {String} The name of the Docker image (uuid)
  */
 async function build() {
   const spinner = ora('Building Docker image').start();
@@ -25,9 +25,9 @@ async function build() {
 /**
  * Turns a list of string with a delimiter to a map.
  *
- * @param list {Array<String>} The given list of strings with delimiter
- * @param delimiter {String} The given delimiter
- * @param errorMessage {String} The given message to used when unable to parse
+ * @param {Array<String>} list The given list of strings with delimiter
+ * @param {String} delimiter The given delimiter
+ * @param {String} errorMessage The given message to used when unable to parse
  * @return {Object} Key value of the list
  */
 function parse(list, delimiter, errorMessage) {
@@ -44,36 +44,37 @@ function parse(list, delimiter, errorMessage) {
   return dictionary;
 }
 
+/**
+ * Stringifies given data.
+ *
+ * @param {*} data The given data
+ * @return {String} The stringified data
+ */
 function stringifyContainerOutput(data) {
   try {
     return JSON.stringify(data, null, 2);
   } catch (e) {
-    return data;
+    return data.toString.trim();
   }
 }
 
 /**
  * Promise wrapper for the `exec`.
  *
- * @param command {String} The command to run
+ * @param {String} command The command to run
  * @return {Promise<String>} The stdout if resolved, otherwise stderror
  */
 function exec(command) {
   return new Promise(function(resolve, reject) {
-    $.exec(command, { silent: true }, function(code, stdout, stderr) {
+    $.exec(command, {silent: true}, function(code, stdout, stderr) {
       if (code !== 0) {
-        reject(stderr)
+        reject(stderr);
       } else {
         resolve(stdout);
       }
     });
   });
 }
-
-
-
-
-
 
 const dataTypes = {
   int: (int) => {
@@ -91,7 +92,7 @@ const dataTypes = {
     }
   },
   uuid: (uuid) => {
-    return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/).length === 1
+    return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/).length === 1;
   },
   list: (list) => {
     try {
@@ -113,13 +114,6 @@ const dataTypes = {
     return boolean === 'false' || boolean === 'true';
   },
 };
-
-
-
-
-
-
-
 
 
 module.exports = {

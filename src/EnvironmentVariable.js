@@ -1,4 +1,13 @@
+/**
+ * Describes and environment variable.
+ */
 class EnvironmentVariable {
+  /**
+   * Builds an {@link EnvironmentVariable}.
+   *
+   * @param {String} name The given name
+   * @param {Object} rawEnvironment The given raw data
+   */
   constructor(name, rawEnvironment) {
     this._name = name;
     this._type = rawEnvironment.type;
@@ -8,26 +17,56 @@ class EnvironmentVariable {
     this._help = rawEnvironment.help || null;
   }
 
+  /**
+   * Get's the name of this {@link EnvironmentVariable}.
+   *
+   * @return {String} The name of this {@link EnvironmentVariable}
+   */
   get name() {
     return this._name;
   }
 
+  /**
+   * Get's the type of this {@link EnvironmentVariable}.
+   *
+   * @return {String} The type
+   */
   get type() {
     return this._type;
   }
 
+  /**
+   * Get's the pattern of this {@link EnvironmentVariable}.
+   *
+   * @return {String} The pattern
+   */
   get pattern() {
     return this._pattern;
   }
 
+  /**
+   * Checks if this {@link EnvironmentVariable} is required
+   *
+   * @return {Boolean} True if required, otherwise false
+   */
   isRequired() {
     return this._required;
   }
 
+  /**
+   * Get the default value for this {@link EnvironmentVariable}.
+   *
+   * @return {*|null} The default value
+   */
   get default() {
-    return this._default
+    return this._default;
   }
 
+  /**
+   * Get the help string for this {@link EnvironmentVariable}.
+   *
+   * @return {String|null} The help
+   */
   get help() {
     return this._help;
   }
