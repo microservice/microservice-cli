@@ -4,15 +4,13 @@ const Command = require('./Command');
 const EnvironmentVariable = require('./EnvironmentVariable');
 const Volume = require('./Volume');
 const Lifecycle = require('./Lifecycle');
-const validator = require('../commands/validate');
+const validator = require('../schema/schema');
 
 class Microservice {
   constructor() {
     const valid = JSON.parse(validator());
     if (!valid.valid) {
       // TODO message
-      console.log('not valid');
-      console.log(valid.errors);
       process.exit(1);
     }
     const microserviceYamlJson = valid.microsericeYaml;
@@ -41,6 +39,17 @@ class Microservice {
       }
     }
     this._lifecycle = ((microserviceYamlJson.lifecycle) ? new Lifecycle(microserviceYamlJson.lifecycle) : null);
+  }
+
+  /**
+   *
+   * @return {Array}
+   */
+  get commands() {
+    if (this._commandMap === null) {
+      return [];
+    }
+    return Object.values(this._commandMap);
   }
 
   getCommand(command) {

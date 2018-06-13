@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const YAML = require('yamljs');
-const validate = require('../../commands/validate');
+const validate = require('../../commands/Validate');
 
 describe('schema.js', () => {
   describe('validate(path)', () => {

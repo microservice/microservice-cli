@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const program = require('commander');
-const validate = require('./commands/validate');
+const Validate = require('./commands/Validate');
 const { build, parse } = require('./commands/utils');
 const Microservice = require('./src/Microservice');
 const Exec = require('./commands/Exec');
@@ -19,7 +19,7 @@ program
       // TODO message
       process.exit(1)
     }
-    process.stdout.write(validate())
+    process.stdout.write(new Validate().structure());
   });
 
 function appender(xs) {
@@ -47,6 +47,16 @@ program
       args.unshift(command);
       command = 'entrypoint';
     }
+
+    const v = JSON.parse(new Validate().structure());
+
+    if (!v.valid) {
+      console.error('microservice.yml is not valid.'); // TODO better error
+      console.log(v);
+      process.exit(1);
+    }
+
+
     try {
       const microservice = new Microservice();
       const uuid = await build();
