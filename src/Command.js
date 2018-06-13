@@ -4,6 +4,7 @@ const Http = require('./Http');
 class Command {
   constructor(name, rawCommand) {
     this._name = name;
+    this._output = rawCommand.output;
     this._help = rawCommand.help || null;
     this._format = rawCommand.format || null;
     this._argumentsMap = null;
@@ -31,6 +32,10 @@ class Command {
     return this._name;
   }
 
+  get output() {
+    return this._output;
+  }
+
   get help() {
     return this._help;
   }
@@ -49,6 +54,10 @@ class Command {
     return true;
   }
 
+  /**
+   *
+   * @return {Array<Arguments>}
+   */
   get arguments() {
     if (this._argumentsMap === null) {
       return [];

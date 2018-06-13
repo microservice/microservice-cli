@@ -70,9 +70,57 @@ function exec(command) {
   });
 }
 
+
+
+
+
+
+const dataTypes = {
+  int: (int) => {
+    return Number.isInteger(parseFloat(int));
+  },
+  float: (float) => {
+    return !isNaN(parseFloat(float)) && parseFloat(float).toString().indexOf('.') !== -1;
+  },
+  string: (string) => {
+    return typeof string === 'string';
+  },
+  uuid: (uuid) => {
+    return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/).length === 1
+  },
+  list: (list) => {
+    try {
+      JSON.parse(list);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+  object: (object) => {
+    try {
+      JSON.parse(object);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+  boolean: (boolean) => {
+    return boolean === 'false' || boolean === 'true';
+  },
+};
+
+
+
+
+
+
+
+
+
 module.exports = {
   build,
   parse,
   exec,
   stringifyContainerOutput,
+  dataTypes,
 };

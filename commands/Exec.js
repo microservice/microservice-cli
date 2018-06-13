@@ -2,6 +2,7 @@ const $ = require('shelljs');
 const ora = require('ora');
 const axios = require('axios');
 const querystring = require('querystring');
+const Validate = require('./Validate');
 const { exec, stringifyContainerOutput } = require('./utils');
 
 class Exec {
@@ -39,8 +40,8 @@ class Exec {
    * @param command {String} The given command
    */
   async go(command) {
-    this._setDefaultVariables(this._microservice.getCommand(command));
     const spinner = ora(`Running command: ${this._microservice.getCommand(command).name}`).start();
+    this._setDefaultVariables(this._microservice.getCommand(command));
     if (!this._microservice.getCommand(command).areRequiredArgumentsSupplied(this._arguments)) {
       throw {
         spinner,
@@ -54,8 +55,10 @@ class Exec {
       };
     }
     try {
+      Validate.verifyArgumentTypes(this._microservice.getCommand(command), this._arguments);
       if (this._microservice.getCommand(command).http === null) {
         const output = await this._runDockerExecCommand(command);
+        Validate.verifyOutputType(this._microservice.getCommand(command), output);
         spinner.succeed(`Ran command: ${this._microservice.getCommand(command).name} with output: ${output.trim()}`);
       } else {
         // TODO check that lifecycle if provided too (maybe do this in the validation)

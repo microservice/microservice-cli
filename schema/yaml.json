@@ -12,6 +12,17 @@
             "format": {
               "type": "string"
             },
+            "output": {
+              "type": [
+                "array",
+                "string"
+              ],
+              "items": {
+                "type": "string",
+                "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
+              },
+              "pattern": "^(int|float|string|uuid|list|object|boolean)$"
+            },
             "arguments": {
               "type": "object",
               "patternProperties": {
@@ -20,17 +31,6 @@
                   "properties": {
                     "type": {
                       "type": ["array", "string"],
-                      "items": {
-                        "type": "string",
-                        "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
-                      },
-                      "pattern": "^(int|float|string|uuid|list|object|boolean)$"
-                    },
-                    "output": {
-                      "type": [
-                        "array",
-                        "string"
-                      ],
                       "items": {
                         "type": "string",
                         "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
@@ -108,6 +108,7 @@
               "additionalProperties": false
             }
           },
+          "required": ["output"],
           "additionalProperties": false
         }
       },

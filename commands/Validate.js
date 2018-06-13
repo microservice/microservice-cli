@@ -1,5 +1,6 @@
 const validator = require('../schema/schema');
 const Microservice = require('../src/Microservice');
+const { dataTypes } = require('./utils');
 
 class Validate {
   constructor() {
@@ -47,6 +48,29 @@ class Validate {
 
   validateHttpCommand() {
 
+  }
+
+
+  /**
+   *
+   * @param command {Command}
+   */
+  static verifyArgumentTypes(command, args) {
+    command.arguments.forEach(a => {
+      if (!dataTypes[a.type](args[a.name])) {
+        throw 'TODO';
+      }
+    });
+  }
+
+  /**
+   *
+   * @param command {Command}
+   */
+  static verifyOutputType(command, output) {
+    if (!dataTypes[command.output](output)) {
+      throw 'Not correct output type'; // TODO message
+    }
   }
 }
 
