@@ -127,7 +127,7 @@ class Command {
   /**
    * The the run object for this {@link Command}
    *
-   * @return {null|{command: String, args: String, port: Number}}
+   * @return {null|Object}
    */
   get run() {
     return this._runCommand;

@@ -67,8 +67,7 @@ class Exec {
         const output = await this._runDockerExecCommand(command);
         Validate.verifyOutputType(this._microservice.getCommand(command), output.trim());
         spinner.succeed(`Ran command: ${this._microservice.getCommand(command).name} with output: ${output.trim()}`);
-      } else {
-        // TODO check that lifecycle if provided too (maybe do this in the validation)
+      } else if (this._microservice.getCommand(command).run === null) { // must be a lifecycle
         const server = this._startServer(command);
         const output = await this._httpCommand(server, command);
         Validate.verifyOutputType(this._microservice.getCommand(command), stringifyContainerOutput(output));
@@ -126,7 +125,7 @@ class Exec {
     return result.trim();
   }
 
-  // TODO https://github.com/microservices/microservice-cli/issues/15 this needs to be able to support lifecycle servers too
+  // TODO startup and shutdown part of the lifecycle
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml.
    *
@@ -137,7 +136,7 @@ class Exec {
   _startServer(command) {
     const spinner = ora('Starting Docker container').start();
     const environmentVars = this._formatEnvironmentVariables();
-    const run = this._microservice.getCommand(command).run;
+    const run = this._microservice.lifecycle.run;
 
     let openPort;
     let dockerStart;

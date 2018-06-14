@@ -3,6 +3,7 @@
 const Command = require('./Command');
 const EnvironmentVariable = require('./EnvironmentVariable');
 const Volume = require('./Volume');
+const Lifecycle = require('./Lifecycle');
 const validator = require('../schema/schema');
 
 /**
@@ -43,6 +44,7 @@ class Microservice {
         this._volumeMap[volumeList[i]] = new Volume(volumeList[i], microserviceYamlJson.volumes[volumeList[i]]);
       }
     }
+    this._lifecycle = ((microserviceYamlJson.lifecycle) ? new Lifecycle(microserviceYamlJson.lifecycle) : null);
   }
 
   /**
@@ -123,6 +125,15 @@ class Microservice {
       throw 'Volume does not exist';
     }
     return this._volumeMap[volume];
+  }
+
+  /**
+   * Get's this {@link Microservice}'s {@link Lifecycle}.
+   *
+   * @return {Lifecycle|null} The {@link Lifecycle}
+   */
+  get lifecycle() {
+    return this._lifecycle;
   }
 }
 
