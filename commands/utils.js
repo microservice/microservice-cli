@@ -1,3 +1,4 @@
+const net = require('http');
 const $ = require('shelljs');
 const ora = require('ora');
 
@@ -68,9 +69,9 @@ function exec(command) {
   return new Promise(function(resolve, reject) {
     $.exec(command, {silent: true}, function(code, stdout, stderr) {
       if (code !== 0) {
-        reject(stderr);
+        reject(stderr.trim());
       } else {
-        resolve(stdout);
+        resolve(stdout.trim());
       }
     });
   });
@@ -113,8 +114,37 @@ const dataTypes = {
   boolean: (boolean) => {
     return boolean === 'false' || boolean === 'true';
   },
+  path: (path) => {
+    try {
+      JSON.parse(path);
+      return false;
+    } catch (e) {
+      return typeof path === 'string';
+    }
+  }
 };
 
+function getOpenPort() {
+  return new Promise((resolve) => {
+    _getPort((data) => {
+      resolve(data);
+    });
+  });
+
+  function _getPort(cb) {
+    const server = net.createServer();
+    const port = Math.floor(Math.random() * 15000) + 2000; // port range 2000 to 17000
+    server.listen(port, () => {
+      server.once('close', () => {
+        cb(port);
+      });
+      server.close();
+    });
+    server.on('error', () => {
+      _getPort(cb);
+    });
+  }
+}
 
 module.exports = {
   build,
@@ -122,4 +152,5 @@ module.exports = {
   exec,
   stringifyContainerOutput,
   dataTypes,
+  getOpenPort,
 };

@@ -19,9 +19,9 @@
               ],
               "items": {
                 "type": "string",
-                "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
+                "enum": ["int", "float", "string", "uuid", "list", "object", "boolean", "path"]
               },
-              "pattern": "^(int|float|string|uuid|list|object|boolean)$"
+              "pattern": "^(int|float|string|uuid|list|object|boolean|path)$"
             },
             "arguments": {
               "type": "object",
@@ -33,9 +33,9 @@
                       "type": ["array", "string"],
                       "items": {
                         "type": "string",
-                        "enum": ["int", "float", "string", "uuid", "list", "object", "boolean"]
+                        "enum": ["int", "float", "string", "uuid", "list", "object", "boolean", "path"]
                       },
-                      "pattern": "^(int|float|string|uuid|list|object|boolean)$"
+                      "pattern": "^(int|float|string|uuid|list|object|boolean|path)$"
                     },
                     "help": {
                       "type": "string"

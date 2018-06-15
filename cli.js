@@ -36,6 +36,7 @@ function appender(xs) {
   };
 }
 
+let exec = null;
 program
   .command('exec [command] [args...]')
   .option('-e --environment <env>', '', appender(), [])
@@ -68,6 +69,7 @@ program
       const argsObj = parse(args, ':', 'Unable to parse args');
       const envObj = parse(envs, '=', 'Unable to parse envs');
       const e = new Exec(uuid, microservice, argsObj, envObj);
+      exec = e;
       await e.go(command);
     } catch (error) {
       if (error.spinner) {
@@ -84,3 +86,11 @@ program.parse(process.argv);
 if (process.argv.length === 2) {
   program.help();
 }
+
+process.on('SIGINT', async function() {
+  if (exec.isDockerProcessRunning()) {
+    await exec.serverKill();
+  }
+  process.exit();
+});
+
