@@ -121,9 +121,14 @@ const dataTypes = {
     } catch (e) {
       return typeof path === 'string';
     }
-  }
+  },
 };
 
+/**
+ * Get's an open port.
+ *
+ * @return {Promise<Number>} The open port
+ */
 function getOpenPort() {
   return new Promise((resolve) => {
     _getPort((data) => {
@@ -131,6 +136,13 @@ function getOpenPort() {
     });
   });
 
+  /**
+   * Helper for {@link getOpenPort}. Tries to open a server on a random port, if fail try again, otherwise call
+   * the callback with the port.
+   *
+   * @param {Function} cb The given callback
+   * @private
+   */
   function _getPort(cb) {
     const server = net.createServer();
     const port = Math.floor(Math.random() * 15000) + 2000; // port range 2000 to 17000

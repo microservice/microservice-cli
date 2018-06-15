@@ -104,23 +104,23 @@ class Validate {
     });
   }
 
-  /**
-   * TODO
-   * @param command
-   * @param args
-   */
-  static verifyArgumentPatter(command, args) {
-
-  }
-
-  /**
-   *
-   * @param command
-   * @param args
-   */
-  static verifiyArgumentEnum(command, args) {
-
-  }
+  // /**
+  //  * TODO
+  //  * @param command
+  //  * @param args
+  //  */
+  // static verifyArgumentPatter(command, args) {
+  //
+  // }
+  //
+  // /**
+  //  *
+  //  * @param command
+  //  * @param args
+  //  */
+  // static verifiyArgumentEnum(command, args) {
+  //
+  // }
 
   /**
    * Verifies the output type.

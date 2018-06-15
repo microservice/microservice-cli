@@ -1,10 +1,9 @@
-const $ = require('shelljs');
 const http = require('http');
 const ora = require('ora');
 const axios = require('axios');
 const querystring = require('querystring');
 const Validate = require('./Validate');
-const { exec, stringifyContainerOutput, getOpenPort} = require('./utils');
+const {exec, stringifyContainerOutput, getOpenPort} = require('./utils');
 
 /**
  * Describes a way to execute a microservice.
@@ -82,7 +81,7 @@ class Exec {
       } else { // streaming command
         // const server = this._startStream(command);
         const server = this._startOMGServer();
-        server.listen(7777, '127.0.0.1');
+        server.listen(7777, '127.0.0.1'); // TODO random open port
         // this._startStream(command);
         await this._startStream(command);
         spinner.succeed(`good`);
@@ -160,10 +159,16 @@ class Exec {
     return port;
   }
 
-  _pathVolumeHelper() { // TODO rename
+  // _pathVolumeHelper() { // TODO rename
+  //
+  // }
 
-  }
-
+  /**
+   * Starts a streaming service.
+   *
+   * @param {String} command The given command
+   * @private
+   */
   async _startStream(command) {
     let volumes = '';
     const argumentList = Object.keys(this._arguments);
@@ -187,11 +192,17 @@ class Exec {
     this._dockerServiceId = await exec(dockerStart);
   }
 
+  /**
+   * Starts a server for a streaming service to POST back to.
+   *
+   * @return {Server} The server
+   * @private
+   */
   _startOMGServer() {
     return http.createServer((req, res) => {
       if (req.method === 'POST') {
-        req.on('data', function (data) {
-          console.log(data.toString());
+        req.on('data', function(data) {
+          process.stdout.write(`${data.toString()}\n`);
         });
         res.end('post received');
       }
@@ -285,6 +296,11 @@ class Exec {
     spinner.succeed(`Stopped Docker container: ${dockerServiceId}`);
   }
 
+  /**
+   * Checks it a Docker process is running.
+   *
+   * @return {Boolean} True if a Docker process is running, otherwise false
+   */
   isDockerProcessRunning() {
     return this._dockerServiceId !== null;
   }
