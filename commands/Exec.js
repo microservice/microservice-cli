@@ -23,18 +23,17 @@ class Exec {
     this._arguments = _arguments;
     this._environmentVariables = environmentVariables;
     this._dockerServiceId = null;
+    this._command = null;
   }
 
   /**
    * Sets a {@link Command}'s default arguments.
    *
-   * @param {Command} command The given {@link Command}
    * @private
    */
-  _setDefaultVariables(command) {
-    this._arguments['yaml'] = '/test.yml';
-    for (let i = 0; i < command.arguments.length; i += 1) {
-      const argument = command.arguments[i];
+  _setDefaultVariables() {
+    for (let i = 0; i < this._command.arguments.length; i += 1) {
+      const argument = this._command.arguments[i];
       if (!this._arguments[argument.name]) {
         if (argument.default !== null) {
           this._arguments[argument.name] = argument.default;
@@ -51,9 +50,10 @@ class Exec {
    * @param {String} command The given command
    */
   async go(command) {
-    const spinner = ora(`Running command: ${this._microservice.getCommand(command).name}`).start();
-    this._setDefaultVariables(this._microservice.getCommand(command));
-    if (!this._microservice.getCommand(command).areRequiredArgumentsSupplied(this._arguments)) {
+    this._command = this._microservice.getCommand(command);
+    const spinner = ora(`Running command: ${this._command.name}`).start();
+    this._setDefaultVariables();
+    if (!this._command.areRequiredArgumentsSupplied(this._arguments)) {
       throw {
         spinner,
         message: `Failed command: ${command}. Need to supply required arguments`, // TODO need to say what args
@@ -66,24 +66,23 @@ class Exec {
       };
     }
     try {
-      const microserviceCommand = this._microservice.getCommand(command);
-      Validate.verifyArgumentTypes(microserviceCommand, this._arguments);
-      if (microserviceCommand.http === null && microserviceCommand.run === null) { // exec command
-        const output = await this._runDockerExecCommand(command);
-        Validate.verifyOutputType(microserviceCommand, output.trim());
-        spinner.succeed(`Ran command: ${microserviceCommand.name} with output: ${output.trim()}`);
-      } else if (microserviceCommand.http !== null && microserviceCommand.run === null) { // lifecycle http command
-        const port = await this._startServer(command);
-        const output = await this._httpCommand(port, command);
-        Validate.verifyOutputType(microserviceCommand, stringifyContainerOutput(output));
-        spinner.succeed(`Ran command: ${microserviceCommand.name} with output: ${stringifyContainerOutput(output)}`);
+      Validate.verifyArgumentTypes(this._command, this._arguments);
+      if (this._command.http === null && this._command.run === null) { // exec command
+        const output = await this._runDockerExecCommand();
+        Validate.verifyOutputType(this._command, output.trim());
+        spinner.succeed(`Ran command: ${this._command.name} with output: ${output.trim()}`);
+      } else if (this._command.http !== null && this._command.run === null) { // lifecycle http command
+        const port = await this._startServer();
+        const output = await this._httpCommand(port);
+        Validate.verifyOutputType(this._command, stringifyContainerOutput(output));
+        spinner.succeed(`Ran command: ${this._command.name} with output: ${stringifyContainerOutput(output)}`);
         await this.serverKill();
       } else { // streaming command
         // const server = this._startStream(command);
         const server = this._startOMGServer();
         server.listen(7777, '127.0.0.1'); // TODO random open port
         // this._startStream(command);
-        await this._startStream(command);
+        await this._startStream();
         spinner.succeed(`good`);
       }
     } catch (e) {
@@ -97,29 +96,15 @@ class Exec {
   /**
    * Runs a given command via Docker cli.
    *
-   * @param {String} command  The given command
    * @return {Promise<String>} stdout if command runs with exit code 0, otherwise stderror
    * @private
    */
-  async _runDockerExecCommand(command) {
-    const argumentList = Object.keys(this._arguments);
-    let dockerRunCommand = '';
-    if (this._microservice.getCommand(command).format === '$args') {
-      for (let i = 0; i < argumentList.length; i += 1) {
-        dockerRunCommand += `--${argumentList[i]} ${this._arguments[argumentList[i]]} `;
-      }
-    } else if (this._microservice.getCommand(command).format === '$json') {
-      dockerRunCommand = JSON.stringify(this._arguments);
-    } else {
-      dockerRunCommand = `${this._microservice.getCommand(command).format}`;
-      for (let i = 0; i < argumentList.length; i += 1) {
-        dockerRunCommand = dockerRunCommand.replace(`{{${argumentList[i]}}}`, this._arguments[argumentList[i]]);
-      }
-    }
-    if (command === 'entrypoint') {
+  async _runDockerExecCommand() {
+    let dockerRunCommand = this._formatExec();
+    if (this._command.name === 'entrypoint') {
       return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${dockerRunCommand}`);
     }
-    return await exec(`docker run -v ~/test.yml:/test.yml ${this._formatEnvironmentVariables()} ${this._dockerImage} ${command} ${dockerRunCommand}`); // TODO
+    return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${dockerRunCommand}`); // TODO
   }
 
   // _formatPathArguments(arguments) {
@@ -145,11 +130,10 @@ class Exec {
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml.
    *
-   * @param {String} command The given command
    * @private
    * @return {Number} The port the service is running on
    */
-  async _startServer(command) {
+  async _startServer() {
     const spinner = ora('Starting Docker container').start();
     const port = await getOpenPort();
     const run = this._microservice.lifecycle.run;
@@ -166,27 +150,12 @@ class Exec {
   /**
    * Starts a streaming service.
    *
-   * @param {String} command The given command
    * @private
    */
-  async _startStream(command) {
+  async _startStream() {
     let volumes = '';
-    const argumentList = Object.keys(this._arguments);
-    let dockerRunCommand = '';
-    // do file stuff here
-    if (this._microservice.getCommand(command).format === '$args') {
-      for (let i = 0; i < argumentList.length; i += 1) {
-        dockerRunCommand += `--${argumentList[i]} ${this._arguments[argumentList[i]]} `; // CAN FACTOR OUT FORMATTING
-      }
-    } else if (this._microservice.getCommand(command).format === '$json') {
-      dockerRunCommand = JSON.stringify(this._arguments);
-    } else {
-      dockerRunCommand = `${this._microservice.getCommand(command).format}`;
-      for (let i = 0; i < argumentList.length; i += 1) {
-        dockerRunCommand = dockerRunCommand.replace(`{{${argumentList[i]}}}`, this._arguments[argumentList[i]]);
-      }
-    }
-    const run = this._microservice.getCommand(command).run;
+    let dockerRunCommand = this._formatExec();
+    const run = this._command.run;
     const environmentVars = this._formatEnvironmentVariables();
     const dockerStart = `docker run -d ${volumes} ${environmentVars} -e OMG_URL='http://host.docker.internal:7777' --net="host" --entrypoint ${run.command} ${this._dockerImage} ${run.args} ${dockerRunCommand}`;
     this._dockerServiceId = await exec(dockerStart);
@@ -213,15 +182,14 @@ class Exec {
    * Run the given command that interfaces via HTTP.
    *
    * @param {Number} port The given sever started in Docker
-   * @param {String} command The given command to be ran
    * @return {Promise<Object>} The response of the Http request
    * @private
    */
-  async _httpCommand(port, command) {
+  async _httpCommand(port) {
     let data;
-    const httpData = this._formatHttp(port, this._microservice.getCommand(command));
+    const httpData = this._formatHttp(port);
     try {
-      switch (this._microservice.getCommand(command).http.method) {
+      switch (this._command.http.method) {
         case 'get':
           data = await axios.get(httpData.url);
           break;
@@ -238,32 +206,45 @@ class Exec {
       return data.data;
     } catch (e) {
       if (e.code === 'ECONNRESET') { // this may cause an issue https://github.com/microservices/microservice-cli/issues/18
-        return await this._httpCommand(port, command);
+        return await this._httpCommand(port);
       } else {
         throw e;
       }
     }
   }
 
-  // __formatExec(command) {
-  //
-  // }
+  _formatExec() {
+    const argumentList = Object.keys(this._arguments);
+    let dockerRunCommand = '';
+    if (this._command.format === '$args') {
+      for (let i = 0; i < argumentList.length; i += 1) {
+        dockerRunCommand += `--${argumentList[i]} ${this._arguments[argumentList[i]]} `;
+      }
+    } else if (this._command.format === '$json') {
+      dockerRunCommand = JSON.stringify(this._arguments);
+    } else {
+      dockerRunCommand = `${this._command.format}`;
+      for (let i = 0; i < argumentList.length; i += 1) {
+        dockerRunCommand = dockerRunCommand.replace(`{{${argumentList[i]}}}`, this._arguments[argumentList[i]]);
+      }
+    }
+    return dockerRunCommand;
+  }
 
   /**
    * Formats an Http request based on the given {@link Command}.
    *
    * @param {Number} port The given server info
-   * @param  {Command} command The given {@link Command}
    * @return {{url: String, jsonData: Object}} The url and data
    * @private
    */
-  _formatHttp(port, command) {
+  _formatHttp(port) {
     const jsonData = {};
     const queryParams = {};
-    let url = `http://localhost:${port}${command.http.endpoint}`;
-    for (let i = 0; i < command.arguments.length; i += 1) {
-      const argument = command.arguments[i];
-      switch (command.getArgument(argument.name).location) {
+    let url = `http://localhost:${port}${this._command.http.endpoint}`;
+    for (let i = 0; i < this._command.arguments.length; i += 1) {
+      const argument = this._command.arguments[i];
+      switch (this._command.getArgument(argument.name).location) {
         case 'query':
           queryParams[argument.name] = this._arguments[argument.name];
           break;
