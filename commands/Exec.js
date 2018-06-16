@@ -78,10 +78,8 @@ class Exec {
         spinner.succeed(`Ran command: ${this._command.name} with output: ${stringifyContainerOutput(output)}`);
         await this.serverKill();
       } else { // streaming command
-        // const server = this._startStream(command);
         const server = this._startOMGServer();
         server.listen(7777, '127.0.0.1'); // TODO random open port
-        // this._startStream(command);
         await this._startStream();
         spinner.succeed(`good`);
       }
@@ -100,11 +98,10 @@ class Exec {
    * @private
    */
   async _runDockerExecCommand() {
-    let dockerRunCommand = this._formatExec();
     if (this._command.name === 'entrypoint') {
-      return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${dockerRunCommand}`);
+      return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._formatExec()}`);
     }
-    return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${dockerRunCommand}`); // TODO
+    return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${this._formatExec()}`);
   }
 
   // _formatPathArguments(arguments) {
@@ -137,9 +134,8 @@ class Exec {
     const spinner = ora('Starting Docker container').start();
     const port = await getOpenPort();
     const run = this._microservice.lifecycle.run;
-    const dockerServiceId = await exec(`docker run -d -p ${port}:${run.port} ${this._formatEnvironmentVariables()} --entrypoint ${run.command} ${this._dockerImage} ${run.args}`);
-    spinner.succeed(`Stared Docker container with id: ${dockerServiceId.substring(0, 12)}`);
-    this._dockerServiceId = dockerServiceId;
+    this._dockerServiceId = await exec(`docker run -d -p ${port}:${run.port} ${this._formatEnvironmentVariables()} --entrypoint ${run.command} ${this._dockerImage} ${run.args}`);
+    spinner.succeed(`Stared Docker container with id: ${this._dockerServiceId.substring(0, 12)}`);
     return port;
   }
 
@@ -154,11 +150,10 @@ class Exec {
    */
   async _startStream() {
     let volumes = '';
-    let dockerRunCommand = this._formatExec();
-    const run = this._command.run;
-    const environmentVars = this._formatEnvironmentVariables();
-    const dockerStart = `docker run -d ${volumes} ${environmentVars} -e OMG_URL='http://host.docker.internal:7777' --net="host" --entrypoint ${run.command} ${this._dockerImage} ${run.args} ${dockerRunCommand}`;
-    this._dockerServiceId = await exec(dockerStart);
+    this._dockerServiceId = await exec(`docker run -d ${volumes} ${this._formatEnvironmentVariables()} \
+                                       -e OMG_URL='http://host.docker.internal:7777' --net="host" --entrypoint \
+                                       ${this._command.run.command} ${this._dockerImage} ${this._command.run.args} \
+                                       ${this._formatExec()}`);
   }
 
   /**
@@ -173,7 +168,7 @@ class Exec {
         req.on('data', function(data) {
           process.stdout.write(`${data.toString()}\n`);
         });
-        res.end('post received');
+        res.end('Done');
       }
     });
   }
@@ -214,21 +209,23 @@ class Exec {
   }
 
   _formatExec() {
+    let result;
     const argumentList = Object.keys(this._arguments);
-    let dockerRunCommand = '';
-    if (this._command.format === '$args') {
-      for (let i = 0; i < argumentList.length; i += 1) {
-        dockerRunCommand += `--${argumentList[i]} ${this._arguments[argumentList[i]]} `;
-      }
-    } else if (this._command.format === '$json') {
-      dockerRunCommand = JSON.stringify(this._arguments);
-    } else {
-      dockerRunCommand = `${this._command.format}`;
-      for (let i = 0; i < argumentList.length; i += 1) {
-        dockerRunCommand = dockerRunCommand.replace(`{{${argumentList[i]}}}`, this._arguments[argumentList[i]]);
-      }
+    switch (this._command.format) {
+      case `$args`:
+        for (let i = 0; i < argumentList.length; i += 1) {
+          result += `--${argumentList[i]} ${this._arguments[argumentList[i]]} `;
+        }
+        return result;
+      case '$json':
+        return JSON.stringify(this._arguments);
+      default:
+        result = `${this._command.format}`;
+        for (let i = 0; i < argumentList.length; i += 1) {
+          result = result.replace(`{{${argumentList[i]}}}`, this._arguments[argumentList[i]]);
+        }
+        return result;
     }
-    return dockerRunCommand;
   }
 
   /**
@@ -270,11 +267,9 @@ class Exec {
    * @private
    */
   async serverKill() { // TODO work the shutdown lifecycle in here
-    const dockerServiceId = this._dockerServiceId.substring(0, 12);
-    const spinner = ora(`Stopping Docker container: ${dockerServiceId}`).start();
-    const command = `docker kill ${dockerServiceId}`;
-    await exec(command);
-    spinner.succeed(`Stopped Docker container: ${dockerServiceId}`);
+    const spinner = ora(`Stopping Docker container: ${this._dockerServiceId.substring(0, 12)}`).start();
+    await exec(`docker kill ${this._dockerServiceId.substring(0, 12)}`);
+    spinner.succeed(`Stopped Docker container: ${this._dockerServiceId.substring(0, 12)}`);
   }
 
   /**
