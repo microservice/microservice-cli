@@ -9,9 +9,6 @@
             "help": {
               "type": "string"
             },
-            "format": {
-              "type": "string"
-            },
             "output": {
               "type": "object",
               "properties": {

@@ -15,7 +15,6 @@ class Command {
     this._name = name;
     this._output = rawCommand.output;
     this._help = rawCommand.help || null;
-    this._format = rawCommand.format || null;
     this._argumentsMap = null;
     if (rawCommand.arguments) {
       this._argumentsMap = {};
@@ -62,15 +61,6 @@ class Command {
    */
   get help() {
     return this._help;
-  }
-
-  /**
-   * Get the format of this {@link Command}.
-   *
-   * @return {String|null}
-   */
-  get format() {
-    return this._format;
   }
 
   /**

@@ -25,7 +25,7 @@ class Validate {
     }
     new Microservice().commands.forEach((c) => {
       if (c.format !== null && c.run === null) {
-        this._validateExecCommandFormat(c);
+        // this._validateExecCommandFormat(c);
       } else if (c.http !== null) {
         this._validateHttpCommandFormat(c);
       } else if (c.run !== null) {
@@ -33,43 +33,6 @@ class Validate {
       }
     });
     return JSON.stringify(this._valid, null, 2);
-  }
-
-  /**
-   * Validates the formation of a {@link Command} and its {@link Argument}s.
-   *
-   * @param {Command} command The given command
-   * @private
-   */
-  _validateExecCommandFormat(command) {
-    if ((command.format === null) && (command.arguments.length > 0)) {
-      if (this._valid.errors === null) {
-        this._valid.errors = [];
-      }
-      this._valid.valid = false;
-      this._valid.errors.push({
-        message: 'format not provided for command',
-        command: command.name,
-        missingArguments: [command.arguments.map((a) => a.name)],
-      });
-    } else if ((command.format !== '$args') && (command.format !== '$json')) {
-      const missingArguments = [];
-      command.arguments.forEach((a) => {
-        if (!command.format.includes(`{{${a.name}}}`)) {
-          missingArguments.push(a.name);
-        }
-      });
-      if (missingArguments.length > 0) {
-        if (this._valid.errors === null) {
-          this._valid.errors = [];
-        }
-        this._valid.errors.push({
-          message: 'format not valid for command',
-          command: command.name,
-          missingArguments,
-        });
-      }
-    }
   }
 
   /**

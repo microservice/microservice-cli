@@ -3,7 +3,7 @@ const ora = require('ora');
 const axios = require('axios');
 const querystring = require('querystring');
 const Validate = require('./Validate');
-const {exec, stringifyContainerOutput, getOpenPort} = require('./utils');
+const {exec, stringifyContainerOutput, getOpenPort, typeCast} = require('./utils');
 
 /**
  * Describes a way to execute a microservice.
@@ -37,10 +37,15 @@ class Exec {
       if (!this._arguments[argument.name]) {
         if (argument.default !== null) {
           this._arguments[argument.name] = argument.default;
-        } else {
-          this._arguments[argument.name] = '';
         }
       }
+    }
+  }
+
+  _castTypes() {
+    for (let i = 0; i < this._command.arguments.length; i += 1) {
+      const argument = this._command.arguments[i];
+      this._arguments[argument.name] = typeCast[argument.type](this._arguments[argument.name]);
     }
   }
 
@@ -67,6 +72,7 @@ class Exec {
     }
     try {
       Validate.verifyArgumentTypes(this._command, this._arguments);
+      this._castTypes();
       if (this._command.http === null && this._command.run === null) { // exec command
         const output = await this._runDockerExecCommand();
         Validate.verifyOutputType(this._command, output.trim());
@@ -100,6 +106,7 @@ class Exec {
     if (this._command.name === 'entrypoint') {
       return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._formatExec()}`);
     }
+    console.log(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${this._formatExec()}`);
     return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${this._formatExec()}`);
   }
 
@@ -210,23 +217,10 @@ class Exec {
   }
 
   _formatExec() {
-    let result;
-    const argumentList = Object.keys(this._arguments);
-    switch (this._command.format) {
-      case `$args`:
-        for (let i = 0; i < argumentList.length; i += 1) {
-          result += `--${argumentList[i]} ${this._arguments[argumentList[i]]} `;
-        }
-        return result;
-      case '$json':
-        return JSON.stringify(this._arguments);
-      default:
-        result = `${this._command.format}`;
-        for (let i = 0; i < argumentList.length; i += 1) {
-          result = result.replace(`{{${argumentList[i]}}}`, this._arguments[argumentList[i]]);
-        }
-        return result;
+    if (this._command.arguments.length > 0) {
+      return `'${JSON.stringify(this._arguments)}'`
     }
+    return '';
   }
 
   /**

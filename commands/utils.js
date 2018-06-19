@@ -77,6 +77,17 @@ function exec(command) {
   });
 }
 
+const typeCast = {
+  int: (int) => parseInt(int),
+  float: (float) => parseFloat(float),
+  string: (string) => string,
+  uuid: (uuid) => uuid,
+  list: (list) => JSON.parse(list),
+  object: (object) => JSON.parse(object),
+  boolean: (boolean) => boolean === 'true',
+  path: (path) => path,
+};
+
 const dataTypes = {
   int: (int) => {
     return Number.isInteger(parseFloat(int));
@@ -106,6 +117,7 @@ const dataTypes = {
     }
   },
   boolean: (boolean) => {
+    console.log(boolean);
     return boolean === 'false' || boolean === 'true';
   },
   path: (path) => {
@@ -159,4 +171,5 @@ module.exports = {
   stringifyContainerOutput,
   dataTypes,
   getOpenPort,
+  typeCast,
 };
