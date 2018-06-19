@@ -72,8 +72,7 @@ class Exec {
         Validate.verifyOutputType(this._command, output.trim());
         spinner.succeed(`Ran command: ${this._command.name} with output: ${output.trim()}`);
       } else if (this._command.http !== null && this._command.run === null) { // lifecycle http command
-        const port = await this._startServer();
-        const output = await this._httpCommand(port);
+        const output = await this._httpCommand(await this._startServer());
         Validate.verifyOutputType(this._command, stringifyContainerOutput(output));
         spinner.succeed(`Ran command: ${this._command.name} with output: ${stringifyContainerOutput(output)}`);
         await this.serverKill();
@@ -163,9 +162,11 @@ class Exec {
    * @private
    */
   _startOMGServer() {
+    const that = this;
     return http.createServer((req, res) => {
       if (req.method === 'POST') {
         req.on('data', function(data) {
+          Validate.verifyOutputType(that._command, stringifyContainerOutput(data.toString()));
           process.stdout.write(`${data.toString()}\n`);
         });
         res.end('Done');

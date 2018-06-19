@@ -49,7 +49,7 @@ class Command {
   /**
    * The output type of this {@link Command}.
    *
-   * @return {String} The output type
+   * @return {Object} The output type
    */
   get output() {
     return this._output;

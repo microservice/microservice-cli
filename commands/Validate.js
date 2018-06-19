@@ -129,7 +129,7 @@ class Validate {
    * @param {String} output The given output
    */
   static verifyOutputType(command, output) {
-    if (!dataTypes[command.output](output)) {
+    if (!dataTypes[command.output.type](output)) {
       throw 'Not correct output type'; // TODO message
     }
   }

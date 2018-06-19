@@ -85,20 +85,14 @@ const dataTypes = {
     return !isNaN(parseFloat(float)) && parseFloat(float).toString().indexOf('.') !== -1;
   },
   string: (string) => {
-    try {
-      JSON.parse(string);
-      return false;
-    } catch (e) {
-      return typeof string === 'string';
-    }
+      return true;
   },
   uuid: (uuid) => {
     return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/).length === 1;
   },
   list: (list) => {
     try {
-      JSON.parse(list);
-      return true;
+      return !isNaN(JSON.parse(list).length);
     } catch (e) {
       return false;
     }
