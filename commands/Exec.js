@@ -218,7 +218,7 @@ class Exec {
 
   _formatExec() {
     if (this._command.arguments.length > 0) {
-      return `'${JSON.stringify(this._arguments)}'`
+      return `'${JSON.stringify(this._arguments)}'`;
     }
     return '';
   }

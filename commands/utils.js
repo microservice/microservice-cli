@@ -55,7 +55,7 @@ function stringifyContainerOutput(data) {
   try {
     return JSON.stringify(data, null, 2);
   } catch (e) {
-    return data.toString.trim();
+    return data.toString.trim(); // TODO is this needed?
   }
 }
 
@@ -99,25 +99,23 @@ const dataTypes = {
       return true;
   },
   uuid: (uuid) => {
-    return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/).length === 1;
+    return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/) !== null;
   },
   list: (list) => {
     try {
-      return !isNaN(JSON.parse(list).length);
+      return JSON.parse(list).toString() !== '[object Object]';
     } catch (e) {
       return false;
     }
   },
   object: (object) => {
     try {
-      JSON.parse(object);
-      return true;
+      return JSON.parse(object).toString() === '[object Object]';
     } catch (e) {
       return false;
     }
   },
   boolean: (boolean) => {
-    console.log(boolean);
     return boolean === 'false' || boolean === 'true';
   },
   path: (path) => {
