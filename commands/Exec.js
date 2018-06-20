@@ -48,8 +48,9 @@ class Exec {
    * @private
    */
   _castTypes() {
-    for (let i = 0; i < this._command.arguments.length; i += 1) {
-      const argument = this._command.arguments[i];
+    const argumentList = Object.keys(this._arguments);
+    for (let i = 0; i < argumentList.length; i += 1) {
+      const argument = this._command.getArgument(argumentList[i]);
       this._arguments[argument.name] = typeCast[argument.type](this._arguments[argument.name]);
     }
   }
@@ -109,9 +110,9 @@ class Exec {
    */
   async _runDockerExecCommand() {
     if (this._command.name === 'entrypoint') {
-      return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._formatExec()}`);
+      return await exec(`docker run ${this._formatVolumesForPathTypes()} ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._formatExec()}`);
     }
-    return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${this._formatExec()}`);
+    return await exec(`docker run ${this._formatVolumesForPathTypes()} ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${this._formatExec()}`);
   }
 
   // _formatPathArguments(arguments) {
@@ -149,9 +150,26 @@ class Exec {
     return port;
   }
 
-  // _pathVolumeHelper() { // TODO rename
-  //
-  // }
+  /**
+   * Format the mounting of the path types. Also updates the arguments given to point to the new file location.
+   *
+   * @return {string} The volumes for Docker
+   * @private
+   */
+  _formatVolumesForPathTypes() {
+    let volumeString = '';
+    const argList = Object.keys(this._arguments);
+    for (let i = 0; i < argList.length; i += 1) {
+      const argument = this._command.getArgument(argList[i]);
+      if (argument.type === 'path') {
+        const argumentValue = this._arguments[argument.name];
+        const endPath = argumentValue.split('/')[argumentValue.split('/').length - 1];
+        volumeString += `-v ${argumentValue}:/temp/${endPath}`;
+        this._arguments[argument.name] = `/temp/${endPath}`;
+      }
+    }
+    return volumeString;
+  }
 
   /**
    * Starts a streaming service.
