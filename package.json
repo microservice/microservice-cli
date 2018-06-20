@@ -1,5 +1,5 @@
 {
-  "name": "microservice-guide-cli",
+  "name": "omg",
   "version": "0.0.2",
   "main": "cli.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "eslint": "eslint . --ignore-pattern coverage/ --quiet"
   },
   "bin": {
-    "microservice-guide-cli": "./cli.js"
+    "omg": "./cli.js"
   },
   "repository": "git@github.com:microservice-guide/cli.git",
   "license": "MIT",

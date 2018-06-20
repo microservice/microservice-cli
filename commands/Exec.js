@@ -42,6 +42,11 @@ class Exec {
     }
   }
 
+  /**
+   * Cast the types of the arguments. Everything comes in as a string so it's important to convert to given type.
+   *
+   * @private
+   */
   _castTypes() {
     for (let i = 0; i < this._command.arguments.length; i += 1) {
       const argument = this._command.arguments[i];
@@ -106,7 +111,6 @@ class Exec {
     if (this._command.name === 'entrypoint') {
       return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._formatExec()}`);
     }
-    console.log(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${this._formatExec()}`);
     return await exec(`docker run ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${this._formatExec()}`);
   }
 
@@ -216,6 +220,12 @@ class Exec {
     }
   }
 
+  /**
+   * Formats this {@link Microservice}'s {@link Argument}s into stringified JSON.
+   *
+   * @return {String} The JSON string
+   * @private
+   */
   _formatExec() {
     if (this._command.arguments.length > 0) {
       return `'${JSON.stringify(this._arguments)}'`;

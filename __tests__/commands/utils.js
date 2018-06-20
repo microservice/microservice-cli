@@ -1,4 +1,3 @@
-const sinon = require('sinon');
 const utils = require('../../commands/utils');
 
 describe('utils.js', () => {

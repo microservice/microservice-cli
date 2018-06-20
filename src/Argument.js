@@ -68,7 +68,7 @@ class Argument {
   /**
    * Get the enum of this {@link Argument}.
    *
-   * @return {String|null} The enum
+   * @return {Array|null} The enum
    */
   get enum() {
     return this._enum;

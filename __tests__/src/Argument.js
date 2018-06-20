@@ -32,4 +32,54 @@ describe('Argument.js', () => {
       expect(a.help).toBe('FOO!');
     });
   });
+
+  describe('.pattern', () => {
+    test('gets the pattern', () => {
+      const a = new Argument('foo', {type: 'string', pattern: 'w'});
+
+      expect(a.pattern).toBe('w');
+    });
+  });
+
+  describe('.enum', () => {
+    test('gets the enum', () => {
+      const a = new Argument('foo', {type: 'string', enum: ['bart']});
+
+      expect(a.enum).toEqual(['bart']);
+    });
+  });
+
+  describe('.enum', () => {
+    test('gets the enum', () => {
+      const a = new Argument('foo', {type: 'string', enum: ['bart']});
+
+      expect(a.enum).toEqual(['bart']);
+    });
+  });
+
+  describe('.range', () => {
+    test('gets the range', () => {
+      const a = new Argument('foo', {type: 'string', range: {min: 1, max: 10}});
+
+      expect(a.range).toEqual({min: 1, max: 10});
+    });
+  });
+
+  describe('.isRequired()', () => {
+    test('checks if it is required', () => {
+      const a1 = new Argument('foo', {type: 'string'});
+      const a2 = new Argument('foo', {type: 'string', required: true});
+
+      expect(a1.isRequired()).toBeFalsy();
+      expect(a2.isRequired()).toBeTruthy();
+    });
+  });
+
+  describe('.default', () => {
+    test('gets the default', () => {
+      const a = new Argument('foo', {type: 'string', default: 'mom'});
+
+      expect(a.default).toBe('mom');
+    });
+  });
 });
