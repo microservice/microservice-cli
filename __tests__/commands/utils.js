@@ -45,7 +45,7 @@ describe('utils.js', () => {
       try {
         await utils.exec('skrt');
       } catch (e) {
-        expect(e).toBe('/bin/sh: skrt: command not found');
+        expect(e.includes('skrt: command not found')).toBeTruthy();
         done();
       }
     });
