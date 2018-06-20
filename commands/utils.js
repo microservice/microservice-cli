@@ -123,6 +123,10 @@ const dataTypes = {
       JSON.parse(path);
       return false;
     } catch (e) {
+      const lastChar = path.substr(path.length - 1);
+      if (lastChar === '/') {
+        return false;
+      }
       return typeof path === 'string';
     }
   },
