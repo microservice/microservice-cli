@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const program = require('commander');
 const Validate = require('./commands/Validate');
+const validator = require('./schema/schema');
 const {build, parse} = require('./commands/utils');
 const Microservice = require('./src/Microservice');
 const Exec = require('./commands/Exec');
@@ -55,16 +56,9 @@ program
       command = 'entrypoint';
     }
 
-    const v = JSON.parse(new Validate().structure());
-
-    if (!v.valid) {
-      process.stdout.write('microservice.yml is not valid.'); // TODO better error
-      process.stdout.write(JSON.stringify(v, null, 2));
-      process.exit(1);
-    }
-
     try {
-      const microservice = new Microservice();
+      const valid = JSON.parse(validator());
+      const microservice = new Microservice(valid.microsericeYaml);
       const uuid = await build();
       const argsObj = parse(args, ':', 'Unable to parse args');
       const envObj = parse(envs, '=', 'Unable to parse envs');

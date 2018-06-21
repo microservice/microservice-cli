@@ -1,10 +1,7 @@
-// TODO some of these methods might not be use (then can then be removed along with the class)
-
 const Command = require('./Command');
 const EnvironmentVariable = require('./EnvironmentVariable');
 const Volume = require('./Volume');
 const Lifecycle = require('./Lifecycle');
-const validator = require('../schema/schema');
 
 /**
  * Describes a microservice defined by a `microservice.yml`
@@ -13,13 +10,7 @@ class Microservice {
   /**
    * Builds a {@link Microservice} defined by a `microservice.yml`.
    */
-  constructor() {
-    const valid = JSON.parse(validator());
-    if (!valid.valid) {
-      // TODO message
-      process.exit(1);
-    }
-    const microserviceYamlJson = valid.microsericeYaml;
+  constructor(microserviceYamlJson) {
     this._environmentMap = null;
     if (microserviceYamlJson.commands) {
       this._commandMap = {};
