@@ -177,6 +177,11 @@ function getOpenPort() {
   }
 }
 
+function checkExecArgs(args) {
+  console.log(args);
+
+}
+
 module.exports = {
   setVal,
   build,
@@ -186,4 +191,5 @@ module.exports = {
   dataTypes,
   getOpenPort,
   typeCast,
+  checkExecArgs,
 };

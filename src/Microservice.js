@@ -59,7 +59,7 @@ class Microservice {
    */
   getCommand(command) {
     if ((this._commandMap === null) || (!this._commandMap[command])) {
-      throw 'Command does not exist';
+      throw {message:'Command does not exist'};
     }
     return this._commandMap[command];
   }

@@ -5,7 +5,7 @@ const path = require('path');
 const program = require('commander');
 const Validate = require('./commands/Validate');
 const validator = require('./schema/schema');
-const {build, parse} = require('./commands/utils');
+const {build, parse, checkExecArgs} = require('./commands/utils');
 const Microservice = require('./src/Microservice');
 const Exec = require('./commands/Exec');
 
@@ -39,32 +39,34 @@ function appender(xs) {
 
 let exec = null;
 program
-  .command('exec [command] [args...]')
-  .option('-e --environment <env>', '', appender(), [])
+  .command('exec')
+  .option('-c --cmd <c>')
+  .option('-a --args <a>', '', appender(), [])
+  .option('-e --envs <e>', '', appender(), [])
   .description('TODO') // TODO
-  .action(async (command, args, env) => {
+  .action(async (options) => {
+    if (!(options.args) || !(options.envs)) {
+      // TODO message
+      process.exit(1);
+    }
     if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
       // TODO message
       process.exit(1);
     }
-    if (!command) {
-      command = 'entrypoint';
-    }
-    const envs = env.environment;
-    if (command.includes('=')) { // what if no args?
-      args.unshift(command);
-      command = 'entrypoint';
+    if (!options.cmd) {
+      options.cmd = 'entrypoint';
     }
 
     try {
       const valid = JSON.parse(validator());
       const microservice = new Microservice(valid.microsericeYaml);
+      microservice.getCommand(options.cmd);
       const uuid = await build();
-      const argsObj = parse(args, '=', 'Unable to parse args');
-      const envObj = parse(envs, '=', 'Unable to parse envs');
+      const argsObj = parse(options.args, '=', 'Unable to parse args');
+      const envObj = parse(options.envs, '=', 'Unable to parse envs');
       const e = new Exec(uuid, microservice, argsObj, envObj);
       exec = e;
-      await e.go(command);
+      await e.go(options.cmd);
     } catch (error) {
       if (error.spinner) {
         error.spinner.fail(error.message);
