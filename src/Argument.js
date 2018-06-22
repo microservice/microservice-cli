@@ -1,4 +1,4 @@
-const { setVal } = require('../commands/utils');
+const {setVal} = require('../commands/utils');
 
 /**
  * Describes an argument.

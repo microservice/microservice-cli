@@ -5,7 +5,7 @@ const path = require('path');
 const program = require('commander');
 const Validate = require('./commands/Validate');
 const validator = require('./schema/schema');
-const {build, parse, checkExecArgs} = require('./commands/utils');
+const {build, parse} = require('./commands/utils');
 const Microservice = require('./src/Microservice');
 const Exec = require('./commands/Exec');
 

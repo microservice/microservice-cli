@@ -3,6 +3,13 @@ const $ = require('shelljs');
 const net = require('http');
 const ora = require('ora');
 
+/**
+ * Used to set values in the constructors of the microservice classes.
+ *
+ * @param {*} val The value to set
+ * @param {*} _else The value to set if val if not defined
+ * @return {*} The value
+ */
 function setVal(val, _else) {
   if (_.isUndefined(val)) {
     return _else;
@@ -84,7 +91,7 @@ const typeCast = {
 
 const dataTypes = {
   int: (int) => {
-    return int.match(/(?<=\s|^)\d+(?=\s|$)/) !== null;
+    return int.match(/^[-+]?\d+$/) !== null;
   },
   float: (float) => {
     return !isNaN(parseFloat(float)) && parseFloat(float).toString().indexOf('.') !== -1;
@@ -160,11 +167,6 @@ function getOpenPort() {
   }
 }
 
-function checkExecArgs(args) {
-  console.log(args);
-
-}
-
 module.exports = {
   setVal,
   build,
@@ -173,5 +175,4 @@ module.exports = {
   dataTypes,
   getOpenPort,
   typeCast,
-  checkExecArgs,
 };

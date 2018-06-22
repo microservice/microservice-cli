@@ -21,18 +21,6 @@ describe('utils.js', () => {
     });
   });
 
-  describe('stringifyContainerOutput(data)', () => {
-    test('stringifies an object', () => {
-      const output = utils.stringifyContainerOutput({
-        foo: 'bar',
-      });
-
-      expect(output).toBe('{\n' +
-                          '  "foo": "bar"\n' +
-                          '}');
-    });
-  });
-
   describe('exec(command)', () => {
     test('runs a command', async (done) => {
       const result = await utils.exec('echo skrt');
@@ -74,8 +62,8 @@ describe('utils.js', () => {
       expect(typeof utils.typeCast['list']('["val"]')).toBe('object');
     });
 
-    test('cast an object', () => {
-      expect(typeof utils.typeCast['object']('{"key": "val"}')).toBe('object');
+    test('cast a map', () => {
+      expect(typeof utils.typeCast['map']('{"key": "val"}')).toBe('object');
     });
 
     test('cast a boolean', () => {
@@ -115,10 +103,10 @@ describe('utils.js', () => {
       expect(utils.dataTypes['list']('asd')).toBeFalsy();
     });
 
-    test('type checks a stringified object', () => {
-      expect(utils.dataTypes['object']('{"data": "value"}')).toBeTruthy();
-      expect(utils.dataTypes['object']('["data"]')).toBeFalsy();
-      expect(utils.dataTypes['object']('asd')).toBeFalsy();
+    test('type checks a stringified map', () => {
+      expect(utils.dataTypes['map']('{"data": "value"}')).toBeTruthy();
+      expect(utils.dataTypes['map']('["data"]')).toBeFalsy();
+      expect(utils.dataTypes['map']('asd')).toBeFalsy();
     });
 
     test('type checks a stringified boolean', () => {

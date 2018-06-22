@@ -8,7 +8,13 @@ class Validate {
    * Builds a {@link Validate}
    */
   constructor() {}
-  //
+
+  /**
+   * Verifies the pattern, enum, and range of the given arguments.
+   *
+   * @param {Command} command The given {@link Command}
+   * @param {Object} args The given argument mapping
+   */
   static verifyArgumentConstrains(command, args) {
     command.arguments.forEach((a) => {
       if (Object.keys(args).includes(a.name)) {
@@ -48,9 +54,10 @@ class Validate {
   }
 
   /**
+   * Verifies the types of the environment variables.
    *
-   * @param {Microservice} microservice
-   * @param {Object} envs
+   * @param {Microservice} microservice The given {@link Microservice}
+   * @param {Object} envs The given environment variable mapping
    */
   static verifyEnvironmentVariableTypes(microservice, envs) {
     microservice.environmentVariables.forEach((e) => {
@@ -59,13 +66,14 @@ class Validate {
           throw `Environment variable: \`${e.name}\` must be of type: \`${e.type}\``;
         }
       }
-    })
+    });
   }
 
   /**
+   * Verifies the patterns of the environment variables, if a pattern is defined.
    *
-   * @param {Microservice} microservice
-   * @param {Object} envs
+   * @param {Microservice} microservice The given {@link Microservice}
+   * @param {Object} envs The given environment variable mapping
    */
   static verifyEnvironmentVariablePattern(microservice, envs) {
     microservice.environmentVariables.forEach((e) => {
@@ -78,7 +86,7 @@ class Validate {
   }
 
   /**
-   * Verifies the output type.
+   * Verifies the output type of a container.
    *
    * @param {Command} command The given {@link Command}
    * @param {String} output The given output

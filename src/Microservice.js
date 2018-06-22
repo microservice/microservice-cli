@@ -9,6 +9,8 @@ const Lifecycle = require('./Lifecycle');
 class Microservice {
   /**
    * Builds a {@link Microservice} defined by a `microservice.yml`.
+   *
+   * @param {Object} microserviceYamlJson The given raw JSON of the `microservice.yml`
    */
   constructor(microserviceYamlJson) {
     this._environmentMap = null;
@@ -59,7 +61,7 @@ class Microservice {
    */
   getCommand(command) {
     if ((this._commandMap === null) || (!this._commandMap[command])) {
-      throw {message:'Command does not exist'};
+      throw {message: 'Command does not exist'};
     }
     return this._commandMap[command];
   }
@@ -83,13 +85,22 @@ class Microservice {
    * @return {Boolean} True if all required environment variables are given, otherwise false
    */
   areRequiredEnvironmentVariablesSupplied(environmentVariables) {
-    const requiredEnvironmentVariable = this.environmentVariables.filter((e) => e.isRequired()).map((e) => e.name);
+    const requiredEnvironmentVariable = this.requiredEnvironmentVariables;
     for (let i = 0; i< requiredEnvironmentVariable.length; i += 1) {
       if (!Object.keys(environmentVariables).includes(requiredEnvironmentVariable[i])) {
         return false;
       }
     }
     return true;
+  }
+
+  /**
+   * Get this {@link Microservice}'s required {@link EnvironmentVariable}s.
+   *
+   * @return {Array<String>} The required {@link EnvironmentVariable}'s names
+   */
+  get requiredEnvironmentVariables() {
+    return this.environmentVariables.filter((e) => e.isRequired()).map((e) => e.name);
   }
 
   /**

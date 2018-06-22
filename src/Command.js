@@ -70,13 +70,22 @@ class Command {
    * @return {Boolean} True if all required arguments are supplied, otherwise false
    */
   areRequiredArgumentsSupplied(_arguments) {
-    const requiredArguments = this.arguments.filter((argument) => argument.isRequired()).map((argument) => argument.name);
+    const requiredArguments = this.requiredArguments;
     for (let i = 0; i < requiredArguments.length; i += 1) {
       if (!Object.keys(_arguments).includes(requiredArguments[i])) {
         return false;
       }
     }
     return true;
+  }
+
+  /**
+   * Get this {@link Command}'s required {@link Argument}s.
+   *
+   * @return {Array<String>} The required {@link Argument}'s names
+   */
+  get requiredArguments() {
+    return this.arguments.filter((argument) => argument.isRequired()).map((argument) => argument.name);
   }
 
   /**
