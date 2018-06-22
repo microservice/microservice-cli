@@ -1,3 +1,5 @@
+const { setVal } = require('../commands/utils');
+
 /**
  * Describes an argument.
  */
@@ -17,7 +19,7 @@ class Argument {
     this._enum = rawArguments.enum || null;
     this._range = rawArguments.range || null;
     this._required = rawArguments.required || false;
-    this._default = rawArguments.default || null;
+    this._default = setVal(rawArguments.default, null);
   }
 
   /**

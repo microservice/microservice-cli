@@ -1,6 +1,14 @@
-const net = require('http');
+const _ = require('underscore');
 const $ = require('shelljs');
+const net = require('http');
 const ora = require('ora');
+
+function setVal(val, _else) {
+  if (_.isUndefined(val)) {
+    return _else;
+  }
+  return val;
+}
 
 /**
  * Builds the microservice described in the Dockerfile of the current working directory.
@@ -51,12 +59,15 @@ function parse(list, delimiter, errorMessage) {
  * @param {*} data The given data
  * @return {String} The stringified data
  */
-function stringifyContainerOutput(data) {
-  try {
-    return JSON.stringify(data, null, 2);
-  } catch (e) {
-    return data.toString.trim(); // TODO is this needed?
+function formatContainerOutput(data) { // TODO
+  if (typeof data === 'string') {
+    try {
+      return JSON.stringify(data, null, 2);
+    } catch (e) {
+      return data.toString.trim(); // TODO is this needed?
+    }
   }
+  return data.trim();
 }
 
 /**
@@ -83,7 +94,7 @@ const typeCast = {
   string: (string) => string,
   uuid: (uuid) => uuid,
   list: (list) => JSON.parse(list),
-  object: (object) => JSON.parse(object),
+  map: (map) => JSON.parse(map),
   boolean: (boolean) => boolean === 'true',
   path: (path) => path,
 };
@@ -108,9 +119,9 @@ const dataTypes = {
       return false;
     }
   },
-  object: (object) => {
+  map: (map) => {
     try {
-      return JSON.parse(object).toString() === '[object Object]';
+      return JSON.parse(map).toString() === '[object Object]';
     } catch (e) {
       return false;
     }
@@ -167,10 +178,11 @@ function getOpenPort() {
 }
 
 module.exports = {
+  setVal,
   build,
   parse,
   exec,
-  stringifyContainerOutput,
+  formatContainerOutput,
   dataTypes,
   getOpenPort,
   typeCast,

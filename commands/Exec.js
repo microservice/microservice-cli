@@ -1,6 +1,6 @@
 const http = require('http');
+const rp = require('request-promise');
 const ora = require('ora');
-const axios = require('axios');
 const querystring = require('querystring');
 const Validate = require('./Validate');
 const {exec, stringifyContainerOutput, getOpenPort, typeCast} = require('./utils');
@@ -81,21 +81,22 @@ class Exec {
       this._castTypes();
       if (this._command.http === null && this._command.run === null) { // exec command
         const output = await this._runDockerExecCommand();
-        Validate.verifyOutputType(this._command, output.trim());
+        Validate.verifyOutputType(this._command, output);
         spinner.succeed(`Ran command: ${this._command.name} with output: ${output.trim()}`);
       } else if (this._command.http !== null && this._command.run === null) { // lifecycle http command
         const output = await this._httpCommand(await this._startServer());
-        Validate.verifyOutputType(this._command, stringifyContainerOutput(output));
-        spinner.succeed(`Ran command: ${this._command.name} with output: ${stringifyContainerOutput(output)}`);
+        Validate.verifyOutputType(this._command, output.trim());
+        spinner.succeed(`Ran command: ${this._command.name} with output: ${output.trim()}`);
         await this.serverKill();
       } else { // streaming command
         const server = this._startOMGServer();
-        server.listen(7777, '127.0.0.1'); // TODO random open port
-        await this._startStream();
+        const port = await getOpenPort();
+        server.listen(port, '127.0.0.1'); // TODO random open port
+        await this._startStream(port);
         spinner.succeed(`good`);
       }
     } catch (e) {
-      throw {
+      throw { // TODO kill server here too
         spinner,
         message: `Failed command: ${command}. ${e.toString().trim()}`,
       };
@@ -164,8 +165,8 @@ class Exec {
       if (argument.type === 'path') {
         const argumentValue = this._arguments[argument.name];
         const endPath = argumentValue.split('/')[argumentValue.split('/').length - 1];
-        volumeString += `-v ${argumentValue}:/temp/${endPath}`;
-        this._arguments[argument.name] = `/temp/${endPath}`;
+        volumeString += `-v ${argumentValue}:/tmp/${endPath} `;
+        this._arguments[argument.name] = `/tmp/${endPath}`;
       }
     }
     return volumeString;
@@ -176,10 +177,9 @@ class Exec {
    *
    * @private
    */
-  async _startStream() {
-    let volumes = '';
-    this._dockerServiceId = await exec(`docker run -d ${volumes} ${this._formatEnvironmentVariables()} \
-                                       -e OMG_URL='http://host.docker.internal:7777' --net="host" --entrypoint \
+  async _startStream(port) {
+    this._dockerServiceId = await exec(`docker run -d ${this._formatVolumesForPathTypes()} ${this._formatEnvironmentVariables()} \
+                                       -e OMG_URL='http://host.docker.internal:${port}' --net="host" --entrypoint \
                                        ${this._command.run.command} ${this._dockerImage} ${this._command.run.args} \
                                        ${this._formatExec()}`);
   }
@@ -194,9 +194,9 @@ class Exec {
     const that = this;
     return http.createServer((req, res) => {
       if (req.method === 'POST') {
-        req.on('data', function(data) {
-          Validate.verifyOutputType(that._command, stringifyContainerOutput(data.toString()));
-          process.stdout.write(`${data.toString()}\n`);
+        req.on('data', (data) => {
+          Validate.verifyOutputType(that._command, data);
+          process.stdout.write(`${data}\n`);
         });
         res.end('Done');
       }
@@ -216,21 +216,31 @@ class Exec {
     try {
       switch (this._command.http.method) {
         case 'get':
-          data = await axios.get(httpData.url);
+          data = await rp.get(httpData.url);
           break;
         case 'post':
-          data = await axios.post(httpData.url, httpData.jsonData);
+          data = await rp.post(httpData.url, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(httpData.jsonData)
+          });
           break;
         case 'put':
-          data = await axios.put(httpData.url, httpData.jsonData);
+          data = await rp.put(httpData.url, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(httpData.jsonData)
+          });
           break;
         case 'delete':
-          data = await axios.delete(httpData.url);
+          data = await rp.delete(httpData.url);
           break;
       }
-      return data.data;
+      return data;
     } catch (e) {
-      if (e.code === 'ECONNRESET') { // this may cause an issue https://github.com/microservices/microservice-cli/issues/18
+      if (e.message === 'Error: socket hang up') { // this may cause an issue https://github.com/microservices/microservice-cli/issues/18
         return await this._httpCommand(port);
       } else {
         throw e;

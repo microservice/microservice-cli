@@ -51,7 +51,7 @@ program
       command = 'entrypoint';
     }
     const envs = env.environment;
-    if (command.includes(':')) { // what if no args?
+    if (command.includes('=')) { // what if no args?
       args.unshift(command);
       command = 'entrypoint';
     }
@@ -60,7 +60,7 @@ program
       const valid = JSON.parse(validator());
       const microservice = new Microservice(valid.microsericeYaml);
       const uuid = await build();
-      const argsObj = parse(args, ':', 'Unable to parse args');
+      const argsObj = parse(args, '=', 'Unable to parse args');
       const envObj = parse(envs, '=', 'Unable to parse envs');
       const e = new Exec(uuid, microservice, argsObj, envObj);
       exec = e;

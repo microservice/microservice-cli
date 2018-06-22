@@ -16,9 +16,9 @@
                   "type": ["array", "string"],
                   "items": {
                     "type": "string",
-                    "enum": ["int", "float", "string", "uuid", "list", "object", "boolean", "path"]
+                    "enum": ["int", "float", "string", "uuid", "list", "map", "boolean", "path", "any"]
                   },
-                  "pattern": "^(int|float|string|uuid|list|object|boolean|path)$"
+                  "pattern": "^(int|float|string|uuid|list|map|boolean|path|any)$"
                 },
                 "pattern": {
                   "type": "string"
@@ -83,7 +83,7 @@
                       "type": "boolean"
                     },
                     "default": {
-                      "type": ["boolean", "integer", "number", "array", "string"]
+                      "type": ["boolean", "integer", "number", "array", "string", "object"]
                     }
                   },
                   "required": ["type"],
