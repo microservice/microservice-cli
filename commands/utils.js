@@ -54,23 +54,6 @@ function parse(list, delimiter, errorMessage) {
 }
 
 /**
- * Stringifies given data.
- *
- * @param {*} data The given data
- * @return {String} The stringified data
- */
-function formatContainerOutput(data) { // TODO
-  if (typeof data === 'string') {
-    try {
-      return JSON.stringify(data, null, 2);
-    } catch (e) {
-      return data.toString.trim(); // TODO is this needed?
-    }
-  }
-  return data.trim();
-}
-
-/**
  * Promise wrapper for the `exec`.
  *
  * @param {String} command The command to run
@@ -187,7 +170,6 @@ module.exports = {
   build,
   parse,
   exec,
-  formatContainerOutput,
   dataTypes,
   getOpenPort,
   typeCast,

@@ -14,17 +14,17 @@ class Validate {
       if (Object.keys(args).includes(a.name)) {
         const argumentValue = args[a.name];
         if ((a.pattern !== null) && (argumentValue.match(a.pattern) === null)) {
-          throw 'PATTERN TODO';
+          throw `Argument: \`${a.name}\` must match regex: \`${a.pattern}\``;
         }
         if ((a.enum !== null) && (!a.enum.includes(argumentValue))) {
-          throw 'ENUM TODO';
+          throw `Argument: \`${a.name}\` must be one of: \`${a.enum.toString()}\``;
         }
         if (a.range !== null) {
           if (a.range.min && argumentValue < a.range.min) {
-            throw 'LOW RANGE TODO';
+            throw `Argument: \`${a.name}\` must be be no smaller than the value: \`${a.range.min}\``;
           }
           if (a.range.max && argumentValue > a.range.max) {
-            throw 'HIGH RANGE TODO';
+            throw `Argument: \`${a.name}\` must be be no larger than the value: \`${a.range.max}\``;
           }
         }
       }
@@ -41,7 +41,7 @@ class Validate {
     command.arguments.forEach((a) => {
       if (Object.keys(args).includes(a.name)) {
         if (!dataTypes[a.type](args[a.name])) {
-          throw 'TYPE TODO';
+          throw `Argument: \`${a.name}\` must be of type: \`${a.type}\``;
         }
       }
     });
@@ -56,7 +56,7 @@ class Validate {
     microservice.environmentVariables.forEach((e) => {
       if (Object.keys(envs).includes(e.name)) {
         if (!dataTypes[e.type](envs[e.name])) {
-          throw 'TYPE TODO';
+          throw `Environment variable: \`${e.name}\` must be of type: \`${e.type}\``;
         }
       }
     })
@@ -71,7 +71,7 @@ class Validate {
     microservice.environmentVariables.forEach((e) => {
       if (Object.keys(envs).includes(e.name)) {
         if ((e.pattern !== null) && (envs[e.name].match(e.pattern)) === null) {
-          throw 'PATTERN TODO';
+          throw `Environment variable: \`${e.name}\` must match regex: \`${e.pattern}\``;
         }
       }
     });
@@ -85,7 +85,7 @@ class Validate {
    */
   static verifyOutputType(command, output) {
     if (!dataTypes[command.output.type](output)) {
-      throw 'Not correct output type'; // TODO message
+      throw `Expected output type: \`${command.output.type}\``;
     }
   }
 }

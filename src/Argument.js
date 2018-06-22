@@ -77,7 +77,7 @@ class Argument {
   }
 
   /**
-   * The range of this {@link Argument}. // TODO min/max not list
+   * The range of this {@link Argument}.
    *
    * @return {*|Object} The range
    */

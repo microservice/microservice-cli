@@ -67,22 +67,22 @@ class Exec {
     if (!this._command.areRequiredArgumentsSupplied(this._arguments)) {
       throw {
         spinner,
-        message: `Failed command: ${command}. Need to supply required arguments`, // TODO need to say what args
+        message: `Failed command: \`${command}\`. Need to supply required arguments`, // TODO need to say what args
       };
     }
     if (!this._microservice.areRequiredEnvironmentVariablesSupplied(this._environmentVariables)) {
       throw {
         spinner,
-        message: `Failed command: ${command}. Need to supply required environment variables`, // TODO need to say what variables
+        message: `Failed command: \`${command}\`. Need to supply required environment variables`, // TODO need to say what variables
       };
     }
     try {
       Validate.verifyArgumentTypes(this._command, this._arguments);
       this._castTypes();
       Validate.verifyArgumentConstrains(this._command, this._arguments);
+
       Validate.verifyEnvironmentVariableTypes(this._microservice, this._environmentVariables);
       Validate.verifyEnvironmentVariablePattern(this._microservice, this._environmentVariables);
-
 
       if (this._command.http === null && this._command.run === null) { // exec command
         const output = await this._runDockerExecCommand();
@@ -103,7 +103,7 @@ class Exec {
     } catch (e) {
       throw { // TODO kill server here too
         spinner,
-        message: `Failed command: ${command}. ${e.toString().trim()}`,
+        message: `Failed command: \`${command}\`. ${e.toString().trim()}`,
       };
     }
   }

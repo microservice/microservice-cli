@@ -14,7 +14,8 @@ program
 
 program
   .command('validate')
-  .description('Use to validate a microservice.yml')
+  .description('Validate the structure of a `microservice.yml` in the current directory')
+  .usage(' ')
   .action(() => {
     if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
       // TODO message
@@ -40,17 +41,28 @@ function appender(xs) {
 let exec = null;
 program
   .command('exec')
-  .option('-c --cmd <c>')
-  .option('-a --args <a>', '', appender(), [])
-  .option('-e --envs <e>', '', appender(), [])
-  .description('TODO') // TODO
+  .usage(' ')
+  .option('-c --cmd <c>', 'The command you want to run, if not provided the `entrypoint` command will be ran')
+  .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender(), [])
+  .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender(), [])
+  .description('Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
   .action(async (options) => {
     if (!(options.args) || !(options.envs)) {
-      // TODO message
+      process.stdout.write('\n' +
+        '  Usage: exec\n' +
+        '\n' +
+        '  Run commands defined in your `microservice.yml`\n' +
+        '\n' +
+        '  Options:\n' +
+        '\n' +
+        '    -c --cmd <c>   The command you want to run, if not provided the `entrypoint` command will be ran\n' +
+        '    -a --args <a>  Arguments to be passed to the command, must be of the form `key="val"` (default: )\n' +
+        '    -e --envs <e>  Environment variables to be passed to run environment, must be of the form `key="val"` (default: )\n' +
+        '    -h, --help     output usage information');
       process.exit(1);
     }
     if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
-      // TODO message
+      process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
       process.exit(1);
     }
     if (!options.cmd) {
@@ -89,4 +101,3 @@ process.on('SIGINT', async function() {
   }
   process.exit();
 });
-
