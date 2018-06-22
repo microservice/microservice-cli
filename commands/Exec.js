@@ -79,6 +79,11 @@ class Exec {
     try {
       Validate.verifyArgumentTypes(this._command, this._arguments);
       this._castTypes();
+      Validate.verifyArgumentConstrains(this._command, this._arguments);
+      Validate.verifyEnvironmentVariableTypes(this._microservice, this._environmentVariables);
+      Validate.verifyEnvironmentVariablePattern(this._microservice, this._environmentVariables);
+
+
       if (this._command.http === null && this._command.run === null) { // exec command
         const output = await this._runDockerExecCommand();
         Validate.verifyOutputType(this._command, output);

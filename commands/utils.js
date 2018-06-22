@@ -101,7 +101,7 @@ const typeCast = {
 
 const dataTypes = {
   int: (int) => {
-    return Number.isInteger(parseFloat(int));
+    return int.match(/(?<=\s|^)\d+(?=\s|$)/) !== null;
   },
   float: (float) => {
     return !isNaN(parseFloat(float)) && parseFloat(float).toString().indexOf('.') !== -1;
