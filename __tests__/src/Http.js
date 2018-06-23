@@ -27,7 +27,7 @@ describe('Https.js', () => {
       } catch (e) {
         expect(e).toBe('The Http method must be one of `get,post,put,delete`');
       }
-    })
+    });
   });
 
   describe('.method', () => {

@@ -1,3 +1,5 @@
+const _ = require('underscore');
+
 /**
  * Describes and environment variable.
  */
@@ -9,6 +11,12 @@ class EnvironmentVariable {
    * @param {Object} rawEnvironment The given raw data
    */
   constructor(name, rawEnvironment) {
+    if (_.isUndefined(rawEnvironment.type)) {
+      throw 'An EnvironmentVariable must be provided a type';
+    }
+    if (!['int', 'float', 'string', 'uuid', 'list', 'map', 'boolean', 'path'].includes(rawEnvironment.type)) {
+      throw 'The EnvironmentVariable type must be one of `int,float,string,uuid,list,map,boolean,path`';
+    }
     this._name = name;
     this._type = rawEnvironment.type;
     this._pattern = rawEnvironment.pattern || null;

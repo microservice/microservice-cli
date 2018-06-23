@@ -1,6 +1,26 @@
 const EnvironmentVariable = require('../../src/EnvironmentVariable');
 
 describe('EnvironmentVariable.js', () => {
+  describe('constructor', () => {
+    test('throws an exception because no type is given', () => {
+      try {
+        new EnvironmentVariable('name', {});
+      } catch (e) {
+        expect(e).toBe('An EnvironmentVariable must be provided a type');
+      }
+    });
+
+    test('throws an exception because the type is no one of `int,float,string,uuid,list,map,boolean,path`', () => {
+      try {
+        new EnvironmentVariable('name', {
+          type: 'bob',
+        });
+      } catch (e) {
+        expect(e).toBe('The EnvironmentVariable type must be one of `int,float,string,uuid,list,map,boolean,path`');
+      }
+    });
+  });
+
   describe('.name', () => {
     test('gets the name', () => {
       const e = new EnvironmentVariable('TOKEN', {type: 'string'});
