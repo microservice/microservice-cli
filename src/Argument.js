@@ -28,7 +28,7 @@ class Argument {
     this._required = rawArguments.required || false;
     this._default = setVal(rawArguments.default, null);
     if ([(this._pattern !== null), (this._enum !== null), (this._range !== null)].reduce((a, v) => ((v) ? 1 + a: a)) > 1) {
-      throw 'An Argument can only have a patter, enum, or range defined.'
+      throw 'An Argument can only have a patter, enum, or range defined.';
     }
   }
 

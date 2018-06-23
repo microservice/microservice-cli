@@ -25,14 +25,12 @@ describe('Argument.js', () => {
         new Argument('name', {
           type: 'int',
           pattern: 'regex',
-          enum: ['asd', 'asd']
+          enum: ['asd', 'asd'],
         });
       } catch (e) {
         expect(e).toBe('An Argument can only have a patter, enum, or range defined.');
       }
     });
-
-
   });
 
   describe('.name', () => {
