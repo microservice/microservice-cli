@@ -42,6 +42,11 @@ class Exec {
     }
   }
 
+  /**
+   * Sets a {@link Microservice}'s default {@link EnvironmentVariable}s.
+   *
+   * @private
+   */
   _setDefaultEnvironmentVariables() {
     for (let i = 0; i < this._microservice.environmentVariables.length; i += 1) {
       const environmentVariable = this._microservice.environmentVariables[i];

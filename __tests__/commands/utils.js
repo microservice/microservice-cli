@@ -33,8 +33,8 @@ describe('utils.js', () => {
       try {
         await utils.exec('skrt');
       } catch (e) {
-        expect(e.includes('/bin/sh:')).toBeTruthy();  // the stderror differs
-        expect(e.includes('skrt')).toBeTruthy();      // on different oses so test
+        expect(e.includes('/bin/sh:')).toBeTruthy(); // the stderror differs
+        expect(e.includes('skrt')).toBeTruthy(); // on different oses so test
         expect(e.includes('not found')).toBeTruthy(); // must be done like this
         done();
       }
