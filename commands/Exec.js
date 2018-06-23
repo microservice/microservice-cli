@@ -31,12 +31,23 @@ class Exec {
    *
    * @private
    */
-  _setDefaultVariables() {
+  _setDefaultArguments() {
     for (let i = 0; i < this._command.arguments.length; i += 1) {
       const argument = this._command.arguments[i];
       if (!this._arguments[argument.name]) {
         if (argument.default !== null) {
           this._arguments[argument.name] = argument.default;
+        }
+      }
+    }
+  }
+
+  _setDefaultEnvironmentVariables() {
+    for (let i = 0; i < this._microservice.environmentVariables.length; i += 1) {
+      const environmentVariable = this._microservice.environmentVariables[i];
+      if (!this._environmentVariables[environmentVariable.name]) {
+        if (environmentVariable.default !== null) {
+          this._environmentVariables[environmentVariable.name] = environmentVariable.default;
         }
       }
     }
@@ -63,7 +74,8 @@ class Exec {
   async go(command) {
     this._command = this._microservice.getCommand(command);
     const spinner = ora(`Running command: \`${this._command.name}\``).start();
-    this._setDefaultVariables();
+    this._setDefaultArguments();
+    this._setDefaultEnvironmentVariables();
     if (!this._command.areRequiredArgumentsSupplied(this._arguments)) {
       throw {
         spinner,
@@ -120,10 +132,6 @@ class Exec {
     }
     return await exec(`docker run ${this._formatVolumesForPathTypes()} ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${this._formatExec()}`);
   }
-
-  // _formatPathArguments(arguments) {
-  //
-  // }
 
   /**
    * Formats an object of environment variables to a `-e KEY='val'` style.
