@@ -1,3 +1,5 @@
+const _ = require('underscore');
+
 /**
  * Describes a volume used by a {@link Microservice}
  */
@@ -9,6 +11,9 @@ class Volume {
    * @param {Object} rawVolume The given raw data
    */
   constructor(name, rawVolume) {
+    if (_.isUndefined(rawVolume.target)) {
+      throw 'A Volume must be provide a target';
+    }
     this._name = name;
     this._target = rawVolume.target;
     this._persist = rawVolume.persist || false;

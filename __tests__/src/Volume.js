@@ -1,6 +1,16 @@
 const Volume = require('../../src/Volume');
 
 describe('Volume.js', () => {
+  describe('constructor', () => {
+    test('throws an exception because no target is given', () => {
+      try {
+        new Volume('name', {});
+      } catch (e) {
+        expect(e).toBe('A Volume must be provide a target');
+      }
+    });
+  });
+
   describe('.name', () => {
     test('gets the name', () => {
       const v = new Volume('vol', {target: '/data'});
