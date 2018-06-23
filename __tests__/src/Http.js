@@ -18,7 +18,7 @@ describe('Https.js', () => {
       }
     });
 
-    test('throws an exception because the method is no one of `get,post,put,delete`', () => {
+    test('throws an exception because the method is not one of `get,post,put,delete`', () => {
       try {
         new Http({
           method: 'skrt',

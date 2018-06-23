@@ -10,7 +10,7 @@ describe('EnvironmentVariable.js', () => {
       }
     });
 
-    test('throws an exception because the type is no one of `int,float,string,uuid,list,map,boolean,path`', () => {
+    test('throws an exception because the type is not one of `int,float,string,uuid,list,map,boolean,path`', () => {
       try {
         new EnvironmentVariable('name', {
           type: 'bob',

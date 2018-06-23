@@ -10,7 +10,7 @@ describe('Argument.js', () => {
       }
     });
 
-    test('throws an exception because the type is no one of `int,float,string,uuid,list,map,boolean,path`', () => {
+    test('throws an exception because the type is not one of `int,float,string,uuid,list,map,boolean,path`', () => {
       try {
         new Argument('name', {
           type: 'bob',
@@ -19,6 +19,20 @@ describe('Argument.js', () => {
         expect(e).toBe('The Argument type must be one of `int,float,string,uuid,list,map,boolean,path`');
       }
     });
+
+    test('throws an exception because more then one check is defined `pattern,enum,range`', () => {
+      try {
+        new Argument('name', {
+          type: 'int',
+          pattern: 'regex',
+          enum: ['asd', 'asd']
+        });
+      } catch (e) {
+        expect(e).toBe('An Argument can only have a patter, enum, or range defined.');
+      }
+    });
+
+
   });
 
   describe('.name', () => {
