@@ -12,7 +12,7 @@ class Volume {
    */
   constructor(name, rawVolume) {
     if (_.isUndefined(rawVolume.target)) {
-      throw 'A Volume must be provide a target';
+      throw 'A Volume must be provided a target';
     }
     this._name = name;
     this._target = rawVolume.target;

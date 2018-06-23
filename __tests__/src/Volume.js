@@ -6,7 +6,7 @@ describe('Volume.js', () => {
       try {
         new Volume('name', {});
       } catch (e) {
-        expect(e).toBe('A Volume must be provide a target');
+        expect(e).toBe('A Volume must be provided a target');
       }
     });
   });
