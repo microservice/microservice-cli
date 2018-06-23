@@ -1,3 +1,4 @@
+const _ = require('underscore');
 const {setVal} = require('../commands/utils');
 
 /**
@@ -11,6 +12,12 @@ class Argument {
    * @param {Object} rawArguments The given raw data
    */
   constructor(name, rawArguments) {
+    if (_.isUndefined(rawArguments.type)) {
+      throw 'An Argument must be provided a type';
+    }
+    if (!['int', 'float', 'string', 'uuid', 'list', 'map', 'boolean', 'path'].includes(rawArguments.type)) {
+      throw 'The Argument type must be one of `int,float,string,uuid,list,map,boolean,path`';
+    }
     this._name = name;
     this._type = rawArguments.type;
     this._location = rawArguments.location || null;

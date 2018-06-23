@@ -85,7 +85,7 @@ class Command {
    * @return {Array<String>} The required {@link Argument}'s names
    */
   get requiredArguments() {
-    return this.arguments.filter((argument) => argument.isRequired()).map((argument) => argument.name);
+    return this.arguments.filter((a) => a.isRequired()).map((a) => a.name);
   }
 
   /**

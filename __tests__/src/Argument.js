@@ -1,6 +1,26 @@
 const Argument = require('../../src/Argument');
 
 describe('Argument.js', () => {
+  describe('constructor', () => {
+    test('throws an exception because no type is given', () => {
+      try {
+        new Argument('name', {});
+      } catch (e) {
+        expect(e).toBe('An Argument must be provided a type');
+      }
+    });
+
+    test('throws an exception because the type is no one of `int,float,string,uuid,list,map,boolean,path`', () => {
+      try {
+        new Argument('name', {
+          type: 'bob',
+        });
+      } catch (e) {
+        expect(e).toBe('The Argument type must be one of `int,float,string,uuid,list,map,boolean,path`');
+      }
+    });
+  });
+
   describe('.name', () => {
     test('gets the name', () => {
       const a = new Argument('foo', {type: 'int'});
