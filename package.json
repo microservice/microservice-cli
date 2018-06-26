@@ -16,6 +16,7 @@
     "ajv": "^6.5.0",
     "commander": "^2.15.1",
     "ora": "^2.1.0",
+    "request": "^2.87.0",
     "request-promise": "^4.2.2",
     "shelljs": "^0.8.2",
     "underscore": "^1.9.1",
