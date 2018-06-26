@@ -3,7 +3,6 @@
 const fs = require('fs');
 const path = require('path');
 const program = require('commander');
-const Validate = require('./commands/Validate');
 const validator = require('./schema/schema');
 const {build, parse} = require('./commands/utils');
 const Microservice = require('./src/Microservice');
@@ -21,7 +20,7 @@ program
       // TODO message
       process.exit(1);
     }
-    process.stdout.write(new Validate().structure());
+    process.stdout.write(validator());
   });
 
 /**
