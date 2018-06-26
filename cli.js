@@ -74,8 +74,8 @@ program
       const microservice = new Microservice(valid.microsericeYaml);
       microservice.getCommand(options.cmd);
       const uuid = await build();
-      const argsObj = parse(options.args, '=', 'Unable to parse args');
-      const envObj = parse(options.envs, '=', 'Unable to parse envs');
+      const argsObj = parse(options.args, 'Unable to parse args');
+      const envObj = parse(options.envs, 'Unable to parse envs');
       const e = new Exec(uuid, microservice, argsObj, envObj);
       exec = e;
       await e.go(options.cmd);

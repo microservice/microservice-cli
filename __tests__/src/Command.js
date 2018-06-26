@@ -3,6 +3,16 @@ const Argument = require('../../src/Argument');
 const Http = require('../../src/Http');
 
 describe('Command.js', () => {
+  describe('constructor', () => {
+    test('throws an exception because no output is given', () => {
+      try {
+        new Command('name', {});
+      } catch (e) {
+        expect(e).toBe('A Command must be provided an output object');
+      }
+    });
+  });
+
   describe('.name', () => {
     test('gets the name', () => {
       const c = new Command('foo', {output: {type: 'string'}});

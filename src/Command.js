@@ -1,3 +1,4 @@
+const _ = require('underscore');
 const Arguments = require('./Argument');
 const Http = require('./Http');
 
@@ -12,6 +13,9 @@ class Command {
    * @param {Object} rawCommand The raw data
    */
   constructor(name, rawCommand) {
+    if (_.isUndefined(rawCommand.output)) {
+      throw 'A Command must be provided an output object';
+    }
     this._name = name;
     this._output = rawCommand.output;
     this._help = rawCommand.help || null;

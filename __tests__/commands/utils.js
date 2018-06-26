@@ -1,9 +1,9 @@
 const utils = require('../../commands/utils');
 
 describe('utils.js', () => {
-  describe('parse(list, delimiter, errorMessage)', () => {
+  describe('parse(list, errorMessage)', () => {
     test('parses the list', () => {
-      const result = utils.parse(['key:val', 'foo:bar', 'fizz:buzz'], ':', 'Error message.');
+      const result = utils.parse(['key=val', 'foo=bar', 'fizz=buzz'], 'Error message.');
 
       expect(result).toEqual({
         key: 'val',
@@ -14,7 +14,7 @@ describe('utils.js', () => {
 
     test('errors because delimiter is not present in on of the elements', () => {
       try {
-        utils.parse(['key:val', 'foo:bar', 'fizz=buzz'], ':', 'Error message.');
+        utils.parse(['key=val', 'foo=bar', 'fizz:buzz'], 'Error message.');
       } catch (e) {
         expect(e).toEqual({message: 'Error message.'});
       }

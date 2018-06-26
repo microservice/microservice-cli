@@ -42,15 +42,14 @@ async function build() {
  * Turns a list of string with a delimiter to a map.
  *
  * @param {Array<String>} list The given list of strings with delimiter
- * @param {String} delimiter The given delimiter
  * @param {String} errorMessage The given message to used when unable to parse
  * @return {Object} Key value of the list
  */
-function parse(list, delimiter, errorMessage) {
+function parse(list, errorMessage) {
   const dictionary = {};
   for (let i = 0; i < list.length; i += 1) {
-    const split = list[i].split(delimiter);
-    if (split.length !== 2) {
+    const split = list[i].split(/=(.+)/);
+    if (split.length !== 3) {
       throw {
         message: errorMessage,
       };
@@ -87,6 +86,7 @@ const typeCast = {
   map: (map) => JSON.parse(map),
   boolean: (boolean) => boolean === 'true',
   path: (path) => path,
+  any: (any) => any,
 };
 
 const dataTypes = {
@@ -97,7 +97,7 @@ const dataTypes = {
     return !isNaN(parseFloat(float)) && parseFloat(float).toString().indexOf('.') !== -1;
   },
   string: (string) => {
-      return true;
+    return true;
   },
   uuid: (uuid) => {
     return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/) !== null;
@@ -130,6 +130,9 @@ const dataTypes = {
       }
       return typeof path === 'string';
     }
+  },
+  any: (any) => {
+    return true;
   },
 };
 
