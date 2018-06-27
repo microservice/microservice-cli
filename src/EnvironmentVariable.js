@@ -13,13 +13,13 @@ class EnvironmentVariable {
   constructor(name, rawEnvironment) {
     if (_.isUndefined(rawEnvironment.type)) {
       throw {
-        context: name,
+        context: `Environment variable with name: \`${name}\``,
         message: 'An EnvironmentVariable must be provided a type',
       };
     }
     if (!['int', 'float', 'string', 'uuid', 'list', 'map', 'boolean', 'path'].includes(rawEnvironment.type)) {
       throw {
-        context: name,
+        context: `Environment variable with name: \`${name}\``,
         message: 'The EnvironmentVariable type must be one of `int,float,string,uuid,list,map,boolean,path`',
       };
     }

@@ -7,7 +7,7 @@ describe('Volume.js', () => {
         new Volume('name', {});
       } catch (e) {
         expect(e).toEqual({
-          'context': 'name',
+          'context': 'Volume with name: `name`',
           'message': 'A Volume must be provided a target',
         });
       }

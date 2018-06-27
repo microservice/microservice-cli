@@ -1,6 +1,0 @@
-commands:
-  validate:
-    help: "Check if a microservice.yml is valid"
-    arguments:
-      path:
-        type: string

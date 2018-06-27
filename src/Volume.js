@@ -13,7 +13,7 @@ class Volume {
   constructor(name, rawVolume) {
     if (_.isUndefined(rawVolume.target)) {
       throw {
-        context: name,
+        context: `Volume with name: \`${name}\``,
         message: 'A Volume must be provided a target',
       };
     }

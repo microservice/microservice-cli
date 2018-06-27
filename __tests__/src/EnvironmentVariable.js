@@ -7,7 +7,7 @@ describe('EnvironmentVariable.js', () => {
         new EnvironmentVariable('name', {});
       } catch (e) {
         expect(e).toEqual({
-          'context': 'name',
+          'context': 'Environment variable with name: `name`',
           'message': 'An EnvironmentVariable must be provided a type',
         });
       }
@@ -20,7 +20,7 @@ describe('EnvironmentVariable.js', () => {
         });
       } catch (e) {
         expect(e).toEqual({
-          'context': 'name',
+          'context': 'Environment variable with name: `name`',
           'message': 'The EnvironmentVariable type must be one of `int,float,string,uuid,list,map,boolean,path`',
         });
       }
