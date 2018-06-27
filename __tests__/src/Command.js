@@ -8,7 +8,10 @@ describe('Command.js', () => {
       try {
         new Command('name', {});
       } catch (e) {
-        expect(e).toBe('A Command must be provided an output object');
+        expect(e).toEqual({
+          'context': 'Command with name: `name`',
+          'message': 'A Command must be provided an output object',
+        });
       }
     });
   });

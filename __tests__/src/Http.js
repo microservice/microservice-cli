@@ -6,7 +6,10 @@ describe('Https.js', () => {
       try {
         new Http({});
       } catch (e) {
-        expect(e).toBe('An Http must be provided a method');
+        expect(e).toEqual({
+          'context': 'http',
+          'message': 'An Http must be provided a method',
+        });
       }
     });
 
@@ -14,7 +17,10 @@ describe('Https.js', () => {
       try {
         new Http({method: 'get'});
       } catch (e) {
-        expect(e).toBe('An Http must be provided an endpoint');
+        expect(e).toEqual({
+          'context': 'http',
+          'message': 'An Http must be provided an endpoint',
+        });
       }
     });
 
@@ -25,7 +31,10 @@ describe('Https.js', () => {
           endpoint: '/data',
         });
       } catch (e) {
-        expect(e).toBe('The Http method must be one of `get,post,put,delete`');
+        expect(e).toEqual({
+          'context': 'http',
+          'message': 'The Http method must be one of `get,post,put,delete`',
+        });
       }
     });
   });

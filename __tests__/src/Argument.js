@@ -6,7 +6,10 @@ describe('Argument.js', () => {
       try {
         new Argument('name', {});
       } catch (e) {
-        expect(e).toBe('An Argument must be provided a type');
+        expect(e).toEqual({
+          'context': 'Argument with name: `name`',
+          'message': 'An Argument must be provided a type',
+        });
       }
     });
 
@@ -16,7 +19,10 @@ describe('Argument.js', () => {
           type: 'bob',
         });
       } catch (e) {
-        expect(e).toBe('The Argument type must be one of `int,float,string,uuid,list,map,boolean,path`');
+        expect(e).toEqual({
+          'context': 'Argument with name: `name`',
+          'message': 'The Argument type must be one of `int,float,string,uuid,list,map,boolean,path`',
+        });
       }
     });
 
@@ -28,7 +34,10 @@ describe('Argument.js', () => {
           enum: ['asd', 'asd'],
         });
       } catch (e) {
-        expect(e).toBe('An Argument can only have a patter, enum, or range defined.');
+        expect(e).toEqual({
+          'context': 'Argument with name: `name`',
+          'message': 'An Argument can only have a patter, enum, or range defined',
+        });
       }
     });
   });

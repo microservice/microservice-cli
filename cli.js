@@ -17,10 +17,22 @@ program
   .usage(' ')
   .action(() => {
     if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
-      // TODO message
+      process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
       process.exit(1);
     }
-    process.stdout.write(validator());
+    const valid = validator();
+    if (valid.valid) {
+      try {
+        new Microservice(valid.microsericeYaml);
+        process.stdout.write(JSON.stringify(valid, null, 2));
+      } catch (e) {
+        process.stderr.write(e);
+        process.exit(1);
+      }
+    } else {
+      process.stdout.write(JSON.stringify(valid, null, 2));
+      process.exit(1);
+    }
   });
 
 /**
@@ -42,8 +54,8 @@ program
   .command('exec')
   .usage(' ')
   .option('-c --cmd <c>', 'The command you want to run, if not provided the `entrypoint` command will be ran')
-  .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender(), [])
-  .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender(), [])
+  .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender([]))
+  .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender([]))
   .description('Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
   .action(async (options) => {
     if (!(options.args) || !(options.envs)) {
@@ -55,8 +67,8 @@ program
         '  Options:\n' +
         '\n' +
         '    -c --cmd <c>   The command you want to run, if not provided the `entrypoint` command will be ran\n' +
-        '    -a --args <a>  Arguments to be passed to the command, must be of the form `key="val"` (default: )\n' +
-        '    -e --envs <e>  Environment variables to be passed to run environment, must be of the form `key="val"` (default: )\n' +
+        '    -a --args <a>  Arguments to be passed to the command, must be of the form `key="val"`\n' +
+        '    -e --envs <e>  Environment variables to be passed to run environment, must be of the form `key="val"`\n' +
         '    -h, --help     output usage information');
       process.exit(1);
     }
@@ -69,7 +81,11 @@ program
     }
 
     try {
-      const valid = JSON.parse(validator());
+      const valid = validator();
+      if (!valid.valid) {
+        process.stderr.write(JSON.stringify(valid, null, 2));
+        process.exit(1);
+      }
       const microservice = new Microservice(valid.microsericeYaml);
       microservice.getCommand(options.cmd);
       const uuid = await build();

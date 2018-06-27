@@ -11,13 +11,22 @@ class Http {
    */
   constructor(rawHttp) {
     if (_.isUndefined(rawHttp.method)) {
-      throw 'An Http must be provided a method';
+      throw {
+        context: 'http',
+        message: 'An Http must be provided a method',
+      };
     }
     if (_.isUndefined(rawHttp.endpoint)) {
-      throw 'An Http must be provided an endpoint';
+      throw {
+        context: 'http',
+        message: 'An Http must be provided an endpoint',
+      };
     }
     if (!['get', 'post', 'put', 'delete'].includes(rawHttp.method)) {
-      throw 'The Http method must be one of `get,post,put,delete`';
+      throw {
+        context: 'http',
+        message: 'The Http method must be one of `get,post,put,delete`',
+      };
     }
     this._method = rawHttp.method;
     this._endpoint = rawHttp.endpoint;

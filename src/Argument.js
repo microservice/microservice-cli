@@ -13,10 +13,16 @@ class Argument {
    */
   constructor(name, rawArguments) {
     if (_.isUndefined(rawArguments.type)) {
-      throw 'An Argument must be provided a type';
+      throw {
+        context: `Argument with name: \`${name}\``,
+        message: 'An Argument must be provided a type',
+      };
     }
     if (!['int', 'float', 'string', 'uuid', 'list', 'map', 'boolean', 'path'].includes(rawArguments.type)) {
-      throw 'The Argument type must be one of `int,float,string,uuid,list,map,boolean,path`';
+      throw {
+        context: `Argument with name: \`${name}\``,
+        message: 'The Argument type must be one of `int,float,string,uuid,list,map,boolean,path`',
+      };
     }
     this._name = name;
     this._type = rawArguments.type;
@@ -28,7 +34,10 @@ class Argument {
     this._required = rawArguments.required || false;
     this._default = setVal(rawArguments.default, null);
     if ([(this._pattern !== null), (this._enum !== null), (this._range !== null)].reduce((a, v) => ((v) ? 1 + a: a)) > 1) {
-      throw 'An Argument can only have a patter, enum, or range defined.';
+      throw {
+        context: `Argument with name: \`${name}\``,
+        message: 'An Argument can only have a patter, enum, or range defined',
+      };
     }
   }
 

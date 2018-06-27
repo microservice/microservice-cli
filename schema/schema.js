@@ -10,23 +10,23 @@ const schemaValidator = ajv.compile(schema);
 /**
  * Runs validation on a `microservice.yml`.
  *
- * @return {string} Stringified Json of the results
+ * @return {Object} Stringified Json of the results
  */
 function validate() {
   try {
     const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
     const valid = schemaValidator(json);
 
-    return JSON.stringify({
+    return {
       valid,
       microsericeYaml: json,
       errors: schemaValidator.errors,
-    }, null, 2);
+    };
   } catch (e) {
-    return JSON.stringify({
+    return {
       error: 'Unable to parse file',
       info: e,
-    });
+    };
   }
 }
 

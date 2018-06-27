@@ -6,7 +6,10 @@ describe('Volume.js', () => {
       try {
         new Volume('name', {});
       } catch (e) {
-        expect(e).toBe('A Volume must be provided a target');
+        expect(e).toEqual({
+          'context': 'name',
+          'message': 'A Volume must be provided a target',
+        });
       }
     });
   });

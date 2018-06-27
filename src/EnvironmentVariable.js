@@ -12,10 +12,16 @@ class EnvironmentVariable {
    */
   constructor(name, rawEnvironment) {
     if (_.isUndefined(rawEnvironment.type)) {
-      throw 'An EnvironmentVariable must be provided a type';
+      throw {
+        context: name,
+        message: 'An EnvironmentVariable must be provided a type',
+      };
     }
     if (!['int', 'float', 'string', 'uuid', 'list', 'map', 'boolean', 'path'].includes(rawEnvironment.type)) {
-      throw 'The EnvironmentVariable type must be one of `int,float,string,uuid,list,map,boolean,path`';
+      throw {
+        context: name,
+        message: 'The EnvironmentVariable type must be one of `int,float,string,uuid,list,map,boolean,path`',
+      };
     }
     this._name = name;
     this._type = rawEnvironment.type;

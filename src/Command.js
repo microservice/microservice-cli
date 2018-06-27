@@ -14,7 +14,10 @@ class Command {
    */
   constructor(name, rawCommand) {
     if (_.isUndefined(rawCommand.output)) {
-      throw 'A Command must be provided an output object';
+      throw {
+        context: `Command with name: \`${name}\``,
+        message: 'A Command must be provided an output object',
+      };
     }
     this._name = name;
     this._output = rawCommand.output;
@@ -37,6 +40,56 @@ class Command {
       for (let i = 1; i < rawCommand.run.command.length; i += 1) {
         this._runCommand.args += rawCommand.run.command[i] + ' ';
       }
+    }
+    if ((this._http !== null) && (this._runCommand !== null)) {
+      throw {
+        context: `Command with name: \`${name}\``,
+        message: 'A Command can only interface with exec, an http command, or a run command',
+      };
+    }
+    if (this._http !== null) {
+      this._checkHttpArguments();
+    }
+  }
+
+  /**
+   * Check validity of an http command.
+   *
+   * @private
+   */
+  _checkHttpArguments() {
+    let endpoint = this.http.endpoint;
+    for (let i = 0; i < this.arguments.length; i += 1) {
+      const argument = this.arguments[i];
+      if (argument.location === null) {
+        throw {
+          context: `Argument: \`${argument.name}\` for command: \`${this.name}\``,
+          message: 'Commands\' arguments that interface via http must provide a location',
+        };
+      }
+      if (argument.location === 'path') {
+        if (!this.http.endpoint.includes(`{{${argument.name}}}`)) {
+          throw {
+            context: `Argument: \`${argument.name}\` for command: \`${this.name}\``,
+            message: 'Path parameters must be defined in the http endpoint, of the form `{{argument}}`',
+          };
+        } else {
+          endpoint = endpoint.replace(`{{${argument.name}}}`, argument.name);
+        }
+        if (!argument.isRequired() && (argument.default === null)) {
+          throw {
+            context: `Argument: \`${argument.name}\` for command: \`${this.name}\``,
+            message: 'Path parameters must be marked as required or be provided a default variable',
+          };
+        }
+      }
+    }
+    const extraPathParams = endpoint.match(/({{[a-zA-Z]+}})/g);
+    if (extraPathParams !== null) {
+      throw {
+        context: extraPathParams,
+        message: 'If a url specifies a path parameter i.e. `{{argument}}`, the argument must be defined in the command',
+      };
     }
   }
 

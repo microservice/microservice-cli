@@ -100,7 +100,8 @@
                   "enum": ["get", "post", "put", "delete"]
                 },
                 "endpoint": {
-                  "type": "string"
+                  "type": "string",
+                  "pattern": "^\/.*"
                 }
               },
               "required": ["method", "endpoint"],
