@@ -1,5 +1,5 @@
-[![CircleCI](https://circleci.com/gh/microservice/microservice-cli.svg?style=svg)](https://circleci.com/gh/microservice/microservice-cli)
-[![codecov](https://codecov.io/gh/microservice/microservice-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/microservice/microservice-cli)
+[![CircleCI](https://circleci.com/gh/microservices/microservice-cli.svg?style=svg)](https://circleci.com/gh/microservices/microservice-cli)
+[![codecov](https://codecov.io/gh/microservices/microservice-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/microservice/microservice-cli)
 
 # NOTICE
 Still a work in progress :smile:. Check back soon.
