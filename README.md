@@ -2,7 +2,7 @@
 [![codecov](https://codecov.io/gh/microservice/microservice-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/microservice/microservice-cli)
 
 # NOTICE
-Still a work in progress :smile:.
+Still a work in progress :smile:. Check back soon.
 
 # cli
 The microservice.guide CLI allows you to verify your `microservice.yml` and execute the microservice's commands.
