@@ -1,6 +1,9 @@
 [![CircleCI](https://circleci.com/gh/microservice/microservice-cli.svg?style=svg)](https://circleci.com/gh/microservice/microservice-cli)
 [![codecov](https://codecov.io/gh/microservice/microservice-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/microservice/microservice-cli)
 
+# NOTICE
+Still a work in progress :smile:.
+
 # cli
 The microservice.guide CLI allows you to verify your `microservice.yml` and execute the microservice's commands.
 

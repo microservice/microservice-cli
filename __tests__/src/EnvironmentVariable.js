@@ -7,8 +7,13 @@ describe('EnvironmentVariable.js', () => {
         new EnvironmentVariable('name', {});
       } catch (e) {
         expect(e).toEqual({
-          'context': 'Environment variable with name: `name`',
-          'message': 'An EnvironmentVariable must be provided a type',
+          errors: [{
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'type\'',
+            params: {missingProperty: 'type'},
+            schemaPath: '#/required',
+          }], valid: false, yaml: {},
         });
       }
     });
@@ -20,8 +25,13 @@ describe('EnvironmentVariable.js', () => {
         });
       } catch (e) {
         expect(e).toEqual({
-          'context': 'Environment variable with name: `name`',
-          'message': 'The EnvironmentVariable type must be one of `int,float,string,uuid,list,map,boolean,path`',
+          errors: [{
+            dataPath: '.type',
+            keyword: 'pattern',
+            message: 'should match pattern "^(int|float|string|uuid|list|map|boolean|path|any)$"',
+            params: {'pattern': '^(int|float|string|uuid|list|map|boolean|path|any)$'},
+            schemaPath: '#/properties/type/pattern',
+          }], valid: false, yaml: {type: 'bob'},
         });
       }
     });

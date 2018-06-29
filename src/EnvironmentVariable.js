@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const validateEnvironmentVariable = require('../schema/schema').environmentVariable;
 
 /**
  * Describes and environment variable.
@@ -11,17 +11,9 @@ class EnvironmentVariable {
    * @param {Object} rawEnvironment The given raw data
    */
   constructor(name, rawEnvironment) {
-    if (_.isUndefined(rawEnvironment.type)) {
-      throw {
-        context: `Environment variable with name: \`${name}\``,
-        message: 'An EnvironmentVariable must be provided a type',
-      };
-    }
-    if (!['int', 'float', 'string', 'uuid', 'list', 'map', 'boolean', 'path'].includes(rawEnvironment.type)) {
-      throw {
-        context: `Environment variable with name: \`${name}\``,
-        message: 'The EnvironmentVariable type must be one of `int,float,string,uuid,list,map,boolean,path`',
-      };
+    const isValid = validateEnvironmentVariable(rawEnvironment);
+    if (!isValid.valid) {
+      throw isValid;
     }
     this._name = name;
     this._type = rawEnvironment.type;

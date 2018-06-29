@@ -2,6 +2,7 @@ const Command = require('./Command');
 const EnvironmentVariable = require('./EnvironmentVariable');
 const Volume = require('./Volume');
 const Lifecycle = require('./Lifecycle');
+const validateMicroservice = require('../schema/schema').microservice;
 
 /**
  * Describes a microservice defined by a `microservice.yml`
@@ -13,6 +14,10 @@ class Microservice {
    * @param {Object} microserviceYamlJson The given raw JSON of the `microservice.yml`
    */
   constructor(microserviceYamlJson) {
+    const isValid = validateMicroservice(microserviceYamlJson);
+    if (!isValid.valid) {
+      throw isValid;
+    }
     this._environmentMap = null;
     if (microserviceYamlJson.commands) {
       this._commandMap = {};
@@ -61,7 +66,7 @@ class Microservice {
    */
   getCommand(command) {
     if ((this._commandMap === null) || (!this._commandMap[command])) {
-      throw {message: 'Command does not exist'};
+      throw {message: `Command: \`${command}\` does not exist`};
     }
     return this._commandMap[command];
   }

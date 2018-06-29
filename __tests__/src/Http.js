@@ -7,8 +7,19 @@ describe('Https.js', () => {
         new Http({});
       } catch (e) {
         expect(e).toEqual({
-          'context': 'http',
-          'message': 'An Http must be provided a method',
+          errors: [{
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'method\'',
+            params: {missingProperty: 'method'},
+            schemaPath: '#/required',
+          }, {
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'endpoint\'',
+            params: {missingProperty: 'endpoint'},
+            schemaPath: '#/required',
+          }], valid: false, yaml: {},
         });
       }
     });
@@ -18,8 +29,13 @@ describe('Https.js', () => {
         new Http({method: 'get'});
       } catch (e) {
         expect(e).toEqual({
-          'context': 'http',
-          'message': 'An Http must be provided an endpoint',
+          errors: [{
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'endpoint\'',
+            params: {'missingProperty': 'endpoint'},
+            schemaPath: '#/required',
+          }], valid: false, yaml: {method: 'get'},
         });
       }
     });
@@ -32,8 +48,13 @@ describe('Https.js', () => {
         });
       } catch (e) {
         expect(e).toEqual({
-          'context': 'http',
-          'message': 'The Http method must be one of `get,post,put,delete`',
+          errors: [{
+            dataPath: '.method',
+            keyword: 'enum',
+            message: 'should be equal to one of the allowed values',
+            params: {allowedValues: ['get', 'post', 'put', 'delete']},
+            schemaPath: '#/properties/method/enum',
+          }], yaml: {endpoint: '/data', method: 'skrt'}, valid: false,
         });
       }
     });

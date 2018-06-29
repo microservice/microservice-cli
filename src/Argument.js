@@ -1,5 +1,5 @@
-const _ = require('underscore');
 const {setVal} = require('../commands/utils');
+const validateArgument = require('../schema/schema').argument;
 
 /**
  * Describes an argument.
@@ -12,17 +12,9 @@ class Argument {
    * @param {Object} rawArguments The given raw data
    */
   constructor(name, rawArguments) {
-    if (_.isUndefined(rawArguments.type)) {
-      throw {
-        context: `Argument with name: \`${name}\``,
-        message: 'An Argument must be provided a type',
-      };
-    }
-    if (!['int', 'float', 'string', 'uuid', 'list', 'map', 'boolean', 'path'].includes(rawArguments.type)) {
-      throw {
-        context: `Argument with name: \`${name}\``,
-        message: 'The Argument type must be one of `int,float,string,uuid,list,map,boolean,path`',
-      };
+    const isValid = validateArgument(rawArguments);
+    if (!isValid.valid) {
+      throw isValid;
     }
     this._name = name;
     this._type = rawArguments.type;
@@ -36,7 +28,7 @@ class Argument {
     if ([(this._pattern !== null), (this._enum !== null), (this._range !== null)].reduce((a, v) => ((v) ? 1 + a: a)) > 1) {
       throw {
         context: `Argument with name: \`${name}\``,
-        message: 'An Argument can only have a patter, enum, or range defined',
+        message: 'An Argument can only have a pattern, enum, or range defined',
       };
     }
   }

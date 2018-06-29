@@ -7,8 +7,13 @@ describe('Argument.js', () => {
         new Argument('name', {});
       } catch (e) {
         expect(e).toEqual({
-          'context': 'Argument with name: `name`',
-          'message': 'An Argument must be provided a type',
+          errors: [{
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'type\'',
+            params: {missingProperty: 'type'},
+            schemaPath: '#/required',
+          }], valid: false, yaml: {},
         });
       }
     });
@@ -20,8 +25,13 @@ describe('Argument.js', () => {
         });
       } catch (e) {
         expect(e).toEqual({
-          'context': 'Argument with name: `name`',
-          'message': 'The Argument type must be one of `int,float,string,uuid,list,map,boolean,path`',
+          errors: [{
+            dataPath: '.type',
+            keyword: 'pattern',
+            message: 'should match pattern "^(int|float|string|uuid|list|object|boolean|path)$"',
+            params: {pattern: '^(int|float|string|uuid|list|object|boolean|path)$'},
+            schemaPath: '#/properties/type/pattern',
+          }], valid: false, yaml: {type: 'bob'},
         });
       }
     });
@@ -36,7 +46,7 @@ describe('Argument.js', () => {
       } catch (e) {
         expect(e).toEqual({
           'context': 'Argument with name: `name`',
-          'message': 'An Argument can only have a patter, enum, or range defined',
+          'message': 'An Argument can only have a pattern, enum, or range defined',
         });
       }
     });

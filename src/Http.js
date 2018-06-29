@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const validateHttp = require('../schema/schema').http;
 
 /**
  * Describes an http setup.
@@ -10,23 +10,9 @@ class Http {
    * @param {Object} rawHttp The given raw data
    */
   constructor(rawHttp) {
-    if (_.isUndefined(rawHttp.method)) {
-      throw {
-        context: 'http',
-        message: 'An Http must be provided a method',
-      };
-    }
-    if (_.isUndefined(rawHttp.endpoint)) {
-      throw {
-        context: 'http',
-        message: 'An Http must be provided an endpoint',
-      };
-    }
-    if (!['get', 'post', 'put', 'delete'].includes(rawHttp.method)) {
-      throw {
-        context: 'http',
-        message: 'The Http method must be one of `get,post,put,delete`',
-      };
+    const isValid = validateHttp(rawHttp);
+    if (!isValid.valid) {
+      throw isValid;
     }
     this._method = rawHttp.method;
     this._endpoint = rawHttp.endpoint;

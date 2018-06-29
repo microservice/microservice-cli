@@ -1,0 +1,88 @@
+{
+  "properties": {
+    "help": {
+      "type": "string"
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": [
+            "array",
+            "string"
+          ],
+          "items": {
+            "type": "string",
+            "enum": [
+              "int",
+              "float",
+              "string",
+              "uuid",
+              "list",
+              "map",
+              "boolean",
+              "path",
+              "any"
+            ]
+          },
+          "pattern": "^(int|float|string|uuid|list|map|boolean|path|any)$"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "enum": {
+          "type": "array"
+        },
+        "range": {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer"
+            },
+            "max": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "arguments": {
+      "type": "object",
+      "patternProperties": {
+        "^\\w+$": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "http": {
+      "type": "object"
+    },
+    "run": {
+      "type": "object",
+      "properties": {
+        "port": {
+          "type": "integer",
+          "minimum": 5000,
+          "maximum": 9000
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "port",
+        "command"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "output"
+  ],
+  "additionalProperties": false
+}

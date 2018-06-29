@@ -9,8 +9,13 @@ describe('Command.js', () => {
         new Command('name', {});
       } catch (e) {
         expect(e).toEqual({
-          'context': 'Command with name: `name`',
-          'message': 'A Command must be provided an output object',
+          errors: [{
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'output\'',
+            params: {'missingProperty': 'output'},
+            schemaPath: '#/required',
+          }], valid: false, yaml: {},
         });
       }
     });

@@ -1,6 +1,6 @@
-const _ = require('underscore');
 const Arguments = require('./Argument');
 const Http = require('./Http');
+const validateCommand = require('../schema/schema').command;
 
 /**
  * Describes a command.
@@ -13,11 +13,9 @@ class Command {
    * @param {Object} rawCommand The raw data
    */
   constructor(name, rawCommand) {
-    if (_.isUndefined(rawCommand.output)) {
-      throw {
-        context: `Command with name: \`${name}\``,
-        message: 'A Command must be provided an output object',
-      };
+    const isValid = validateCommand(rawCommand);
+    if (!isValid.valid) {
+      throw isValid;
     }
     this._name = name;
     this._output = rawCommand.output;

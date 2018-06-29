@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const validateVolume = require('../schema/schema').volume;
 
 /**
  * Describes a volume used by a {@link Microservice}
@@ -11,11 +11,9 @@ class Volume {
    * @param {Object} rawVolume The given raw data
    */
   constructor(name, rawVolume) {
-    if (_.isUndefined(rawVolume.target)) {
-      throw {
-        context: `Volume with name: \`${name}\``,
-        message: 'A Volume must be provided a target',
-      };
+    const isValid = validateVolume(rawVolume);
+    if (!isValid.valid) {
+      throw isValid;
     }
     this._name = name;
     this._target = rawVolume.target;

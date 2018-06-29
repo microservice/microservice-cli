@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const program = require('commander');
+const YAML = require('yamljs');
 const validator = require('./schema/schema');
 const {build, parse} = require('./commands/utils');
 const Microservice = require('./src/Microservice');
@@ -49,13 +50,14 @@ function appender(xs) {
   };
 }
 
+let microservice = null;
 let exec = null;
 program
   .command('exec')
   .usage(' ')
   .option('-c --cmd <c>', 'The command you want to run, if not provided the `entrypoint` command will be ran')
-  .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender([]))
-  .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender([]))
+  .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender(), [])
+  .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender(), [])
   .description('Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
   .action(async (options) => {
     if (!(options.args) || !(options.envs)) {
@@ -81,19 +83,19 @@ program
     }
 
     try {
-      const valid = validator();
-      if (!valid.valid) {
-        process.stderr.write(JSON.stringify(valid, null, 2));
-        process.exit(1);
-      }
-      const microservice = new Microservice(valid.microsericeYaml);
+      const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
+      microservice = new Microservice(json);
+    } catch (e) {
+      process.stderr.write(JSON.stringify(e, null, 2));
+      process.exit(1);
+    }
+    try {
       microservice.getCommand(options.cmd);
       const uuid = await build();
-      const argsObj = parse(options.args, 'Unable to parse args');
-      const envObj = parse(options.envs, 'Unable to parse envs');
-      const e = new Exec(uuid, microservice, argsObj, envObj);
-      exec = e;
-      await e.go(options.cmd);
+      const argsObj = parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
+      const envObj = parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
+      exec = new Exec(uuid, microservice, argsObj, envObj);
+      await exec.go(options.cmd);
     } catch (error) {
       if (error.spinner) {
         error.spinner.fail(error.message);
