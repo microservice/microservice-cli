@@ -14,17 +14,22 @@ const lifecycleSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schem
 /**
  * Runs validation on a `microservice.yml`.
  *
- * @param {Object} object The given object to validate
+ * @param {Object} json The given object to validate
  * @param {Object} validator The given validation function
  * @return {Object} Stringified Json of the results
  */
-function validate(object, validator) {
-  const json = object;
+function validate(json, validator) {
   const valid = validator(json);
-
+  if (valid) {
+    return {
+      valid,
+      yaml: json,
+      errors: validator.errors,
+    };
+  }
   return {
     valid,
-    yaml: json,
+    issue: json,
     errors: validator.errors,
   };
 }

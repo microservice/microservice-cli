@@ -15,7 +15,30 @@ describe('Command.js', () => {
             message: 'should have required property \'output\'',
             params: {'missingProperty': 'output'},
             schemaPath: '#/required',
-          }], valid: false, yaml: {},
+          }], valid: false, issue: {},
+        });
+      }
+    });
+
+    test('throws an exception because a run and http interface are defined', () => {
+      try {
+        new Command('name', {
+          output: {
+            type: 'int',
+          },
+          http: {
+            method: 'post',
+            endpoint: '/send',
+          },
+          run: {
+            command: ['node', 'sever.js'],
+            port: 5555,
+          },
+        });
+      } catch (e) {
+        expect(e).toEqual({
+          context: 'Command with name: `name`',
+          message: 'A Command can only interface with exec, an http command, or a run command',
         });
       }
     });

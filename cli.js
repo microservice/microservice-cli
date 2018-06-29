@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 const program = require('commander');
 const YAML = require('yamljs');
-const validator = require('./schema/schema');
 const {build, parse} = require('./commands/utils');
 const Microservice = require('./src/Microservice');
 const Exec = require('./commands/Exec');
@@ -21,17 +20,12 @@ program
       process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
       process.exit(1);
     }
-    const valid = validator();
-    if (valid.valid) {
-      try {
-        new Microservice(valid.microsericeYaml);
-        process.stdout.write(JSON.stringify(valid, null, 2));
-      } catch (e) {
-        process.stderr.write(e);
-        process.exit(1);
-      }
-    } else {
-      process.stdout.write(JSON.stringify(valid, null, 2));
+    try {
+      const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
+      const m = new Microservice(json);
+      process.stdout.write(JSON.stringify(m.rawData, null, 2));
+    } catch (e) {
+      process.stderr.write(JSON.stringify(e, null, 2));
       process.exit(1);
     }
   });

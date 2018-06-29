@@ -19,7 +19,7 @@ describe('Https.js', () => {
             message: 'should have required property \'endpoint\'',
             params: {missingProperty: 'endpoint'},
             schemaPath: '#/required',
-          }], valid: false, yaml: {},
+          }], valid: false, issue: {},
         });
       }
     });
@@ -35,7 +35,7 @@ describe('Https.js', () => {
             message: 'should have required property \'endpoint\'',
             params: {'missingProperty': 'endpoint'},
             schemaPath: '#/required',
-          }], valid: false, yaml: {method: 'get'},
+          }], valid: false, issue: {method: 'get'},
         });
       }
     });
@@ -54,7 +54,7 @@ describe('Https.js', () => {
             message: 'should be equal to one of the allowed values',
             params: {allowedValues: ['get', 'post', 'put', 'delete']},
             schemaPath: '#/properties/method/enum',
-          }], yaml: {endpoint: '/data', method: 'skrt'}, valid: false,
+          }], issue: {endpoint: '/data', method: 'skrt'}, valid: false,
         });
       }
     });

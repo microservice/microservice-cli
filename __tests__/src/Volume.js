@@ -13,7 +13,7 @@ describe('Volume.js', () => {
             message: 'should have required property \'target\'',
             params: {'missingProperty': 'target'},
             schemaPath: '#/required',
-          }], valid: false, yaml: {},
+          }], valid: false, issue: {},
         });
       }
     });

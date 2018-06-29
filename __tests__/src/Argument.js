@@ -13,7 +13,7 @@ describe('Argument.js', () => {
             message: 'should have required property \'type\'',
             params: {missingProperty: 'type'},
             schemaPath: '#/required',
-          }], valid: false, yaml: {},
+          }], valid: false, issue: {},
         });
       }
     });
@@ -31,7 +31,7 @@ describe('Argument.js', () => {
             message: 'should match pattern "^(int|float|string|uuid|list|object|boolean|path)$"',
             params: {pattern: '^(int|float|string|uuid|list|object|boolean|path)$'},
             schemaPath: '#/properties/type/pattern',
-          }], valid: false, yaml: {type: 'bob'},
+          }], valid: false, issue: {type: 'bob'},
         });
       }
     });

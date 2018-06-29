@@ -13,7 +13,7 @@ describe('Https.js', () => {
             message: 'should NOT have less than 1 properties',
             params: {'limit': 1},
             schemaPath: '#/minProperties',
-          }], valid: false, yaml: {},
+          }], valid: false, issue: {},
         });
       }
     });

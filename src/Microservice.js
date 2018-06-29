@@ -18,6 +18,7 @@ class Microservice {
     if (!isValid.valid) {
       throw isValid;
     }
+    this._rawData = isValid;
     this._environmentMap = null;
     if (microserviceYamlJson.commands) {
       this._commandMap = {};
@@ -43,7 +44,7 @@ class Microservice {
       }
     }
     this._lifecycle = ((microserviceYamlJson.lifecycle) ? new Lifecycle(microserviceYamlJson.lifecycle) : null);
-    for (let i = 0; i < this.commands.length; i =+ 1) {
+    for (let i = 0; i < this.commands.length; i += 1) {
       if ((this.commands[i].http !== null) && (this.lifecycle === null)) {
         throw {
           context: `Command with name: \`${this.commands[i].name}\``,
@@ -51,6 +52,15 @@ class Microservice {
         };
       }
     }
+  }
+
+  /**
+   * Get the raw object used to build this {@link Microservice}.
+   *
+   * @return {{valid}|Object|*|{valid, yaml, errors}|{valid, issue, errors}}
+   */
+  get rawData() {
+    return this._rawData;
   }
 
   /**
