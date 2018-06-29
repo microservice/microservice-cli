@@ -36,9 +36,7 @@
       "type": "object",
       "properties": {
         "command": {
-          "type": [
-            "array"
-          ],
+          "type": "array",
           "items": {
             "type": "string"
           }
@@ -87,5 +85,6 @@
       "additionalProperties": false
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "minProperties": 1
 }

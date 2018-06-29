@@ -43,6 +43,14 @@ class Microservice {
       }
     }
     this._lifecycle = ((microserviceYamlJson.lifecycle) ? new Lifecycle(microserviceYamlJson.lifecycle) : null);
+    for (let i = 0; i < this.commands.length; i =+ 1) {
+      if ((this.commands[i].http !== null) && (this.lifecycle === null)) {
+        throw {
+          context: `Command with name: \`${this.commands[i].name}\``,
+          message: 'If a command interfaces with http then a lifecycle must be provided',
+        };
+      }
+    }
   }
 
   /**
@@ -129,7 +137,7 @@ class Microservice {
    */
   getVolume(volume) {
     if ((this._volumeMap === null) || (!this._volumeMap[volume])) {
-      throw 'Volume does not exist';
+      throw {message: `Volume: \`${volume}\` does not exist`};
     }
     return this._volumeMap[volume];
   }

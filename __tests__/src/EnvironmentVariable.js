@@ -2,7 +2,7 @@ const EnvironmentVariable = require('../../src/EnvironmentVariable');
 
 describe('EnvironmentVariable.js', () => {
   describe('constructor', () => {
-    test('throws an exception because no type is given', () => {
+    test('throws an exception because the json is not valid', () => {
       try {
         new EnvironmentVariable('name', {});
       } catch (e) {
@@ -18,7 +18,7 @@ describe('EnvironmentVariable.js', () => {
       }
     });
 
-    test('throws an exception because the type is not one of `int,float,string,uuid,list,map,boolean,path`', () => {
+    test('throws an exception because the json is not valid', () => {
       try {
         new EnvironmentVariable('name', {
           type: 'bob',

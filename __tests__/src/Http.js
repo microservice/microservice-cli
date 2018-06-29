@@ -2,7 +2,7 @@ const Http = require('../../src/Http');
 
 describe('Https.js', () => {
   describe('constructor', () => {
-    test('throws an exception because no method is given', () => {
+    test('throws an exception because the json is not valid', () => {
       try {
         new Http({});
       } catch (e) {
@@ -24,7 +24,7 @@ describe('Https.js', () => {
       }
     });
 
-    test('throws an exception because no endpoint is given', () => {
+    test('throws an exception because the json is not valid', () => {
       try {
         new Http({method: 'get'});
       } catch (e) {
@@ -40,7 +40,7 @@ describe('Https.js', () => {
       }
     });
 
-    test('throws an exception because the method is not one of `get,post,put,delete`', () => {
+    test('throws an exception because the json is not valid', () => {
       try {
         new Http({
           method: 'skrt',

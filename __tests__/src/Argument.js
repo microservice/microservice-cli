@@ -2,7 +2,7 @@ const Argument = require('../../src/Argument');
 
 describe('Argument.js', () => {
   describe('constructor', () => {
-    test('throws an exception because no type is given', () => {
+    test('throws an exception because the json is not valid', () => {
       try {
         new Argument('name', {});
       } catch (e) {
@@ -18,7 +18,7 @@ describe('Argument.js', () => {
       }
     });
 
-    test('throws an exception because the type is not one of `int,float,string,uuid,list,map,boolean,path`', () => {
+    test('throws an exception because the json is not valid', () => {
       try {
         new Argument('name', {
           type: 'bob',
@@ -36,7 +36,7 @@ describe('Argument.js', () => {
       }
     });
 
-    test('throws an exception because more then one check is defined `pattern,enum,range`', () => {
+    test('throws an exception because the json is not valid', () => {
       try {
         new Argument('name', {
           type: 'int',

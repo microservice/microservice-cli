@@ -1,6 +1,23 @@
 const Lifecycle = require('../../src/Lifecycle');
 
 describe('Https.js', () => {
+  describe('constructor', () => {
+    test('throws an exception because the json is not valid', () => {
+      try {
+        new Lifecycle({});
+      } catch (e) {
+        expect(e).toEqual({
+          errors: [{
+            dataPath: '',
+            keyword: 'minProperties',
+            message: 'should NOT have less than 1 properties',
+            params: {'limit': 1},
+            schemaPath: '#/minProperties',
+          }], valid: false, yaml: {},
+        });
+      }
+    });
+  });
   describe('.startup', () => {
     test('gets the startup', () => {
       const l = new Lifecycle({

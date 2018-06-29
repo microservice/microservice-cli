@@ -2,7 +2,7 @@ const Volume = require('../../src/Volume');
 
 describe('Volume.js', () => {
   describe('constructor', () => {
-    test('throws an exception because no target is given', () => {
+    test('throws an exception because the json is not valid', () => {
       try {
         new Volume('name', {});
       } catch (e) {

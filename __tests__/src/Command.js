@@ -4,7 +4,7 @@ const Http = require('../../src/Http');
 
 describe('Command.js', () => {
   describe('constructor', () => {
-    test('throws an exception because no output is given', () => {
+    test('throws an exception because the json is not valid', () => {
       try {
         new Command('name', {});
       } catch (e) {
