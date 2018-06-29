@@ -1,0 +1,91 @@
+{
+  "type": "object",
+  "properties": {
+    "startup": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": [
+            "string",
+            "array"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "run_once",
+            "run_many"
+          ]
+        }
+      },
+      "required": [
+        "command",
+        "timeout",
+        "method"
+      ],
+      "additionalProperties": false
+    },
+    "run": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": [
+            "array"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 5000,
+          "maximum": 9000
+        }
+      },
+      "required": [
+        "command",
+        "port"
+      ],
+      "additionalProperties": false
+    },
+    "shutdown": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": [
+            "string",
+            "array"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "run_once",
+            "run_many"
+          ]
+        }
+      },
+      "required": [
+        "command",
+        "timeout",
+        "method"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

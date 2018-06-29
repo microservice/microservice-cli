@@ -1,6 +1,6 @@
 {
-  "name": "microservice-guide-cli",
-  "version": "0.0.2",
+  "name": "omg",
+  "version": "0.0.3",
   "main": "cli.js",
   "scripts": {
     "test": "jest",
@@ -8,25 +8,32 @@
     "eslint": "eslint . --ignore-pattern coverage/ --quiet"
   },
   "bin": {
-    "microservice-guide-cli": "./cli.js"
+    "omg": "./cli.js"
   },
   "repository": "git@github.com:microservice-guide/cli.git",
   "license": "MIT",
   "dependencies": {
     "ajv": "^6.5.0",
     "commander": "^2.15.1",
+    "ora": "^2.1.0",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "shelljs": "^0.8.2",
+    "underscore": "^1.9.1",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-config-google": "^0.9.1",
-    "jest": "^23.0.1"
+    "jest": "^23.0.1",
+    "sinon": "^6.0.0"
   },
   "jest": {
     "collectCoverageFrom": [
       "cli.js",
       "schema/**/*.js",
-      "commands/**/*.js"
+      "commands/**/*.js",
+      "src/**/*.js"
     ],
     "coverageReporters": [
       "lcov",
@@ -39,14 +46,16 @@
       "google"
     ],
     "rules": {
-      "max-len": 0
+      "max-len": 0,
+      "no-throw-literal": 0
     },
     "env": {
       "jest": true,
-      "node": true
+      "node": true,
+      "es6": true
     },
     "parserOptions": {
-      "ecmaVersion": 6
+      "ecmaVersion": 8
     }
   }
 }

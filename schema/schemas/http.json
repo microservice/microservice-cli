@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "method": {
+      "type": "string",
+      "enum": [
+        "get",
+        "post",
+        "put",
+        "delete"
+      ]
+    },
+    "endpoint": {
+      "type": "string",
+      "pattern": "^\/.*"
+    }
+  },
+  "required": [
+    "method",
+    "endpoint"
+  ],
+  "additionalProperties": false
+}
