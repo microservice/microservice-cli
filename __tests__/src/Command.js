@@ -42,6 +42,98 @@ describe('Command.js', () => {
         });
       }
     });
+
+    test('throws an exception because an http command\'s argument does not provide a location', () => {
+      try {
+        new Command('name', {
+          output: {type: 'map'},
+          http: {
+            method: 'post',
+            endpoint: '/data',
+          },
+          arguments: {
+            foo: {
+              type: 'string',
+            },
+          },
+        });
+      } catch (e) {
+        expect(e).toEqual({
+          context: 'Argument: `foo` for command: `name`',
+          message: 'Commands\' arguments that interface via http must provide a location',
+        });
+      }
+    });
+
+    test('throws an exception because an http command\'s path argument is not defined in the endpoint for the http call', () => {
+      try {
+        new Command('name', {
+          output: {type: 'map'},
+          http: {
+            method: 'post',
+            endpoint: '/data',
+          },
+          arguments: {
+            foo: {
+              type: 'string',
+              location: 'path',
+            },
+          },
+        });
+      } catch (e) {
+        expect(e).toEqual({
+          context: 'Argument: `foo` for command: `name`',
+          message: 'Path parameters must be defined in the http endpoint, of the form `{{argument}}`',
+        });
+      }
+    });
+
+    test('throws an exception because an http command\'s path argument is not marked required or given a default value', () => {
+      try {
+        new Command('name', {
+          output: {type: 'map'},
+          http: {
+            method: 'post',
+            endpoint: '/data/{{foo}}',
+          },
+          arguments: {
+            foo: {
+              type: 'string',
+              location: 'path',
+            },
+          },
+        });
+      } catch (e) {
+        expect(e).toEqual({
+          context: 'Argument: `foo` for command: `name`',
+          message: 'Path parameters must be marked as required or be provided a default variable',
+        });
+      }
+    });
+
+    test('throws an exception because an http command has path parameters in endpoint that aren\'t defined as arguments', () => {
+      try {
+        new Command('name', {
+          output: {type: 'map'},
+          http: {
+            method: 'post',
+            endpoint: '/data/{{foo}}/{{bar}}',
+          },
+          arguments: {
+            foo: {
+              type: 'string',
+              required: true,
+              location: 'path',
+            },
+          },
+        });
+      } catch (e) {
+        expect(e).toEqual({
+          context: 'Path parameter(s): `{{bar}}` for command: `name`',
+          message: 'If a url specifies a path parameter i.e. `{{argument}}`, the argument must be defined in the command'
+        });
+      }
+    });
   });
 
   describe('.name', () => {

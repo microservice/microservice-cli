@@ -85,7 +85,7 @@ class Command {
     const extraPathParams = endpoint.match(/({{[a-zA-Z]+}})/g);
     if (extraPathParams !== null) {
       throw {
-        context: extraPathParams,
+        context: `Path parameter(s): \`${extraPathParams.toString()}\` for command: \`${this.name}\``,
         message: 'If a url specifies a path parameter i.e. `{{argument}}`, the argument must be defined in the command',
       };
     }
