@@ -1,9 +1,9 @@
 const http = require('http');
 const rp = require('request-promise');
-const ora = require('ora');
 const querystring = require('querystring');
 const verify = require('../verify');
-const {exec, getOpenPort, typeCast} = require('../utils');
+const utils = require('../utils');
+const ora = require('../ora');
 
 /**
  * Describes a way to execute a microservice.
@@ -36,7 +36,11 @@ class Exec {
       const argument = this._command.arguments[i];
       if (!this._arguments[argument.name]) {
         if (argument.default !== null) {
-          this._arguments[argument.name] = argument.default;
+          if (typeof argument.default === 'object') {
+            this._arguments[argument.name] = JSON.stringify(argument.default);
+          } else {
+            this._arguments[argument.name] = argument.default + '';
+          }
         }
       }
     }
@@ -67,7 +71,7 @@ class Exec {
     const argumentList = Object.keys(this._arguments);
     for (let i = 0; i < argumentList.length; i += 1) {
       const argument = this._command.getArgument(argumentList[i]);
-      this._arguments[argument.name] = typeCast[argument.type](this._arguments[argument.name]);
+      this._arguments[argument.name] = utils.typeCast[argument.type](this._arguments[argument.name]);
     }
   }
 
@@ -78,7 +82,7 @@ class Exec {
    */
   async go(command) {
     this._command = this._microservice.getCommand(command);
-    const spinner = ora(`Running command: \`${this._command.name}\``).start();
+    const spinner = ora.start(`Running command: \`${this._command.name}\``);
     this._setDefaultArguments();
     this._setDefaultEnvironmentVariables();
     if (!this._command.areRequiredArgumentsSupplied(this._arguments)) {
@@ -112,7 +116,7 @@ class Exec {
         await this.serverKill();
       } else { // streaming command
         const server = this._startOMGServer();
-        const port = await getOpenPort();
+        const port = await utils.getOpenPort();
         server.listen(port, '127.0.0.1');
         await this._startStream(port);
         spinner.succeed(`Ran command: \`${this._command.name}\` output will be streamed in (To exit, press ^C)`);
@@ -133,9 +137,9 @@ class Exec {
    */
   async _runDockerExecCommand() {
     if (this._command.name === 'entrypoint') {
-      return await exec(`docker run ${this._formatVolumesForPathTypes()} ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._formatExec()}`);
+      return await utils.exec(`docker run${this._formatVolumesForPathTypes()}${this._formatEnvironmentVariables()} ${this._dockerImage}${this._formatExec()}`);
     }
-    return await exec(`docker run ${this._formatVolumesForPathTypes()} ${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name} ${this._formatExec()}`);
+    return await utils.exec(`docker run${this._formatVolumesForPathTypes()}${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name}${this._formatExec()}`);
   }
 
   /**
@@ -148,9 +152,9 @@ class Exec {
     let result = '';
     const keys = Object.keys(this._environmentVariables);
     for (let i = 0; i < keys.length; i += 1) {
-      result += `-e ${keys[i]}="${this._environmentVariables[keys[i]]}" `;
+      result += ` -e ${keys[i]}="${this._environmentVariables[keys[i]]}"`;
     }
-    return result.trim();
+    return result;
   }
 
   // TODO startup and shutdown part of the lifecycle
@@ -161,10 +165,10 @@ class Exec {
    * @return {Number} The port the service is running on
    */
   async _startServer() {
-    const spinner = ora('Starting Docker container').start();
-    const port = await getOpenPort();
+    const spinner = ora.start('Starting Docker container');
+    const port = await utils.getOpenPort();
     const run = this._microservice.lifecycle.run;
-    this._dockerServiceId = await exec(`docker run -d -p ${port}:${run.port} ${this._formatEnvironmentVariables()} --entrypoint ${run.command} ${this._dockerImage} ${run.args}`);
+    this._dockerServiceId = await utils.exec(`docker run -d -p ${port}:${run.port} ${this._formatEnvironmentVariables()} --entrypoint ${run.command} ${this._dockerImage} ${run.args}`);
     spinner.succeed(`Stared Docker container with id: ${this._dockerServiceId.substring(0, 12)}`);
     return port;
   }
@@ -183,7 +187,7 @@ class Exec {
       if (argument.type === 'path') {
         const argumentValue = this._arguments[argument.name];
         const endPath = argumentValue.split('/')[argumentValue.split('/').length - 1];
-        volumeString += `-v ${argumentValue}:/tmp/${endPath} `;
+        volumeString += ` -v ${argumentValue}:/tmp/${endPath}`;
         this._arguments[argument.name] = `/tmp/${endPath}`;
       }
     }
@@ -197,7 +201,7 @@ class Exec {
    * @private
    */
   async _startStream(port) {
-    this._dockerServiceId = await exec(`docker run -d ${this._formatVolumesForPathTypes()} ${this._formatEnvironmentVariables()} \
+    this._dockerServiceId = await utils.exec(`docker run -d ${this._formatVolumesForPathTypes()} ${this._formatEnvironmentVariables()} \
                                        -e OMG_URL='http://host.docker.internal:${port}' --net="host" --entrypoint \
                                        ${this._command.run.command} ${this._dockerImage} ${this._command.run.args} \
                                        ${this._formatExec()}`);
@@ -275,7 +279,7 @@ class Exec {
    */
   _formatExec() {
     if (this._command.arguments.length > 0) {
-      return `'${JSON.stringify(this._arguments)}'`;
+      return ` '${JSON.stringify(this._arguments)}'`;
     }
     return '';
   }
@@ -319,8 +323,8 @@ class Exec {
    * @private
    */
   async serverKill() { // TODO work the shutdown lifecycle in here
-    const spinner = ora(`Stopping Docker container: ${this._dockerServiceId.substring(0, 12)}`).start();
-    await exec(`docker kill ${this._dockerServiceId.substring(0, 12)}`);
+    const spinner = ora.start(`Stopping Docker container: ${this._dockerServiceId.substring(0, 12)}`);
+    await utils.exec(`docker kill ${this._dockerServiceId.substring(0, 12)}`);
     spinner.succeed(`Stopped Docker container: ${this._dockerServiceId.substring(0, 12)}`);
   }
 

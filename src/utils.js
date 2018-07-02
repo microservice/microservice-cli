@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const $ = require('shelljs');
 const net = require('http');
-const ora = require('ora');
+const ora = require('./ora');
 
 /**
  * Used to set values in the constructors of the microservice classes.
@@ -23,7 +23,7 @@ function setVal(val, _else) {
  * @return {String} The name of the Docker image (uuid)
  */
 async function build() {
-  const spinner = ora('Building Docker image').start();
+  const spinner = ora.start('Building Docker image');
   let uuid = await exec('uuidgen');
   uuid = uuid.toLowerCase().trim();
   try {
