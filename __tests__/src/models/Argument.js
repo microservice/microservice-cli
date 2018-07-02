@@ -100,14 +100,6 @@ describe('Argument.js', () => {
     });
   });
 
-  describe('.enum', () => {
-    test('gets the enum', () => {
-      const a = new Argument('foo', {type: 'string', enum: ['bart']});
-
-      expect(a.enum).toEqual(['bart']);
-    });
-  });
-
   describe('.range', () => {
     test('gets the range', () => {
       const a = new Argument('foo', {type: 'string', range: {min: 1, max: 10}});

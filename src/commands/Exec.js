@@ -2,7 +2,7 @@ const http = require('http');
 const rp = require('request-promise');
 const ora = require('ora');
 const querystring = require('querystring');
-const Validate = require('../Validate');
+const verify = require('../verify');
 const {exec, getOpenPort, typeCast} = require('../utils');
 
 /**
@@ -94,20 +94,20 @@ class Exec {
       };
     }
     try {
-      Validate.verifyArgumentTypes(this._command, this._arguments);
+      verify.verifyArgumentTypes(this._command, this._arguments);
       this._castTypes();
-      Validate.verifyArgumentConstrains(this._command, this._arguments);
+      verify.verifyArgumentConstrains(this._command, this._arguments);
 
-      Validate.verifyEnvironmentVariableTypes(this._microservice, this._environmentVariables);
-      Validate.verifyEnvironmentVariablePattern(this._microservice, this._environmentVariables);
+      verify.verifyEnvironmentVariableTypes(this._microservice, this._environmentVariables);
+      verify.verifyEnvironmentVariablePattern(this._microservice, this._environmentVariables);
 
       if (this._command.http === null && this._command.run === null) { // exec command
         const output = await this._runDockerExecCommand();
-        Validate.verifyOutputType(this._command, output);
+        verify.verifyOutputType(this._command, output);
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
       } else if (this._command.http !== null && this._command.run === null) { // lifecycle http command
         const output = await this._httpCommand(await this._startServer());
-        Validate.verifyOutputType(this._command, output.trim());
+        verify.verifyOutputType(this._command, output.trim());
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
         await this.serverKill();
       } else { // streaming command
@@ -214,7 +214,7 @@ class Exec {
     return http.createServer((req, res) => {
       if (req.method === 'POST') {
         req.on('data', (data) => {
-          Validate.verifyOutputType(that._command, data);
+          verify.verifyOutputType(that._command, data);
           process.stdout.write(`${data}\n`);
         });
         res.end('Done');

@@ -160,7 +160,7 @@ class Command {
    *
    * @param {String} argument The given argument
    * @throws {String} If the argument does not exists
-   * @return {Command} The command with given name
+   * @return {Argument} The {@link Argument} with given name
    */
   getArgument(argument) {
     if ((this._argumentsMap === null) || (!this._argumentsMap[argument])) {
