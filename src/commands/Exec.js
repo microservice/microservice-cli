@@ -168,7 +168,7 @@ class Exec {
     const spinner = ora.start('Starting Docker container');
     const port = await utils.getOpenPort();
     const run = this._microservice.lifecycle.run;
-    this._dockerServiceId = await utils.exec(`docker run -d -p ${port}:${run.port} ${this._formatEnvironmentVariables()} --entrypoint ${run.command} ${this._dockerImage} ${run.args}`);
+    this._dockerServiceId = await utils.exec(`docker run -d -p ${port}:${run.port}${this._formatEnvironmentVariables()} --entrypoint ${run.command} ${this._dockerImage} ${run.args}`);
     spinner.succeed(`Stared Docker container with id: ${this._dockerServiceId.substring(0, 12)}`);
     return port;
   }

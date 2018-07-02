@@ -51,7 +51,7 @@ describe('Https.js', () => {
 
       expect(l.run).toEqual({
         command: 'node',
-        args: 'app.js foo ',
+        args: 'app.js foo',
         port: 5000,
       });
     });

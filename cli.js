@@ -84,7 +84,6 @@ program
       process.exit(1);
     }
     try {
-      microservice.getCommand(options.cmd);
       const uuid = await build();
       const argsObj = parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
       const envObj = parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');

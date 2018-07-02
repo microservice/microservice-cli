@@ -23,6 +23,7 @@ class Lifecycle {
     for (let i = 1; i < rawLifecycle.run.command.length; i += 1) {
       this._run.args += rawLifecycle.run.command[i] + ' ';
     }
+    this._run.args = this._run.args.trim();
     this._shutdown = rawLifecycle.shutdown || null;
   }
 

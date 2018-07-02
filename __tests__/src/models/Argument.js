@@ -28,8 +28,8 @@ describe('Argument.js', () => {
           errors: [{
             dataPath: '.type',
             keyword: 'pattern',
-            message: 'should match pattern "^(int|float|string|uuid|list|object|boolean|path)$"',
-            params: {pattern: '^(int|float|string|uuid|list|object|boolean|path)$'},
+            message: 'should match pattern "^(int|float|string|uuid|list|map|boolean|path)$"',
+            params: {pattern: '^(int|float|string|uuid|list|map|boolean|path)$'},
             schemaPath: '#/properties/type/pattern',
           }], valid: false, issue: {type: 'bob'},
         });
