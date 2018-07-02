@@ -2,7 +2,7 @@ const http = require('http');
 const rp = require('request-promise');
 const ora = require('ora');
 const querystring = require('querystring');
-const Validate = require('./Validate');
+const Validate = require('../src/Validate');
 const {exec, getOpenPort, typeCast} = require('./utils');
 
 /**
