@@ -1,4 +1,4 @@
-const EnvironmentVariable = require('../../src/EnvironmentVariable');
+const EnvironmentVariable = require('../../../src/models/EnvironmentVariable');
 
 describe('EnvironmentVariable.js', () => {
   describe('constructor', () => {

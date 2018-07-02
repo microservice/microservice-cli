@@ -1,4 +1,4 @@
-const validateHttp = require('../schema/schema').http;
+const validateHttp = require('../../schema/schema').http;
 
 /**
  * Describes an http setup.

@@ -1,4 +1,4 @@
-const {dataTypes} = require('../commands/utils');
+const {dataTypes} = require('./utils');
 
 /**
  * Used for validating a `microservice.yml`.

@@ -2,7 +2,7 @@ const Command = require('./Command');
 const EnvironmentVariable = require('./EnvironmentVariable');
 const Volume = require('./Volume');
 const Lifecycle = require('./Lifecycle');
-const validateMicroservice = require('../schema/schema').microservice;
+const validateMicroservice = require('../../schema/schema').microservice;
 
 /**
  * Describes a microservice defined by a `microservice.yml`

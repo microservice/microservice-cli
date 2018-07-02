@@ -1,4 +1,4 @@
-const validateEnvironmentVariable = require('../schema/schema').environmentVariable;
+const validateEnvironmentVariable = require('../../schema/schema').environmentVariable;
 
 /**
  * Describes and environment variable.

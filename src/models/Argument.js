@@ -1,5 +1,5 @@
-const {setVal} = require('../commands/utils');
-const validateArgument = require('../schema/schema').argument;
+const {setVal} = require('../utils');
+const validateArgument = require('../../schema/schema').argument;
 
 /**
  * Describes an argument.

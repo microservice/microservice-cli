@@ -1,4 +1,4 @@
-const Http = require('../../src/Http');
+const Http = require('../../../src/models/Http');
 
 describe('Https.js', () => {
   describe('constructor', () => {

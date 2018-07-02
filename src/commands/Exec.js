@@ -2,8 +2,8 @@ const http = require('http');
 const rp = require('request-promise');
 const ora = require('ora');
 const querystring = require('querystring');
-const Validate = require('../src/Validate');
-const {exec, getOpenPort, typeCast} = require('./utils');
+const Validate = require('../Validate');
+const {exec, getOpenPort, typeCast} = require('../utils');
 
 /**
  * Describes a way to execute a microservice.

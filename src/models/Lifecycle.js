@@ -1,4 +1,4 @@
-const validateLifecycle = require('../schema/schema').lifecycle;
+const validateLifecycle = require('../../schema/schema').lifecycle;
 
 /**
  * Describes a lifecycle used by a {@link Microservice}.

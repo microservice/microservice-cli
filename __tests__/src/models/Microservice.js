@@ -1,8 +1,8 @@
-const Microservice = require('../../src/Microservice');
-const Command = require('../../src/Command');
-const EnvironmentVariable = require('../../src/EnvironmentVariable');
-const Volume = require('../../src/Volume');
-const Lifecycle = require('../../src/Lifecycle');
+const Microservice = require('../../../src/models/Microservice');
+const Command = require('../../../src/models/Command');
+const EnvironmentVariable = require('../../../src/models/EnvironmentVariable');
+const Volume = require('../../../src/models/Volume');
+const Lifecycle = require('../../../src/models/Lifecycle');
 
 describe('Microservice.js', () => {
   describe('constructor', () => {

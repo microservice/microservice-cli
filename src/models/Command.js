@@ -1,6 +1,6 @@
 const Arguments = require('./Argument');
 const Http = require('./Http');
-const validateCommand = require('../schema/schema').command;
+const validateCommand = require('../../schema/schema').command;
 
 /**
  * Describes a command.

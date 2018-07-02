@@ -1,4 +1,4 @@
-const validateVolume = require('../schema/schema').volume;
+const validateVolume = require('../../schema/schema').volume;
 
 /**
  * Describes a volume used by a {@link Microservice}

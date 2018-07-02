@@ -1,4 +1,4 @@
-const utils = require('../../commands/utils');
+const utils = require('../../src/utils');
 
 describe('utils.js', () => {
   describe('parse(list, errorMessage)', () => {

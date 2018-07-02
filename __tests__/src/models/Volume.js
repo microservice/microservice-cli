@@ -1,4 +1,4 @@
-const Volume = require('../../src/Volume');
+const Volume = require('../../../src/models/Volume');
 
 describe('Volume.js', () => {
   describe('constructor', () => {

@@ -4,9 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const program = require('commander');
 const YAML = require('yamljs');
-const {build, parse} = require('./commands/utils');
-const Microservice = require('./src/Microservice');
-const Exec = require('./commands/Exec');
+const {build, parse} = require('./src/utils');
+const Microservice = require('./src/models/Microservice');
+const Exec = require('./src/commands/Exec');
 
 program
   .version('0.0.1');

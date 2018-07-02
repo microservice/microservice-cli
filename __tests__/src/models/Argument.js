@@ -1,4 +1,4 @@
-const Argument = require('../../src/Argument');
+const Argument = require('../../../src/models/Argument');
 
 describe('Argument.js', () => {
   describe('constructor', () => {

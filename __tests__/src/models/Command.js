@@ -1,6 +1,6 @@
-const Command = require('../../src/Command');
-const Argument = require('../../src/Argument');
-const Http = require('../../src/Http');
+const Command = require('../../../src/models/Command');
+const Argument = require('../../../src/models/Argument');
+const Http = require('../../../src/models/Http');
 
 describe('Command.js', () => {
   describe('constructor', () => {

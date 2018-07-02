@@ -1,4 +1,4 @@
-const Lifecycle = require('../../src/Lifecycle');
+const Lifecycle = require('../../../src/models/Lifecycle');
 
 describe('Https.js', () => {
   describe('constructor', () => {
