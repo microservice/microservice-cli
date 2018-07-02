@@ -19,7 +19,7 @@ class Microservice {
       throw isValid;
     }
     this._rawData = isValid;
-    this._environmentMap = null;
+    this._commandMap = null;
     if (microserviceYamlJson.commands) {
       this._commandMap = {};
       const commandList = Object.keys(microserviceYamlJson.commands);
@@ -104,13 +104,13 @@ class Microservice {
   /**
    * Checks if the required {@link EnvironmentVariable} are supplied.
    *
-   * @param {Object} environmentVariables The given mapping of environment variables
+   * @param {Object} environmentVariableMapping The given mapping of environment variables
    * @return {Boolean} True if all required environment variables are given, otherwise false
    */
-  areRequiredEnvironmentVariablesSupplied(environmentVariables) {
+  areRequiredEnvironmentVariablesSupplied(environmentVariableMapping) {
     const requiredEnvironmentVariable = this.requiredEnvironmentVariables;
     for (let i = 0; i< requiredEnvironmentVariable.length; i += 1) {
-      if (!Object.keys(environmentVariables).includes(requiredEnvironmentVariable[i])) {
+      if (!Object.keys(environmentVariableMapping).includes(requiredEnvironmentVariable[i])) {
         return false;
       }
     }
@@ -135,7 +135,7 @@ class Microservice {
     if (this._volumeMap === null) {
       return [];
     }
-    return Object.keys(this._volumeMap);
+    return Object.values(this._volumeMap);
   }
 
   /**

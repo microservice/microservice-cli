@@ -13,7 +13,7 @@ describe('Command.js', () => {
             dataPath: '',
             keyword: 'required',
             message: 'should have required property \'output\'',
-            params: {'missingProperty': 'output'},
+            params: {missingProperty: 'output'},
             schemaPath: '#/required',
           }], valid: false, issue: {},
         });
@@ -130,7 +130,7 @@ describe('Command.js', () => {
       } catch (e) {
         expect(e).toEqual({
           context: 'Path parameter(s): `{{bar}}` for command: `name`',
-          message: 'If a url specifies a path parameter i.e. `{{argument}}`, the argument must be defined in the command'
+          message: 'If a url specifies a path parameter i.e. `{{argument}}`, the argument must be defined in the command',
         });
       }
     });
