@@ -1,14 +1,14 @@
 {
   "name": "omg",
   "version": "0.0.3",
-  "main": "cli.js",
+  "main": "omg",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
     "eslint": "eslint . --ignore-pattern coverage/ --quiet"
   },
   "bin": {
-    "omg": "./cli.js"
+    "omg": "./omg"
   },
   "repository": "git@github.com:microservice-guide/cli.git",
   "license": "MIT",
@@ -30,9 +30,7 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "cli.js",
       "schema/**/*.js",
-      "commands/**/*.js",
       "src/**/*.js"
     ],
     "coverageReporters": [
