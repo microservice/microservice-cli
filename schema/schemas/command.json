@@ -22,10 +22,11 @@
               "map",
               "boolean",
               "path",
-              "any"
+              "any",
+              "null"
             ]
           },
-          "pattern": "^(int|float|string|uuid|list|map|boolean|path|any)$"
+          "pattern": "^(int|float|string|uuid|list|map|boolean|path|any|null)$"
         },
         "pattern": {
           "type": "string"
