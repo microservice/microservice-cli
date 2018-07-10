@@ -76,7 +76,6 @@
         }
       },
       "required": [
-        "port",
         "command"
       ],
       "additionalProperties": false
