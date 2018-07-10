@@ -85,7 +85,12 @@ function verifyEnvironmentVariablePattern(microservice, envs) {
  */
 function verifyOutputType(command, output) {
   if (!dataTypes[command.output.type](output)) {
-    throw `Command: \`${command.name}\` must have output type: \`${command.output.type}\``;
+    throw (
+        `Command: \`${command.name}\``
+        + ` must have output type: \`${command.output.type}\``
+        + ` instead got: \`${typeof output}\``
+        + ` ${output}`
+    );
   }
 }
 

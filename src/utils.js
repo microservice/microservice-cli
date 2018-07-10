@@ -104,14 +104,20 @@ const dataTypes = {
   },
   list: (list) => {
     try {
-      return JSON.parse(list).toString() !== '[object Object]';
+      return (
+        (Array.isArray(list) && typeof list === 'object')
+        || JSON.parse(list).toString() !== '[object Object]'
+      );
     } catch (e) {
       return false;
     }
   },
   map: (map) => {
     try {
-      return JSON.parse(map).toString() === '[object Object]';
+      return (
+        (!Array.isArray(map) && typeof map === 'object')
+        || JSON.parse(map).toString() === '[object Object]'
+      );
     } catch (e) {
       return false;
     }

@@ -148,7 +148,7 @@ describe('verify.js', () => {
           output: {type: 'map'},
         }), 'bob');
       } catch (e) {
-        expect(e).toBe('Command: `name` must have output type: `map`');
+        expect(e).toBe('Command: `name` must have output type: `map` instead got: `string` bob');
       }
     });
   });
