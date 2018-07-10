@@ -99,7 +99,7 @@ describe('utils.js', () => {
 
     test('type checks a stringified list', () => {
       expect(utils.dataTypes['list']('["data"]')).toBeTruthy();
-      expect(utils.dataTypes['list'](["data"])).toBeTruthy();
+      expect(utils.dataTypes['list'](['data'])).toBeTruthy();
       expect(utils.dataTypes['list']('{"data": "value"}')).toBeFalsy();
       expect(utils.dataTypes['list']('asd')).toBeFalsy();
       expect(utils.dataTypes['list']({'a': 1})).toBeFalsy();
@@ -107,9 +107,9 @@ describe('utils.js', () => {
 
     test('type checks a stringified map', () => {
       expect(utils.dataTypes['map']('{"data": "value"}')).toBeTruthy();
-      expect(utils.dataTypes['map']({"data": "value"})).toBeTruthy();
+      expect(utils.dataTypes['map']({'data': 'value'})).toBeTruthy();
       expect(utils.dataTypes['map']('["data"]')).toBeFalsy();
-      expect(utils.dataTypes['map'](["data"])).toBeFalsy();
+      expect(utils.dataTypes['map'](['data'])).toBeFalsy();
       expect(utils.dataTypes['map']('asd')).toBeFalsy();
     });
 
