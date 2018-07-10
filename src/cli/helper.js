@@ -6,20 +6,40 @@ const Microservice = require('../models/Microservice');
 const Exec = require('../commands/Exec');
 
 /**
- * Reads the `microservice.yml` and validates it.
+ * Formats the output based on the options and exits with the given code.
+ *
+ * @param {Object} data The given data of the validation
+ * @param {Object} options The given options (json, silent, or text)
+ * @param {Number} code The given code to exit with
  */
-function validate() {
+function processValidateOutput(data, options, code) {
+  if (options.json) {
+    process.stdout.write(JSON.stringify(data, null, 2));
+    process.exit(code);
+  } else if (options.silent) {
+    process.exit(code);
+  } else {
+    process.stdout.write('TODO'); // make a nice text output
+  }
+}
+
+/**
+ * Reads the `microservice.yml` and validates it.
+ *
+ * @param {Object} options The given options (json, silent, or text)
+ */
+function validate(options) {
   if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
     process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
+
+  const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
   try {
-    const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
     const m = new Microservice(json);
-    process.stdout.write(JSON.stringify(m.rawData, null, 2));
+    processValidateOutput(m.rawData, options, 0);
   } catch (e) {
-    process.stderr.write(JSON.stringify(e, null, 2));
-    process.exit(1);
+    processValidateOutput(e, options, 1);
   }
 }
 
