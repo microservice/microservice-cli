@@ -202,7 +202,7 @@ class Exec {
    */
   async _startStream(port) {
     this._dockerServiceId = await utils.exec(`docker run -d ${this._formatVolumesForPathTypes()} ${this._formatEnvironmentVariables()} \
-                                       -e OMG_URL='http://host.docker.internal:${port}' --net="host" --entrypoint \
+                                       -e OMG_ENDPOINT='http://host.docker.internal:${port}' --net="host" --entrypoint \
                                        ${this._command.run.command} ${this._dockerImage} ${this._command.run.args} \
                                        ${this._formatExec()}`);
   }
