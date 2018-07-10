@@ -65,8 +65,8 @@
       "properties": {
         "port": {
           "type": "integer",
-          "minimum": 5000,
-          "maximum": 9000
+          "minimum": 1,
+          "maximum": 99999
         },
         "command": {
           "type": "array",
