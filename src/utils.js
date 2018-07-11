@@ -1,7 +1,6 @@
 const _ = require('underscore');
 const $ = require('shelljs');
 const net = require('http');
-const ora = require('./ora');
 
 /**
  * Used to set values in the constructors of the microservice classes.
@@ -15,27 +14,6 @@ function setVal(val, _else) {
     return _else;
   }
   return val;
-}
-
-/**
- * Builds the microservice described in the Dockerfile of the current working directory.
- *
- * @return {String} The name of the Docker image (uuid)
- */
-async function build() {
-  const spinner = ora.start('Building Docker image');
-  let uuid = await exec('uuidgen');
-  uuid = uuid.toLowerCase().trim();
-  try {
-    await exec(`docker build -t ${uuid} .`);
-    spinner.succeed(`Built Docker image with name: ${uuid}`);
-  } catch (e) {
-    throw {
-      spinner,
-      message: e.toString().trim(),
-    };
-  }
-  return uuid;
 }
 
 /**
@@ -176,12 +154,26 @@ function getOpenPort() {
   }
 }
 
+/**
+ * Used to append the environment variable options into [args...]
+ *
+ * @param {Array} xs
+ * @return {function(*=): (*|Array)}
+ */
+function appender(xs) {
+  xs = xs || [];
+  return function(x) {
+    xs.push(x);
+    return xs;
+  };
+}
+
 module.exports = {
   setVal,
-  build,
   parse,
   exec,
   dataTypes,
   getOpenPort,
   typeCast,
+  appender,
 };
