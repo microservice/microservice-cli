@@ -11,19 +11,13 @@ describe('Microservice.js', () => {
         new Microservice({});
       } catch (e) {
         expect(e).toEqual({
-          valid: false,
-          issue: {},
-          errors: [
-            {
-              keyword: 'minProperties',
-              dataPath: '',
-              schemaPath: '#/minProperties',
-              params: {
-                limit: 1,
-              },
-              message: 'should NOT have less than 1 properties',
-            },
-          ],
+          errors: [{
+            dataPath: '',
+            keyword: 'minProperties',
+            message: 'should NOT have less than 1 properties',
+            params: {limit: 1},
+            schemaPath: '#/minProperties',
+          }], issue: {}, text: 'data should NOT have less than 1 properties', valid: false,
         });
       }
     });
@@ -63,17 +57,10 @@ describe('Microservice.js', () => {
       });
 
       expect(m.rawData).toEqual({
-        valid: true,
-        yaml: {
-          commands: {
-            foo: {
-              output: {
-                type: 'boolean',
-              },
-            },
-          },
-        },
         errors: null,
+        text: 'No errors',
+        valid: true,
+        yaml: {commands: {foo: {output: {type: 'boolean'}}}},
       });
     });
   });
@@ -227,7 +214,10 @@ describe('Microservice.js', () => {
         },
       });
 
-      expect(m.volumes).toEqual([new Volume('foo', {target: '/foo'}), new Volume('bar', {target: '/bar', persist: true})]);
+      expect(m.volumes).toEqual([new Volume('foo', {target: '/foo'}), new Volume('bar', {
+        target: '/bar',
+        persist: true,
+      })]);
     });
   });
 

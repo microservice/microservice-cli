@@ -45,7 +45,8 @@
     ],
     "rules": {
       "max-len": 0,
-      "no-throw-literal": 0
+      "no-throw-literal": 0,
+      "quote-props": [2, "as-needed"]
     },
     "env": {
       "jest": true,

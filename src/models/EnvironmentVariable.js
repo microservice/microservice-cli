@@ -13,6 +13,7 @@ class EnvironmentVariable {
   constructor(name, rawEnvironment) {
     const isValid = validateEnvironmentVariable(rawEnvironment);
     if (!isValid.valid) {
+      isValid.text = isValid.text.replace('data', `environment.${name}`);
       throw isValid;
     }
     this._name = name;

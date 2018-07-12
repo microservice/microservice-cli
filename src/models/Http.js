@@ -7,11 +7,13 @@ class Http {
   /**
    * Builds an {@link Http} setup.
    *
+   * @param {String} commandName The name of the command that interfaces via http
    * @param {Object} rawHttp The given raw data
    */
-  constructor(rawHttp) {
+  constructor(commandName, rawHttp) {
     const isValid = validateHttp(rawHttp);
     if (!isValid.valid) {
+      isValid.text = isValid.text.replace('data', `commands.${commandName}.http`);
       throw isValid;
     }
     this._method = rawHttp.method;

@@ -6,20 +6,23 @@ const Microservice = require('../models/Microservice');
 const Exec = require('../commands/Exec');
 
 /**
- * Formats the output based on the options and exits with the given code.
+ * Formats the output based on the data and options.
  *
  * @param {Object} data The given data of the validation
  * @param {Object} options The given options (json, silent, or text)
- * @param {Number} code The given code to exit with
+ * @return {String} The string to be printed to the console
  */
-function processValidateOutput(data, options, code) {
+function processValidateOutput(data, options) {
   if (options.json) {
-    process.stdout.write(JSON.stringify(data, null, 2));
-    process.exit(code);
+    return JSON.stringify(data, null, 2);
   } else if (options.silent) {
-    process.exit(code);
+    return '';
   } else {
-    process.stdout.write('TODO'); // make a nice text output
+    if (!data.text) {
+      return `${data.context} has an issue. ${data.message}`;
+    } else {
+      return data.text;
+    }
   }
 }
 
@@ -37,9 +40,11 @@ function validate(options) {
   const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
   try {
     const m = new Microservice(json);
-    processValidateOutput(m.rawData, options, 0);
+    process.stdout.write(processValidateOutput(m.rawData, options));
+    process.exit(0);
   } catch (e) {
-    processValidateOutput(e, options, 1);
+    process.stderr.write(processValidateOutput(e, options));
+    process.exit(1);
   }
 }
 

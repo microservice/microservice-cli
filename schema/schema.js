@@ -25,12 +25,14 @@ function validate(json, validator) {
       valid,
       yaml: json,
       errors: validator.errors,
+      text: ajv.errorsText(validator.errors),
     };
   }
   return {
     valid,
     issue: json,
     errors: validator.errors,
+    text: ajv.errorsText(validator.errors),
   };
 }
 

@@ -12,6 +12,7 @@ class Lifecycle {
   constructor(rawLifecycle) { // TODO maybe make these fields class instead of raw objects https://microservice.guide/lifecycle
     const isValid = validateLifecycle(rawLifecycle);
     if (!isValid.valid) {
+      isValid.text = isValid.text.replace('data', 'lifecycle');
       throw isValid;
     }
     this._startup = rawLifecycle.startup || null;
