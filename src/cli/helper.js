@@ -3,6 +3,7 @@ const path = require('path');
 const YAML = require('yamljs');
 const utils = require('../utils');
 const Microservice = require('../models/Microservice');
+const Build = require('../commands/Build');
 const Exec = require('../commands/Exec');
 
 /**
@@ -48,27 +49,43 @@ function validate(options) {
   }
 }
 
+/**
+ * Checks if we are in an OMG directory then builds a microservice.
+ *
+ * @param {String} name The given name
+ */
+async function build(name) {
+  if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
+    process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+    process.exit(1);
+  }
+  await new Build(name).go();
+}
+
 let microservice = null;
 let e = null;
 
 /**
  * Will read the `microservice.yml` and `Dockerfile` and run the given command with the given arguments and environment variables.
  *
+ * @param {String} image, The given image
  * @param {Object} options The given object holding the command, arguments, and environment variables
  */
-async function exec(options) {
+async function exec(image, options) {
   if (!(options.args) || !(options.envs)) {
     process.stdout.write('\n' +
-      '  Usage: exec\n' +
-      '\n' +
-      '  Run commands defined in your `microservice.yml`\n' +
+      '  Usage: omg [options] [command]\n' +
       '\n' +
       '  Options:\n' +
       '\n' +
-      '    -c --cmd <c>   The command you want to run, if not provided the `entrypoint` command will be ran\n' +
-      '    -a --args <a>  Arguments to be passed to the command, must be of the form `key="val"`\n' +
-      '    -e --envs <e>  Environment variables to be passed to run environment, must be of the form `key="val"`\n' +
-      '    -h, --help     output usage information');
+      '    -V, --version           output the version number\n' +
+      '    -h, --help              output usage information\n' +
+      '\n' +
+      '  Commands:\n' +
+      '\n' +
+      '    validate                Validate the structure of a `microservice.yml` in the current directory\n' +
+      '    build <name>            Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`\n' +
+      '    exec [options] <image>  Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
@@ -79,6 +96,12 @@ async function exec(options) {
     options.cmd = 'entrypoint';
   }
 
+  const images = await utils.exec(`docker images -f "reference=omg/${image}:local"`);
+  if (!images.includes(image)) {
+    process.stderr.write(`Container for microservice \`${image}\` is not built. Run \`omg build ${image}\` to build the container.`);
+    process.exit(1);
+  }
+
   try {
     const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
     microservice = new Microservice(json);
@@ -87,14 +110,17 @@ async function exec(options) {
     process.exit(1);
   }
   try {
-    const uuid = await utils.build();
     const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
     const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
-    e = new Exec(uuid, microservice, argsObj, envObj);
+    e = new Exec(`omg/${image}:local`, microservice, argsObj, envObj);
     await e.go(options.cmd);
   } catch (error) {
     if (error.spinner) {
-      error.spinner.fail(error.message);
+      if (error.message.includes('Unable to find image')) {
+        error.spinner.fail(`${error.message.split('.')[0]}. Container not built. Run \`omg build \`container_name\`\``);
+      } else {
+        error.spinner.fail(error.message);
+      }
     } else {
       process.stderr.write(error.message);
     }
@@ -114,6 +140,7 @@ async function controlC() {
 
 module.exports = {
   validate,
+  build,
   exec,
   controlC,
 };
