@@ -8,9 +8,11 @@ program
 
 program
   .command('validate')
-  .description('Validate the structure of a `microservice.yml` in the current directory')
   .usage(' ')
-  .action(() => helper.validate());
+  .option('-j --json', 'Formats output to JSON')
+  .option('-s --silent', 'Only feedback is the status code that is exited with')
+  .description('Validate the structure of a `microservice.yml` in the current directory')
+  .action((options) => helper.validate(options));
 
 /**
  * Used to append the environment variable options into [args...]

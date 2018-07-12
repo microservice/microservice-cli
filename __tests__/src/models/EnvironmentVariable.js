@@ -13,7 +13,7 @@ describe('EnvironmentVariable.js', () => {
             message: 'should have required property \'type\'',
             params: {missingProperty: 'type'},
             schemaPath: '#/required',
-          }], valid: false, issue: {},
+          }], issue: {}, text: 'environment.name should have required property \'type\'', valid: false,
         });
       }
     });
@@ -29,9 +29,12 @@ describe('EnvironmentVariable.js', () => {
             dataPath: '.type',
             keyword: 'pattern',
             message: 'should match pattern "^(int|float|string|uuid|list|map|boolean|path|any)$"',
-            params: {'pattern': '^(int|float|string|uuid|list|map|boolean|path|any)$'},
+            params: {pattern: '^(int|float|string|uuid|list|map|boolean|path|any)$'},
             schemaPath: '#/properties/type/pattern',
-          }], valid: false, issue: {type: 'bob'},
+          }],
+          issue: {type: 'bob'},
+          text: 'environment.name.type should match pattern "^(int|float|string|uuid|list|map|boolean|path|any)$"',
+          valid: false,
         });
       }
     });

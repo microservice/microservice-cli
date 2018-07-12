@@ -1,6 +1,6 @@
 const Lifecycle = require('../../../src/models/Lifecycle');
 
-describe('Https.js', () => {
+describe('Lifecycle.js', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {
@@ -11,9 +11,9 @@ describe('Https.js', () => {
             dataPath: '',
             keyword: 'minProperties',
             message: 'should NOT have less than 1 properties',
-            params: {'limit': 1},
+            params: {limit: 1},
             schemaPath: '#/minProperties',
-          }], valid: false, issue: {},
+          }], issue: {}, text: 'lifecycle should NOT have less than 1 properties', valid: false,
         });
       }
     });

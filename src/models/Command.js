@@ -15,6 +15,7 @@ class Command {
   constructor(name, rawCommand) {
     const isValid = validateCommand(rawCommand);
     if (!isValid.valid) {
+      isValid.text = isValid.text.replace('data', `commands.${name}`);
       throw isValid;
     }
     this._name = name;
@@ -28,7 +29,7 @@ class Command {
         this._argumentsMap[_arguments[i]] = new Arguments(_arguments[i], rawCommand.arguments[_arguments[i]]);
       }
     }
-    this._http = ((rawCommand.http) ? new Http(rawCommand.http) : null);
+    this._http = ((rawCommand.http) ? new Http(name, rawCommand.http) : null);
     this._runCommand = null;
     if (rawCommand.run) {
       this._runCommand = {};

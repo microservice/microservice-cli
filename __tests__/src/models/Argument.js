@@ -13,7 +13,7 @@ describe('Argument.js', () => {
             message: 'should have required property \'type\'',
             params: {missingProperty: 'type'},
             schemaPath: '#/required',
-          }], valid: false, issue: {},
+          }], issue: {}, text: 'commands.arguments.name should have required property \'type\'', valid: false,
         });
       }
     });
@@ -31,7 +31,10 @@ describe('Argument.js', () => {
             message: 'should match pattern "^(int|float|string|uuid|list|map|boolean|path)$"',
             params: {pattern: '^(int|float|string|uuid|list|map|boolean|path)$'},
             schemaPath: '#/properties/type/pattern',
-          }], valid: false, issue: {type: 'bob'},
+          }],
+          issue: {type: 'bob'},
+          text: 'commands.arguments.name.type should match pattern "^(int|float|string|uuid|list|map|boolean|path)$"',
+          valid: false,
         });
       }
     });
@@ -45,8 +48,8 @@ describe('Argument.js', () => {
         });
       } catch (e) {
         expect(e).toEqual({
-          'context': 'Argument with name: `name`',
-          'message': 'An Argument can only have a pattern, enum, or range defined',
+          context: 'Argument with name: `name`',
+          message: 'An Argument can only have a pattern, enum, or range defined',
         });
       }
     });

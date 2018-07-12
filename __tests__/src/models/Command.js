@@ -15,7 +15,7 @@ describe('Command.js', () => {
             message: 'should have required property \'output\'',
             params: {missingProperty: 'output'},
             schemaPath: '#/required',
-          }], valid: false, issue: {},
+          }], issue: {}, text: 'commands.name should have required property \'output\'', valid: false,
         });
       }
     });
@@ -285,7 +285,7 @@ describe('Command.js', () => {
         },
       });
 
-      expect(c.http).toEqual(new Http({
+      expect(c.http).toEqual(new Http('foo', {
         method: 'post',
         endpoint: '/skrt',
       }));
@@ -305,9 +305,9 @@ describe('Command.js', () => {
       });
 
       expect(c.run).toEqual({
-        'args': 'cli.js command ',
-        'command': 'node',
-        'port': 5000,
+        args: 'cli.js command ',
+        command: 'node',
+        port: 5000,
       });
     });
   });

@@ -11,9 +11,9 @@ describe('Volume.js', () => {
             dataPath: '',
             keyword: 'required',
             message: 'should have required property \'target\'',
-            params: {'missingProperty': 'target'},
+            params: {missingProperty: 'target'},
             schemaPath: '#/required',
-          }], valid: false, issue: {},
+          }], issue: {}, text: 'volumes.name should have required property \'target\'', valid: false,
         });
       }
     });

@@ -46,7 +46,8 @@
           },
           "additionalProperties": false
         }
-      }
+      },
+      "additionalProperties": false
     },
     "arguments": {
       "type": "object",
