@@ -34,7 +34,11 @@ if (process.argv.length === 2) {
   program.help();
 }
 process.on('SIGINT', async function() {
-  await helper.controlC();
+  try {
+    await helper.controlC();
+  } catch (e) {
+    process.exit();
+  }
 });
 
 module.exports = program;
