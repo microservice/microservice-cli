@@ -4,6 +4,7 @@ const querystring = require('querystring');
 const verify = require('../verify');
 const utils = require('../utils');
 const ora = require('../ora');
+const logSymbols = require('log-symbols');
 
 /**
  * Describes a way to execute a microservice.
@@ -223,6 +224,7 @@ class Exec {
             process.stdout.write(`${data}\n`);
           } catch (e) {
             await this.serverKill();
+            process.stderr.write(`${logSymbols.error} Failed command \`${this._command.name}\` ${e}`);
             process.exit(1);
           }
         });
