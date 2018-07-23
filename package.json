@@ -15,6 +15,7 @@
   "dependencies": {
     "ajv": "^6.5.0",
     "commander": "^2.15.1",
+    "log-symbols": "^2.2.0",
     "ora": "^2.1.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
@@ -46,7 +47,10 @@
     "rules": {
       "max-len": 0,
       "no-throw-literal": 0,
-      "quote-props": [2, "as-needed"]
+      "quote-props": [
+        2,
+        "as-needed"
+      ]
     },
     "env": {
       "jest": true,
