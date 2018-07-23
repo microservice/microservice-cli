@@ -1,6 +1,6 @@
 {
   "name": "omg",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "omg",
   "scripts": {
     "test": "jest",
