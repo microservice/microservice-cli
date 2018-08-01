@@ -165,7 +165,7 @@ class Command {
    */
   getArgument(argument) {
     if ((this._argumentsMap === null) || (!this._argumentsMap[argument])) {
-      throw 'Argument does not exist';
+      throw `Argument \`${argument}\` does not exist`;
     }
     return this._argumentsMap[argument];
   }

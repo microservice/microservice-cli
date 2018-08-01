@@ -261,7 +261,7 @@ describe('Command.js', () => {
       try {
         c.getArgument('argo');
       } catch (e) {
-        expect(e).toBe('Argument does not exist');
+        expect(e).toBe('Argument `argo` does not exist');
       }
     });
   });

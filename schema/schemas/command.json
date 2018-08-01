@@ -28,6 +28,9 @@
           },
           "pattern": "^(int|float|string|uuid|list|map|boolean|path|any|null)$"
         },
+        "help": {
+          "type": "string"
+        },
         "pattern": {
           "type": "string"
         },
