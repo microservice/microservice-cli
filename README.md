@@ -8,13 +8,13 @@ Still a work in progress :smile:. Check back soon.
 The microservice.guide CLI allows you to verify your `microservice.yml` and execute the microservice's commands.
 
 ## Installation
-`npm install -g microservice-guide-cli`
+`npm install -g omg`
 
 ## Commands
 ### Validate
-When ran in a directory of a microservice (a directory containing a `microservice.guide`), validation will be ran against that file.
+When ran in a directory of a microservice (a directory containing a `microservice.yml`), validation will begin against that file.
 ```sh
-microservice-guide-cli utils
+omg utils
 ```
 #### Example output
 ##### Valid `microservice.yml`
@@ -89,7 +89,7 @@ microservice-guide-cli utils
 }
 ```
 ## Exec
-When ran in a directory of a microservice (a directory containing a `microservice.guide` and `Dockerfile`) this command will build
+When ran in a directory of a microservice (a directory containing a `microservice.yml` and `Dockerfile`) this command will build
 the microservice and execute a given command.
 ### Usage
 ```
@@ -110,11 +110,11 @@ environment variables can be passed as follows: `-e FOO='bar'`. If a required en
 
 ### Example `exec` call
 ```sh
-microservice-guide-cli exec -e BOT_TOKEN='xoxb-****' send message:'Hello, World!' to:CAFAF9C
+omg exec -e BOT_TOKEN='xoxb-****' send message:'Hello, World!' to:CAFAF9C
 ```
 ```sh
 ✔ Built Docker image with name: 067a8912-a1fe-4e00-ba4b-ffcc363ca0ab
-✔ Stared Docker container with id: a941268edae7
+✔ Started Docker container with id: a941268edae7
 ✔ Ran command: send with output: {
   "ok": true,
   "reply_to": 1,

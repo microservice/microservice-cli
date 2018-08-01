@@ -1,5 +1,5 @@
 FROM node:9.7-alpine
 
-RUN npm install microservice-guide-cli -g
+RUN npm install omg -g
 
-ENTRYPOINT ["microservice-guide-cli"]
+ENTRYPOINT ["omg"]
