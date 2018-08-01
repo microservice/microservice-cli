@@ -48,7 +48,7 @@ class Exec {
   }
 
   /**
-   * Sets a {@link Microservice}'s default {@link EnvironmentVariable}s.
+   * Sets a {@link Microservice}'s default {@link EnvironmentVariable}s and variables from the system environment variables.
    *
    * @private
    */
@@ -59,6 +59,13 @@ class Exec {
         if (environmentVariable.default !== null) {
           this._environmentVariables[environmentVariable.name] = environmentVariable.default;
         }
+      }
+    }
+
+    for (let i = 0; i < this._microservice.environmentVariables.length; i += 1) {
+      const environmentVariable = this._microservice.environmentVariables[i];
+      if (process.env[environmentVariable.name]) {
+        this._environmentVariables[environmentVariable.name] = process.env[environmentVariable.name];
       }
     }
   }
