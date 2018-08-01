@@ -54,12 +54,12 @@ function validate(options) {
  *
  * @param {String} name The given name
  */
-async function build(name) {
+async function build() {
   if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
     process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
-  await new Build(name).go();
+  await new Build(await utils.createImageName()).go();
 }
 
 let microservice = null;
@@ -84,7 +84,7 @@ async function exec(image, options) {
       '  Commands:\n' +
       '\n' +
       '    validate                Validate the structure of a `microservice.yml` in the current directory\n' +
-      '    build <name>            Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`\n' +
+      '    build                   Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`\n' +
       '    exec [options] <image>  Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }

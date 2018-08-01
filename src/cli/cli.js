@@ -16,10 +16,10 @@ program
   .action((options) => helper.validate(options));
 
 program
-  .command('build <name>')
+  .command('build')
   .description('Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
   .usage(' ')
-  .action(async (name) => await helper.build(name));
+  .action(async () => await helper.build());
 
 program
   .command('exec <image>')
