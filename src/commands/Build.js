@@ -20,7 +20,7 @@ class Build {
   async go() {
     const spinner = ora.start('Building Docker image');
     try {
-      await exec(`docker build -t omg/${this._name}:local .`);
+      await exec(`docker build -t ${this._name} .`);
       spinner.succeed(`Built Docker image with name: ${this._name}`);
     } catch (e) {
       throw {

@@ -37,7 +37,8 @@
     "coverageReporters": [
       "lcov",
       "html"
-    ]
+    ],
+    "testURL": "http://localhost"
   },
   "eslintConfig": {
     "extends": [

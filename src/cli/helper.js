@@ -52,14 +52,14 @@ function validate(options) {
 /**
  * Checks if we are in an OMG directory then builds a microservice.
  *
- * @param {String} name The given name
+ * @param {options} options The given name
  */
-async function build(name) {
+async function build(options) {
   if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
     process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
-  await new Build(name).go();
+  await new Build(options.imageName || await utils.createImageName()).go();
 }
 
 let microservice = null;
@@ -68,10 +68,10 @@ let e = null;
 /**
  * Will read the `microservice.yml` and `Dockerfile` and run the given command with the given arguments and environment variables.
  *
- * @param {String} image, The given image
  * @param {Object} options The given object holding the command, arguments, and environment variables
  */
-async function exec(image, options) {
+async function exec(options) {
+  let image = options.image;
   if (!(options.args) || !(options.envs)) {
     process.stdout.write('\n' +
       '  Usage: omg [options] [command]\n' +
@@ -84,8 +84,8 @@ async function exec(image, options) {
       '  Commands:\n' +
       '\n' +
       '    validate                Validate the structure of a `microservice.yml` in the current directory\n' +
-      '    build <name>            Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`\n' +
-      '    exec [options] <image>  Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+      '    build                   Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`\n' +
+      '    exec [options]          Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
@@ -96,10 +96,15 @@ async function exec(image, options) {
     options.cmd = 'entrypoint';
   }
 
-  const images = await utils.exec(`docker images -f "reference=omg/${image}:local"`);
-  if (!images.includes(image)) {
-    process.stderr.write(`Container for microservice \`${image}\` is not built. Run \`omg build ${image}\` to build the container.`);
-    process.exit(1);
+  if (options.image) {
+    const images = await utils.exec(`docker images -f "reference=${image}"`);
+    if (!images.includes(options.image)) {
+      process.stderr.write(`Image for microservice is not built. Run \`omg build\` to build the image with name: \`${await utils.createImageName()}\``);
+      process.exit(1);
+    }
+  } else {
+    await build();
+    options.image = await utils.createImageName();
   }
 
   try {
@@ -112,7 +117,7 @@ async function exec(image, options) {
   try {
     const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
     const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
-    e = new Exec(`omg/${image}:local`, microservice, argsObj, envObj);
+    e = new Exec(`${options.image}`, microservice, argsObj, envObj);
     await e.go(options.cmd);
   } catch (error) {
     if (error.spinner) {

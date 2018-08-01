@@ -17,6 +17,16 @@ function setVal(val, _else) {
 }
 
 /**
+ * Creates a name for the Docker images based of the git remote -v
+ *
+ * @return {Promise<String>} The image name
+ */
+async function createImageName() {
+  const data = await exec('git remote -v');
+  return `omg/${data.match(/git@github\.com:(\w+\/\w+).git/)[1]}`;
+}
+
+/**
  * Turns a list of string with a delimiter to a map.
  *
  * @param {Array<String>} list The given list of strings with delimiter
@@ -170,6 +180,7 @@ function appender(xs) {
 
 module.exports = {
   setVal,
+  createImageName,
   parse,
   exec,
   dataTypes,
