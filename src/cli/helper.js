@@ -71,7 +71,8 @@ let e = null;
  * @param {String} image, The given image
  * @param {Object} options The given object holding the command, arguments, and environment variables
  */
-async function exec(image, options) {
+async function exec(options) {
+  let image = options.image;
   if (!(options.args) || !(options.envs)) {
     process.stdout.write('\n' +
       '  Usage: omg [options] [command]\n' +
@@ -85,7 +86,7 @@ async function exec(image, options) {
       '\n' +
       '    validate                Validate the structure of a `microservice.yml` in the current directory\n' +
       '    build                   Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`\n' +
-      '    exec [options] <image>  Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+      '    exec [options]          Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
@@ -96,10 +97,15 @@ async function exec(image, options) {
     options.cmd = 'entrypoint';
   }
 
-  const images = await utils.exec(`docker images -f "reference=omg/${image}:local"`);
-  if (!images.includes(image)) {
-    process.stderr.write(`Container for microservice \`${image}\` is not built. Run \`omg build ${image}\` to build the container.`);
-    process.exit(1);
+  if (options.image) {
+    const images = await utils.exec(`docker images -f "reference=${image}:local"`);
+    if (!images.includes(options.image)) {
+      process.stderr.write(`Image for microservice is not built. Run \`omg build\` to build the image with name: \`${await utils.createImageName()}\``);
+      process.exit(1);
+    }
+  } else {
+    await build();
+    options.image = await utils.createImageName();
   }
 
   try {
@@ -112,7 +118,7 @@ async function exec(image, options) {
   try {
     const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
     const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
-    e = new Exec(`omg/${image}:local`, microservice, argsObj, envObj);
+    e = new Exec(`${options.image}:local`, microservice, argsObj, envObj);
     await e.go(options.cmd);
   } catch (error) {
     if (error.spinner) {
