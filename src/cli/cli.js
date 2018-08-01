@@ -17,9 +17,10 @@ program
 
 program
   .command('build')
-  .description('Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
   .usage(' ')
-  .action(async () => await helper.build());
+  .option('-n --imageName, <n>', 'The name of the image to be built, if not given it will be named: `omg/$gihub_user/$repo_name`')
+  .description('Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
+  .action(async (options) => await helper.build(options));
 
 program
   .command('exec')
