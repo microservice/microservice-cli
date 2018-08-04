@@ -52,7 +52,7 @@ function validate(options) {
 /**
  * Checks if we are in an OMG directory then builds a microservice.
  *
- * @param {options} options The given name
+ * @param {Object} options The given name
  */
 async function build(options) {
   if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
@@ -103,7 +103,7 @@ async function exec(options) {
       process.exit(1);
     }
   } else {
-    await build();
+    await build({});
     options.image = await utils.createImageName();
   }
 
