@@ -17,7 +17,7 @@ function setVal(val, _else) {
 }
 
 /**
- * Creates a name for the Docker images based of the git remote -v
+ * Creates a name for the Docker images based of the git remote -v.
  *
  * @return {Promise<String>} The image name
  */

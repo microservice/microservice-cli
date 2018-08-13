@@ -18,8 +18,8 @@ program
 program
   .command('build')
   .usage(' ')
-  .option('-n --imageName, <n>', 'The name of the image to be built, if not given it will be named: `omg/$gihub_user/$repo_name`')
-  .description('Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
+  .option('-t --tag, <t>', 'The tag name of the image')
+  .description('Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a tag name must be provided. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
   .action(async (options) => await helper.build(options));
 
 program
