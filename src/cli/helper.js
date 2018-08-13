@@ -59,7 +59,12 @@ async function build(options) {
     process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
-  await new Build(options.imageName || await utils.createImageName()).go();
+  try {
+    await new Build(options.tag || await utils.createImageName()).go();
+  } catch (e) {
+    process.stderr.write('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`');
+    process.exit(1);
+  }
 }
 
 let microservice = null;
