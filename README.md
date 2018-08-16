@@ -97,9 +97,7 @@ exec [-e] [command] [args...]
 ```
 
 #### command
-Command is an optional argument. If supplied the microservice will be executed with the given command, else, the `entrypoint`
-command will be executed. If no `entrypoint` is defined for the given command is not defined in the `microservice.yml` `exec`
-will fail.
+Command is a required argument. The microservice will be executed with the given command.
 
 #### args...
 If a command required arguments they can be passed as follows: `key:val`. If required arguments are not given `exec` will fail.

@@ -73,9 +73,10 @@ let e = null;
 /**
  * Will read the `microservice.yml` and `Dockerfile` and run the given command with the given arguments and environment variables.
  *
+ * @param {String} command The command to run
  * @param {Object} options The given object holding the command, arguments, and environment variables
  */
-async function exec(options) {
+async function exec(command, options) {
   let image = options.image;
   if (!(options.args) || !(options.envs)) {
     process.stdout.write('\n' +
@@ -83,22 +84,19 @@ async function exec(options) {
       '\n' +
       '  Options:\n' +
       '\n' +
-      '    -V, --version           output the version number\n' +
-      '    -h, --help              output usage information\n' +
+      '    -V, --version             output the version number\n' +
+      '    -h, --help                output usage information\n' +
       '\n' +
       '  Commands:\n' +
       '\n' +
-      '    validate                Validate the structure of a `microservice.yml` in the current directory\n' +
-      '    build                   Builds the microservice defined by the `Dockerfile` and `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`\n' +
-      '    exec [options]          Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+      '    validate [options]        Validate the structure of a `microservice.yml` in the current directory\n' +
+      '    build [options]           Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a tag name must be provided. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`\n' +
+      '    exec [options] <command>  Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
     process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
-  }
-  if (!options.cmd) {
-    options.cmd = 'entrypoint';
   }
 
   if (options.image) {
@@ -123,7 +121,7 @@ async function exec(options) {
     const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
     const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
     e = new Exec(`${options.image}`, microservice, argsObj, envObj);
-    await e.go(options.cmd);
+    await e.go(command);
   } catch (error) {
     if (error.spinner) {
       if (error.message.includes('Unable to find image')) {
