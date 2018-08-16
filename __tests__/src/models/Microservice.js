@@ -8,7 +8,9 @@ describe('Microservice.js', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {
-        new Microservice({});
+        new Microservice({
+          version: 1,
+        });
       } catch (e) {
         expect(e).toEqual({
           errors: [{
@@ -25,6 +27,7 @@ describe('Microservice.js', () => {
     test('throws an exception because a command interfaces via http and a lifecycle is not provided', () => {
       try {
         new Microservice({
+          version: 1,
           commands: {
             foo: {
               output: {type: 'map'},
@@ -47,6 +50,7 @@ describe('Microservice.js', () => {
   describe('.rawData', () => {
     test('gets the raw data after validation', () => {
       const m = new Microservice({
+        version: 1,
         commands: {
           foo: {
             output: {
@@ -60,7 +64,7 @@ describe('Microservice.js', () => {
         errors: null,
         text: 'No errors',
         valid: true,
-        yaml: {commands: {foo: {output: {type: 'boolean'}}}},
+        yaml: {version: 1, commands: {foo: {output: {type: 'boolean'}}}},
       });
     });
   });
@@ -68,6 +72,7 @@ describe('Microservice.js', () => {
   describe('.commands', () => {
     test('gets the empty command list', () => {
       const m = new Microservice({
+        version: 1,
         lifecycle: {
           run: {
             command: ['node', 'app.js', 'foo'],
@@ -81,6 +86,7 @@ describe('Microservice.js', () => {
 
     test('gets the command list', () => {
       const m = new Microservice({
+        version: 1,
         commands: {
           foo: {
             output: {type: 'boolean'},
@@ -97,6 +103,7 @@ describe('Microservice.js', () => {
 
   describe('.getCommand(command)', () => {
     const m = new Microservice({
+      version: 1,
       commands: {
         foo: {
           output: {type: 'list'},
@@ -119,6 +126,7 @@ describe('Microservice.js', () => {
   describe('.environmentVariables', () => {
     test('gets the empty environment variable list', () => {
       const m = new Microservice({
+        version: 1,
         lifecycle: {
           run: {
             command: ['node', 'app.js', 'foo'],
@@ -132,6 +140,7 @@ describe('Microservice.js', () => {
 
     test('gets the environment variable list', () => {
       const m = new Microservice({
+        version: 1,
         environment: {
           foo: {
             type: 'boolean',
@@ -148,6 +157,7 @@ describe('Microservice.js', () => {
 
   describe('.areRequiredEnvironmentVariablesSupplied(environmentVariableMapping)', () => {
     const m = new Microservice({
+      version: 1,
       environment: {
         foo: {
           type: 'boolean',
@@ -172,6 +182,7 @@ describe('Microservice.js', () => {
   describe('.requiredEnvironmentVariables', () => {
     test('gets the list of required environment variables', () => {
       const m = new Microservice({
+        version: 1,
         environment: {
           foo: {
             type: 'boolean',
@@ -190,6 +201,7 @@ describe('Microservice.js', () => {
   describe('.volumes', () => {
     test('gets the empty volume list', () => {
       const m = new Microservice({
+        version: 1,
         lifecycle: {
           run: {
             command: ['node', 'app.js', 'foo'],
@@ -203,6 +215,7 @@ describe('Microservice.js', () => {
 
     test('gets the volume list', () => {
       const m = new Microservice({
+        version: 1,
         volumes: {
           foo: {
             target: '/foo',
@@ -223,6 +236,7 @@ describe('Microservice.js', () => {
 
   describe('.getVolume(volume)', () => {
     const m = new Microservice({
+      version: 1,
       volumes: {
         foo: {
           target: '/foo',
@@ -245,6 +259,7 @@ describe('Microservice.js', () => {
   describe('.lifecycle', () => {
     test('gets the lifecycle', () => {
       const m = new Microservice({
+        version: 1,
         lifecycle: {
           run: {
             command: ['node', 'app.js', 'foo'],
