@@ -32,6 +32,7 @@ describe('Exec.js', () => {
     test('throws an exception because not all required arguments are supplied', async () => {
       try {
         await new Exec('fake_docker_id', new Microservice({
+          version: 1,
           commands: {
             tom: {
               output: {type: 'string'},
@@ -52,6 +53,7 @@ describe('Exec.js', () => {
     test('throws an exception because not all required environment variables are supplied', async () => {
       try {
         await new Exec('fake_docker_id', new Microservice({
+          version: 1,
           commands: {
             tom: {
               output: {type: 'string'},
@@ -80,6 +82,7 @@ describe('Exec.js', () => {
     describe('exec command', () => {
       test('runs an exec command', async () => {
         await new Exec('fake_docker_id', new Microservice({
+          version: 1,
           commands: {
             test: {
               output: {type: 'string'},
@@ -93,6 +96,7 @@ describe('Exec.js', () => {
 
       test('runs an entrypoint', async () => {
         await new Exec('fake_docker_id', new Microservice({
+          version: 1,
           commands: {
             entrypoint: {
               output: {type: 'string'},
@@ -125,6 +129,7 @@ describe('Exec.js', () => {
 
       test('runs an exec command and fills in default environment variables and arguments', async () => {
         await new Exec('fake_docker_id', new Microservice({
+          version: 1,
           commands: {
             steve: {
               output: {type: 'string'},
@@ -176,6 +181,7 @@ describe('Exec.js', () => {
 
       test('command that gets', async () => {
         await new Exec('fake_docker_id', new Microservice({
+          version: 1,
           commands: {
             get: {
               output: {type: 'string'},
@@ -201,6 +207,7 @@ describe('Exec.js', () => {
 
       test('command that posts', async () => {
         await new Exec('fake_docker_id', new Microservice({
+          version: 1,
           commands: {
             post: {
               output: {type: 'string'},
@@ -252,6 +259,7 @@ describe('Exec.js', () => {
 
       test('command that puts', async () => {
         await new Exec('fake_docker_id', new Microservice({
+          version: 1,
           commands: {
             put: {
               output: {type: 'string'},
@@ -282,6 +290,7 @@ describe('Exec.js', () => {
 
       test('command that deletes', async () => {
         await new Exec('fake_docker_id', new Microservice({
+          version: 1,
           commands: {
             delete: {
               output: {type: 'string'},

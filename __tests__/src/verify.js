@@ -108,6 +108,7 @@ describe('verify.js', () => {
     test('throws an exception because an environment variable is not of the right type', () => {
       try {
         verify.verifyEnvironmentVariableTypes(new Microservice({
+          version: 1,
           environment: {
             foo: {
               type: 'int',
@@ -126,6 +127,7 @@ describe('verify.js', () => {
     test('throws an exception because an environment variable does not match its defined pattern', () => {
       try {
         verify.verifyEnvironmentVariablePattern(new Microservice({
+          version: 1,
           environment: {
             foo: {
               type: 'string',
