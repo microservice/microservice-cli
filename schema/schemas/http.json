@@ -7,17 +7,26 @@
         "get",
         "post",
         "put",
-        "delete"
+        "delete",
+        "patch"
       ]
     },
-    "endpoint": {
+    "port": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "path": {
       "type": "string",
       "pattern": "^\/.*"
+    },
+    "contentType": {
+      "type": "string"
     }
   },
   "required": [
     "method",
-    "endpoint"
+    "port",
+    "path"
   ],
   "additionalProperties": false
 }
