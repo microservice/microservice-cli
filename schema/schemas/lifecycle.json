@@ -5,34 +5,18 @@
       "type": "object",
       "properties": {
         "command": {
-          "type": [
-            "string",
-            "array"
-          ],
+          "type": "array",
           "items": {
             "type": "string"
           }
-        },
-        "timeout": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "method": {
-          "type": "string",
-          "enum": [
-            "run_once",
-            "run_many"
-          ]
         }
       },
       "required": [
-        "command",
-        "timeout",
-        "method"
+        "command"
       ],
       "additionalProperties": false
     },
-    "run": {
+    "shutdown": {
       "type": "object",
       "properties": {
         "command": {
@@ -41,50 +25,19 @@
             "type": "string"
           }
         },
-        "port": {
-          "type": "integer",
-          "minimum": 5000,
-          "maximum": 9000
-        }
-      },
-      "required": [
-        "command",
-        "port"
-      ],
-      "additionalProperties": false
-    },
-    "shutdown": {
-      "type": "object",
-      "properties": {
-        "command": {
-          "type": [
-            "string",
-            "array"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
         "timeout": {
           "type": "integer",
-          "minimum": 1
-        },
-        "method": {
-          "type": "string",
-          "enum": [
-            "run_once",
-            "run_many"
-          ]
+          "minimum": 0
         }
       },
       "required": [
-        "command",
-        "timeout",
-        "method"
+        "command"
       ],
       "additionalProperties": false
     }
   },
-  "additionalProperties": false,
-  "minProperties": 1
+  "required": [
+    "startup"
+  ],
+  "additionalProperties": false
 }
