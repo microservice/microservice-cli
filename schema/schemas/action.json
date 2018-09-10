@@ -3,6 +3,12 @@
     "help": {
       "type": "string"
     },
+    "format": {
+      "type": "string"
+    },
+    "rpc": {
+      "type": "object"
+    },
     "output": {
       "type": "object",
       "properties": {
@@ -28,26 +34,21 @@
           },
           "pattern": "^(int|float|string|uuid|list|map|boolean|path|any|null)$"
         },
-        "help": {
+        "contentType": {
           "type": "string"
         },
-        "pattern": {
-          "type": "string"
-        },
-        "enum": {
-          "type": "array"
-        },
-        "range": {
+        "properties": {
           "type": "object",
           "properties": {
-            "min": {
-              "type": "integer"
-            },
-            "max": {
-              "type": "integer"
+            "type": {
+              "type": "string",
+              "enum": ["int", "float", "string", "list", "map", "boolean", "object"]
             }
           },
-          "additionalProperties": false
+          "additionalProperties": false,
+          "required": [
+            "type"
+          ]
         }
       },
       "additionalProperties": false
