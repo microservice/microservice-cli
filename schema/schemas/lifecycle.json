@@ -5,22 +5,19 @@
       "type": "object",
       "properties": {
         "command": {
-          "type": "array",
+          "type": ["array", "string"],
           "items": {
             "type": "string"
           }
         }
       },
-      "required": [
-        "command"
-      ],
       "additionalProperties": false
     },
     "shutdown": {
       "type": "object",
       "properties": {
         "command": {
-          "type": "array",
+          "type": ["array", "string"],
           "items": {
             "type": "string"
           }
@@ -30,14 +27,20 @@
           "minimum": 0
         }
       },
-      "required": [
-        "command"
-      ],
       "additionalProperties": false
     }
   },
-  "required": [
-    "startup"
+  "oneOf":[
+    {
+      "required": [
+        "startup"
+      ]
+    },
+    {
+      "required": [
+        "shutdown"
+      ]
+    }
   ],
   "additionalProperties": false
 }
