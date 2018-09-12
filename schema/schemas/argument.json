@@ -20,7 +20,7 @@
           "path"
         ]
       },
-      "pattern": "^(number|int|float|string|uuid|list|map|boolean|path)$"
+      "pattern": "^(number|int|float|string|uuid|list|map|boolean|path|object)$"
     },
     "help": {
       "type": "string"

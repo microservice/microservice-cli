@@ -17,11 +17,12 @@
           "list",
           "map",
           "boolean",
+          "object",
           "path",
           "any"
         ]
       },
-      "pattern": "^(number|int|float|string|uuid|list|map|boolean|path|any)$"
+      "pattern": "^(number|int|float|string|uuid|list|map|boolean|path|any|object)$"
     },
     "pattern": {
       "type": "string"
