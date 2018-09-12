@@ -24,12 +24,12 @@
     "help": {
       "type": "string"
     },
-    "location": {
+    "in": {
       "type": "string",
       "enum": [
         "query",
         "path",
-        "body"
+        "requestBody"
       ]
     },
     "pattern": {
