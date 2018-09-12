@@ -10,6 +10,7 @@
         "type": "string",
         "enum": [
           "int",
+          "number",
           "float",
           "string",
           "uuid",
@@ -19,7 +20,7 @@
           "path"
         ]
       },
-      "pattern": "^(int|float|string|uuid|list|map|boolean|path)$"
+      "pattern": "^(number|int|float|string|uuid|list|map|boolean|path)$"
     },
     "help": {
       "type": "string"

@@ -10,6 +10,7 @@
         "type": "string",
         "enum": [
           "int",
+          "number",
           "float",
           "string",
           "uuid",
@@ -20,7 +21,7 @@
           "any"
         ]
       },
-      "pattern": "^(int|float|string|uuid|list|map|boolean|path|any)$"
+      "pattern": "^(number|int|float|string|uuid|list|map|boolean|path|any)$"
     },
     "pattern": {
       "type": "string"

@@ -24,6 +24,7 @@
             "type": "string",
             "enum": [
               "int",
+              "number",
               "float",
               "string",
               "uuid",
@@ -35,7 +36,7 @@
               "null"
             ]
           },
-          "pattern": "^(int|float|string|uuid|list|map|boolean|path|any|null)$"
+          "pattern": "^(number|int|float|string|uuid|list|map|boolean|path|any|null)$"
         },
         "contentType": {
           "type": "string"

@@ -1,5 +1,5 @@
 const Microservice = require('../../../src/models/Microservice');
-const Command = require('../../../src/models/Command');
+const Command = require('../../../src/models/Action');
 const EnvironmentVariable = require('../../../src/models/EnvironmentVariable');
 const Volume = require('../../../src/models/Volume');
 const Lifecycle = require('../../../src/models/Lifecycle');

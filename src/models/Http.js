@@ -17,11 +17,12 @@ class Http {
       throw isValid;
     }
     this._method = rawHttp.method;
-    this._endpoint = rawHttp.endpoint;
+    this._port = rawHttp.port;
+    this._path = rawHttp.path;
   }
 
   /**
-   * Get's the method of this {@link Http}
+   * Get's the method of this {@link Http}.
    *
    * @return {String} The method
    */
@@ -30,12 +31,21 @@ class Http {
   }
 
   /**
-   * Get's the endpoint of this {@link Http}
+   * Get's the port of this {@link Http}.
+   *
+   * @return {Number}
+   */
+  get port() {
+    return this._path;
+  }
+
+  /**
+   * Get's the path of this {@link Http}.
    *
    * @return {String} The endpoint
    */
-  get endpoint() {
-    return this._endpoint;
+  get path() {
+    return this._path;
   }
 }
 

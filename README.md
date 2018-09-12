@@ -97,7 +97,7 @@ exec [-e] [command] [args...]
 ```
 
 #### command
-Command is a required argument. The microservice will be executed with the given command.
+Action is a required argument. The microservice will be executed with the given command.
 
 #### args...
 If a command required arguments they can be passed as follows: `key:val`. If required arguments are not given `exec` will fail.

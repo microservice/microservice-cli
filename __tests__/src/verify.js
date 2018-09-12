@@ -1,5 +1,5 @@
 const verify = require('../../src/verify');
-const Command = require('../../src/models/Command');
+const Command = require('../../src/models/Action');
 const Microservice = require('../../src/models/Microservice');
 
 describe('verify.js', () => {

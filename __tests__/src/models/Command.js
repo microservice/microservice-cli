@@ -1,4 +1,4 @@
-const Command = require('../../../src/models/Command');
+const Command = require('../../../src/models/Action');
 const Argument = require('../../../src/models/Argument');
 const Http = require('../../../src/models/Http');
 
