@@ -89,7 +89,7 @@ class Exec {
    * @param {String} command The given command
    */
   async go(command) {
-    this._command = this._microservice.getCommand(command);
+    this._command = this._microservice.getAction(command);
     const spinner = ora.start(`Running command: \`${this._command.name}\``);
     this._setDefaultArguments();
     this._setDefaultEnvironmentVariables();
@@ -147,7 +147,7 @@ class Exec {
     if (this._command.name === 'entrypoint') {
       return await utils.exec(`docker run${this._formatVolumesForPathTypes()}${this._formatEnvironmentVariables()} ${this._dockerImage}${this._formatExec()}`);
     }
-    return await utils.exec(`docker run${this._formatVolumesForPathTypes()}${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name}${this._formatExec()}`);
+    return await utils.exec(`docker run --rm${this._formatVolumesForPathTypes()}${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.format.command}${this._formatExec()}`);
   }
 
   /**
@@ -165,7 +165,6 @@ class Exec {
     return result;
   }
 
-  // TODO startup and shutdown part of the lifecycle
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml.
    *

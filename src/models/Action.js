@@ -1,5 +1,6 @@
 const Argument = require('./Argument');
 const Http = require('./Http');
+const Format = require('./Format');
 const validateAction = require('../../schema/schema').action;
 
 /**
@@ -30,6 +31,7 @@ class Action {
       }
     }
     this._http = ((rawCommand.http) ? new Http(name, rawCommand.http) : null);
+    this._format = ((rawCommand.format) ? new Format(name, rawCommand.format) : null);
     this._runCommand = null;
     if (rawCommand.run) {
       this._runCommand = {};
@@ -177,6 +179,10 @@ class Action {
    */
   get http() {
     return this._http;
+  }
+
+  get format() {
+    return this._format;
   }
 
   /**
