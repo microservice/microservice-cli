@@ -7,28 +7,28 @@ describe('Https.js', () => {
         new Http('commandName', {});
       } catch (e) {
         expect(e).toEqual({
-          "errors": [{
-            "dataPath": "",
-            "keyword": "required",
-            "message": "should have required property 'method'",
-            "params": {"missingProperty": "method"},
-            "schemaPath": "#/required"
+          errors: [{
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'method\'',
+            params: {missingProperty: 'method'},
+            schemaPath: '#/required',
           }, {
-            "dataPath": "",
-            "keyword": "required",
-            "message": "should have required property 'port'",
-            "params": {"missingProperty": "port"},
-            "schemaPath": "#/required"
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'port\'',
+            params: {missingProperty: 'port'},
+            schemaPath: '#/required',
           }, {
-            "dataPath": "",
-            "keyword": "required",
-            "message": "should have required property 'path'",
-            "params": {"missingProperty": "path"},
-            "schemaPath": "#/required"
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'path\'',
+            params: {missingProperty: 'path'},
+            schemaPath: '#/required',
           }],
-          "issue": {},
-          "text": "commands.commandName.http should have required property 'method', data should have required property 'port', data should have required property 'path'",
-          "valid": false
+          issue: {},
+          text: 'commands.commandName.http should have required property \'method\', data should have required property \'port\', data should have required property \'path\'',
+          valid: false,
         });
       }
     });
@@ -38,22 +38,22 @@ describe('Https.js', () => {
         new Http('commandName', {method: 'get'});
       } catch (e) {
         expect(e).toEqual({
-          "errors": [{
-            "dataPath": "",
-            "keyword": "required",
-            "message": "should have required property 'port'",
-            "params": {"missingProperty": "port"},
-            "schemaPath": "#/required"
+          errors: [{
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'port\'',
+            params: {missingProperty: 'port'},
+            schemaPath: '#/required',
           }, {
-            "dataPath": "",
-            "keyword": "required",
-            "message": "should have required property 'path'",
-            "params": {"missingProperty": "path"},
-            "schemaPath": "#/required"
+            dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'path\'',
+            params: {missingProperty: 'path'},
+            schemaPath: '#/required',
           }],
-          "issue": {"method": "get"},
-          "text": "commands.commandName.http should have required property 'port', data should have required property 'path'",
-          "valid": false
+          issue: {method: 'get'},
+          text: 'commands.commandName.http should have required property \'port\', data should have required property \'path\'',
+          valid: false,
         });
       }
     });
@@ -77,7 +77,7 @@ describe('Https.js', () => {
 
   describe('.path', () => {
     test('gets the path', () => {
-      const h = new Http('commandName', {method: 'post', port:5000, path: '/skrt'});
+      const h = new Http('commandName', {method: 'post', port: 5000, path: '/skrt'});
 
       expect(h.path).toBe('/skrt');
     });

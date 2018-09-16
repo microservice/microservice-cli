@@ -17,7 +17,7 @@ class Http {
       throw isValid;
     }
     this._method = rawHttp.method;
-    this._port = rawHttp.port
+    this._port = rawHttp.port;
     this._path = rawHttp.path;
   }
 
@@ -30,6 +30,11 @@ class Http {
     return this._method;
   }
 
+  /**
+   * Get's the port of this {@link Http}.
+   *
+   * @return {Integer} The port
+   */
   get port() {
     return this._port;
   }

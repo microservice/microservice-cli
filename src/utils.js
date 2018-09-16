@@ -17,6 +17,23 @@ function setVal(val, _else) {
 }
 
 /**
+ * Get's the ports that need to be open defined by the given {@link Microservice}.
+ *
+ * @param {Microservice} microservice The given {@link Microservice}
+ * @return {Array<Integer>} The ports that need to be opened for the given {@link Microservice}
+ */
+function getNeededPorts(microservice) {
+  const ports = [];
+  for (let i = 0; i < microservice.actions.length; i += 1) {
+    const action = microservice.actions[i];
+    if (action.http !== null) {
+      ports.push(action.http.port);
+    }
+  }
+  return ports;
+}
+
+/**
  * Creates a name for the Docker images based of the git remote -v.
  *
  * @return {Promise<String>} The image name
@@ -180,6 +197,7 @@ function appender(xs) {
 
 module.exports = {
   setVal,
+  getNeededPorts,
   createImageName,
   parse,
   exec,
