@@ -114,8 +114,10 @@ class Exec {
       verify.verifyEnvironmentVariablePattern(this._microservice, this._environmentVariables);
 
       if (this._command.http === null && this._command.run === null) { // exec command
-        const output = await this._runDockerExecCommand();
+        const containerID = await this._startDockerExecContainer();
+        const output = await this._runDockerExecCommand(containerID);
         verify.verifyOutputType(this._command, output);
+        await utils.exec(`docker kill ${containerID}`); // might need to work the lifecycle in
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
       } else if (this._command.http !== null && this._command.run === null) { // lifecycle http command
         const output = await this._httpCommand(await this._startServer());
@@ -138,16 +140,29 @@ class Exec {
   }
 
   /**
+   * Starts the docker container based of this {@link Exec}'s {@link Microservice}'s {@link Lifecycle}. If null,
+   * the container will be started with the command: `tail -f /dev/null``.
+   *
+   * @return {Promise<String>} The id of the started container
+   * @private
+   */
+  async _startDockerExecContainer() {
+    const lifecycle = this._microservice.lifecycle;
+    if ((lifecycle !== null) && (lifecycle.startup !== null)) {
+      return await utils.exec(`docker run -td ${this._dockerImage} ${lifecycle.startup}`);
+    } else {
+      return await utils.exec(`docker run -td ${this._dockerImage} tail -f /dev/null`);
+    }
+  }
+
+  /**
    * Runs a given command via Docker cli.
    *
    * @return {Promise<String>} stdout if command runs with exit code 0, otherwise stderror
    * @private
    */
-  async _runDockerExecCommand() {
-    if (this._command.name === 'entrypoint') {
-      return await utils.exec(`docker run${this._formatVolumesForPathTypes()}${this._formatEnvironmentVariables()} ${this._dockerImage}${this._formatExec()}`);
-    }
-    return await utils.exec(`docker run --rm${this._formatVolumesForPathTypes()}${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.format.command}${this._formatExec()}`);
+  async _runDockerExecCommand(containerID) {
+    return await utils.exec(`docker exec ${containerID} ${this._command.format.command} ${this._formatExec()}`);
   }
 
   /**
