@@ -1,5 +1,5 @@
 const Microservice = require('../../../src/models/Microservice');
-const Command = require('../../../src/models/Action');
+const Action = require('../../../src/models/Action');
 const EnvironmentVariable = require('../../../src/models/EnvironmentVariable');
 const Volume = require('../../../src/models/Volume');
 const Lifecycle = require('../../../src/models/Lifecycle');
@@ -9,7 +9,7 @@ describe('Microservice.js', () => {
     test('throws an exception because the json is not valid', () => {
       try {
         new Microservice({
-          version: 1,
+          omg: 1,
         });
       } catch (e) {
         expect(e).toEqual({
@@ -27,21 +27,21 @@ describe('Microservice.js', () => {
     test('throws an exception because a command interfaces via http and a lifecycle is not provided', () => {
       try {
         new Microservice({
-          version: 1,
-          commands: {
+          omg: 1,
+          actions: {
             foo: {
               output: {type: 'map'},
               http: {
                 method: 'post',
-                endpoint: '/data',
+                path: '/data',
               },
             },
           },
         });
       } catch (e) {
         expect(e).toEqual({
-          context: 'Command with name: `foo`',
-          message: 'If a command interfaces with http then a lifecycle must be provided',
+          context: 'Action with name: `foo`',
+          message: 'If an action interfaces with http then a lifecycle must be provided',
         });
       }
     });
@@ -50,9 +50,12 @@ describe('Microservice.js', () => {
   describe('.rawData', () => {
     test('gets the raw data after validation', () => {
       const m = new Microservice({
-        version: 1,
-        commands: {
+        omg: 1,
+        actions: {
           foo: {
+            format: {
+              command: 'foo.sh',
+            },
             output: {
               type: 'boolean',
             },
@@ -64,7 +67,7 @@ describe('Microservice.js', () => {
         errors: null,
         text: 'No errors',
         valid: true,
-        yaml: {version: 1, commands: {foo: {output: {type: 'boolean'}}}},
+        yaml: {actions: {foo: {format: {command: 'foo.sh'}, output: {type: 'boolean'}}}, omg: 1},
       });
     });
   });
@@ -72,67 +75,64 @@ describe('Microservice.js', () => {
   describe('.commands', () => {
     test('gets the empty command list', () => {
       const m = new Microservice({
-        version: 1,
-        lifecycle: {
-          run: {
-            command: ['node', 'app.js', 'foo'],
-            port: 5000,
-          },
-        },
+        omg: 1,
       });
 
-      expect(m.commands).toEqual([]);
+      expect(m.actions).toEqual([]);
     });
 
     test('gets the command list', () => {
       const m = new Microservice({
-        version: 1,
-        commands: {
+        omg: 1,
+        actions: {
           foo: {
+            format: {
+              command: 'foo.sh',
+            },
             output: {type: 'boolean'},
           },
           bar: {
+            format: {
+              command: 'bar.sh',
+            },
             output: {type: 'int'},
           },
         },
       });
 
-      expect(m.commands).toEqual([new Command('foo', {output: {type: 'boolean'}}), new Command('bar', {output: {type: 'int'}})]);
+      expect(m.actions).toEqual([new Action('foo', {format: {command: 'foo.sh'}, output: {type: 'boolean'}}), new Action('bar', {format: {command: 'bar.sh'}, output: {type: 'int'}})]);
     });
   });
 
   describe('.getCommand(command)', () => {
     const m = new Microservice({
-      version: 1,
-      commands: {
+      omg: 1,
+      actions: {
         foo: {
+          format: {
+            command: 'foo.sh',
+          },
           output: {type: 'list'},
         },
       },
     });
     test('throws and exception because the command does not exist', () => {
       try {
-        m.getCommand('bar');
+        m.getAction('bar');
       } catch (e) {
-        expect(e).toEqual({message: 'Command: `bar` does not exist'});
+        expect(e).toEqual({message: 'Action: `bar` does not exist'});
       }
     });
 
     test('gets the command', () => {
-      expect(m.getCommand('foo')).toEqual(new Command('foo', {output: {type: 'list'}}));
+      expect(m.getAction('foo')).toEqual(new Action('foo', {format: {command: 'foo.sh'}, output: {type: 'list'}}));
     });
   });
 
   describe('.environmentVariables', () => {
     test('gets the empty environment variable list', () => {
       const m = new Microservice({
-        version: 1,
-        lifecycle: {
-          run: {
-            command: ['node', 'app.js', 'foo'],
-            port: 5000,
-          },
-        },
+        omg: 1,
       });
 
       expect(m.environmentVariables).toEqual([]);
@@ -140,7 +140,7 @@ describe('Microservice.js', () => {
 
     test('gets the environment variable list', () => {
       const m = new Microservice({
-        version: 1,
+        omg: 1,
         environment: {
           foo: {
             type: 'boolean',
@@ -157,7 +157,7 @@ describe('Microservice.js', () => {
 
   describe('.areRequiredEnvironmentVariablesSupplied(environmentVariableMapping)', () => {
     const m = new Microservice({
-      version: 1,
+      omg: 1,
       environment: {
         foo: {
           type: 'boolean',
@@ -182,7 +182,7 @@ describe('Microservice.js', () => {
   describe('.requiredEnvironmentVariables', () => {
     test('gets the list of required environment variables', () => {
       const m = new Microservice({
-        version: 1,
+        omg: 1,
         environment: {
           foo: {
             type: 'boolean',
@@ -201,13 +201,7 @@ describe('Microservice.js', () => {
   describe('.volumes', () => {
     test('gets the empty volume list', () => {
       const m = new Microservice({
-        version: 1,
-        lifecycle: {
-          run: {
-            command: ['node', 'app.js', 'foo'],
-            port: 5000,
-          },
-        },
+        omg: 1,
       });
 
       expect(m.volumes).toEqual([]);
@@ -215,7 +209,7 @@ describe('Microservice.js', () => {
 
     test('gets the volume list', () => {
       const m = new Microservice({
-        version: 1,
+        omg: 1,
         volumes: {
           foo: {
             target: '/foo',
@@ -236,7 +230,7 @@ describe('Microservice.js', () => {
 
   describe('.getVolume(volume)', () => {
     const m = new Microservice({
-      version: 1,
+      omg: 1,
       volumes: {
         foo: {
           target: '/foo',
@@ -259,19 +253,17 @@ describe('Microservice.js', () => {
   describe('.lifecycle', () => {
     test('gets the lifecycle', () => {
       const m = new Microservice({
-        version: 1,
+        omg: 1,
         lifecycle: {
-          run: {
+          startup: {
             command: ['node', 'app.js', 'foo'],
-            port: 5000,
           },
         },
       });
 
       expect(m.lifecycle).toEqual(new Lifecycle({
-        run: {
+        startup: {
           command: ['node', 'app.js', 'foo'],
-          port: 5000,
         },
       }));
     });

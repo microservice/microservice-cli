@@ -11,10 +11,6 @@
         "patch"
       ]
     },
-    "port": {
-      "type": "integer",
-      "minimum": 0
-    },
     "path": {
       "type": "string",
       "pattern": "^\/.*"
@@ -25,7 +21,6 @@
   },
   "required": [
     "method",
-    "port",
     "path"
   ],
   "additionalProperties": false

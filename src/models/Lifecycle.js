@@ -25,12 +25,12 @@ class Lifecycle {
    * @return {String|null} The startup object
    */
   get startup() {
-    if (typeof this._startup === 'string') {
-      return this._startup;
+    if (typeof this._startup.command === 'string') {
+      return this._startup.command;
     }
     let result = '';
-    for (let i = 0; i < this._startup.length; i += 1) {
-      result += this._startup[i];
+    for (let i = 0; i < this._startup.command.length; i += 1) {
+      result += this._startup.command[i] + ' ';
     }
     return result.trim();
   }

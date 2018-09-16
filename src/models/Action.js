@@ -32,22 +32,6 @@ class Action {
     }
     this._http = ((rawCommand.http) ? new Http(name, rawCommand.http) : null);
     this._format = ((rawCommand.format) ? new Format(name, rawCommand.format) : null);
-    this._runCommand = null;
-    if (rawCommand.run) {
-      this._runCommand = {};
-      this._runCommand.command = rawCommand.run.command[0];
-      this._runCommand.args = '';
-      this._runCommand.port = rawCommand.run.port;
-      for (let i = 1; i < rawCommand.run.command.length; i += 1) {
-        this._runCommand.args += rawCommand.run.command[i] + ' ';
-      }
-    }
-    if ((this._http !== null) && (this._runCommand !== null)) {
-      throw {
-        context: `Command with name: \`${name}\``,
-        message: 'A action can only interface with exec, an http command, or a run command',
-      };
-    }
     if (this._http !== null) {
       this._checkHttpArguments();
     }
@@ -65,7 +49,7 @@ class Action {
       if (argument.in === null) {
         throw {
           context: `Argument: \`${argument.name}\` for command: \`${this.name}\``,
-          message: 'Commands\' arguments that interface via http must provide a location',
+          message: 'Commands\' arguments that interface via http must provide an in',
         };
       }
       if (argument.in === 'path') {
@@ -181,17 +165,13 @@ class Action {
     return this._http;
   }
 
+  /**
+   * Get's this {@link Action}'s format.
+   *
+   * @return {Format} The {@link Action}'s format
+   */
   get format() {
     return this._format;
-  }
-
-  /**
-   * The the run object for this {@link Action}
-   *
-   * @return {null|Object}
-   */
-  get run() {
-    return this._runCommand;
   }
 }
 

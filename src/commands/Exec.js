@@ -113,23 +113,17 @@ class Exec {
       verify.verifyEnvironmentVariableTypes(this._microservice, this._environmentVariables);
       verify.verifyEnvironmentVariablePattern(this._microservice, this._environmentVariables);
 
-      if (this._command.http === null && this._command.run === null) { // exec command
+      if (this._command.format !== null) {
         const containerID = await this._startDockerExecContainer();
         const output = await this._runDockerExecCommand(containerID);
         verify.verifyOutputType(this._command, output);
         await utils.exec(`docker kill ${containerID}`); // might need to work the lifecycle in
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
-      } else if (this._command.http !== null && this._command.run === null) { // lifecycle http command
+      } else if (this._command.http !== null) {
         const output = await this._httpCommand(await this._startServer());
         verify.verifyOutputType(this._command, output.trim());
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
         await this.serverKill();
-      } else { // streaming command
-        const server = this._startOMGServer();
-        const port = await utils.getOpenPort();
-        server.listen(port, '127.0.0.1');
-        await this._startStream(port);
-        spinner.succeed(`Ran command: \`${this._command.name}\` output will be streamed in (To exit, press ^C)`);
       }
     } catch (e) {
       throw { // TODO kill server here too
@@ -158,11 +152,12 @@ class Exec {
   /**
    * Runs a given command via Docker cli.
    *
+   * @param {String} containerID The given id of the docker container
    * @return {Promise<String>} stdout if command runs with exit code 0, otherwise stderror
    * @private
    */
   async _runDockerExecCommand(containerID) {
-    return await utils.exec(`docker exec ${containerID} ${this._command.format.command} ${this._formatExec()}`);
+    return await utils.exec(`docker exec ${containerID} ${this._command.format.command}${this._formatExec()}`);
   }
 
   /**

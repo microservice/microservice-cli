@@ -6,75 +6,59 @@ describe('Lifecycle.js', () => {
       try {
         new Lifecycle({});
       } catch (e) {
-        expect(e).toEqual({
-          errors: [{
-            dataPath: '',
-            keyword: 'minProperties',
-            message: 'should NOT have less than 1 properties',
-            params: {limit: 1},
-            schemaPath: '#/minProperties',
-          }], issue: {}, text: 'lifecycle should NOT have less than 1 properties', valid: false,
-        });
+        expect(e).toEqual(
+          {
+            errors: [{
+              dataPath: '',
+              keyword: 'required',
+              message: 'should have required property \'startup\'',
+              params: {missingProperty: 'startup'},
+              schemaPath: '#/oneOf/0/required',
+            }, {
+              dataPath: '',
+              keyword: 'required',
+              message: 'should have required property \'shutdown\'',
+              params: {missingProperty: 'shutdown'},
+              schemaPath: '#/oneOf/1/required',
+            }, {
+              dataPath: '',
+              keyword: 'oneOf',
+              message: 'should match exactly one schema in oneOf',
+              params: {passingSchemas: null},
+              schemaPath: '#/oneOf',
+            }],
+            issue: {},
+            text: 'lifecycle should have required property \'startup\', data should have required property \'shutdown\', data should match exactly one schema in oneOf',
+            valid: false,
+          }
+        );
       }
     });
   });
   describe('.startup', () => {
     test('gets the startup', () => {
       const l = new Lifecycle({
-        run: {
-          command: ['node', 'app.js', 'foo'],
-          port: 5000,
-        },
         startup: {
-          command: 'go',
-          timeout: 100,
-          method: 'run_once',
-        },
-      });
-
-      expect(l.startup).toEqual({
-        command: 'go',
-        timeout: 100,
-        method: 'run_once',
-      });
-    });
-  });
-
-  describe('.run', () => {
-    test('gets the run', () => {
-      const l = new Lifecycle({
-        run: {
           command: ['node', 'app.js', 'foo'],
-          port: 5000,
         },
       });
 
-      expect(l.run).toEqual({
-        command: 'node',
-        args: 'app.js foo',
-        port: 5000,
-      });
+      expect(l.startup).toBe('node app.js foo');
     });
   });
 
   describe('.shutdown', () => {
     test('gets the shutdown', () => {
       const l = new Lifecycle({
-        run: {
-          command: ['node', 'app.js', 'foo'],
-          port: 5000,
-        },
         shutdown: {
-          command: 'bye',
+          command: 'bye.sh',
           timeout: 100,
-          method: 'run_many',
         },
       });
 
       expect(l.shutdown).toEqual({
-        command: 'bye',
+        command: 'bye.sh',
         timeout: 100,
-        method: 'run_many',
       });
     });
   });

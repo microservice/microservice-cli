@@ -28,12 +28,12 @@ describe('Argument.js', () => {
           errors: [{
             dataPath: '.type',
             keyword: 'pattern',
-            message: 'should match pattern "^(int|float|string|uuid|list|map|boolean|path)$"',
-            params: {pattern: '^(int|float|string|uuid|list|map|boolean|path)$'},
+            message: 'should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|object)$"',
+            params: {pattern: '^(number|int|float|string|uuid|list|map|boolean|path|object)$'},
             schemaPath: '#/properties/type/pattern',
           }],
           issue: {type: 'bob'},
-          text: 'commands.arguments.name.type should match pattern "^(int|float|string|uuid|list|map|boolean|path)$"',
+          text: 'commands.arguments.name.type should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|object)$"',
           valid: false,
         });
       }
@@ -71,11 +71,11 @@ describe('Argument.js', () => {
     });
   });
 
-  describe('.location', () => {
-    test('gets the location', () => {
-      const a = new Argument('foo', {type: 'string', location: 'body'});
+  describe('.in', () => {
+    test('gets the location of the argument', () => {
+      const a = new Argument('foo', {type: 'string', in: 'requestBody'});
 
-      expect(a.location).toBe('body');
+      expect(a.in).toBe('requestBody');
     });
   });
 

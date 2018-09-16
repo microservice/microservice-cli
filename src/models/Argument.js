@@ -19,7 +19,7 @@ class Argument {
     }
     this._name = name;
     this._type = rawArguments.type;
-    this._location = rawArguments.location || null;
+    this._in = rawArguments.in || null;
     this._help = rawArguments.help || null;
     this._pattern = rawArguments.pattern || null;
     this._enum = rawArguments.enum || null;
@@ -57,8 +57,8 @@ class Argument {
    *
    * @return {String|null} The location
    */
-  get location() {
-    return this._location;
+  get in() {
+    return this._in;
   }
 
   /**

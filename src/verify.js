@@ -4,7 +4,7 @@ const {dataTypes} = require('./utils');
 /**
  * Verifies the pattern, enum, and range of the given arguments.
  *
- * @param {Command} command The given {@link Command}
+ * @param {Action} command The given {@link Command}
  * @param {Object} args The given argument mapping
  */
 function verifyArgumentConstrains(command, args) {
@@ -32,7 +32,7 @@ function verifyArgumentConstrains(command, args) {
 /**
  * Verifies the types of given arguments based off of the given {@link Command}.
  *
- * @param {Command} command The given {@link Command}
+ * @param {Action} command The given {@link Command}
  * @param {Object} args The given argument mapping
  */
 function verifyArgumentTypes(command, args) {
@@ -80,7 +80,7 @@ function verifyEnvironmentVariablePattern(microservice, envs) {
 /**
  * Verifies the output type of a container.
  *
- * @param {Command} command The given {@link Command}
+ * @param {Action} command The given {@link Command}
  * @param {String} output The given output
  */
 function verifyOutputType(command, output) {
