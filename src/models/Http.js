@@ -17,6 +17,7 @@ class Http {
       throw isValid;
     }
     this._method = rawHttp.method;
+    this._port = rawHttp.port
     this._path = rawHttp.path;
   }
 
@@ -27,6 +28,10 @@ class Http {
    */
   get method() {
     return this._method;
+  }
+
+  get port() {
+    return this._port;
   }
 
   /**

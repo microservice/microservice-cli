@@ -47,6 +47,7 @@ describe('Action.js', () => {
           output: {type: 'map'},
           http: {
             method: 'post',
+            port: 5000,
             path: '/data',
           },
           arguments: {
@@ -69,6 +70,7 @@ describe('Action.js', () => {
           output: {type: 'map'},
           http: {
             method: 'post',
+            port: 5000,
             path: '/data',
           },
           arguments: {
@@ -92,6 +94,7 @@ describe('Action.js', () => {
           output: {type: 'map'},
           http: {
             method: 'post',
+            port: 5000,
             path: '/data/{{foo}}',
           },
           arguments: {
@@ -115,6 +118,7 @@ describe('Action.js', () => {
           output: {type: 'map'},
           http: {
             method: 'post',
+            port: 5000,
             path: '/data/{{foo}}/{{bar}}',
           },
           arguments: {
@@ -287,6 +291,7 @@ describe('Action.js', () => {
       const c = new Action('foo', {
         http: {
           method: 'post',
+          port: 5000,
           path: '/skrt',
         },
         output: {
@@ -303,6 +308,7 @@ describe('Action.js', () => {
 
       expect(c.http).toEqual(new Http('foo', {
         method: 'post',
+        port: 5000,
         path: '/skrt',
       }));
     });
