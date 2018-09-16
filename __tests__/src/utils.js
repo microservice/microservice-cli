@@ -1,6 +1,44 @@
 const utils = require('../../src/utils');
+const Microservice = require('../../src/models/Microservice');
 
 describe('utils.js', () => {
+  describe('getNeededPorts(microservice)', () => {
+    test('returns an empty list because there are no actions that interface via http', () => {
+      const m = new Microservice({
+        omg: 1,
+      });
+
+      expect(utils.getNeededPorts(m)).toEqual([]);
+    });
+
+    test('returns a list consisting of the port 5050 because it is used by an http interfacing action', () => {
+      const m = new Microservice({
+        omg: 1,
+        lifecycle: {
+          startup: {
+            command: 'server.sh',
+          },
+        },
+        actions: {
+          foo: {
+            http: {
+              method: 'get',
+              port: 5050,
+              path: '/c',
+            },
+          },
+          bar: {
+            format: {
+              command: 'bar.sh',
+            },
+          },
+        },
+      });
+
+      expect(utils.getNeededPorts(m)).toEqual([5050]);
+    });
+  });
+
   describe('parse(list, errorMessage)', () => {
     test('parses the list', () => {
       const result = utils.parse(['key=val', 'foo=bar', 'fizz=buzz'], 'Error message.');

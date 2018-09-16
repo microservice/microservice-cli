@@ -164,21 +164,21 @@ describe('Exec.js', () => {
         rp.delete.restore();
       });
 
-      test.skip('command that gets', async () => {
+      test('command that gets', async () => {
         await new Exec('fake_docker_id', new Microservice({
-          version: 1,
-          commands: {
+          omg: 1,
+          actions: {
             get: {
               output: {type: 'string'},
               http: {
                 method: 'get',
-                endpoint: '/get',
+                port: 5555,
+                path: '/get',
               },
             },
           },
           lifecycle: {
-            run: {
-              port: 5555,
+            startup: {
               command: ['node', 'app.js'],
             },
           },
@@ -190,38 +190,38 @@ describe('Exec.js', () => {
         expect(rpGetStub.calledWith('http://localhost:5555/get')).toBeTruthy();
       });
 
-      test.skip('command that posts', async () => {
+      test('command that posts', async () => {
         await new Exec('fake_docker_id', new Microservice({
-          version: 1,
-          commands: {
+          omg: 1,
+          actions: {
             post: {
               output: {type: 'string'},
               arguments: {
                 isMale: {
                   type: 'boolean',
-                  location: 'query',
+                  in: 'query',
                   required: true,
                 },
                 person_id: {
                   type: 'int',
-                  location: 'path',
+                  in: 'path',
                   required: true,
                 },
                 data: {
                   type: 'string',
-                  location: 'body',
+                  in: 'requestBody',
                   required: true,
                 },
               },
               http: {
                 method: 'post',
-                endpoint: '/person/{{person_id}}',
+                port: 5555,
+                path: '/person/{{person_id}}',
               },
             },
           },
           lifecycle: {
-            run: {
-              port: 5555,
+            startup: {
               command: ['node', 'app.js'],
             },
           },
@@ -242,21 +242,21 @@ describe('Exec.js', () => {
         })).toBeTruthy();
       });
 
-      test.skip('command that puts', async () => {
+      test('command that puts', async () => {
         await new Exec('fake_docker_id', new Microservice({
-          version: 1,
-          commands: {
+          omg: 1,
+          actions: {
             put: {
               output: {type: 'string'},
               http: {
                 method: 'put',
-                endpoint: '/cheese',
+                port: 7777,
+                path: '/cheese',
               },
             },
           },
           lifecycle: {
-            run: {
-              port: 7777,
+            startup: {
               command: ['node', 'app.js'],
             },
           },
@@ -273,28 +273,28 @@ describe('Exec.js', () => {
         })).toBeTruthy();
       });
 
-      test.skip('command that deletes', async () => {
+      test('command that deletes', async () => {
         await new Exec('fake_docker_id', new Microservice({
-          version: 1,
-          commands: {
+          omg: 1,
+          actions: {
             delete: {
               output: {type: 'string'},
               arguments: {
                 id: {
                   type: 'int',
-                  location: 'path',
+                  in: 'path',
                   required: true,
                 },
               },
               http: {
                 method: 'delete',
-                endpoint: '/user/{{id}}',
+                port: 5555,
+                path: '/user/{{id}}',
               },
             },
           },
           lifecycle: {
-            run: {
-              port: 5555,
+            startup: {
               command: ['node', 'app.js'],
             },
           },

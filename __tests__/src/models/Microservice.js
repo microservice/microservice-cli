@@ -33,6 +33,7 @@ describe('Microservice.js', () => {
               output: {type: 'map'},
               http: {
                 method: 'post',
+                port: 5000,
                 path: '/data',
               },
             },
