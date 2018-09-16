@@ -23,7 +23,7 @@ function setVal(val, _else) {
  */
 async function createImageName() {
   const data = await exec('git remote -v');
-  return `omg/${data.match(/git@github\.com:(\w+\/\w+).git/)[1]}`;
+  return `omg/${data.match(/git@github\.com:(\w+\/[\w|-]+).git/)[1]}`;
 }
 
 /**

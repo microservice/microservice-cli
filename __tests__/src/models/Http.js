@@ -16,12 +16,12 @@ describe('Https.js', () => {
           }, {
             dataPath: '',
             keyword: 'required',
-            message: 'should have required property \'endpoint\'',
-            params: {missingProperty: 'endpoint'},
+            message: 'should have required property \'path\'',
+            params: {missingProperty: 'path'},
             schemaPath: '#/required',
           }],
           issue: {},
-          text: 'commands.commandName.http should have required property \'method\', data should have required property \'endpoint\'',
+          text: 'commands.commandName.http should have required property \'method\', data should have required property \'path\'',
           valid: false,
         });
       }
@@ -35,31 +35,12 @@ describe('Https.js', () => {
           errors: [{
             dataPath: '',
             keyword: 'required',
-            message: 'should have required property \'endpoint\'',
-            params: {missingProperty: 'endpoint'},
+            message: 'should have required property \'path\'',
+            params: {missingProperty: 'path'},
             schemaPath: '#/required',
-          }], issue: {method: 'get'}, text: 'commands.commandName.http should have required property \'endpoint\'', valid: false,
-        });
-      }
-    });
-
-    test('throws an exception because the json is not valid', () => {
-      try {
-        new Http('commandName', {
-          method: 'skrt',
-          endpoint: '/data',
-        });
-      } catch (e) {
-        expect(e).toEqual({
-          errors: [{
-            dataPath: '.method',
-            keyword: 'enum',
-            message: 'should be equal to one of the allowed values',
-            params: {allowedValues: ['get', 'post', 'put', 'delete']},
-            schemaPath: '#/properties/method/enum',
           }],
-          issue: {endpoint: '/data', method: 'skrt'},
-          text: 'commands.commandName.http.method should be equal to one of the allowed values',
+          issue: {method: 'get'},
+          text: 'commands.commandName.http should have required property \'path\'',
           valid: false,
         });
       }
@@ -68,17 +49,17 @@ describe('Https.js', () => {
 
   describe('.method', () => {
     test('gets the method', () => {
-      const h = new Http('commandName', {method: 'post', endpoint: '/skrt'});
+      const h = new Http('commandName', {method: 'post', path: '/skrt'});
 
       expect(h.method).toBe('post');
     });
   });
 
-  describe('.endpoint', () => {
-    test('gets the endpoint', () => {
-      const h = new Http('commandName', {method: 'post', endpoint: '/skrt'});
+  describe('.path', () => {
+    test('gets the path', () => {
+      const h = new Http('commandName', {method: 'post', path: '/skrt'});
 
-      expect(h.endpoint).toBe('/skrt');
+      expect(h.path).toBe('/skrt');
     });
   });
 });

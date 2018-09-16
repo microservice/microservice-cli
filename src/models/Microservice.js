@@ -1,4 +1,4 @@
-const Command = require('./Command');
+const Action = require('./Action');
 const EnvironmentVariable = require('./EnvironmentVariable');
 const Volume = require('./Volume');
 const Lifecycle = require('./Lifecycle');
@@ -19,12 +19,12 @@ class Microservice {
       throw isValid;
     }
     this._rawData = isValid;
-    this._commandMap = null;
-    if (microserviceYamlJson.commands) {
-      this._commandMap = {};
-      const commandList = Object.keys(microserviceYamlJson.commands);
-      for (let i = 0; i < commandList.length; i += 1) {
-        this._commandMap[commandList[i]] = new Command(commandList[i], microserviceYamlJson.commands[commandList[i]]);
+    this._actionMap = null;
+    if (microserviceYamlJson.actions) {
+      this._actionMap = {};
+      const actionList = Object.keys(microserviceYamlJson.actions);
+      for (let i = 0; i < actionList.length; i += 1) {
+        this._actionMap[actionList[i]] = new Action(actionList[i], microserviceYamlJson.actions[actionList[i]]);
       }
     }
     this._environmentMap = null;
@@ -44,11 +44,11 @@ class Microservice {
       }
     }
     this._lifecycle = ((microserviceYamlJson.lifecycle) ? new Lifecycle(microserviceYamlJson.lifecycle) : null);
-    for (let i = 0; i < this.commands.length; i += 1) {
-      if ((this.commands[i].http !== null) && (this.lifecycle === null)) {
+    for (let i = 0; i < this.actions.length; i += 1) {
+      if ((this.actions[i].http !== null) && (this.lifecycle === null)) {
         throw {
-          context: `Command with name: \`${this.commands[i].name}\``,
-          message: 'If a command interfaces with http then a lifecycle must be provided',
+          context: `Action with name: \`${this.actions[i].name}\``,
+          message: 'If an action interfaces with http then a lifecycle must be provided',
         };
       }
     }
@@ -64,29 +64,29 @@ class Microservice {
   }
 
   /**
-   * Get a list of {@link Command}s available to this {@link Microservice}.
+   * Get a list of {@link Action}s available to this {@link Microservice}.
    *
-   * @return {Array<Command>} The {@link Command}s
+   * @return {Array<Action>} The {@link Action}s
    */
-  get commands() {
-    if (this._commandMap === null) {
+  get actions() {
+    if (this._actionMap === null) {
       return [];
     }
-    return Object.values(this._commandMap);
+    return Object.values(this._actionMap);
   }
 
   /**
-   * Get's a {@link Command} given the a command name.
+   * Get's a {@link Action} given the a action name.
    *
-   * @param {String} command The given command name
-   * @throws {String} If the command does not exists
-   * @return {Command} The {@link Command}
+   * @param {String} action The given action name
+   * @throws {String} If the {@ling Action} does not exists
+   * @return {Action} The {@link Action}
    */
-  getCommand(command) {
-    if ((this._commandMap === null) || (!this._commandMap[command])) {
-      throw {message: `Command: \`${command}\` does not exist`};
+  getAction(action) {
+    if ((this._actionMap === null) || (!this._actionMap[action])) {
+      throw {message: `Action: \`${action}\` does not exist`};
     }
-    return this._commandMap[command];
+    return this._actionMap[action];
   }
 
   /**

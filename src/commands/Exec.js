@@ -89,7 +89,7 @@ class Exec {
    * @param {String} command The given command
    */
   async go(command) {
-    this._command = this._microservice.getCommand(command);
+    this._command = this._microservice.getAction(command);
     const spinner = ora.start(`Running command: \`${this._command.name}\``);
     this._setDefaultArguments();
     this._setDefaultEnvironmentVariables();
@@ -113,21 +113,17 @@ class Exec {
       verify.verifyEnvironmentVariableTypes(this._microservice, this._environmentVariables);
       verify.verifyEnvironmentVariablePattern(this._microservice, this._environmentVariables);
 
-      if (this._command.http === null && this._command.run === null) { // exec command
-        const output = await this._runDockerExecCommand();
+      if (this._command.format !== null) {
+        const containerID = await this._startDockerExecContainer();
+        const output = await this._runDockerExecCommand(containerID);
         verify.verifyOutputType(this._command, output);
+        await utils.exec(`docker kill ${containerID}`); // might need to work the lifecycle in
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
-      } else if (this._command.http !== null && this._command.run === null) { // lifecycle http command
+      } else if (this._command.http !== null) {
         const output = await this._httpCommand(await this._startServer());
         verify.verifyOutputType(this._command, output.trim());
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
         await this.serverKill();
-      } else { // streaming command
-        const server = this._startOMGServer();
-        const port = await utils.getOpenPort();
-        server.listen(port, '127.0.0.1');
-        await this._startStream(port);
-        spinner.succeed(`Ran command: \`${this._command.name}\` output will be streamed in (To exit, press ^C)`);
       }
     } catch (e) {
       throw { // TODO kill server here too
@@ -138,16 +134,30 @@ class Exec {
   }
 
   /**
+   * Starts the docker container based of this {@link Exec}'s {@link Microservice}'s {@link Lifecycle}. If null,
+   * the container will be started with the command: `tail -f /dev/null``.
+   *
+   * @return {Promise<String>} The id of the started container
+   * @private
+   */
+  async _startDockerExecContainer() {
+    const lifecycle = this._microservice.lifecycle;
+    if ((lifecycle !== null) && (lifecycle.startup !== null)) {
+      return await utils.exec(`docker run -td ${this._dockerImage} ${lifecycle.startup}`);
+    } else {
+      return await utils.exec(`docker run -td ${this._dockerImage} tail -f /dev/null`);
+    }
+  }
+
+  /**
    * Runs a given command via Docker cli.
    *
+   * @param {String} containerID The given id of the docker container
    * @return {Promise<String>} stdout if command runs with exit code 0, otherwise stderror
    * @private
    */
-  async _runDockerExecCommand() {
-    if (this._command.name === 'entrypoint') {
-      return await utils.exec(`docker run${this._formatVolumesForPathTypes()}${this._formatEnvironmentVariables()} ${this._dockerImage}${this._formatExec()}`);
-    }
-    return await utils.exec(`docker run${this._formatVolumesForPathTypes()}${this._formatEnvironmentVariables()} ${this._dockerImage} ${this._command.name}${this._formatExec()}`);
+  async _runDockerExecCommand(containerID) {
+    return await utils.exec(`docker exec ${containerID} ${this._command.format.command}${this._formatExec()}`);
   }
 
   /**
@@ -165,7 +175,6 @@ class Exec {
     return result;
   }
 
-  // TODO startup and shutdown part of the lifecycle
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml.
    *

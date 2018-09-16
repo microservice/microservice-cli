@@ -34,6 +34,7 @@ program
 if (process.argv.length === 2) {
   program.help();
 }
+
 process.on('SIGINT', async function() {
   try {
     await helper.controlC();

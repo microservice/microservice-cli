@@ -1,48 +1,50 @@
 {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": [
-            "array",
-            "string"
-          ],
-          "items": {
-            "type": "string",
-            "enum": [
-              "int",
-              "float",
-              "string",
-              "uuid",
-              "list",
-              "map",
-              "boolean",
-              "path",
-              "any"
-            ]
-          },
-          "pattern": "^(int|float|string|uuid|list|map|boolean|path|any)$"
-        },
-        "pattern": {
-          "type": "string"
-        },
-        "required": {
-          "type": "boolean"
-        },
-        "default": {
-          "type": [
-            "boolean",
-            "integer",
-            "number",
-            "array",
-            "string"
-          ]
-        },
-        "help": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "type"
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": [
+        "array",
+        "string"
       ],
-      "additionalProperties": false
+      "items": {
+        "type": "string",
+        "enum": [
+          "int",
+          "number",
+          "float",
+          "string",
+          "uuid",
+          "list",
+          "map",
+          "boolean",
+          "object",
+          "path",
+          "any"
+        ]
+      },
+      "pattern": "^(number|int|float|string|uuid|list|map|boolean|path|any|object)$"
+    },
+    "pattern": {
+      "type": "string"
+    },
+    "required": {
+      "type": "boolean"
+    },
+    "default": {
+      "type": [
+        "boolean",
+        "integer",
+        "number",
+        "array",
+        "string"
+      ]
+    },
+    "help": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "type"
+  ],
+  "additionalProperties": false
 }

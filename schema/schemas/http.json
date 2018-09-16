@@ -7,17 +7,21 @@
         "get",
         "post",
         "put",
-        "delete"
+        "delete",
+        "patch"
       ]
     },
-    "endpoint": {
+    "path": {
       "type": "string",
       "pattern": "^\/.*"
+    },
+    "contentType": {
+      "type": "string"
     }
   },
   "required": [
     "method",
-    "endpoint"
+    "path"
   ],
   "additionalProperties": false
 }

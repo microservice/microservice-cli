@@ -10,6 +10,7 @@
         "type": "string",
         "enum": [
           "int",
+          "number",
           "float",
           "string",
           "uuid",
@@ -19,17 +20,17 @@
           "path"
         ]
       },
-      "pattern": "^(int|float|string|uuid|list|map|boolean|path)$"
+      "pattern": "^(number|int|float|string|uuid|list|map|boolean|path|object)$"
     },
     "help": {
       "type": "string"
     },
-    "location": {
+    "in": {
       "type": "string",
       "enum": [
         "query",
         "path",
-        "body"
+        "requestBody"
       ]
     },
     "pattern": {

@@ -1,13 +1,16 @@
 const verify = require('../../src/verify');
-const Command = require('../../src/models/Command');
+const Action = require('../../src/models/Action');
 const Microservice = require('../../src/models/Microservice');
 
 describe('verify.js', () => {
   describe('verifyArgumentConstrains(command, args)', () => {
     test('throws an exception because an argument does not match its defined pattern', () => {
       try {
-        verify.verifyArgumentConstrains(new Command('name', {
+        verify.verifyArgumentConstrains(new Action('name', {
           output: {type: 'string'},
+          format: {
+            command: 'name.sh',
+          },
           arguments: {
             foo: {
               type: 'string',
@@ -24,8 +27,11 @@ describe('verify.js', () => {
 
     test('throws an exception because an argument is not an element of its defined enum', () => {
       try {
-        verify.verifyArgumentConstrains(new Command('name', {
+        verify.verifyArgumentConstrains(new Action('name', {
           output: {type: 'string'},
+          format: {
+            command: 'name.sh',
+          },
           arguments: {
             foo: {
               type: 'string',
@@ -42,8 +48,11 @@ describe('verify.js', () => {
 
     test('throws an exception because an argument is lower that min value', () => {
       try {
-        verify.verifyArgumentConstrains(new Command('name', {
+        verify.verifyArgumentConstrains(new Action('name', {
           output: {type: 'string'},
+          format: {
+            command: 'name.sh',
+          },
           arguments: {
             foo: {
               type: 'string',
@@ -62,8 +71,11 @@ describe('verify.js', () => {
 
     test('throws an exception because an argument is larger that max value', () => {
       try {
-        verify.verifyArgumentConstrains(new Command('name', {
+        verify.verifyArgumentConstrains(new Action('name', {
           output: {type: 'string'},
+          format: {
+            command: 'name.sh',
+          },
           arguments: {
             foo: {
               type: 'string',
@@ -84,8 +96,11 @@ describe('verify.js', () => {
   describe('verifyArgumentTypes(command, args)', () => {
     test('throws an exception because an argument is not of the right type', () => {
       try {
-        verify.verifyArgumentTypes(new Command('name', {
+        verify.verifyArgumentTypes(new Action('name', {
           output: {type: 'map'},
+          format: {
+            command: 'name.sh',
+          },
           arguments: {
             foo: {
               type: 'string',
@@ -108,7 +123,7 @@ describe('verify.js', () => {
     test('throws an exception because an environment variable is not of the right type', () => {
       try {
         verify.verifyEnvironmentVariableTypes(new Microservice({
-          version: 1,
+          omg: 1,
           environment: {
             foo: {
               type: 'int',
@@ -127,7 +142,7 @@ describe('verify.js', () => {
     test('throws an exception because an environment variable does not match its defined pattern', () => {
       try {
         verify.verifyEnvironmentVariablePattern(new Microservice({
-          version: 1,
+          omg: 1,
           environment: {
             foo: {
               type: 'string',
@@ -146,7 +161,10 @@ describe('verify.js', () => {
   describe('verifyOutputType(command, output)', () => {
     test('throws an exception because the output is not of the right type', () => {
       try {
-        verify.verifyOutputType(new Command('name', {
+        verify.verifyOutputType(new Action('name', {
+          format: {
+            command: 'name.sh',
+          },
           output: {type: 'map'},
         }), 'bob');
       } catch (e) {

@@ -1,12 +1,61 @@
 {
   "properties": {
-    "version": {
-      "type": "integer",
-      "enum": [
-        1
-      ]
+    "omg": {
+      "type": "integer"
     },
-    "commands": {
+    "info": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "[0-9]*\\.[0-9]*\\.[0-9]*"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "license": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "url"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "version",
+        "title",
+        "description"
+      ],
+      "additionalProperties": false
+    },
+    "actions": {
       "type": "object",
       "patternProperties": {
         "^[A-Za-z|_]+$": {
@@ -135,7 +184,6 @@
   "_comment": "arguments, commands, environment, lifecycle, and volumes checks are done in their respective constructors. The metrics, system, and scale checks are still done here as there was no need to create a class for those attributes yet.",
   "additionalProperties": false,
   "required": [
-    "version"
-  ],
-  "minProperties": 1
+    "omg"
+  ]
 }

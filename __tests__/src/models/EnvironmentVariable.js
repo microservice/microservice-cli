@@ -28,12 +28,12 @@ describe('EnvironmentVariable.js', () => {
           errors: [{
             dataPath: '.type',
             keyword: 'pattern',
-            message: 'should match pattern "^(int|float|string|uuid|list|map|boolean|path|any)$"',
-            params: {pattern: '^(int|float|string|uuid|list|map|boolean|path|any)$'},
+            message: 'should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|any|object)$"',
+            params: {pattern: '^(number|int|float|string|uuid|list|map|boolean|path|any|object)$'},
             schemaPath: '#/properties/type/pattern',
           }],
           issue: {type: 'bob'},
-          text: 'environment.name.type should match pattern "^(int|float|string|uuid|list|map|boolean|path|any)$"',
+          text: 'environment.name.type should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|any|object)$"',
           valid: false,
         });
       }

@@ -9,41 +9,30 @@ class Lifecycle {
    *
    * @param {Object} rawLifecycle The given raw data
    */
-  constructor(rawLifecycle) { // TODO maybe make these fields class instead of raw objects https://microservice.guide/lifecycle
+  constructor(rawLifecycle) {
     const isValid = validateLifecycle(rawLifecycle);
     if (!isValid.valid) {
       isValid.text = isValid.text.replace('data', 'lifecycle');
       throw isValid;
     }
     this._startup = rawLifecycle.startup || null;
-    this._run = rawLifecycle.run;
-    this._run = {};
-    this._run.command = rawLifecycle.run.command[0];
-    this._run.args = '';
-    this._run.port = rawLifecycle.run.port;
-    for (let i = 1; i < rawLifecycle.run.command.length; i += 1) {
-      this._run.args += rawLifecycle.run.command[i] + ' ';
-    }
-    this._run.args = this._run.args.trim();
     this._shutdown = rawLifecycle.shutdown || null;
   }
 
   /**
    * Get's the startup process for this {@link Lifecycle}.
    *
-   * @return {{command: String, timeout: Number, method: String}|null} The startup object
+   * @return {String|null} The startup object
    */
   get startup() {
-    return this._startup;
-  }
-
-  /**
-   * Get's the run object for this {@link Lifecycle}.
-   *
-   * @return {{command: String, args: String, port: Number}} The run object
-   */
-  get run() {
-    return this._run;
+    if (typeof this._startup.command === 'string') {
+      return this._startup.command;
+    }
+    let result = '';
+    for (let i = 0; i < this._startup.command.length; i += 1) {
+      result += this._startup.command[i] + ' ';
+    }
+    return result.trim();
   }
 
   /**
