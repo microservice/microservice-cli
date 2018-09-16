@@ -22,17 +22,24 @@ class Lifecycle {
   /**
    * Get's the startup process for this {@link Lifecycle}.
    *
-   * @return {String|null} The startup object
+   * @return {{command: String, args: String}|null} The startup object
    */
   get startup() {
     if (typeof this._startup.command === 'string') {
-      return this._startup.command;
+      return {
+        command: this._startup.command,
+        args: '',
+      };
     }
-    let result = '';
-    for (let i = 0; i < this._startup.command.length; i += 1) {
-      result += this._startup.command[i] + ' ';
+    let result = {
+      command: this._startup.command[0],
+      args: '',
+    };
+    for (let i = 1; i < this._startup.command.length; i += 1) {
+      result.args += this._startup.command[i] + ' ';
     }
-    return result.trim();
+    result.args = result.args.trim();
+    return result;
   }
 
   /**

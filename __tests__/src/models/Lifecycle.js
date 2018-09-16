@@ -43,7 +43,10 @@ describe('Lifecycle.js', () => {
         },
       });
 
-      expect(l.startup).toBe('node app.js foo');
+      expect(l.startup).toEqual({
+        command: 'node',
+        args: 'app.js foo',
+      });
     });
   });
 

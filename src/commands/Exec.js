@@ -90,7 +90,7 @@ class Exec {
    */
   async go(command) {
     this._command = this._microservice.getAction(command);
-    const spinner = ora.start(`Running command: \`${this._command.name}\``);
+    let spinner = ora.start(`Running command: \`${this._command.name}\``);
     this._setDefaultArguments();
     this._setDefaultEnvironmentVariables();
     if (!this._command.areRequiredArgumentsSupplied(this._arguments)) {
@@ -120,7 +120,9 @@ class Exec {
         await utils.exec(`docker kill ${containerID}`); // might need to work the lifecycle in
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
       } else if (this._command.http !== null) {
-        const output = await this._httpCommand(await this._startServer());
+        const port = await this._startServer();
+        spinner = ora.start(`Running command: \`${this._command.name}\``);
+        const output = await this._httpCommand(port);
         verify.verifyOutputType(this._command, output.trim());
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
         await this.serverKill();
@@ -184,8 +186,16 @@ class Exec {
   async _startServer() {
     const spinner = ora.start('Starting Docker container');
     const port = await utils.getOpenPort();
-    const run = this._microservice.lifecycle.run;
-    this._dockerServiceId = await utils.exec(`docker run -d -p ${port}:${run.port}${this._formatEnvironmentVariables()} --entrypoint ${run.command} ${this._dockerImage} ${run.args}`);
+    const neededPorts = utils.getNeededPorts(this._microservice);
+
+    let portString = '';
+
+    for (let i = 0; i < neededPorts.length; i += 1) {
+      portString += `-p ${port}:${neededPorts[i]} `;
+    }
+    portString = portString.trim();
+
+    this._dockerServiceId = await utils.exec(`docker run -d ${portString}${this._formatEnvironmentVariables()} --entrypoint ${this._microservice.lifecycle.startup.command} ${this._dockerImage} ${this._microservice.lifecycle.startup.args}`);
     spinner.succeed(`Stared Docker container with id: ${this._dockerServiceId.substring(0, 12)}`);
     return port;
   }
@@ -317,17 +327,17 @@ class Exec {
   _formatHttp(port) {
     const jsonData = {};
     const queryParams = {};
-    let url = `http://localhost:${port}${this._command.http.endpoint}`;
+    let url = `http://localhost:${port}${this._command.http.path}`;
     for (let i = 0; i < this._command.arguments.length; i += 1) {
       const argument = this._command.arguments[i];
-      switch (this._command.getArgument(argument.name).location) {
+      switch (this._command.getArgument(argument.name).in) {
         case 'query':
           queryParams[argument.name] = this._arguments[argument.name];
           break;
         case 'path':
           url = url.replace(`{{${argument.name}}}`, this._arguments[argument.name]);
           break;
-        case 'body':
+        case 'requestBody':
           jsonData[argument.name] = this._arguments[argument.name];
           break;
       }
