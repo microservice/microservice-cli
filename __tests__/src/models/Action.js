@@ -29,13 +29,19 @@ describe('Action.js', () => {
             schemaPath: '#/oneOf/2/required',
           }, {
             dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'events\'',
+            params: {missingProperty: 'events'},
+            schemaPath: '#/oneOf/3/required',
+          }, {
+            dataPath: '',
             keyword: 'oneOf',
             message: 'should match exactly one schema in oneOf',
             params: {passingSchemas: null},
             schemaPath: '#/oneOf',
           }],
           issue: {},
-          text: 'actions.name should have required property \'http\', data should have required property \'format\', data should have required property \'rpc\', data should match exactly one schema in oneOf',
+          text: 'actions.name should have required property \'http\', data should have required property \'format\', data should have required property \'rpc\', data should have required property \'events\', data should match exactly one schema in oneOf',
           valid: false,
         });
       }

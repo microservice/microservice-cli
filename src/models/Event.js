@@ -1,23 +1,21 @@
 const Argument = require('./Argument');
 const Http = require('./Http');
-const Format = require('./Format');
-const Event = require('./Event');
-const validateAction = require('../../schema/schema').action;
+const validateEvent = require('../../schema/schema').event;
 
 /**
  * Describes a command.
  */
-class Action {
+class Event {
   /**
-   * Build a {@link Action}.
+   * Build a {@link Event}.
    *
    * @param {String} name The given name
    * @param {Object} rawCommand The raw data
    */
   constructor(name, rawCommand) {
-    const isValid = validateAction(rawCommand);
+    const isValid = validateEvent(rawCommand);
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace('data', `actions.${name}`);
+      isValid.text = isValid.text.replace('data', `actions.events.${name}`);
       throw isValid;
     }
     this._name = name;
@@ -31,28 +29,20 @@ class Action {
         this._argumentsMap[_arguments[i]] = new Argument(_arguments[i], rawCommand.arguments[_arguments[i]]);
       }
     }
-    this._eventMap = null;
-    if (rawCommand.events) {
-      this._eventMap = {};
-      const eventList = Object.keys(rawCommand.events);
-      for (let i = 0; i < eventList.length; i += 1) {
-        this._eventMap[eventList[i]] = new Event(eventList[i], rawCommand.events[eventList[i]]);
-      }
-    }
-    this._http = ((rawCommand.http) ? new Http(name, rawCommand.http, null) : null);
-    this._format = ((rawCommand.format) ? new Format(name, rawCommand.format) : null);
-    if (this._http !== null) {
-      this._checkHttpArguments();
-    }
+    this._subscribe = new Http(name, rawCommand.http.subscribe, rawCommand.http.port);
+    this._unsubscribe = new Http(name, rawCommand.http.unsubscribe, rawCommand.http.port);
+    this._checkHttpArguments(this._subscribe);
+    this._checkHttpArguments(this._unsubscribe);
   }
 
   /**
-   * Check validity of an http command.
+   * Check validity of a Event command.
    *
+   * @param {Http} http The given http: subscribe or unsubscribe
    * @private
    */
-  _checkHttpArguments() {
-    let _path = this.http.path;
+  _checkHttpArguments(http) {
+    let _path = http.path;
     for (let i = 0; i < this.arguments.length; i += 1) {
       const argument = this.arguments[i];
       if (argument.in === null) {
@@ -62,7 +52,7 @@ class Action {
         };
       }
       if (argument.in === 'path') {
-        if (!this.http.path.includes(`{{${argument.name}}}`)) {
+        if (!http.path.includes(`{{${argument.name}}}`)) {
           throw {
             context: `Argument: \`${argument.name}\` for command: \`${this.name}\``,
             message: 'Path parameters must be defined in the http path, of the form `{{argument}}`',
@@ -88,7 +78,7 @@ class Action {
   }
 
   /**
-   * Get's the name of this {@link Action}.
+   * Get's the name of this {@link Event}.
    *
    * @return {String} The name
    */
@@ -97,7 +87,7 @@ class Action {
   }
 
   /**
-   * The output type of this {@link Action}.
+   * The output type of this {@link Event}.
    *
    * @return {Object} The output type
    */
@@ -106,7 +96,7 @@ class Action {
   }
 
   /**
-   * Get this {@Action}'s help.
+   * Get this {@Event}'s help.
    *
    * @return {String|null} The help
    */
@@ -131,7 +121,7 @@ class Action {
   }
 
   /**
-   * Get this {@link Action}'s required {@link Argument}s.
+   * Get this {@link Event}'s required {@link Argument}s.
    *
    * @return {Array<String>} The required {@link Argument}'s names
    */
@@ -140,7 +130,7 @@ class Action {
   }
 
   /**
-   * Get the {@ink Argument}s for this {@link Action}.
+   * Get the {@ink Argument}s for this {@link Event}.
    *
    * @return {Array<Argument>} The {@link Argument}s
    */
@@ -152,7 +142,7 @@ class Action {
   }
 
   /**
-   * Get an {@link Argument} based on given argument from this {@link Action}.
+   * Get an {@link Argument} based on given argument from this {@link Event}.
    *
    * @param {String} argument The given argument
    * @throws {String} If the argument does not exists
@@ -166,22 +156,13 @@ class Action {
   }
 
   /**
-   * The this {@link Action}s {@link Http} service.
+   * The this {@link Event}s {@link Http} service.
    *
    * @return {Http} The {@link Http} service
    */
   get http() {
     return this._http;
   }
-
-  /**
-   * Get's this {@link Action}'s format.
-   *
-   * @return {Format} The {@link Action}'s format
-   */
-  get format() {
-    return this._format;
-  }
 }
 
-module.exports = Action;
+module.exports = Event;
