@@ -1,4 +1,6 @@
 const http = require('http');
+const fs = require('fs');
+const homedir = require('os').homedir();
 const rp = require('request-promise');
 const querystring = require('querystring');
 const verify = require('../verify');
@@ -126,6 +128,17 @@ class Exec {
         verify.verifyOutputType(this._command, output.trim());
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
         await this.serverKill();
+      } else if (this._command.events !== null) {
+        const port = await this._startServer();
+        const data = {
+          subscriptions: {}
+        };
+        data.subscriptions[process.cwd()] = {
+          command: ''
+        };
+        data.subscriptions[process.cwd()][port] = 5000;
+        fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(data), 'utf8');
+        process.stdout.write('Run `omg subscribe `name_of_event``'); // TODO
       }
     } catch (e) {
       throw { // TODO kill server here too

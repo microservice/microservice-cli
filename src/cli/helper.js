@@ -5,6 +5,7 @@ const utils = require('../utils');
 const Microservice = require('../models/Microservice');
 const Build = require('../commands/Build');
 const Exec = require('../commands/Exec');
+const Subscribe = require('../commands/Subscribe');
 
 /**
  * Formats the output based on the data and options.
@@ -69,6 +70,7 @@ async function build(options) {
 
 let microservice = null;
 let e = null;
+let s = null;
 
 /**
  * Will read the `microservice.yml` and `Dockerfile` and run the given command with the given arguments and environment variables.
@@ -136,6 +138,40 @@ async function exec(command, options) {
   }
 }
 
+async function subscribe(event, options) {
+  console.log(event)
+  console.log(options)
+  if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
+    process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+    process.exit(1);
+  }
+
+  try {
+    const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
+    microservice = new Microservice(json);
+  } catch (e) {
+    process.stderr.write(JSON.stringify(e, null, 2));
+    process.exit(1);
+  }
+
+  try {
+    const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
+    s = new Subscribe(microservice, argsObj);
+    await s.go(event);
+  } catch (error) {
+    if (error.spinner) {
+      if (error.message.includes('Unable to find image')) {
+        error.spinner.fail(`${error.message.split('.')[0]}. Container not built. Run \`omg build \`container_name\`\``);
+      } else {
+        error.spinner.fail(error.message);
+      }
+    } else {
+      process.stderr.write(error.message);
+    }
+    process.exit(1);
+  }
+}
+
 /**
  * Catch the `CtrlC` command to stop running containers.
  */
@@ -150,6 +186,7 @@ module.exports = {
   validate,
   build,
   exec,
+  subscribe,
   controlC,
 };
 

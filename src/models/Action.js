@@ -151,6 +151,13 @@ class Action {
     return Object.values(this._argumentsMap);
   }
 
+  get events() {
+    if (this._eventMap === null) {
+      return null;
+    }
+    return Object.values(this._eventMap);
+  }
+
   /**
    * Get an {@link Argument} based on given argument from this {@link Action}.
    *
