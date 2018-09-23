@@ -160,8 +160,8 @@ class Event {
    *
    * @return {Http} The {@link Http} service
    */
-  get http() {
-    return this._http;
+  get subscribe() {
+    return this._subscribe;
   }
 }
 

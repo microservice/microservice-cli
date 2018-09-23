@@ -29,6 +29,11 @@ function getNeededPorts(microservice) {
     if (action.http !== null) {
       ports.push(action.http.port);
     }
+    if (action.events !== null) {
+      for (let j = 0; j < action.events.length; j += 1) {
+        ports.push(action.events[i].subscribe.port);
+      }
+    }
   }
   return ports;
 }
