@@ -128,15 +128,20 @@ class Exec {
         verify.verifyOutputType(this._command, output.trim());
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
         await this.serverKill();
-      } else if (this._command.events !== null) {
+      } else if (this._command.events !== null) { // TODO logic if there is already data in the file
         const port = await this._startServer();
-        const data = {
-          subscriptions: {}
+        const data = {};
+        data[process.cwd()] = {
+          container_id: this._dockerServiceId,
+          events: {},
+          ports: {},
         };
-        data.subscriptions[process.cwd()] = {
-          command: ''
-        };
-        data.subscriptions[process.cwd()][port] = 5000;
+        for (let i = 0; i < this._command.events.length; i += 1) {
+          data[process.cwd()].events[this._command.events[i].name] = {
+            command: this._command.name,
+          }
+        }
+        data[process.cwd()].ports[port] = 5000;
         fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(data), 'utf8');
         process.stdout.write('Run `omg subscribe `name_of_event``'); // TODO
       }

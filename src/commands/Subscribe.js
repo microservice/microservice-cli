@@ -5,7 +5,7 @@ class Subscribe {
   }
 
   async go(event) {
-    this._command = this._microservice.getAction(command);
+    this._command = this._microservice.getAction(event);
     let spinner = ora.start(`Running command: \`${this._command.name}\``);
     this._setDefaultArguments();
     this._setDefaultEnvironmentVariables();
