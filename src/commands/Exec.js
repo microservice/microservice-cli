@@ -1,4 +1,3 @@
-const http = require('http');
 const fs = require('fs');
 const homedir = require('os').homedir();
 const rp = require('request-promise');
@@ -6,7 +5,6 @@ const querystring = require('querystring');
 const verify = require('../verify');
 const utils = require('../utils');
 const ora = require('../ora');
-const logSymbols = require('log-symbols');
 
 /**
  * Describes a way to execute a microservice.
@@ -138,10 +136,10 @@ class Exec {
         };
         for (let i = 0; i < this._command.events.length; i += 1) {
           data[process.cwd()].events[this._command.events[i].name] = {
-            command: this._command.name,
+            action: this._command.name,
           }
         }
-        data[process.cwd()].ports[port] = 5000;
+        data[process.cwd()].ports[5000] = port; // TODO
         fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(data), 'utf8');
         process.stdout.write('Run `omg subscribe `name_of_event``'); // TODO
       }
@@ -237,44 +235,6 @@ class Exec {
       }
     }
     return volumeString;
-  }
-
-  /**
-   * Starts a streaming service.
-   *
-   * @param {Number} port The port the OMG server is running on
-   * @private
-   */
-  async _startStream(port) {
-    this._dockerServiceId = await utils.exec(`docker run -d ${this._formatVolumesForPathTypes()} ${this._formatEnvironmentVariables()} \
-                                       -e OMG_ENDPOINT='http://host.docker.internal:${port}' --net="host" --entrypoint \
-                                       ${this._command.run.command} ${this._dockerImage} ${this._command.run.args} \
-                                       ${this._formatExec()}`);
-  }
-
-  /**
-   * Starts a server for a streaming service to POST back to.
-   *
-   * @return {Server} The server
-   * @private
-   */
-  _startOMGServer() {
-    const that = this;
-    return http.createServer((req, res) => {
-      if (req.method === 'POST') {
-        req.on('data', async (data) => {
-          try {
-            verify.verifyOutputType(that._command, data + '');
-            process.stdout.write(`${data}\n`);
-          } catch (e) {
-            await this.serverKill();
-            process.stderr.write(`${logSymbols.error} Failed command \`${this._command.name}\` ${e}`);
-            process.exit(1);
-          }
-        });
-        res.end('Done');
-      }
-    });
   }
 
   /**

@@ -139,8 +139,6 @@ async function exec(command, options) {
 }
 
 async function subscribe(event, options) {
-  console.log(event)
-  console.log(options)
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
     process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);

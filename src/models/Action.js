@@ -173,6 +173,18 @@ class Action {
   }
 
   /**
+   *
+   * @param event
+   * @return {Event}
+   */
+  getEvent(event) {
+    if ((this._eventMap === null) || (!this._eventMap[event])) {
+      throw `Event \`${event}\` does not exist`;
+    }
+    return this._eventMap[event];
+  }
+
+  /**
    * The this {@link Action}s {@link Http} service.
    *
    * @return {Http} The {@link Http} service
