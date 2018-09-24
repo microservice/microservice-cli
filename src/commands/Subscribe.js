@@ -4,40 +4,48 @@ const utils = require('../utils');
 const homedir = require('os').homedir();
 const rp = require('request-promise');
 
+/**
+ * Describes a way to subscribe to an event.
+ */
 class Subscribe {
   /**
    *
-   * @param {Microservice} microservice
-   * @param {Object} _arguments
+   * @param {Microservice} microservice The given {@link Microservice}
+   * @param {Object} _arguments The given arguments
    */
   constructor(microservice, _arguments) {
     this._microservice = microservice;
     this._arguments = _arguments;
   }
 
+  /**
+   * Subscribes you to the given event.
+   *
+   * @param {String} event The given event
+   */
   async go(event) {
     const omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
     this._action = this._microservice.getAction(omgJson[process.cwd()].events[event].action);
+    this._eventName = event;
 
     const server = this._startOMGServer();
     const port = await utils.getOpenPort();
     server.listen(port, '127.0.0.1');
 
-    var options = {
+    let options = {
       method: 'POST',
       uri: `http://localhost:${omgJson[process.cwd()].ports[5000]}${this._action.getEvent(event).subscribe.path}`,
       body: {
-        "id": "1231241241",
-        "direct": "responds",
-        "endpoint": `http://host.docker.internal:${port}`,
-        "channel": "CAL6YMP9C",
-        "pattern": "scoot"
+        id: '1231241241',
+        direct: 'responds',
+        endpoint: `http://host.docker.internal:${port}`,
+        channel: 'CAL6YMP9C',
+        pattern: 'scoot',
       },
-      json: true // Automatically stringifies the body to JSON
+      json: true, // Automatically stringifies the body to JSON
     };
 
-    await rp(options)
-
+    await rp(options);
 
 
     //   this._command = this._microservice.getAc(event);
@@ -63,13 +71,9 @@ class Subscribe {
       if (req.method === 'POST') {
         req.on('data', async (data) => {
           try {
-            console.log('asdasd')
-            // verify.verifyOutputType(that._command, data + '');
             process.stdout.write(`${data}\n`);
           } catch (e) {
-            // await this.serverKill();
-            // process.stderr.write(`${logSymbols.error} Failed command \`${this._command.name}\` ${e}`);
-            console.error('TOOD BAD')
+            process.stderr.write(`Failed to subscribe to \`${this._eventName}\` ${e}`);
             process.exit(1);
           }
         });

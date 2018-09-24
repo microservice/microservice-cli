@@ -137,7 +137,7 @@ class Exec {
         for (let i = 0; i < this._command.events.length; i += 1) {
           data[process.cwd()].events[this._command.events[i].name] = {
             action: this._command.name,
-          }
+          };
         }
         data[process.cwd()].ports[5000] = port; // TODO
         fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(data), 'utf8');

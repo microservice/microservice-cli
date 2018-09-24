@@ -138,6 +138,12 @@ async function exec(command, options) {
   }
 }
 
+/**
+ * Will read the `microservice.yml` and `Dockerfile` and subscribe to the with the given event..
+ *
+ * @param {String} event The given event
+ * @param {Object} options The given object holding the arguments
+ */
 async function subscribe(event, options) {
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
     process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');

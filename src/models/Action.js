@@ -151,6 +151,11 @@ class Action {
     return Object.values(this._argumentsMap);
   }
 
+  /**
+   * Get the {@link Event}s, or null if there are no events, for this {@link Action}.
+   *
+   * @return {Array<Event>|null} The {@link Event}s
+   */
   get events() {
     if (this._eventMap === null) {
       return null;
@@ -159,7 +164,7 @@ class Action {
   }
 
   /**
-   * Get an {@link Argument} based on given argument from this {@link Action}.
+   * Get an {@link Argument} based on given argument for this {@link Action}.
    *
    * @param {String} argument The given argument
    * @throws {String} If the argument does not exists
@@ -173,8 +178,10 @@ class Action {
   }
 
   /**
+   * Get an {@link Event} based on the given event name for this {@link Action}.
    *
-   * @param event
+   * @param {String} event The given event
+   * @throws {String} If the event does not exist
    * @return {Event}
    */
   getEvent(event) {
