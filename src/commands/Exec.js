@@ -126,22 +126,10 @@ class Exec {
         verify.verifyOutputType(this._command, output.trim());
         spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
         await this.serverKill();
-      } else if (this._command.events !== null) { // TODO logic if there is already data in the file
+      } else if (this._command.events !== null) {
         const port = await this._startServer();
-        const data = {};
-        data[process.cwd()] = {
-          container_id: this._dockerServiceId,
-          events: {},
-          ports: {},
-        };
-        for (let i = 0; i < this._command.events.length; i += 1) {
-          data[process.cwd()].events[this._command.events[i].name] = {
-            action: this._command.name,
-          };
-        }
-        data[process.cwd()].ports[5000] = port; // TODO
-        fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(data), 'utf8');
-        process.stdout.write('Run `omg subscribe `name_of_event``'); // TODO
+        this._omgJsonFileHandler(port);
+        process.stdout.write('  Run `omg subscribe `name_of_event`` to subscribe to an event');
       }
     } catch (e) {
       throw { // TODO kill server here too
@@ -149,6 +137,36 @@ class Exec {
         message: `Failed command: \`${command}\`. ${e.toString().trim()}`,
       };
     }
+  }
+
+  /**
+   * Handle the `.omg.json` state file.
+   *
+   * @param {Integer} port The given port that the docker container is open on
+   * @private
+   */
+  _omgJsonFileHandler(port) {
+    let data = {};
+    if (fs.existsSync(`${homedir}/.omg.json`)) {
+      data = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`))
+    }
+
+    data[process.cwd()] = {
+      container_id: this._dockerServiceId,
+      events: {},
+      ports: {},
+    };
+    for (let i = 0; i < this._command.events.length; i += 1) {
+      data[process.cwd()].events[this._command.events[i].name] = {
+        action: this._command.name,
+      };
+    }
+
+    const neededPorts = utils.getNeededPorts(this._microservice);
+    for (let i = 0; i < neededPorts.length; i += 1) {
+      data[process.cwd()].ports[neededPorts[i]] = port;
+    }
+    fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(data), 'utf8');
   }
 
   /**
@@ -161,7 +179,7 @@ class Exec {
   async _startDockerExecContainer() {
     const lifecycle = this._microservice.lifecycle;
     if ((lifecycle !== null) && (lifecycle.startup !== null)) {
-      return await utils.exec(`docker run -td ${this._dockerImage} ${lifecycle.startup}`);
+      return await utils.exec(`docker run -td ${this._dockerImage} ${lifecycle.startup.command} ${lifecycle.startup.args}`);
     } else {
       return await utils.exec(`docker run -td ${this._dockerImage} tail -f /dev/null`);
     }
