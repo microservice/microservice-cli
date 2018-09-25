@@ -148,7 +148,7 @@ class Exec {
   _omgJsonFileHandler(port) {
     let data = {};
     if (fs.existsSync(`${homedir}/.omg.json`)) {
-      data = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`))
+      data = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`));
     }
 
     data[process.cwd()] = {

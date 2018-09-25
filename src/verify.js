@@ -30,9 +30,9 @@ function verifyArgumentConstrains(command, args) {
 }
 
 /**
- * Verifies the types of given arguments based off of the given {@link Command}.
+ * Verifies the types of given arguments based off of the given {@link Action} or {@link Event}.
  *
- * @param {Action} command The given {@link Command}
+ * @param {Action|Event} command The given {@link Action} or {@link Event}
  * @param {Object} args The given argument mapping
  */
 function verifyArgumentTypes(command, args) {
