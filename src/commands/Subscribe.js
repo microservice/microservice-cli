@@ -32,7 +32,6 @@ class Subscribe {
       throw {
         spinner,
         message: `Failed subscribing to event: \`${event}\`. You must run \`omg exec \`action_for_event\`\` before trying to subscribe to an event`,
-
       };
     }
 
@@ -70,7 +69,7 @@ class Subscribe {
       if (e.error.code === 'ECONNREFUSED') {
         message = `No running process to subscribe to for event: \`${event}\`. Be sure to run the action for the given event (\`omg exec \`action_for_event\`\`)`;
       }
-      throw { // TODO kill server here too
+      throw {
         spinner,
         message,
       };
