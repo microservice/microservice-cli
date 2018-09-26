@@ -156,12 +156,21 @@ class Event {
   }
 
   /**
-   * The this {@link Event}s {@link Http} service.
+   * The this {@link Event}s subscribe {@link Http} service.
    *
    * @return {Http} The {@link Http} service
    */
   get subscribe() {
     return this._subscribe;
+  }
+
+  /**
+   * The this {@link Event}s unsubscribe {@link Http} service.
+   *
+   * @return {Http} The {@link Http} service
+   */
+  get unsubscribe() {
+    return this._unsubscribe;
   }
 }
 

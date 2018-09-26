@@ -1,5 +1,6 @@
 const fs = require('fs');
 const http = require('http');
+const uuidv4 = require('uuid/v4');
 const utils = require('../utils');
 const homedir = require('os').homedir();
 const rp = require('request-promise');
@@ -35,8 +36,8 @@ class Subscribe {
       };
     }
 
-    const omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
-    this._action = this._microservice.getAction(omgJson[process.cwd()].events[event].action);
+    this._omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
+    this._action = this._microservice.getAction(this._omgJson[process.cwd()].events[event].action);
     this._event = this._action.getEvent(event);
     if (!this._event.areRequiredArgumentsSupplied(this._arguments)) {
       throw {
@@ -52,11 +53,12 @@ class Subscribe {
       const port = await utils.getOpenPort();
       server.listen(port, '127.0.0.1');
 
+      this._id = uuidv4();
       await rp({
-        method: 'POST',
-        uri: `http://localhost:${omgJson[process.cwd()].ports[this._event.subscribe.port]}${this._action.getEvent(event).subscribe.path}`,
+        method: this._event.subscribe.method,
+        uri: `http://localhost:${this._omgJson[process.cwd()].ports[this._event.subscribe.port]}${this._event.subscribe.path}`,
         body: Object.assign(this._arguments, {
-          id: '1231241241', // uuid?
+          id: this._id,
           direct: 'responds', // what is this?
           endpoint: `http://host.docker.internal:${port}`,
         }),
@@ -103,6 +105,20 @@ class Subscribe {
       const argument = this._event.getArgument(argumentList[i]);
       this._arguments[argument.name] = utils.typeCast[argument.type](this._arguments[argument.name]);
     }
+  }
+
+  /**
+   * Unsubscribe this {@link Subscribe}'s {@link Event}.
+   */
+  async unsubscribe() {
+    await rp({
+      method: this._event.unsubscribe.method,
+      uri: `http://localhost:${this._omgJson[process.cwd()].ports[this._event.unsubscribe.port]}${this._event.unsubscribe.path}`,
+      body: {
+        id: this._id,
+      },
+      json: true,
+    });
   }
 }
 

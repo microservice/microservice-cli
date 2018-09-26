@@ -180,8 +180,11 @@ async function subscribe(event, options) {
  * Catch the `CtrlC` command to stop running containers.
  */
 async function controlC() {
-  if (e.isDockerProcessRunning()) {
+  if (e && e.isDockerProcessRunning()) {
     await e.serverKill();
+  }
+  if (s) {
+    await s.unsubscribe();
   }
   process.exit();
 }

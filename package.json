@@ -21,6 +21,7 @@
     "request-promise": "^4.2.2",
     "shelljs": "^0.8.2",
     "underscore": "^1.9.1",
+    "uuid": "^3.3.2",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
