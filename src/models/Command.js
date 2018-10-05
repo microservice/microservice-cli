@@ -40,9 +40,9 @@ class Command {
   }
 
   /**
-   * Check validity of a Event command.
+   * Check validity of an http interfacing {@link Command}.
    *
-   * @param {Http} http The given http: subscribe or unsubscribe
+   * @param {Http} http The given {@link Http}
    * @private
    */
   _checkHttpArguments(http) {
@@ -82,7 +82,7 @@ class Command {
   }
 
   /**
-   * Get's the name of this {@link Event}.
+   * Get's the name of this {@link Command}.
    *
    * @return {String} The name
    */
@@ -91,7 +91,7 @@ class Command {
   }
 
   /**
-   * Get's hel for this {@link Event}.
+   * Get's hel for this {@link Command}.
    *
    * @return {String} The help
    */
@@ -116,7 +116,7 @@ class Command {
   }
 
   /**
-   * Get this {@link Event}'s required {@link Argument}s.
+   * Get this {@link Command}'s required {@link Argument}s.
    *
    * @return {Array<String>} The required {@link Argument}'s names
    */
@@ -125,7 +125,7 @@ class Command {
   }
 
   /**
-   * Get the {@ink Argument}s for this {@link Event}.
+   * Get the {@ink Argument}s for this {@link Command}.
    *
    * @return {Array<Argument>} The {@link Argument}s
    */
@@ -137,7 +137,7 @@ class Command {
   }
 
   /**
-   * Get an {@link Argument} based on given argument for this {@link Action}.
+   * Get an {@link Argument} based on given argument for this {@link Command}.
    *
    * @param {String} argument The given argument
    * @throws {String} If the argument does not exists

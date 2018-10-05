@@ -48,7 +48,7 @@ describe('Exec.js', () => {
           },
         }), {}, {}).go('tom');
       } catch (e) {
-        expect(e.message).toBe('Failed command: `tom`. Need to supply required arguments: `foo`');
+        expect(e.message).toBe('Failed action: `tom`. Need to supply required arguments: `foo`');
       }
     });
 
@@ -79,7 +79,7 @@ describe('Exec.js', () => {
           foo: '1.1',
         }, {}).go('tom');
       } catch (e) {
-        expect(e.message).toBe('Failed command: `tom`. Need to supply required environment variables: `TOKEN`');
+        expect(e.message).toBe('Failed action: `tom`. Need to supply required environment variables: `TOKEN`');
       }
     });
 
@@ -97,7 +97,7 @@ describe('Exec.js', () => {
           },
         }), {}, {}).go('test');
 
-        expect(successTextList).toEqual(['Ran command: `test` with output: `execStub`']);
+        expect(successTextList).toEqual(['Ran action: `test` with output: `execStub`']);
         expect(execStub.args).toEqual([
           ['docker run -td fake_docker_id tail -f /dev/null'],
           ['docker exec `execStub` test.sh'],
@@ -136,7 +136,7 @@ describe('Exec.js', () => {
           },
         }), {}, {}).go('steve');
 
-        expect(successTextList).toEqual(['Ran command: `steve` with output: `execStub`']);
+        expect(successTextList).toEqual(['Ran action: `steve` with output: `execStub`']);
         expect(execStub.args).toEqual([
           ['docker run -td fake_docker_id tail -f /dev/null'],
           ['docker exec `execStub` steve.sh \'{"foo":3,"bar":{"foo":"bar"}}\''],
@@ -184,7 +184,7 @@ describe('Exec.js', () => {
           },
         }), {}, {}).go('get');
 
-        expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran command: `get` with output: get data', 'Stopped Docker container: `execStub`']);
+        expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran action: `get` with output: get data', 'Stopped Docker container: `execStub`']);
         expect(execStub.args[0][0]).toEqual('docker run -d -p 5555:5555 --entrypoint node fake_docker_id app.js');
         expect(execStub.args[1][0]).toEqual('docker kill `execStub`');
         expect(rpGetStub.calledWith('http://localhost:5555/get')).toBeTruthy();
@@ -231,7 +231,7 @@ describe('Exec.js', () => {
           data: 'data',
         }, {}).go('post');
 
-        expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran command: `post` with output: post data', 'Stopped Docker container: `execStub`']);
+        expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran action: `post` with output: post data', 'Stopped Docker container: `execStub`']);
         expect(execStub.args[0][0]).toEqual('docker run -d -p 5555:5555 --entrypoint node fake_docker_id app.js');
         expect(execStub.args[1][0]).toEqual('docker kill `execStub`');
         expect(rpPostStub.calledWith('http://localhost:5555/person/2?isMale=true', {
@@ -262,7 +262,7 @@ describe('Exec.js', () => {
           },
         }), {}, {}).go('put');
 
-        expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran command: `put` with output: put data', 'Stopped Docker container: `execStub`']);
+        expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran action: `put` with output: put data', 'Stopped Docker container: `execStub`']);
         expect(execStub.args[0][0]).toEqual('docker run -d -p 5555:7777 --entrypoint node fake_docker_id app.js');
         expect(execStub.args[1][0]).toEqual('docker kill `execStub`');
         expect(rpPutStub.calledWith('http://localhost:5555/cheese', {
@@ -302,7 +302,7 @@ describe('Exec.js', () => {
           id: '2',
         }, {}).go('delete');
 
-        expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran command: `delete` with output: delete data', 'Stopped Docker container: `execStub`']);
+        expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran action: `delete` with output: delete data', 'Stopped Docker container: `execStub`']);
         expect(execStub.args[0][0]).toEqual('docker run -d -p 5555:5555 --entrypoint node fake_docker_id app.js');
         expect(execStub.args[1][0]).toEqual('docker kill `execStub`');
         expect(rpDeleteStub.calledWith('http://localhost:5555/user/2')).toBeTruthy();

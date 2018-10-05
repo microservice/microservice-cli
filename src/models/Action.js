@@ -4,28 +4,28 @@ const Event = require('./Event');
 const Command = require('./Command');
 
 /**
- * Describes a command.
+ * Describes an action.
  */
 class Action extends Command {
   /**
    * Build a {@link Action}.
    *
    * @param {String} name The given name
-   * @param {Object} rawCommand The raw data
+   * @param {Object} rawAction The raw data
    */
-  constructor(name, rawCommand) {
-    super(name, rawCommand, true);
-    this._output = rawCommand.output;
+  constructor(name, rawAction) {
+    super(name, rawAction, true);
+    this._output = rawAction.output;
     this._eventMap = null;
-    if (rawCommand.events) {
+    if (rawAction.events) {
       this._eventMap = {};
-      const eventList = Object.keys(rawCommand.events);
+      const eventList = Object.keys(rawAction.events);
       for (let i = 0; i < eventList.length; i += 1) {
-        this._eventMap[eventList[i]] = new Event(eventList[i], rawCommand.events[eventList[i]]);
+        this._eventMap[eventList[i]] = new Event(eventList[i], rawAction.events[eventList[i]]);
       }
     }
-    this._http = ((rawCommand.http) ? new Http(name, rawCommand.http, null) : null);
-    this._format = ((rawCommand.format) ? new Format(name, rawCommand.format) : null);
+    this._http = ((rawAction.http) ? new Http(name, rawAction.http, null) : null);
+    this._format = ((rawAction.format) ? new Format(name, rawAction.format) : null);
     if (this._http !== null) {
       this._checkHttpArguments(this._http);
     }

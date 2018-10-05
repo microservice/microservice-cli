@@ -24,17 +24,17 @@ class Exec {
     this._arguments = _arguments;
     this._environmentVariables = environmentVariables;
     this._dockerServiceId = null;
-    this._command = null;
+    this._action = null;
   }
 
   /**
-   * Sets a {@link Command}'s default arguments.
+   * Sets a {@link Action}'s default arguments.
    *
    * @private
    */
   _setDefaultArguments() {
-    for (let i = 0; i < this._command.arguments.length; i += 1) {
-      const argument = this._command.arguments[i];
+    for (let i = 0; i < this._action.arguments.length; i += 1) {
+      const argument = this._action.arguments[i];
       if (!this._arguments[argument.name]) {
         if (argument.default !== null) {
           if (typeof argument.default === 'object') {
@@ -78,55 +78,55 @@ class Exec {
   _castTypes() {
     const argumentList = Object.keys(this._arguments);
     for (let i = 0; i < argumentList.length; i += 1) {
-      const argument = this._command.getArgument(argumentList[i]);
+      const argument = this._action.getArgument(argumentList[i]);
       this._arguments[argument.name] = utils.typeCast[argument.type](this._arguments[argument.name]);
     }
   }
 
   /**
-   * Runs the given {@link Command}.
+   * Runs the given {@link Action}.
    *
-   * @param {String} command The given command
+   * @param {String} action The given action
    */
-  async go(command) {
-    this._command = this._microservice.getAction(command);
-    let spinner = ora.start(`Running command: \`${this._command.name}\``);
+  async go(action) {
+    this._action = this._microservice.getAction(action);
+    let spinner = ora.start(`Running action: \`${this._action.name}\``);
     this._setDefaultArguments();
     this._setDefaultEnvironmentVariables();
-    if (!this._command.areRequiredArgumentsSupplied(this._arguments)) {
+    if (!this._action.areRequiredArgumentsSupplied(this._arguments)) {
       throw {
         spinner,
-        message: `Failed command: \`${command}\`. Need to supply required arguments: \`${this._command.requiredArguments.toString()}\``,
+        message: `Failed action: \`${action}\`. Need to supply required arguments: \`${this._action.requiredArguments.toString()}\``,
       };
     }
     if (!this._microservice.areRequiredEnvironmentVariablesSupplied(this._environmentVariables)) {
       throw {
         spinner,
-        message: `Failed command: \`${command}\`. Need to supply required environment variables: \`${this._microservice.requiredEnvironmentVariables.toString()}\``,
+        message: `Failed action: \`${action}\`. Need to supply required environment variables: \`${this._microservice.requiredEnvironmentVariables.toString()}\``,
       };
     }
     try {
-      verify.verifyArgumentTypes(this._command, this._arguments);
+      verify.verifyArgumentTypes(this._action, this._arguments);
       this._castTypes();
-      verify.verifyArgumentConstrains(this._command, this._arguments);
+      verify.verifyArgumentConstrains(this._action, this._arguments);
 
       verify.verifyEnvironmentVariableTypes(this._microservice, this._environmentVariables);
       verify.verifyEnvironmentVariablePattern(this._microservice, this._environmentVariables);
 
-      if (this._command.format !== null) {
+      if (this._action.format !== null) {
         const containerID = await this._startDockerExecContainer();
         const output = await this._runDockerExecCommand(containerID);
-        verify.verifyOutputType(this._command, output);
+        verify.verifyOutputType(this._action, output);
         await utils.exec(`docker kill ${containerID}`); // might need to work the lifecycle in
-        spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
-      } else if (this._command.http !== null) {
+        spinner.succeed(`Ran action: \`${this._action.name}\` with output: ${output.trim()}`);
+      } else if (this._action.http !== null) {
         const port = await this._startServer();
-        spinner = ora.start(`Running command: \`${this._command.name}\``);
+        spinner = ora.start(`Running action: \`${this._action.name}\``);
         const output = await this._httpCommand(port);
-        verify.verifyOutputType(this._command, output.trim());
-        spinner.succeed(`Ran command: \`${this._command.name}\` with output: ${output.trim()}`);
+        verify.verifyOutputType(this._action, output.trim());
+        spinner.succeed(`Ran action: \`${this._action.name}\` with output: ${output.trim()}`);
         await this.serverKill();
-      } else if (this._command.events !== null) {
+      } else if (this._action.events !== null) {
         const port = await this._startServer();
         this._omgJsonFileHandler(port);
         process.stdout.write('  Run `omg subscribe `name_of_event`` to subscribe to an event');
@@ -134,7 +134,7 @@ class Exec {
     } catch (e) {
       throw { // TODO kill server here too
         spinner,
-        message: `Failed command: \`${command}\`. ${e.toString().trim()}`,
+        message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
       };
     }
   }
@@ -156,9 +156,9 @@ class Exec {
       events: {},
       ports: {},
     };
-    for (let i = 0; i < this._command.events.length; i += 1) {
-      data[process.cwd()].events[this._command.events[i].name] = {
-        action: this._command.name,
+    for (let i = 0; i < this._action.events.length; i += 1) {
+      data[process.cwd()].events[this._action.events[i].name] = {
+        action: this._action.name,
       };
     }
 
@@ -193,7 +193,7 @@ class Exec {
    * @private
    */
   async _runDockerExecCommand(containerID) {
-    return await utils.exec(`docker exec ${containerID} ${this._command.format.command}${this._formatExec()}`);
+    return await utils.exec(`docker exec ${containerID} ${this._action.format.command}${this._formatExec()}`);
   }
 
   /**
@@ -244,7 +244,7 @@ class Exec {
     let volumeString = '';
     const argList = Object.keys(this._arguments);
     for (let i = 0; i < argList.length; i += 1) {
-      const argument = this._command.getArgument(argList[i]);
+      const argument = this._action.getArgument(argList[i]);
       if (argument.type === 'path') {
         const argumentValue = this._arguments[argument.name];
         const endPath = argumentValue.split('/')[argumentValue.split('/').length - 1];
@@ -256,7 +256,7 @@ class Exec {
   }
 
   /**
-   * Run the given command that interfaces via HTTP.
+   * Run this {@link Exec}'s {@link Action} that interfaces via HTTP.
    *
    * @param {Number} port The given sever started in Docker
    * @return {Promise<Object>} The response of the Http request
@@ -266,7 +266,7 @@ class Exec {
     let data;
     const httpData = this._formatHttp(port);
     try {
-      switch (this._command.http.method) {
+      switch (this._action.http.method) {
         case 'get':
           data = await rp.get(httpData.url);
           break;
@@ -307,14 +307,14 @@ class Exec {
    * @private
    */
   _formatExec() {
-    if (this._command.arguments.length > 0) {
+    if (this._action.arguments.length > 0) {
       return ` '${JSON.stringify(this._arguments)}'`;
     }
     return '';
   }
 
   /**
-   * Formats an Http request based on the given {@link Command}.
+   * Formats an Http request based on this {@link Exec}'s {@link Action}.
    *
    * @param {Number} port The given server info
    * @return {{url: String, jsonData: Object}} The url and data
@@ -323,10 +323,10 @@ class Exec {
   _formatHttp(port) {
     const jsonData = {};
     const queryParams = {};
-    let url = `http://localhost:${port}${this._command.http.path}`;
-    for (let i = 0; i < this._command.arguments.length; i += 1) {
-      const argument = this._command.arguments[i];
-      switch (this._command.getArgument(argument.name).in) {
+    let url = `http://localhost:${port}${this._action.http.path}`;
+    for (let i = 0; i < this._action.arguments.length; i += 1) {
+      const argument = this._action.arguments[i];
+      switch (this._action.getArgument(argument.name).in) {
         case 'query':
           queryParams[argument.name] = this._arguments[argument.name];
           break;

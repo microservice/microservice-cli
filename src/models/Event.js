@@ -2,19 +2,19 @@ const Http = require('./Http');
 const Command = require('./Command');
 
 /**
- * Describes a command.
+ * Describes a event.
  */
 class Event extends Command {
   /**
    * Build a {@link Event}.
    *
    * @param {String} name The given name
-   * @param {Object} rawCommand The raw data
+   * @param {Object} rawEvent The raw data
    */
-  constructor(name, rawCommand) {
-    super(name, rawCommand, false);
-    this._subscribe = new Http(name, rawCommand.http.subscribe, rawCommand.http.port);
-    this._unsubscribe = new Http(name, rawCommand.http.unsubscribe, rawCommand.http.port);
+  constructor(name, rawEvent) {
+    super(name, rawEvent, false);
+    this._subscribe = new Http(name, rawEvent.http.subscribe, rawEvent.http.port);
+    this._unsubscribe = new Http(name, rawEvent.http.unsubscribe, rawEvent.http.port);
     this._checkHttpArguments(this._subscribe);
     this._checkHttpArguments(this._unsubscribe);
   }
