@@ -4,7 +4,7 @@ const {dataTypes} = require('./utils');
 /**
  * Verifies the pattern, enum, and range of the given arguments.
  *
- * @param {Action} command The given {@link Command}
+ * @param {Command} command The given {@link Command}
  * @param {Object} args The given argument mapping
  */
 function verifyArgumentConstrains(command, args) {
@@ -32,7 +32,7 @@ function verifyArgumentConstrains(command, args) {
 /**
  * Verifies the types of given arguments based off of the given {@link Action} or {@link Event}.
  *
- * @param {Action|Event} command The given {@link Action} or {@link Event}
+ * @param {Command} command The given {@link Action} or {@link Event}
  * @param {Object} args The given argument mapping
  */
 function verifyArgumentTypes(command, args) {
@@ -80,14 +80,14 @@ function verifyEnvironmentVariablePattern(microservice, envs) {
 /**
  * Verifies the output type of a container.
  *
- * @param {Action} command The given {@link Command}
+ * @param {Action} action The given {@link Action}
  * @param {String} output The given output
  */
-function verifyOutputType(command, output) {
-  if (!dataTypes[command.output.type](output)) {
+function verifyOutputType(action, output) {
+  if (!dataTypes[action.output.type](output)) {
     throw (
-        `Command: \`${command.name}\``
-        + ` must have output type: \`${command.output.type}\``
+        `Action: \`${action.name}\``
+        + ` must have output type: \`${action.output.type}\``
         + ` instead got: \`${typeof output}\``
         + ` ${output}`
     );
