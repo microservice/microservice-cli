@@ -39,7 +39,7 @@ program
   .action(async (event, options) => await helper.subscribe(event, options));
 
 program
-  .command('s')
+  .command('shutdown')
   .usage(' ')
   .description('Shutdown a microservice process that was started by an event command')
   .action(async () => await helper.shutdown());
