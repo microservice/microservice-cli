@@ -49,8 +49,10 @@ class Command {
   _checkHttpArguments(http) {
     let _path = http.path;
     let commandType = 'action';
+    let commandTypeUpper = 'Action';
     if (!this._isAction) {
       commandType = 'event';
+      commandTypeUpper = 'Event';
     }
 
     for (let i = 0; i < this.arguments.length; i += 1) {
@@ -58,7 +60,7 @@ class Command {
       if (argument.in === null) {
         throw {
           context: `Argument: \`${argument.name}\` for ${commandType}: \`${this.name}\``,
-          message: 'Actions\' arguments that interface via http must provide an in',
+          message: `${commandTypeUpper}s' arguments that interface via http must provide an in`,
         };
       }
       if (argument.in === 'path') {
