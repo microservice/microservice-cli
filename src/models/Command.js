@@ -3,7 +3,7 @@ const validateAction = require('../../schema/schema').action;
 const validateEvent = require('../../schema/schema').event;
 
 /**
- * Describes a general command.
+ * Describes a general command. NOTE: this is used as an Abstract Class and should not be instantiated.
  */
 class Command {
   /**
@@ -27,6 +27,7 @@ class Command {
         throw isValid;
       }
     }
+    this._isAction = isAction;
     this._name = name;
     this._help = rawCommand.help || null;
     this._argumentsMap = null;
@@ -47,18 +48,25 @@ class Command {
    */
   _checkHttpArguments(http) {
     let _path = http.path;
+    let commandType = 'action';
+    let commandTypeUpper = 'Action';
+    if (!this._isAction) {
+      commandType = 'event';
+      commandTypeUpper = 'Event';
+    }
+
     for (let i = 0; i < this.arguments.length; i += 1) {
       const argument = this.arguments[i];
       if (argument.in === null) {
         throw {
-          context: `Argument: \`${argument.name}\` for command: \`${this.name}\``,
-          message: 'Commands\' arguments that interface via http must provide an in',
+          context: `Argument: \`${argument.name}\` for ${commandType}: \`${this.name}\``,
+          message: `${commandTypeUpper}s' arguments that interface via http must provide an in`,
         };
       }
       if (argument.in === 'path') {
         if (!http.path.includes(`{{${argument.name}}}`)) {
           throw {
-            context: `Argument: \`${argument.name}\` for command: \`${this.name}\``,
+            context: `Argument: \`${argument.name}\` for ${commandType}: \`${this.name}\``,
             message: 'Path parameters must be defined in the http path, of the form `{{argument}}`',
           };
         } else {
@@ -66,7 +74,7 @@ class Command {
         }
         if (!argument.isRequired() && (argument.default === null)) {
           throw {
-            context: `Argument: \`${argument.name}\` for command: \`${this.name}\``,
+            context: `Argument: \`${argument.name}\` for ${commandType}: \`${this.name}\``,
             message: 'Path parameters must be marked as required or be provided a default variable',
           };
         }
@@ -75,8 +83,8 @@ class Command {
     const extraPathParams = _path.match(/({{[a-zA-Z]+}})/g);
     if (extraPathParams !== null) {
       throw {
-        context: `Path parameter(s): \`${extraPathParams.toString()}\` for command: \`${this.name}\``,
-        message: 'If a url specifies a path parameter i.e. `{{argument}}`, the argument must be defined in the command',
+        context: `Path parameter(s): \`${extraPathParams.toString()}\` for ${commandType}: \`${this.name}\``,
+        message: `If a url specifies a path parameter i.e. \`{{argument}}\`, the argument must be defined in the ${commandType}`,
       };
     }
   }

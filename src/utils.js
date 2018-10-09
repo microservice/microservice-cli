@@ -31,7 +31,10 @@ function getNeededPorts(microservice) {
     }
     if (action.events !== null) {
       for (let j = 0; j < action.events.length; j += 1) {
-        ports.push(action.events[i].subscribe.port);
+        ports.push(action.events[j].subscribe.port);
+        if (!ports.includes(action.events[j].unsubscribe.port)) {
+          ports.push(action.events[j].unsubscribe.port);
+        }
       }
     }
   }

@@ -22,35 +22,6 @@
       ],
       "additionalProperties": false
     },
-    "output": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "int",
-            "number",
-            "float",
-            "string",
-            "uuid",
-            "list",
-            "map",
-            "object",
-            "boolean",
-            "path",
-            "any",
-            "null"
-          ]
-        },
-        "contentType": {
-          "type": "string"
-        },
-        "properties": {
-          "type": "object"
-        }
-      },
-      "additionalProperties": false
-    },
     "arguments": {
       "type": "object",
       "patternProperties": {
