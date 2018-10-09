@@ -58,7 +58,6 @@ class Subscribe {
         uri: `http://localhost:${this._omgJson[process.cwd()].ports[this._event.subscribe.port]}${this._event.subscribe.path}`,
         body: Object.assign(this._arguments, {
           id: this._id,
-          direct: 'responds', // what is this?
           endpoint: `http://host.docker.internal:${port}`,
         }),
         json: true,
