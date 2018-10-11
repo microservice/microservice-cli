@@ -11,23 +11,25 @@ class Command {
    *
    * @param {String} name The given name
    * @param {Object} rawCommand The raw data
-   * @param {boolean} isAction Describes if a command is an {@link Action} or {@link Event}
+   * @param {boolean} isAction Describes if a command is an {@link Action} or {@link Event} // TODO say what null is
    */
-  constructor(name, rawCommand, isAction) {
-    if (isAction) {
+  constructor(name, rawCommand, actionName) {
+    this._isAction = actionName === null;
+    let argumentPath = name;
+    if (this._isAction) {
       const isValid = validateAction(rawCommand);
       if (!isValid.valid) {
         isValid.text = isValid.text.replace('data', `actions.${name}`);
         throw isValid;
       }
     } else {
+      argumentPath = `${actionName}.events.${name}`;
       const isValid = validateEvent(rawCommand);
       if (!isValid.valid) {
         isValid.text = isValid.text.replace('data', `actions.events.${name}`);
         throw isValid;
       }
     }
-    this._isAction = isAction;
     this._name = name;
     this._help = rawCommand.help || null;
     this._argumentsMap = null;
@@ -35,7 +37,7 @@ class Command {
       this._argumentsMap = {};
       const _arguments = Object.keys(rawCommand.arguments);
       for (let i = 0; i < _arguments.length; i += 1) {
-        this._argumentsMap[_arguments[i]] = new Argument(_arguments[i], rawCommand.arguments[_arguments[i]]);
+        this._argumentsMap[_arguments[i]] = new Argument(_arguments[i], argumentPath, rawCommand.arguments[_arguments[i]]);
       }
     }
   }

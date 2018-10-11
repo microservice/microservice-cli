@@ -11,8 +11,8 @@ class Event extends Command {
    * @param {String} name The given name
    * @param {Object} rawEvent The raw data
    */
-  constructor(name, rawEvent) {
-    super(name, rawEvent, false);
+  constructor(name, commandName, rawEvent) {
+    super(name, rawEvent, commandName);
     this._subscribe = new Http(name, rawEvent.http.subscribe, rawEvent.http.port);
     this._unsubscribe = new Http(name, rawEvent.http.unsubscribe, rawEvent.http.port);
     this._checkHttpArguments(this._subscribe);

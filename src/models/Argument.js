@@ -11,10 +11,10 @@ class Argument {
    * @param {String} name The given name
    * @param {Object} rawArguments The given raw data
    */
-  constructor(name, rawArguments) {
+  constructor(name, pathToArgument, rawArguments) {
     const isValid = validateArgument(rawArguments);
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace('data', `commands.arguments.${name}`);
+      isValid.text = isValid.text.replace('data', `actions.${pathToArgument}.arguments.${name}`);
       throw isValid;
     }
     this._name = name;
