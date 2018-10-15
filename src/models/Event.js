@@ -14,8 +14,8 @@ class Event extends Command {
    */
   constructor(name, actionName, rawEvent) {
     super(name, rawEvent, actionName);
-    this._subscribe = new Http(name, rawEvent.http.subscribe, rawEvent.http.port);
-    this._unsubscribe = new Http(name, rawEvent.http.unsubscribe, rawEvent.http.port);
+    this._subscribe = new Http(name, rawEvent.http.subscribe, `actions.${actionName}.events.${name}.http.subscribe`, rawEvent.http.port);
+    this._unsubscribe = new Http(name, rawEvent.http.unsubscribe, `actions.${actionName}.events.${name}.http.unsubscribe`, rawEvent.http.port);
     this._checkHttpArguments(this._subscribe);
     this._checkHttpArguments(this._unsubscribe);
   }

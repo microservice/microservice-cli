@@ -15,7 +15,7 @@ class Argument {
   constructor(name, pathToArgument, rawArguments) {
     const isValid = validateArgument(rawArguments);
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace('data', `actions.${pathToArgument}.arguments.${name}`);
+      isValid.text = isValid.text.replace(/data/g, `actions.${pathToArgument}.arguments.${name}`);
       throw isValid;
     }
     this._name = name;

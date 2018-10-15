@@ -16,6 +16,7 @@ class Microservice {
   constructor(microserviceYamlJson) {
     const isValid = validateMicroservice(microserviceYamlJson);
     if (!isValid.valid) {
+      isValid.text = isValid.text.replace(/data/g, `root`);
       throw isValid;
     }
     this._rawData = isValid;

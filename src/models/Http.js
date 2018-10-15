@@ -9,15 +9,16 @@ class Http {
    *
    * @param {String} commandName The name of the command that interfaces via http
    * @param {Object} rawHttp The given raw data
+   * @param {String} pathToHttp Path in the `microservice.yml` file to this {@link Http}
    * @param {Integer} [port] If no port given on rawHttp, this port will be used
    */
-  constructor(commandName, rawHttp, port) {
+  constructor(commandName, rawHttp, pathToHttp, port) {
     if (!rawHttp.port && port) {
       rawHttp.port = port;
     }
     const isValid = validateHttp(rawHttp);
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace('data', `commands.${commandName}.http`);
+      isValid.text = isValid.text.replace(/data/g, pathToHttp);
       throw isValid;
     }
     this._method = rawHttp.method;

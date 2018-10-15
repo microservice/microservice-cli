@@ -19,7 +19,7 @@ class Command {
     if (this._isAction) {
       const isValid = validateAction(rawCommand);
       if (!isValid.valid) {
-        isValid.text = isValid.text.replace('data', `actions.${name}`);
+        isValid.text = isValid.text.replace(/data/g, `actions.${name}`);
         throw isValid;
       }
     } else {

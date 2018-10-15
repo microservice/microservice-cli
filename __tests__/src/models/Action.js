@@ -42,7 +42,7 @@ describe('Action.js', () => {
             schemaPath: '#/oneOf',
           }],
           issue: {},
-          text: 'actions.name should have required property \'http\', data should have required property \'format\', data should have required property \'rpc\', data should have required property \'events\', data should match exactly one schema in oneOf',
+          text: 'actions.name should have required property \'http\', actions.name should have required property \'format\', actions.name should have required property \'rpc\', actions.name should have required property \'events\', actions.name should match exactly one schema in oneOf',
           valid: false,
         });
       }

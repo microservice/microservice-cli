@@ -24,7 +24,7 @@ class Action extends Command {
         this._eventMap[eventList[i]] = new Event(eventList[i], name, rawAction.events[eventList[i]]);
       }
     }
-    this._http = ((rawAction.http) ? new Http(name, rawAction.http, null) : null);
+    this._http = ((rawAction.http) ? new Http(name, rawAction.http, `actions.${name}.http`, null) : null);
     this._format = ((rawAction.format) ? new Format(name, rawAction.format) : null);
     if (this._http !== null) {
       this._checkHttpArguments(this._http);
