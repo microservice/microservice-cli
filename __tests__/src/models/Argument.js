@@ -4,7 +4,7 @@ describe('Argument.js', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {
-        new Argument('name', {});
+        new Argument('name', 'action', {});
       } catch (e) {
         expect(e).toEqual({
           errors: [{
@@ -13,14 +13,14 @@ describe('Argument.js', () => {
             message: 'should have required property \'type\'',
             params: {missingProperty: 'type'},
             schemaPath: '#/required',
-          }], issue: {}, text: 'commands.arguments.name should have required property \'type\'', valid: false,
+          }], issue: {}, text: 'actions.action.arguments.name should have required property \'type\'', valid: false,
         });
       }
     });
 
     test('throws an exception because the json is not valid', () => {
       try {
-        new Argument('name', {
+        new Argument('name', 'action', {
           type: 'bob',
         });
       } catch (e) {
@@ -33,7 +33,7 @@ describe('Argument.js', () => {
             schemaPath: '#/properties/type/pattern',
           }],
           issue: {type: 'bob'},
-          text: 'commands.arguments.name.type should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|object)$"',
+          text: 'actions.action.arguments.name.type should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|object)$"',
           valid: false,
         });
       }
@@ -41,7 +41,7 @@ describe('Argument.js', () => {
 
     test('throws an exception because the json is not valid', () => {
       try {
-        new Argument('name', {
+        new Argument('name', 'action', {
           type: 'int',
           pattern: 'regex',
           enum: ['asd', 'asd'],
@@ -57,7 +57,7 @@ describe('Argument.js', () => {
 
   describe('.name', () => {
     test('gets the name', () => {
-      const a = new Argument('foo', {type: 'int'});
+      const a = new Argument('foo', 'action', {type: 'int'});
 
       expect(a.name).toBe('foo');
     });
@@ -65,7 +65,7 @@ describe('Argument.js', () => {
 
   describe('.type', () => {
     test('gets the type', () => {
-      const a = new Argument('foo', {type: 'string'});
+      const a = new Argument('foo', 'action', {type: 'string'});
 
       expect(a.type).toBe('string');
     });
@@ -73,7 +73,7 @@ describe('Argument.js', () => {
 
   describe('.in', () => {
     test('gets the location of the argument', () => {
-      const a = new Argument('foo', {type: 'string', in: 'requestBody'});
+      const a = new Argument('foo', 'action', {type: 'string', in: 'requestBody'});
 
       expect(a.in).toBe('requestBody');
     });
@@ -81,7 +81,7 @@ describe('Argument.js', () => {
 
   describe('.help', () => {
     test('gets the help', () => {
-      const a = new Argument('foo', {type: 'string', help: 'FOO!'});
+      const a = new Argument('foo', 'action', {type: 'string', help: 'FOO!'});
 
       expect(a.help).toBe('FOO!');
     });
@@ -89,7 +89,7 @@ describe('Argument.js', () => {
 
   describe('.pattern', () => {
     test('gets the pattern', () => {
-      const a = new Argument('foo', {type: 'string', pattern: 'w'});
+      const a = new Argument('foo', 'action', {type: 'string', pattern: 'w'});
 
       expect(a.pattern).toBe('w');
     });
@@ -97,7 +97,7 @@ describe('Argument.js', () => {
 
   describe('.enum', () => {
     test('gets the enum', () => {
-      const a = new Argument('foo', {type: 'string', enum: ['bart']});
+      const a = new Argument('foo', 'action', {type: 'string', enum: ['bart']});
 
       expect(a.enum).toEqual(['bart']);
     });
@@ -105,7 +105,7 @@ describe('Argument.js', () => {
 
   describe('.range', () => {
     test('gets the range', () => {
-      const a = new Argument('foo', {type: 'string', range: {min: 1, max: 10}});
+      const a = new Argument('foo', 'action', {type: 'string', range: {min: 1, max: 10}});
 
       expect(a.range).toEqual({min: 1, max: 10});
     });
@@ -113,8 +113,8 @@ describe('Argument.js', () => {
 
   describe('.isRequired()', () => {
     test('checks if it is required', () => {
-      const a1 = new Argument('foo', {type: 'string'});
-      const a2 = new Argument('foo', {type: 'string', required: true});
+      const a1 = new Argument('foo', 'action', {type: 'string'});
+      const a2 = new Argument('foo', 'action', {type: 'string', required: true});
 
       expect(a1.isRequired()).toBeFalsy();
       expect(a2.isRequired()).toBeTruthy();
@@ -123,7 +123,7 @@ describe('Argument.js', () => {
 
   describe('.default', () => {
     test('gets the default', () => {
-      const a = new Argument('foo', {type: 'string', default: 'mom'});
+      const a = new Argument('foo', 'action', {type: 'string', default: 'mom'});
 
       expect(a.default).toBe('mom');
     });

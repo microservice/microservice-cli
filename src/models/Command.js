@@ -11,7 +11,7 @@ class Command {
    *
    * @param {String} name The given name
    * @param {Object} rawCommand The raw data
-   * @param {boolean} isAction Describes if a command is an {@link Action} or {@link Event} // TODO say what null is
+   * @param {String} actionName Name of that parent action, if null, this means that this is a root action
    */
   constructor(name, rawCommand, actionName) {
     this._isAction = actionName === null;

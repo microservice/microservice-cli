@@ -9,7 +9,7 @@ class Http {
    *
    * @param {String} commandName The name of the command that interfaces via http
    * @param {Object} rawHttp The given raw data
-   * @param {Integer} port If no port given on rawHttp, this port will be used
+   * @param {Integer} [port] If no port given on rawHttp, this port will be used
    */
   constructor(commandName, rawHttp, port) {
     if (!rawHttp.port && port) {

@@ -239,7 +239,7 @@ describe('Action.js', () => {
       });
 
       expect(c1.arguments).toEqual([]);
-      expect(c2.arguments).toEqual([new Argument('bar', {
+      expect(c2.arguments).toEqual([new Argument('bar', 'foo', {
         type: 'int',
         required: true,
       })]);
@@ -263,7 +263,7 @@ describe('Action.js', () => {
         },
       });
 
-      expect(a.getArgument('bar')).toEqual(new Argument('bar', {
+      expect(a.getArgument('bar')).toEqual(new Argument('bar', 'foo', {
         type: 'int',
         required: true,
       }));
@@ -323,7 +323,7 @@ describe('Action.js', () => {
         },
       });
 
-      expect(a.events).toEqual([new Event('foo', {
+      expect(a.events).toEqual([new Event('foo', 'foo', {
         http: {
           port: 5000,
           subscribe: {
@@ -371,7 +371,7 @@ describe('Action.js', () => {
         },
       });
 
-      expect(a.getEvent('foo')).toEqual(new Event('foo', {
+      expect(a.getEvent('foo')).toEqual(new Event('foo', 'foo', {
         http: {
           port: 5000,
           subscribe: {

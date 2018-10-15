@@ -21,7 +21,7 @@ class Action extends Command {
       this._eventMap = {};
       const eventList = Object.keys(rawAction.events);
       for (let i = 0; i < eventList.length; i += 1) {
-        this._eventMap[eventList[i]] = new Event(eventList[i], name,rawAction.events[eventList[i]]);
+        this._eventMap[eventList[i]] = new Event(eventList[i], name, rawAction.events[eventList[i]]);
       }
     }
     this._http = ((rawAction.http) ? new Http(name, rawAction.http, null) : null);
