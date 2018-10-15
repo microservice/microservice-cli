@@ -6,7 +6,7 @@ describe('Event.js', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {
-        new Event('name', {});
+        new Event('name', 'action', {});
       } catch (e) {
         expect(e).toEqual({
           errors: [{
@@ -22,7 +22,7 @@ describe('Event.js', () => {
 
     test('throws an exception because an http action\'s argument does not provide a location for the arguments', () => {
       try {
-        new Event('name', {
+        new Event('name', 'action', {
           http: {
             subscribe: {
               method: 'post',
@@ -51,7 +51,7 @@ describe('Event.js', () => {
 
     test('throws an exception because an http action\'s path argument is not defined in the endpoint for the http call', () => {
       try {
-        new Event('name', {
+        new Event('name', 'action', {
           http: {
             subscribe: {
               method: 'post',
@@ -81,7 +81,7 @@ describe('Event.js', () => {
 
     test('throws an exception because an http action\'s path argument is not marked required or given a default value', () => {
       try {
-        new Event('name', {
+        new Event('name', 'action', {
           http: {
             subscribe: {
               method: 'post',
@@ -111,7 +111,7 @@ describe('Event.js', () => {
 
     test('throws an exception because an http action has path parameters in endpoint that aren\'t defined as arguments', () => {
       try {
-        new Event('name', {
+        new Event('name', 'action', {
           http: {
             subscribe: {
               method: 'post',
@@ -143,7 +143,7 @@ describe('Event.js', () => {
 
   describe('.name', () => {
     test('gets the name', () => {
-      const e = new Event('foo', {
+      const e = new Event('foo', 'action', {
         http: {
           port: 5000,
           subscribe: {path: '/sub', method: 'post'},
@@ -157,7 +157,7 @@ describe('Event.js', () => {
 
   describe('.help', () => {
     test('gets the help', () => {
-      const e = new Event('foo', {
+      const e = new Event('foo', 'action', {
         http: {
           port: 5000,
           subscribe: {path: '/sub', method: 'post'},
@@ -171,7 +171,7 @@ describe('Event.js', () => {
 
   describe('.areRequiredArgumentsSupplied(_arguments)', () => {
     test('returns true because all required arguments are supplied', () => {
-      const e = new Event('foo', {
+      const e = new Event('foo', 'action', {
         arguments: {
           bar: {
             type: 'int',
@@ -198,7 +198,7 @@ describe('Event.js', () => {
     });
 
     test('returns false because required argument(s) are not supplied', () => {
-      const e = new Event('foo', {
+      const e = new Event('foo', 'action', {
         arguments: {
           bar: {
             type: 'int',
@@ -226,7 +226,7 @@ describe('Event.js', () => {
 
   describe('.arguments', () => {
     test('get the arguments', () => {
-      const e1 = new Event('foo', {
+      const e1 = new Event('foo', 'action', {
         http: {
           port: 5000,
           subscribe: {
@@ -238,7 +238,7 @@ describe('Event.js', () => {
           },
         },
       });
-      const e2 = new Event('foo', {
+      const e2 = new Event('foo', 'action', {
         arguments: {
           bar: {
             type: 'int',
@@ -259,7 +259,7 @@ describe('Event.js', () => {
       });
 
       expect(e1.arguments).toEqual([]);
-      expect(e2.arguments).toEqual([new Argument('bar', {
+      expect(e2.arguments).toEqual([new Argument('bar', 'action.events.foo', {
         type: 'int',
         required: true,
         in: 'requestBody',
@@ -269,7 +269,7 @@ describe('Event.js', () => {
 
   describe('.getArgument(argument)', () => {
     test('gets the argument', () => {
-      const e = new Event('foo', {
+      const e = new Event('foo', 'action', {
         arguments: {
           bar: {
             type: 'int',
@@ -289,7 +289,7 @@ describe('Event.js', () => {
         },
       });
 
-      expect(e.getArgument('bar')).toEqual(new Argument('bar', {
+      expect(e.getArgument('bar')).toEqual(new Argument('bar', 'action.events.foo', {
         type: 'int',
         required: true,
         in: 'requestBody',
@@ -297,7 +297,7 @@ describe('Event.js', () => {
     });
 
     test('throws an error because the argument does not exist', () => {
-      const e = new Event('foo', {
+      const e = new Event('foo', 'action', {
         arguments: {
           bar: {
             type: 'int',
@@ -327,7 +327,7 @@ describe('Event.js', () => {
 
   describe('.subscribe', () => {
     test('get the subscribe', () => {
-      const e = new Event('foo', {
+      const e = new Event('foo', 'action', {
         arguments: {
           bar: {
             type: 'int',
@@ -357,7 +357,7 @@ describe('Event.js', () => {
 
   describe('.unsubscribe', () => {
     test('get the unsubscribe', () => {
-      const e = new Event('foo', {
+      const e = new Event('foo', 'action', {
         arguments: {
           bar: {
             type: 'int',

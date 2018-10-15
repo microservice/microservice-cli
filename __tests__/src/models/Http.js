@@ -4,7 +4,7 @@ describe('Https.js', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {
-        new Http('commandName', {});
+        new Http('commandName', {}, 'actions.commandName.http');
       } catch (e) {
         expect(e).toEqual({
           errors: [{
@@ -27,7 +27,7 @@ describe('Https.js', () => {
             schemaPath: '#/required',
           }],
           issue: {},
-          text: 'commands.commandName.http should have required property \'method\', data should have required property \'port\', data should have required property \'path\'',
+          text: 'actions.commandName.http should have required property \'method\', actions.commandName.http should have required property \'port\', actions.commandName.http should have required property \'path\'',
           valid: false,
         });
       }
@@ -35,7 +35,7 @@ describe('Https.js', () => {
 
     test('throws an exception because the json is not valid', () => {
       try {
-        new Http('commandName', {method: 'get'});
+        new Http('commandName', {method: 'get'}, 'actions.commandName.http');
       } catch (e) {
         expect(e).toEqual({
           errors: [{
@@ -52,7 +52,7 @@ describe('Https.js', () => {
             schemaPath: '#/required',
           }],
           issue: {method: 'get'},
-          text: 'commands.commandName.http should have required property \'port\', data should have required property \'path\'',
+          text: 'actions.commandName.http should have required property \'port\', actions.commandName.http should have required property \'path\'',
           valid: false,
         });
       }

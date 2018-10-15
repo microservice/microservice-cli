@@ -14,17 +14,17 @@ class Action extends Command {
    * @param {Object} rawAction The raw data
    */
   constructor(name, rawAction) {
-    super(name, rawAction, true);
+    super(name, rawAction, null);
     this._output = rawAction.output;
     this._eventMap = null;
     if (rawAction.events) {
       this._eventMap = {};
       const eventList = Object.keys(rawAction.events);
       for (let i = 0; i < eventList.length; i += 1) {
-        this._eventMap[eventList[i]] = new Event(eventList[i], rawAction.events[eventList[i]]);
+        this._eventMap[eventList[i]] = new Event(eventList[i], name, rawAction.events[eventList[i]]);
       }
     }
-    this._http = ((rawAction.http) ? new Http(name, rawAction.http, null) : null);
+    this._http = ((rawAction.http) ? new Http(name, rawAction.http, `actions.${name}.http`, null) : null);
     this._format = ((rawAction.format) ? new Format(name, rawAction.format) : null);
     if (this._http !== null) {
       this._checkHttpArguments(this._http);

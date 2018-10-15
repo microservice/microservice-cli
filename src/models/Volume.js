@@ -13,7 +13,7 @@ class Volume {
   constructor(name, rawVolume) {
     const isValid = validateVolume(rawVolume);
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace('data', `volumes.${name}`);
+      isValid.text = isValid.text.replace(/data/g, `volumes.${name}`);
       throw isValid;
     }
     this._name = name;
