@@ -5,6 +5,7 @@ const Ajv = require('ajv');
 const ajv = new Ajv({allErrors: true});
 const microserviceSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/microservice.json')));
 const actionSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/action.json')));
+const eventSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/event.json')));
 const environmentVariableSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/environmentVariable.json')));
 const httpSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/http.json')));
 const formatSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/format.json')));
@@ -40,6 +41,7 @@ function validate(json, validator) {
 module.exports = {
   microservice: (o) => validate(o, ajv.compile(microserviceSchema)),
   action: (o) => validate(o, ajv.compile(actionSchema)),
+  event: (o) => validate(o, ajv.compile(eventSchema)),
   environmentVariable: (o) => validate(o, ajv.compile(environmentVariableSchema)),
   http: (o) => validate(o, ajv.compile(httpSchema)),
   format: (o) => validate(o, ajv.compile(formatSchema)),

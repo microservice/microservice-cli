@@ -31,6 +31,19 @@ program
   .description('Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
   .action(async (command, options) => await helper.exec(command, options));
 
+program
+  .command('subscribe <event>')
+  .usage(' ')
+  .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender(), [])
+  .description('Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
+  .action(async (event, options) => await helper.subscribe(event, options));
+
+program
+  .command('shutdown')
+  .usage(' ')
+  .description('Shutdown a microservice process that was started by an event command')
+  .action(async () => await helper.shutdown());
+
 if (process.argv.length === 2) {
   program.help();
 }

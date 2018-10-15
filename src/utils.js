@@ -29,6 +29,14 @@ function getNeededPorts(microservice) {
     if (action.http !== null) {
       ports.push(action.http.port);
     }
+    if (action.events !== null) {
+      for (let j = 0; j < action.events.length; j += 1) {
+        ports.push(action.events[j].subscribe.port);
+        if (!ports.includes(action.events[j].unsubscribe.port)) {
+          ports.push(action.events[j].unsubscribe.port);
+        }
+      }
+    }
   }
   return ports;
 }
@@ -40,7 +48,7 @@ function getNeededPorts(microservice) {
  */
 async function createImageName() {
   const data = await exec('git remote -v');
-  return `omg/${data.match(/git@github\.com:(\w+\/[\w|-]+).git/)[1]}`;
+  return `omg/${data.match(/git@github\.com:(\w+\/[\w|-]+).git/)[1].toLowerCase()}`;
 }
 
 /**

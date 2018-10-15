@@ -3,21 +3,31 @@
     "help": {
       "type": "string"
     },
-    "format": {
-      "type": "object"
-    },
-    "rpc": {
-      "type": "object"
-    },
     "http": {
-      "type": "object"
-    },
-    "events": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "port": {
+          "type": "integer"
+        },
+        "subscribe": {
+          "type": "object"
+        },
+        "unsubscribe": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "subscribe",
+        "unsubscribe"
+      ],
+      "additionalProperties": false
     },
     "output": {
       "type": "object",
       "properties": {
+        "commands": {
+          "type": "object"
+        },
         "type": {
           "type": "string",
           "enum": [
@@ -54,27 +64,8 @@
       "additionalProperties": false
     }
   },
-  "oneOf":[
-    {
-      "required": [
-        "http"
-      ]
-    },
-    {
-      "required": [
-        "format"
-      ]
-    },
-    {
-      "required": [
-        "rpc"
-      ]
-    },
-    {
-      "required": [
-        "events"
-      ]
-    }
+  "required": [
+    "http"
   ],
   "additionalProperties": false
 }

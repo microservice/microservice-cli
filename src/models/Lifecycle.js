@@ -12,7 +12,7 @@ class Lifecycle {
   constructor(rawLifecycle) {
     const isValid = validateLifecycle(rawLifecycle);
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace('data', 'lifecycle');
+      isValid.text = isValid.text.replace(/data/g, 'lifecycle');
       throw isValid;
     }
     this._startup = rawLifecycle.startup || null;

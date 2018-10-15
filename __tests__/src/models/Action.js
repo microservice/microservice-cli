@@ -1,5 +1,6 @@
 const Action = require('../../../src/models/Action');
 const Argument = require('../../../src/models/Argument');
+const Event = require('../../../src/models/Event');
 const Http = require('../../../src/models/Http');
 
 describe('Action.js', () => {
@@ -29,19 +30,25 @@ describe('Action.js', () => {
             schemaPath: '#/oneOf/2/required',
           }, {
             dataPath: '',
+            keyword: 'required',
+            message: 'should have required property \'events\'',
+            params: {missingProperty: 'events'},
+            schemaPath: '#/oneOf/3/required',
+          }, {
+            dataPath: '',
             keyword: 'oneOf',
             message: 'should match exactly one schema in oneOf',
             params: {passingSchemas: null},
             schemaPath: '#/oneOf',
           }],
           issue: {},
-          text: 'actions.name should have required property \'http\', data should have required property \'format\', data should have required property \'rpc\', data should match exactly one schema in oneOf',
+          text: 'actions.name should have required property \'http\', actions.name should have required property \'format\', actions.name should have required property \'rpc\', actions.name should have required property \'events\', actions.name should match exactly one schema in oneOf',
           valid: false,
         });
       }
     });
 
-    test('throws an exception because an http command\'s argument does not provide a location for the arguments', () => {
+    test('throws an exception because an http action\'s argument does not provide a location for the arguments', () => {
       try {
         new Action('name', {
           output: {type: 'map'},
@@ -58,13 +65,13 @@ describe('Action.js', () => {
         });
       } catch (e) {
         expect(e).toEqual({
-          context: 'Argument: `foo` for command: `name`',
-          message: 'Commands\' arguments that interface via http must provide an in',
+          context: 'Argument: `foo` for action: `name`',
+          message: 'Actions\' arguments that interface via http must provide an in',
         });
       }
     });
 
-    test('throws an exception because an http command\'s path argument is not defined in the endpoint for the http call', () => {
+    test('throws an exception because an http action\'s path argument is not defined in the endpoint for the http call', () => {
       try {
         new Action('name', {
           output: {type: 'map'},
@@ -82,13 +89,13 @@ describe('Action.js', () => {
         });
       } catch (e) {
         expect(e).toEqual({
-          context: 'Argument: `foo` for command: `name`',
+          context: 'Argument: `foo` for action: `name`',
           message: 'Path parameters must be defined in the http path, of the form `{{argument}}`',
         });
       }
     });
 
-    test('throws an exception because an http command\'s path argument is not marked required or given a default value', () => {
+    test('throws an exception because an http action\'s path argument is not marked required or given a default value', () => {
       try {
         new Action('name', {
           output: {type: 'map'},
@@ -106,13 +113,13 @@ describe('Action.js', () => {
         });
       } catch (e) {
         expect(e).toEqual({
-          context: 'Argument: `foo` for command: `name`',
+          context: 'Argument: `foo` for action: `name`',
           message: 'Path parameters must be marked as required or be provided a default variable',
         });
       }
     });
 
-    test('throws an exception because an http command has path parameters in endpoint that aren\'t defined as arguments', () => {
+    test('throws an exception because an http action has path parameters in endpoint that aren\'t defined as arguments', () => {
       try {
         new Action('name', {
           output: {type: 'map'},
@@ -131,8 +138,8 @@ describe('Action.js', () => {
         });
       } catch (e) {
         expect(e).toEqual({
-          context: 'Path parameter(s): `{{bar}}` for command: `name`',
-          message: 'If a url specifies a path parameter i.e. `{{argument}}`, the argument must be defined in the command',
+          context: 'Path parameter(s): `{{bar}}` for action: `name`',
+          message: 'If a url specifies a path parameter i.e. `{{argument}}`, the argument must be defined in the action',
         });
       }
     });
@@ -140,31 +147,31 @@ describe('Action.js', () => {
 
   describe('.name', () => {
     test('gets the name', () => {
-      const c = new Action('foo', {format: {command: 'foo.sh'}, output: {type: 'string'}});
+      const a = new Action('foo', {format: {command: 'foo.sh'}, output: {type: 'string'}});
 
-      expect(c.name).toBe('foo');
+      expect(a.name).toBe('foo');
     });
   });
 
   describe('.output', () => {
     test('gets the output', () => {
-      const c = new Action('foo', {format: {command: 'foo.sh'}, output: {type: 'string'}});
+      const a = new Action('foo', {format: {command: 'foo.sh'}, output: {type: 'string'}});
 
-      expect(c.output).toEqual({type: 'string'});
+      expect(a.output).toEqual({type: 'string'});
     });
   });
 
   describe('.help', () => {
     test('gets the help', () => {
-      const c = new Action('foo', {format: {command: 'foo.sh'}, output: {type: 'string'}, help: 'FOO ME'});
+      const a = new Action('foo', {format: {command: 'foo.sh'}, output: {type: 'string'}, help: 'FOO ME'});
 
-      expect(c.help).toBe('FOO ME');
+      expect(a.help).toBe('FOO ME');
     });
   });
 
   describe('.areRequiredArgumentsSupplied(_arguments)', () => {
     test('returns true because all required arguments are supplied', () => {
-      const c = new Action('foo', {
+      const a = new Action('foo', {
         format: {
           command: 'foo.sh',
         },
@@ -179,13 +186,13 @@ describe('Action.js', () => {
         },
       });
 
-      expect(c.areRequiredArgumentsSupplied({
+      expect(a.areRequiredArgumentsSupplied({
         bar: 1,
       })).toBeTruthy();
     });
 
     test('returns false because required argument(s) are not supplied', () => {
-      const c = new Action('foo', {
+      const a = new Action('foo', {
         format: {
           command: 'foo.sh',
         },
@@ -200,7 +207,7 @@ describe('Action.js', () => {
         },
       });
 
-      expect(c.areRequiredArgumentsSupplied({
+      expect(a.areRequiredArgumentsSupplied({
         foo: 1,
       })).toBeFalsy();
     });
@@ -232,7 +239,7 @@ describe('Action.js', () => {
       });
 
       expect(c1.arguments).toEqual([]);
-      expect(c2.arguments).toEqual([new Argument('bar', {
+      expect(c2.arguments).toEqual([new Argument('bar', 'foo', {
         type: 'int',
         required: true,
       })]);
@@ -241,7 +248,7 @@ describe('Action.js', () => {
 
   describe('.getArgument(argument)', () => {
     test('gets the argument', () => {
-      const c = new Action('foo', {
+      const a = new Action('foo', {
         format: {
           command: 'foo.sh',
         },
@@ -256,14 +263,14 @@ describe('Action.js', () => {
         },
       });
 
-      expect(c.getArgument('bar')).toEqual(new Argument('bar', {
+      expect(a.getArgument('bar')).toEqual(new Argument('bar', 'foo', {
         type: 'int',
         required: true,
       }));
     });
 
     test('throws an error because the argument does not exist', () => {
-      const c = new Action('foo', {
+      const a = new Action('foo', {
         format: {
           command: 'foo.sh',
         },
@@ -279,16 +286,110 @@ describe('Action.js', () => {
       });
 
       try {
-        c.getArgument('argo');
+        a.getArgument('argo');
       } catch (e) {
         expect(e).toBe('Argument `argo` does not exist');
       }
     });
   });
 
+  describe('.events', () => {
+    describe('returns null because this action does not have any events', () => {
+      const a = new Action('foo', {
+        format: {
+          command: 'foo.sh',
+        },
+      });
+
+      expect(a.events).toBe(null);
+    });
+
+    describe('get the action\'s events', () => {
+      const a = new Action('foo', {
+        events: {
+          foo: {
+            http: {
+              port: 5000,
+              subscribe: {
+                path: '/sub',
+                method: 'post',
+              },
+              unsubscribe: {
+                path: '/unsub',
+                method: 'post',
+              },
+            },
+          },
+        },
+      });
+
+      expect(a.events).toEqual([new Event('foo', 'foo', {
+        http: {
+          port: 5000,
+          subscribe: {
+            path: '/sub',
+            method: 'post',
+          },
+          unsubscribe: {
+            path: '/unsub',
+            method: 'post',
+          },
+        },
+      })]);
+    });
+  });
+
+  describe('.getEvent(event)', () => {
+    test('throws and exception because the event does not exist', () => {
+      try {
+        new Action('foo', {
+          format: {
+            command: 'foo.sh',
+          },
+        }).getEvent('foo');
+      } catch (e) {
+        expect(e).toBe('Event `foo` does not exist');
+      }
+    });
+
+    test('gets the event', () => {
+      const a = new Action('foo', {
+        events: {
+          foo: {
+            http: {
+              port: 5000,
+              subscribe: {
+                path: '/sub',
+                method: 'post',
+              },
+              unsubscribe: {
+                path: '/unsub',
+                method: 'post',
+              },
+            },
+          },
+        },
+      });
+
+      expect(a.getEvent('foo')).toEqual(new Event('foo', 'foo', {
+        http: {
+          port: 5000,
+          subscribe: {
+            path: '/sub',
+            method: 'post',
+          },
+          unsubscribe: {
+            path: '/unsub',
+            method: 'post',
+          },
+        },
+      }));
+    });
+  });
+
   describe('.http', () => {
     test('get the http', () => {
-      const c = new Action('foo', {
+      const a = new Action('foo', {
         http: {
           method: 'post',
           port: 5000,
@@ -306,7 +407,7 @@ describe('Action.js', () => {
         },
       });
 
-      expect(c.http).toEqual(new Http('foo', {
+      expect(a.http).toEqual(new Http('foo', {
         method: 'post',
         port: 5000,
         path: '/skrt',

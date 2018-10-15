@@ -7,5 +7,6 @@
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "required": ["command"]
 }

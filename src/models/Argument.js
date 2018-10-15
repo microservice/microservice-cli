@@ -9,12 +9,13 @@ class Argument {
    * Builds an {@link Argument}.
    *
    * @param {String} name The given name
+   * @param {String} pathToArgument The path in the `microservice.yml` to this {@link Argument}
    * @param {Object} rawArguments The given raw data
    */
-  constructor(name, rawArguments) {
+  constructor(name, pathToArgument, rawArguments) {
     const isValid = validateArgument(rawArguments);
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace('data', `commands.arguments.${name}`);
+      isValid.text = isValid.text.replace(/data/g, `actions.${pathToArgument}.arguments.${name}`);
       throw isValid;
     }
     this._name = name;

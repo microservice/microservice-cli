@@ -2,6 +2,16 @@ const utils = require('../../src/utils');
 const Microservice = require('../../src/models/Microservice');
 
 describe('utils.js', () => {
+  describe('setVal(val, _else)', () => {
+    test('sets the value to val because it\'s given', () => {
+      expect(utils.setVal(1, 3)).toBe(1);
+    });
+
+    test('sets the value to _else because val is null', () => {
+      expect(utils.setVal(undefined, 3)).toBe(3);
+    });
+  });
+
   describe('getNeededPorts(microservice)', () => {
     test('returns an empty list because there are no actions that interface via http', () => {
       const m = new Microservice({
@@ -11,7 +21,7 @@ describe('utils.js', () => {
       expect(utils.getNeededPorts(m)).toEqual([]);
     });
 
-    test('returns a list consisting of the port 5050 because it is used by an http interfacing action', () => {
+    test('returns a list consisting of the port 5050 and 6060 because it is used by an http interfacing action', () => {
       const m = new Microservice({
         omg: 1,
         lifecycle: {
@@ -27,6 +37,24 @@ describe('utils.js', () => {
               path: '/c',
             },
           },
+          baz: {
+            events: {
+              fizz: {
+                http: {
+                  subscribe: {
+                    port: 6060,
+                    path: '/sub',
+                    method: 'post',
+                  },
+                  unsubscribe: {
+                    port: 6061,
+                    path: '/unsub',
+                    method: 'post',
+                  },
+                },
+              },
+            },
+          },
           bar: {
             format: {
               command: 'bar.sh',
@@ -35,7 +63,7 @@ describe('utils.js', () => {
         },
       });
 
-      expect(utils.getNeededPorts(m)).toEqual([5050]);
+      expect(utils.getNeededPorts(m)).toEqual([5050, 6060, 6061]);
     });
   });
 

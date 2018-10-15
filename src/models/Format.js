@@ -13,7 +13,7 @@ class Format {
   constructor(commandName, rawFormat) {
     const isValid = validateFormat(rawFormat);
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace('data', `commands.${commandName}.http`);
+      isValid.text = isValid.text.replace(/data/g, `commands.${commandName}.format`);
       throw isValid;
     }
     if (typeof rawFormat.command === 'string') {

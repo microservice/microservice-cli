@@ -1,10 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const YAML = require('yamljs');
+const homedir = require('os').homedir();
 const utils = require('../utils');
+const ora = require('../ora');
 const Microservice = require('../models/Microservice');
 const Build = require('../commands/Build');
 const Exec = require('../commands/Exec');
+const Subscribe = require('../commands/Subscribe');
 
 /**
  * Formats the output based on the data and options.
@@ -33,11 +36,7 @@ function processValidateOutput(data, options) {
  * @param {Object} options The given options (json, silent, or text)
  */
 function validate(options) {
-  if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
-    process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
-    process.exit(1);
-  }
-
+  validateMicroserviceDirectory();
   const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
   try {
     const m = new Microservice(json);
@@ -55,10 +54,7 @@ function validate(options) {
  * @param {Object} options The given name
  */
 async function build(options) {
-  if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
-    process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
-    process.exit(1);
-  }
+  validateMicroserviceDirectory();
   try {
     await new Build(options.tag || await utils.createImageName()).go();
   } catch (e) {
@@ -69,6 +65,7 @@ async function build(options) {
 
 let microservice = null;
 let e = null;
+let s = null;
 
 /**
  * Will read the `microservice.yml` and `Dockerfile` and run the given command with the given arguments and environment variables.
@@ -94,10 +91,7 @@ async function exec(command, options) {
       '    exec [options] <command>  Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
-  if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
-    process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
-    process.exit(1);
-  }
+  validateMicroserviceDirectory();
 
   if (options.image) {
     const images = await utils.exec(`docker images -f "reference=${image}"`);
@@ -110,13 +104,7 @@ async function exec(command, options) {
     options.image = await utils.createImageName();
   }
 
-  try {
-    const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
-    microservice = new Microservice(json);
-  } catch (e) {
-    process.stderr.write(JSON.stringify(e, null, 2));
-    process.exit(1);
-  }
+  microservice = buildMicroservice();
   try {
     const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
     const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
@@ -137,11 +125,93 @@ async function exec(command, options) {
 }
 
 /**
+ * Will read the `microservice.yml` and `Dockerfile` and subscribe to the with the given event..
+ *
+ * @param {String} event The given event
+ * @param {Object} options The given object holding the arguments
+ */
+async function subscribe(event, options) {
+  validateMicroserviceDirectory();
+  microservice = buildMicroservice();
+
+  try {
+    const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
+    s = new Subscribe(microservice, argsObj);
+    await s.go(event);
+  } catch (error) {
+    if (error.spinner) {
+      if (error.message.includes('Unable to find image')) {
+        error.spinner.fail(`${error.message.split('.')[0]}. Container not built. Run \`omg build \`container_name\`\``);
+      } else {
+        error.spinner.fail(error.message);
+      }
+    } else {
+      process.stderr.write(error.message);
+    }
+    process.exit(1);
+  }
+}
+
+/**
+ * Kills a docker process that is associated with the microservice.
+ */
+async function shutdown() {
+  validateMicroserviceDirectory();
+  microservice = buildMicroservice();
+
+  const spinner = ora.start('Shutting down microservice');
+  const infoMessage = 'Microservice not shutdown because it was not running';
+  if (!fs.existsSync(`${homedir}/.omg.json`)) {
+    spinner.info(infoMessage);
+  }
+
+  const omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
+  if (omgJson[process.cwd()]) {
+    const containerId = omgJson[process.cwd()].container_id;
+    await utils.exec(`docker kill ${containerId}`);
+    delete omgJson[process.cwd()];
+    fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(omgJson), 'utf8');
+    spinner.succeed(`Microservice with container id: \`${containerId.substring(0, 12)}\` successfully shutdown`);
+  } else {
+    spinner.info(infoMessage);
+  }
+}
+
+/**
+ * Builds a {@link Microservice} based ton the `microservice.yml` file. If the build throws an error the user
+ * will be directed to run `omg validate`.
+ *
+ * @return {Microservice} The {@link Microservice}
+ */
+function buildMicroservice() {
+  try {
+    const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
+    return new Microservice(json);
+  } catch (e) {
+    process.stderr.write('Unable to build microservice. Run `omg validate` for more details');
+    process.exit(1);
+  }
+}
+
+/**
+ * Checks that the directory contains a `microservice.yml` and a `Dockerfile`.
+ */
+function validateMicroserviceDirectory() {
+  if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
+    process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+    process.exit(1);
+  }
+}
+
+/**
  * Catch the `CtrlC` command to stop running containers.
  */
 async function controlC() {
-  if (e.isDockerProcessRunning()) {
+  if (e && e.isDockerProcessRunning()) {
     await e.serverKill();
+  }
+  if (s) {
+    await s.unsubscribe();
   }
   process.exit();
 }
@@ -150,6 +220,7 @@ module.exports = {
   validate,
   build,
   exec,
+  subscribe,
+  shutdown,
   controlC,
 };
-
