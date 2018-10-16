@@ -18,6 +18,9 @@
     "output": {
       "type": "object",
       "properties": {
+        "items": {
+          "type": "object"
+        },
         "type": {
           "type": "string",
           "enum": [

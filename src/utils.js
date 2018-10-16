@@ -27,12 +27,16 @@ function getNeededPorts(microservice) {
   for (let i = 0; i < microservice.actions.length; i += 1) {
     const action = microservice.actions[i];
     if (action.http !== null) {
-      ports.push(action.http.port);
+      if (!ports.includes(action.http.port)) {
+        ports.push(action.http.port);
+      }
     }
     if (action.events !== null) {
       for (let j = 0; j < action.events.length; j += 1) {
-        ports.push(action.events[j].subscribe.port);
-        if (!ports.includes(action.events[j].unsubscribe.port)) {
+        if (!ports.includes(action.events[j].subscribe.port)) {
+          ports.push(action.events[j].subscribe.port);
+        }
+        if (action.events[j].unsubscribe && !ports.includes(action.events[j].unsubscribe.port)) {
           ports.push(action.events[j].unsubscribe.port);
         }
       }

@@ -17,8 +17,7 @@
         }
       },
       "required": [
-        "subscribe",
-        "unsubscribe"
+        "subscribe"
       ],
       "additionalProperties": false
     },
