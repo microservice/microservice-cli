@@ -109,6 +109,9 @@ class Subscribe {
    * Unsubscribe this {@link Subscribe}'s {@link Event}.
    */
   async unsubscribe() {
+    if (this._event.unsubscribe === null) {
+      return;
+    }
     await rp({
       method: this._event.unsubscribe.method,
       uri: `http://localhost:${this._omgJson[process.cwd()].ports[this._event.unsubscribe.port]}${this._event.unsubscribe.path}`,
