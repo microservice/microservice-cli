@@ -17,18 +17,18 @@ npm install -g omg
 ## Commands
 ### `omg validate`
 ```
-  Validate the structure of a `microservice.yml` in the current directory
+  Validate the structure of a `microservice.yml`
 
   Options:
 
     -j --json    Formats output to JSON
-    -s --silent  Only feedback is the status code that is exited with
+    -s --silent  Only feedback is the status exit code
     -h, --help   output usage information
 ```
 
 ## `omg build`
 ```
-  Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a tag name must be provided. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`
+  Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a tag name must be provided.
 
   Options:
 
@@ -38,23 +38,23 @@ npm install -g omg
 
 ## `omg exec`
 ```
-  Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`
+  Run actions defined in your `microservice.yml`.
 
   Options:
 
     -i --image <i>  The name of the image to spin up the microservice, if not provided a fresh image will be build based of the `Dockerfile`
-    -a --args <a>   Arguments to be passed to the command, must be of the form `key="val"` (default: )
-    -e --envs <e>   Environment variables to be passed to run environment, must be of the form `key="val"` (default: )
+    -a --args <a>   Arguments to be passed to the command, must be of the form `key="val"`
+    -e --envs <e>   Environment variables to be passed to run environment, must be of the form `key="val"`
     -h, --help      output usage information
 ```
 
 ## `omg subscribe`
 ```
-  Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`
+  Subscribe to an event defined in your `microservice.yml`.
 
   Options:
 
-    -a --args <a>  Arguments to be passed to the command, must be of the form `key="val"` (default: )
+    -a --args <a>  Arguments to be passed to the command, must be of the form `key="val"`
     -h, --help     output usage information
 ```
 
