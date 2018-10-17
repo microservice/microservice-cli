@@ -56,10 +56,11 @@ class Subscribe {
       await rp({
         method: this._event.subscribe.method,
         uri: `http://localhost:${this._omgJson[process.cwd()].ports[this._event.subscribe.port]}${this._event.subscribe.path}`,
-        body: Object.assign(this._arguments, {
+        body: {
           id: this._id,
           endpoint: `http://host.docker.internal:${port}`,
-        }),
+          data: this._arguments,
+        },
         json: true,
       });
       spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
