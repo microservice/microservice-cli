@@ -60,7 +60,7 @@ Docs on subscribe can be found [here](/docs/example-subscribe.md).
 
 ## Other
 ### `--image`, or `-i` flag
-If you alread have an image, use the `-i` flag.
+If you already have an image, use the `-i` flag.
 
 #### Input
 ```
