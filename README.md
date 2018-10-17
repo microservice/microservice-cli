@@ -66,3 +66,5 @@ npm install -g omg
 
     -h, --help  output usage information
 ```
+
+More information can be found in the [docs](/docs).
