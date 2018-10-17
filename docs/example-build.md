@@ -14,7 +14,7 @@ omg build
 ✔ Built Docker image with name: omg/microservice/random
 ```
 
-## `-t` flag
+## `--tag`, or`-t` flag
 
 ### Input
 ```
