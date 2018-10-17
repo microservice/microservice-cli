@@ -1,123 +1,68 @@
+# Open Microservice CLI
 [![CircleCI](https://circleci.com/gh/microservices/omg-cli.svg?style=svg)](https://circleci.com/gh/microservices/omg-cli)
 [![codecov](https://codecov.io/gh/microservices/omg-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/microservices/omg-cli)
 
-# NOTICE
-Still a work in progress :smile:. Check back soon.
+![omg](https://user-images.githubusercontent.com/11602092/47048623-f3aff880-d168-11e8-98df-41baa301b242.png)
 
-# cli
-The microservice.guide CLI allows you to verify your `microservice.yml` and execute the microservice's commands.
+Verify, and execute microservices built with the [OMG](https://microservice.guide/) standard.
+
+## Overview
+The goals of this project is to provide a utility for developers to test/execute their microservices before being used in a production environment.
 
 ## Installation
-`npm install -g omg`
+```
+npm install -g omg
+```
 
 ## Commands
-### Validate
-When ran in a directory of a microservice (a directory containing a `microservice.yml`), validation will begin against that file.
-```sh
-omg utils
+### `omg validate`
 ```
-#### Example output
-##### Valid `microservice.yml`
-```json
-{
-  "valid": true,
-  "microsericeYaml": {
-    "commands": {
-      "boolean": {
-        "output": "boolean",
-        "help": "Generates a random boolean"
-      },
-      "string": {
-        "help": "Generates a random string",
-        "format": "{{length}}",
-        "output": "string",
-        "arguments": {
-          "length": {
-            "type": "int",
-            "required": true,
-            "help": "Length of string"
-          }
-        }
-      }
-    }
-  },
-  "errors": null
-}
-```
-##### Invalid `microservice.yml`
-```json
-{
-  "valid": false,
-  "microsericeYaml": {
-    "commands": {
-      "boolean": {
-        "output": "boolean",
-        "help": "Generates a random boolean"
-      },
-      "string": {
-        "help": "Generates a random string",
-        "format": "{{length}}",
-        "arguments": {
-          "length": {
-            "required": true,
-            "help": "Length of string"
-          }
-        }
-      }
-    }
-  },
-  "errors": [
-    {
-      "keyword": "required",
-      "dataPath": ".commands['string']",
-      "schemaPath": "#/properties/commands/patternProperties/%5E%5BA-Za-z%7C_%5D%2B%24/required",
-      "params": {
-        "missingProperty": "output"
-      },
-      "message": "should have required property 'output'"
-    },
-    {
-      "keyword": "required",
-      "dataPath": ".commands['string'].arguments['length']",
-      "schemaPath": "#/properties/commands/patternProperties/%5E%5BA-Za-z%7C_%5D%2B%24/properties/arguments/patternProperties/%5E%5Cw%2B%24/required",
-      "params": {
-        "missingProperty": "type"
-      },
-      "message": "should have required property 'type'"
-    }
-  ]
-}
-```
-## Exec
-When ran in a directory of a microservice (a directory containing a `microservice.yml` and `Dockerfile`) this command will build
-the microservice and execute a given command.
-### Usage
-```
-exec [-e] [command] [args...]
+  Validate the structure of a `microservice.yml`
+
+  Options:
+
+    -j --json    Formats output to JSON
+    -s --silent  Only feedback is the status exit code
+    -h, --help   output usage information
 ```
 
-#### command
-Action is a required argument. The microservice will be executed with the given command.
-
-#### args...
-If a command required arguments they can be passed as follows: `key:val`. If required arguments are not given `exec` will fail.
-
-#### Environment variables
-If the microservice has any required environment variables they must be passed in with the `exec` command. Much like Docker,
-environment variables can be passed as follows: `-e FOO='bar'`. If a required environment variable is not supplied `exec` will fail.
-
-### Example `exec` call
-```sh
-omg exec -e BOT_TOKEN='xoxb-****' send message:'Hello, World!' to:CAFAF9C
+## `omg build`
 ```
-```sh
-✔ Built Docker image with name: 067a8912-a1fe-4e00-ba4b-ffcc363ca0ab
-✔ Started Docker container with id: a941268edae7
-✔ Ran command: send with output: {
-  "ok": true,
-  "reply_to": 1,
-  "ts": "1528904352.000735",
-  "text": "Hello, World!"
-}
-✔ Stopped Docker container: a941268edae7
+  Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a tag name must be provided.
+
+  Options:
+
+    -t --tag, <t>  The tag name of the image
+    -h, --help     output usage information
+```
+
+## `omg exec`
+```
+  Run actions defined in your `microservice.yml`.
+
+  Options:
+
+    -i --image <i>  The name of the image to spin up the microservice, if not provided a fresh image will be build based of the `Dockerfile`
+    -a --args <a>   Arguments to be passed to the command, must be of the form `key="val"`
+    -e --envs <e>   Environment variables to be passed to run environment, must be of the form `key="val"`
+    -h, --help      output usage information
+```
+
+## `omg subscribe`
+```
+  Subscribe to an event defined in your `microservice.yml`.
+
+  Options:
+
+    -a --args <a>  Arguments to be passed to the command, must be of the form `key="val"`
+    -h, --help     output usage information
+```
+
+## `omg shutdown`
+```
+  Shutdown a microservice process that was started by an event command
+
+  Options:
+
+    -h, --help  output usage information
 ```
