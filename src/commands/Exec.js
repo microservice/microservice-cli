@@ -120,15 +120,15 @@ class Exec {
         await utils.exec(`docker kill ${containerID}`); // might need to work the lifecycle in
         spinner.succeed(`Ran action: \`${this._action.name}\` with output: ${output.trim()}`);
       } else if (this._action.http !== null) {
-        const port = await this._startServer();
+        await this._startServer();
         spinner = ora.start(`Running action: \`${this._action.name}\``);
-        const output = await this._httpCommand(port);
+        const output = await this._httpCommand(this._portMap[this._action.http.port]);
         verify.verifyOutputType(this._action, output.trim());
         spinner.succeed(`Ran action: \`${this._action.name}\` with output: ${output.trim()}`);
         await this.serverKill();
       } else if (this._action.events !== null) {
-        const port = await this._startServer();
-        this._omgJsonFileHandler(port);
+        await this._startServer();
+        this._omgJsonFileHandler();
         process.stdout.write('  Run `omg subscribe `name_of_event`` to subscribe to an event');
       }
     } catch (e) {
@@ -142,10 +142,9 @@ class Exec {
   /**
    * Handle the `.omg.json` state file.
    *
-   * @param {Integer} port The given port that the docker container is open on
    * @private
    */
-  _omgJsonFileHandler(port) {
+  _omgJsonFileHandler() {
     let data = {};
     if (fs.existsSync(`${homedir}/.omg.json`)) {
       data = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`));
@@ -162,9 +161,9 @@ class Exec {
       };
     }
 
-    const neededPorts = utils.getNeededPorts(this._microservice);
+    const neededPorts = Object.keys(this._portMap);
     for (let i = 0; i < neededPorts.length; i += 1) {
-      data[process.cwd()].ports[neededPorts[i]] = port;
+      data[process.cwd()].ports[neededPorts[i]] = this._portMap[neededPorts[i]];
     }
     fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(data), 'utf8');
   }
@@ -212,26 +211,32 @@ class Exec {
   }
 
   /**
-   * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml.
+   * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
    *
    * @private
-   * @return {Number} The port the service is running on
    */
   async _startServer() {
+    this._portMap = {};
     const spinner = ora.start('Starting Docker container');
-    const port = await utils.getOpenPort();
     const neededPorts = utils.getNeededPorts(this._microservice);
+    const openPorts = [];
+    while (neededPorts.length !== openPorts.length) {
+      const possiblePort = await utils.getOpenPort();
+      if (!openPorts.includes(possiblePort)) {
+        openPorts.push(possiblePort);
+      }
+    }
 
     let portString = '';
 
     for (let i = 0; i < neededPorts.length; i += 1) {
-      portString += `-p ${port}:${neededPorts[i]} `;
+      this._portMap[neededPorts[i]] = openPorts[i];
+      portString += `-p ${openPorts[i]}:${neededPorts[i]} `;
     }
     portString = portString.trim();
 
     this._dockerServiceId = await utils.exec(`docker run -d ${portString}${this._formatEnvironmentVariables()} --entrypoint ${this._microservice.lifecycle.startup.command} ${this._dockerImage} ${this._microservice.lifecycle.startup.args}`);
     spinner.succeed(`Stared Docker container with id: ${this._dockerServiceId.substring(0, 12)}`);
-    return port;
   }
 
   /**
