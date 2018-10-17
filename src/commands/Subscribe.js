@@ -36,6 +36,12 @@ class Subscribe {
     }
 
     this._omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
+    if (!this._omgJson[process.cwd()]) {
+      throw {
+        spinner,
+        message: `Failed subscribing to event: \`${event}\`. You must run \`omg exec \`action_for_event\`\` before trying to subscribe to an event`,
+      };
+    }
     this._action = this._microservice.getAction(this._omgJson[process.cwd()].events[event].action);
     this._event = this._action.getEvent(event);
     if (!this._event.areRequiredArgumentsSupplied(this._arguments)) {
