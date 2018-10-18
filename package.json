@@ -1,6 +1,8 @@
 {
   "name": "omg",
-  "version": "0.0.8",
+  "description": "Test and debug OMG microservices.",
+  "keywords": ["omg", "microservice", "asyncy", "storyscript"],
+  "version": "0.0.9",
   "main": "omg",
   "scripts": {
     "test": "jest",
