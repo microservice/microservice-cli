@@ -1,6 +1,7 @@
 .idea/
 node_modules/
-__test__/
+__tests__/
+.circleci/
 coverage/
 gulpfile.js
 .npmignore
