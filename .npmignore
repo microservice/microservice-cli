@@ -8,3 +8,4 @@ gulpfile.js
 Dockerfile
 microservice.yml
 .DS_Store
+docs/
