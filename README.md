@@ -4,7 +4,7 @@
 
 ![omg](https://user-images.githubusercontent.com/11602092/47048623-f3aff880-d168-11e8-98df-41baa301b242.png)
 
-Verify, and execute microservices built with the [OMG](https://microservice.guide/) standard.
+Verify, test, and execute microservices built with the [OMG](https://microservice.guide/) standard.
 
 ## Overview
 The goals of this project is to provide a utility for developers to test/execute their microservices before being used in a production environment.
