@@ -354,9 +354,8 @@ class Exec {
 
   /**
    * Stops a running Docker service.
-   * @private
    */
-  async serverKill() { // TODO work the shutdown lifecycle in here
+  async serverKill() {
     const spinner = ora.start(`Stopping Docker container: ${this._dockerServiceId.substring(0, 12)}`);
     await utils.exec(`docker kill ${this._dockerServiceId.substring(0, 12)}`);
     spinner.succeed(`Stopped Docker container: ${this._dockerServiceId.substring(0, 12)}`);
