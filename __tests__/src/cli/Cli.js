@@ -3,9 +3,9 @@ const sinon = require('sinon');
 const utils = require('../../../src/utils');
 const Build = require('../../../src/commands/Build');
 const Exec = require('../../../src/commands/Exec');
-const helper = require('../../../src/cli/helper');
+const cli = require('../../../src/cli/cli');
 
-describe('helper.js', () => {
+describe('cli.js', () => {
   let validateMicroserviceDirectoryStub;
   let errorStub;
   let processExitStub;
@@ -49,7 +49,7 @@ describe('helper.js', () => {
       });
 
       test('silent option', () => {
-        helper.validate({silent: true});
+        cli.validate({silent: true});
 
         expect(logStub.calledWith('')).toBeTruthy();
         expect(processExitStub.calledWith(0)).toBeTruthy();
@@ -57,7 +57,7 @@ describe('helper.js', () => {
       });
 
       test('no options', () => {
-        helper.validate({});
+        cli.validate({});
 
         expect(logStub.calledWith('No errors')).toBeTruthy();
         expect(processExitStub.calledWith(0)).toBeTruthy();
@@ -76,7 +76,7 @@ describe('helper.js', () => {
         fs.readFileSync.restore();
       });
       test('silent option', () => {
-        helper.validate({silent: true});
+        cli.validate({silent: true});
 
         expect(errorStub.calledWith('')).toBeTruthy();
         expect(processExitStub.calledWith(1)).toBeTruthy();
@@ -84,7 +84,7 @@ describe('helper.js', () => {
       });
 
       test('no options', () => {
-        helper.validate({});
+        cli.validate({});
 
         expect(errorStub.calledWith('root should NOT have additional properties, root should have required property \'omg\'')).toBeTruthy();
         expect(processExitStub.calledWith(1)).toBeTruthy();
@@ -106,14 +106,14 @@ describe('helper.js', () => {
     });
 
     test('builds with given tag', async () => {
-      await helper.build({tag: 'tag'});
+      await cli.build({tag: 'tag'});
 
       expect(buildGoStub.called).toBeTruthy();
       expect(validateMicroserviceDirectoryStub.called).toBeTruthy();
     });
 
     test('builds with git remote name', async () => {
-      await helper.build({});
+      await cli.build({});
 
       expect(buildGoStub.called).toBeTruthy();
       expect(validateMicroserviceDirectoryStub.called).toBeTruthy();
@@ -124,7 +124,7 @@ describe('helper.js', () => {
       sinon.stub(utils, 'createImageName').callsFake(async () => {
         throw 'error';
       });
-      await helper.build({});
+      await cli.build({});
 
       expect(errorStub.calledWith('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
@@ -144,7 +144,7 @@ describe('helper.js', () => {
     });
 
     test('does not execute action because arguments are not given', async () => {
-      await helper.exec('action', {});
+      await cli.exec('action', {});
 
       expect(errorStub.calledWith('Failed to parse command, run `omg exec --help` for more information.')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
@@ -153,7 +153,7 @@ describe('helper.js', () => {
     });
 
     test('image option given and action is executed', async () => {
-      await helper.exec('action', {args: [], envs: [], image: 'image'});
+      await cli.exec('action', {args: [], envs: [], image: 'image'});
 
       expect(execGoStub.calledWith('action')).toBeTruthy();
       expect(validateMicroserviceDirectoryStub.called).toBeTruthy();
@@ -162,7 +162,7 @@ describe('helper.js', () => {
     test('image option given but is not build so action is not executed', async () => {
       utils.exec.restore();
       sinon.stub(utils, 'exec').callsFake(async () => '');
-      await helper.exec('action', {args: [], envs: [], image: 'image'});
+      await cli.exec('action', {args: [], envs: [], image: 'image'});
 
       expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
@@ -171,7 +171,7 @@ describe('helper.js', () => {
     });
 
     test('executes the given action', async () => {
-      await helper.exec('action', {args: [], envs: []});
+      await cli.exec('action', {args: [], envs: []});
 
       expect(execGoStub.calledWith('action')).toBeTruthy();
       expect(validateMicroserviceDirectoryStub.called).toBeTruthy();
