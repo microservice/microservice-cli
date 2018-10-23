@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-const helper = require('./helper');
+const helper = require('./Cli');
 const appender = require('../utils').appender;
 
 program

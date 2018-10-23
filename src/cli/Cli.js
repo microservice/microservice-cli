@@ -9,6 +9,16 @@ const Build = require('../commands/Build');
 const Exec = require('../commands/Exec');
 const Subscribe = require('../commands/Subscribe');
 
+
+class Cli {
+
+}
+
+module.exports
+
+
+
+
 /**
  * Formats the output based on the data and options.
  *
