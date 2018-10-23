@@ -70,34 +70,24 @@ let s = null;
 /**
  * Will read the `microservice.yml` and `Dockerfile` and run the given command with the given arguments and environment variables.
  *
- * @param {String} command The command to run
+ * @param {String} action The command to run
  * @param {Object} options The given object holding the command, arguments, and environment variables
  */
-async function exec(command, options) {
+async function exec(action, options) {
   let image = options.image;
   if (!(options.args) || !(options.envs)) {
-    process.stdout.write('\n' +
-      '  Usage: omg [options] [command]\n' +
-      '\n' +
-      '  Options:\n' +
-      '\n' +
-      '    -V, --version             output the version number\n' +
-      '    -h, --help                output usage information\n' +
-      '\n' +
-      '  Commands:\n' +
-      '\n' +
-      '    validate [options]        Validate the structure of a `microservice.yml` in the current directory\n' +
-      '    build [options]           Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a tag name must be provided. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`\n' +
-      '    exec [options] <command>  Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+    utils.error('Failed to parse command, run `omg exec --help` for more information.');
     process.exit(1);
+    return;
   }
   utils.validateMicroserviceDirectory();
 
   if (options.image) {
     const images = await utils.exec(`docker images -f "reference=${image}"`);
     if (!images.includes(options.image)) {
-      process.stderr.write(`Image for microservice is not built. Run \`omg build\` to build the image with name: \`${await utils.createImageName()}\``);
+      utils.error(`Image for microservice is not built. Run \`omg build\` to build the image.`);
       process.exit(1);
+      return;
     }
   } else {
     await build({});
@@ -109,7 +99,7 @@ async function exec(command, options) {
     const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
     const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
     e = new Exec(`${options.image}`, microservice, argsObj, envObj);
-    await e.go(command);
+    await e.go(action);
   } catch (error) {
     if (error.spinner) {
       if (error.message.includes('Unable to find image')) {
@@ -118,7 +108,7 @@ async function exec(command, options) {
         error.spinner.fail(error.message);
       }
     } else {
-      process.stderr.write(error.message);
+      utils.error(error.message);
     }
     process.exit(1);
   }
