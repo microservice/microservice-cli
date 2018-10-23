@@ -36,14 +36,14 @@ function processValidateOutput(data, options) {
  * @param {Object} options The given options (json, silent, or text)
  */
 function validate(options) {
-  validateMicroserviceDirectory();
+  utils.validateMicroserviceDirectory();
   const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
   try {
     const m = new Microservice(json);
-    process.stdout.write(processValidateOutput(m.rawData, options));
+    utils.log(processValidateOutput(m.rawData, options));
     process.exit(0);
   } catch (e) {
-    process.stderr.write(processValidateOutput(e, options));
+    utils.error(processValidateOutput(e, options));
     process.exit(1);
   }
 }
@@ -54,11 +54,11 @@ function validate(options) {
  * @param {Object} options The given name
  */
 async function build(options) {
-  validateMicroserviceDirectory();
+  utils.validateMicroserviceDirectory();
   try {
     await new Build(options.tag || await utils.createImageName()).go();
   } catch (e) {
-    process.stderr.write('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`');
+    utils.error('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`');
     process.exit(1);
   }
 }
@@ -91,7 +91,7 @@ async function exec(command, options) {
       '    exec [options] <command>  Run commands defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
-  validateMicroserviceDirectory();
+  utils.validateMicroserviceDirectory();
 
   if (options.image) {
     const images = await utils.exec(`docker images -f "reference=${image}"`);
@@ -131,7 +131,7 @@ async function exec(command, options) {
  * @param {Object} options The given object holding the arguments
  */
 async function subscribe(event, options) {
-  validateMicroserviceDirectory();
+  utils.validateMicroserviceDirectory();
   microservice = buildMicroservice();
 
   try {
@@ -156,7 +156,7 @@ async function subscribe(event, options) {
  * Kills a docker process that is associated with the microservice.
  */
 async function shutdown() {
-  validateMicroserviceDirectory();
+  utils.validateMicroserviceDirectory();
   microservice = buildMicroservice();
 
   const spinner = ora.start('Shutting down microservice');
@@ -189,16 +189,6 @@ function buildMicroservice() {
     return new Microservice(json);
   } catch (e) {
     process.stderr.write('Unable to build microservice. Run `omg validate` for more details');
-    process.exit(1);
-  }
-}
-
-/**
- * Checks that the directory contains a `microservice.yml` and a `Dockerfile`.
- */
-function validateMicroserviceDirectory() {
-  if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
-    process.stdout.write('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
 }
