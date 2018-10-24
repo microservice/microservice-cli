@@ -87,7 +87,7 @@ class Cli {
     try {
       await new Build(options.tag || await utils.createImageName()).go();
     } catch (e) {
-      process.stderr.write('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`');
+      utils.error('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`');
       process.exit(1);
     }
   }
