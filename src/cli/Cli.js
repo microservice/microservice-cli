@@ -70,10 +70,10 @@ class Cli {
     const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
     try {
       const m = new Microservice(json);
-      process.stdout.write(Cli._processValidateOutput(m.rawData, options));
+      utils.log(Cli._processValidateOutput(m.rawData, options));
       process.exit(0);
     } catch (e) {
-      process.stderr.write(Cli._processValidateOutput(e, options));
+      utils.error(Cli._processValidateOutput(e, options));
       process.exit(1);
     }
   }

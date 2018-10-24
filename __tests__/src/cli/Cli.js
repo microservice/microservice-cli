@@ -12,12 +12,16 @@ describe('Cli.js', () => {
     processExitStub = sinon.stub(process, 'exit');
     errorStub = sinon.stub(utils, 'error');
     sinon.stub(fs, 'existsSync').callsFake(() => true);
+    sinon.stub(fs, 'readFileSync').callsFake(() => {
+      return 'omg: 1';
+    });
   });
 
   afterEach(() => {
     process.exit.restore();
     utils.error.restore();
     fs.existsSync.restore();
+    fs.readFileSync.restore();
   });
 
   describe('constructor', () => {
@@ -39,16 +43,6 @@ describe('Cli.js', () => {
   });
 
   describe('buildMicroservice()', () => {
-    beforeEach(() => {
-      sinon.stub(fs, 'readFileSync').callsFake(() => {
-        return 'omg: 1';
-      });
-    });
-
-    afterEach(() => {
-      fs.readFileSync.restore();
-    });
-
     test('builds the microservice', () => {
       const cli = new Cli();
       cli.buildMicroservice();
@@ -67,6 +61,106 @@ describe('Cli.js', () => {
       expect(cli._microservice).toEqual(null);
       expect(errorStub.calledWith('Unable to build microservice. Run `omg validate` for more details')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
+    });
+  });
+
+  describe('validate(options)', () => {
+    let logStub;
+
+    beforeEach(() => {
+      logStub = sinon.stub(utils, 'log');
+    });
+
+    afterEach(() => {
+      utils.log.restore();
+    });
+
+    describe('valid `microservice.yml`', () => {
+      test('silent option', () => {
+        Cli.validate({silent: true});
+
+        expect(logStub.calledWith('')).toBeTruthy();
+        expect(processExitStub.calledWith(0)).toBeTruthy();
+      });
+
+      test('json option', () => {
+        Cli.validate({json: true});
+
+        expect(logStub.calledWith('{\n' +
+          '  "valid": true,\n' +
+          '  "yaml": {\n' +
+          '    "omg": 1\n' +
+          '  },\n' +
+          '  "errors": null,\n' +
+          '  "text": "No errors"\n' +
+          '}')).toBeTruthy();
+        expect(processExitStub.calledWith(0)).toBeTruthy();
+      });
+
+      test('no options', () => {
+        Cli.validate({});
+
+        expect(logStub.calledWith('No errors')).toBeTruthy();
+        expect(processExitStub.calledWith(0)).toBeTruthy();
+      });
+    });
+
+    describe('invalid `microservice.yml`', () => {
+      // we need to make the return value fail the test, and we already stubbed in the layer above this
+      // so we need to restore and re-wrap it, then the next layer will restore
+      beforeEach(() => {
+        fs.readFileSync.restore();
+        sinon.stub(fs, 'readFileSync').callsFake(() => {
+          return 'foo: bar';
+        });
+      });
+
+      test('silent option', () => {
+        Cli.validate({silent: true});
+
+        expect(errorStub.calledWith('')).toBeTruthy();
+        expect(processExitStub.calledWith(1)).toBeTruthy();
+      });
+
+      test('json option', () => {
+        Cli.validate({json: true});
+
+        expect(errorStub.calledWith('{\n' +
+          '  "valid": false,\n' +
+          '  "issue": {\n' +
+          '    "foo": "bar"\n' +
+          '  },\n' +
+          '  "errors": [\n' +
+          '    {\n' +
+          '      "keyword": "additionalProperties",\n' +
+          '      "dataPath": "",\n' +
+          '      "schemaPath": "#/additionalProperties",\n' +
+          '      "params": {\n' +
+          '        "additionalProperty": "foo"\n' +
+          '      },\n' +
+          '      "message": "should NOT have additional properties"\n' +
+          '    },\n' +
+          '    {\n' +
+          '      "keyword": "required",\n' +
+          '      "dataPath": "",\n' +
+          '      "schemaPath": "#/required",\n' +
+          '      "params": {\n' +
+          '        "missingProperty": "omg"\n' +
+          '      },\n' +
+          '      "message": "should have required property \'omg\'"\n' +
+          '    }\n' +
+          '  ],\n' +
+          '  "text": "root should NOT have additional properties, root should have required property \'omg\'"\n' +
+          '}')).toBeTruthy();
+        expect(processExitStub.calledWith(1)).toBeTruthy();
+      });
+
+      test('no options', () => {
+        Cli.validate({});
+
+        expect(errorStub.calledWith('root should NOT have additional properties, root should have required property \'omg\'')).toBeTruthy();
+        expect(processExitStub.calledWith(1)).toBeTruthy();
+      });
     });
   });
 });
