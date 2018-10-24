@@ -3,6 +3,7 @@ const sinon = require('sinon');
 const utils = require('../../../src/utils');
 const Microservice = require('../../../src/models/Microservice');
 const Build = require('../../../src/commands/Build');
+const Exec = require('../../../src/commands/Exec');
 const Cli = require('../../../src/cli/Cli');
 
 describe('Cli.js', () => {
@@ -207,58 +208,49 @@ describe('Cli.js', () => {
       expect(processExitStub.calledWith(1)).toBeTruthy();
     });
   });
-});
 
-// describe('cli.js', () => {
-//   // not able to spy on constructor with sinon yet
-//
-//
-//     });
-//   });
-//
-//   describe('exec(action, options)', () => {
-//     let execGoStub;
-//
-//     beforeEach(() => {
-//       execGoStub = sinon.stub(Exec.prototype, 'go');
-//     });
-//
-//     afterEach(() => {
-//       Exec.prototype.go.restore();
-//     });
-//
-//     test('does not execute action because arguments are not given', async () => {
-//       await cli.exec('action', {});
-//
-//       expect(errorStub.calledWith('Failed to parse command, run `omg exec --help` for more information.')).toBeTruthy();
-//       expect(processExitStub.calledWith(1)).toBeTruthy();
-//       expect(execGoStub.called).toBeFalsy();
-//       expect(validateMicroserviceDirectoryStub.called).toBeFalsy();
-//     });
-//
-//     test('image option given and action is executed', async () => {
-//       await cli.exec('action', {args: [], envs: [], image: 'image'});
-//
-//       expect(execGoStub.calledWith('action')).toBeTruthy();
-//       expect(validateMicroserviceDirectoryStub.called).toBeTruthy();
-//     });
-//
-//     test('image option given but is not build so action is not executed', async () => {
-//       utils.exec.restore();
-//       sinon.stub(utils, 'exec').callsFake(async () => '');
-//       await cli.exec('action', {args: [], envs: [], image: 'image'});
-//
-//       expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy();
-//       expect(processExitStub.calledWith(1)).toBeTruthy();
-//       expect(execGoStub.called).toBeFalsy();
-//       expect(validateMicroserviceDirectoryStub.called).toBeTruthy();
-//     });
-//
-//     test('executes the given action', async () => {
-//       await cli.exec('action', {args: [], envs: []});
-//
-//       expect(execGoStub.calledWith('action')).toBeTruthy();
-//       expect(validateMicroserviceDirectoryStub.called).toBeTruthy();
-//     });
-//   });
-// });
+  describe('.exec(action, options)', () => {
+    let execGoStub;
+    let utilsExecStub;
+
+    beforeEach(() => {
+      execGoStub = sinon.stub(Exec.prototype, 'go');
+      utilsExecStub = sinon.stub(utils, 'exec').callsFake(async () => 'image');
+    });
+
+    afterEach(() => {
+      Exec.prototype.go.restore();
+      utils.exec.restore();
+    });
+
+    test('does not execute action because arguments are not given', async () => {
+      const cli = new Cli();
+      cli.buildMicroservice();
+      await cli.exec('action', {});
+
+      expect(errorStub.calledWith('Failed to parse command, run `omg exec --help` for more information.')).toBeTruthy();
+      expect(processExitStub.calledWith(1)).toBeTruthy();
+      expect(execGoStub.called).toBeFalsy();
+    });
+
+    test('image option given and action is executed', async () => {
+      const cli = new Cli();
+      cli.buildMicroservice();
+      await cli.exec('action', {args: [], envs: [], image: 'image'});
+
+      expect(utilsExecStub.calledWith('docker images -f "reference=image"')).toBeTruthy();
+      expect(execGoStub.calledWith('action')).toBeTruthy();
+    });
+
+    test('image option given but is not build so action is not executed', async () => {
+      const cli = new Cli();
+      cli.buildMicroservice();
+      await cli.exec('action', {args: [], envs: [], image: 'does-not-exist'});
+
+      expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy();
+      expect(utilsExecStub.calledWith('docker images -f "reference=does-not-exist"')).toBeTruthy();
+      expect(processExitStub.calledWith(1)).toBeTruthy();
+      expect(execGoStub.called).toBeFalsy();
+    });
+  });
+});

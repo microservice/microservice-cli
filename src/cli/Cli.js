@@ -95,10 +95,10 @@ class Cli {
   /**
    * Will read the `microservice.yml` and `Dockerfile` and run the given command with the given arguments and environment variables.
    *
-   * @param {String} command The command to run
+   * @param {String} action The command to run
    * @param {Object} options The given object holding the command, arguments, and environment variables
    */
-  async exec(command, options) {
+  async exec(action, options) {
     let image = options.image;
     if (!(options.args) || !(options.envs)) {
       utils.error('Failed to parse command, run `omg exec --help` for more information.');
@@ -122,7 +122,7 @@ class Cli {
       const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
       const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
       this._exec = new Exec(`${options.image}`, this._microservice, argsObj, envObj);
-      await this._exec.go(command);
+      await this._exec.go(action);
     } catch (error) {
       if (error.spinner) {
         if (error.message.includes('Unable to find image')) {
