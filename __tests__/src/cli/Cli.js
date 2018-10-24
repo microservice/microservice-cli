@@ -1,25 +1,26 @@
 const fs = require('fs');
 const sinon = require('sinon');
 const utils = require('../../../src/utils');
+const Microservice = require('../../../src/models/Microservice');
 const Cli = require('../../../src/cli/Cli');
 
 describe('Cli.js', () => {
+  let processExitStub;
+  let errorStub;
+
+  beforeEach(() => {
+    processExitStub = sinon.stub(process, 'exit');
+    errorStub = sinon.stub(utils, 'error');
+    sinon.stub(fs, 'existsSync').callsFake(() => true);
+  });
+
+  afterEach(() => {
+    process.exit.restore();
+    utils.error.restore();
+    fs.existsSync.restore();
+  });
+
   describe('constructor', () => {
-    let processExitStub;
-    let errorStub;
-
-    beforeEach(() => {
-      processExitStub = sinon.stub(process, 'exit');
-      errorStub = sinon.stub(utils, 'error');
-      sinon.stub(fs, 'existsSync').callsFake(() => true);
-    });
-
-    afterEach(() => {
-      process.exit.restore();
-      utils.error.restore();
-      fs.existsSync.restore();
-    });
-
     test('Cli is constructed and the process does not exit', () => {
       new Cli();
 
@@ -33,6 +34,38 @@ describe('Cli.js', () => {
       new Cli();
 
       expect(errorStub.calledWith('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')).toBeTruthy();
+      expect(processExitStub.calledWith(1)).toBeTruthy();
+    });
+  });
+
+  describe('buildMicroservice()', () => {
+    beforeEach(() => {
+      sinon.stub(fs, 'readFileSync').callsFake(() => {
+        return 'omg: 1';
+      });
+    });
+
+    afterEach(() => {
+      fs.readFileSync.restore();
+    });
+
+    test('builds the microservice', () => {
+      const cli = new Cli();
+      cli.buildMicroservice();
+
+      expect(cli._microservice).toEqual(new Microservice({omg: 1}));
+      expect(errorStub.called).toBeFalsy();
+      expect(processExitStub.called).toBeFalsy();
+    });
+
+    test('errors out because the `microservice.yml` is not valid', () => {
+      fs.readFileSync.restore();
+      sinon.stub(fs, 'readFileSync').callsFake(() => 'foo: bar');
+      const cli = new Cli();
+      cli.buildMicroservice();
+
+      expect(cli._microservice).toEqual(null);
+      expect(errorStub.calledWith('Unable to build microservice. Run `omg validate` for more details')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
     });
   });
