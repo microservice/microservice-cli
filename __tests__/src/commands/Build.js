@@ -4,12 +4,6 @@ const utils = require('../../../src/utils');
 const Build = require('../../../src/commands/Build');
 
 describe('Build.js', () => {
-  describe('constructor()', () => {
-    test('sets the name', () => {
-      expect(new Build('name')._name).toBe('name');
-    });
-  });
-
   describe('.go()', () => {
     let successTextList = [];
     let execStub;
