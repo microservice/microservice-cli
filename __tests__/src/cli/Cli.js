@@ -4,6 +4,7 @@ const utils = require('../../../src/utils');
 const Microservice = require('../../../src/models/Microservice');
 const Build = require('../../../src/commands/Build');
 const Exec = require('../../../src/commands/Exec');
+const Subscribe = require('../../../src/commands/Subscribe');
 const Cli = require('../../../src/cli/Cli');
 
 describe('Cli.js', () => {
@@ -251,6 +252,26 @@ describe('Cli.js', () => {
       expect(utilsExecStub.calledWith('docker images -f "reference=does-not-exist"')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
       expect(execGoStub.called).toBeFalsy();
+    });
+  });
+
+  describe('.subscribe(event, options)', () => {
+    let subscribeGoStub;
+
+    beforeEach(() => {
+      subscribeGoStub = sinon.stub(Subscribe.prototype, 'go');
+    });
+
+    afterEach(() => {
+      Subscribe.prototype.go.restore();
+    });
+
+    test('subscribes to the event', async () => {
+      const cli = new Cli();
+      cli.buildMicroservice();
+      await cli.subscribe('event', {args: []});
+
+      expect(subscribeGoStub.calledWith('event')).toBeTruthy();
     });
   });
 });
