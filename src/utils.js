@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const _ = require('underscore');
 const $ = require('shelljs');
 const net = require('http');
@@ -92,6 +94,34 @@ function exec(command) {
       }
     });
   });
+}
+
+/**
+ * Checks that the directory contains a `microservice.yml` and a `Dockerfile`.
+ */
+function validateMicroserviceDirectory() {
+  if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
+    error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+    process.exit(1);
+  }
+}
+
+/**
+ * Log a string to stdout.
+ *
+ * @param {String} string The given sting to log
+ */
+function log(string) {
+  process.stdout.write(string);
+}
+
+/**
+ * Log a string to stderr.
+ *
+ * @param {String} string The given string to log
+ */
+function error(string) {
+  process.stderr.write(string);
 }
 
 const typeCast = {
@@ -213,6 +243,9 @@ module.exports = {
   createImageName,
   parse,
   exec,
+  validateMicroserviceDirectory,
+  log,
+  error,
   dataTypes,
   getOpenPort,
   typeCast,

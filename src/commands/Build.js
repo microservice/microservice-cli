@@ -1,5 +1,5 @@
 const ora = require('../ora');
-const exec = require('../utils').exec;
+const utils = require('../utils');
 
 /**
  * Describes a way to build a microservice.
@@ -20,7 +20,7 @@ class Build {
   async go() {
     const spinner = ora.start('Building Docker image');
     try {
-      await exec(`docker build -t ${this._name} .`);
+      await utils.exec(`docker build -t ${this._name} .`);
       spinner.succeed(`Built Docker image with name: ${this._name}`);
     } catch (e) {
       throw {

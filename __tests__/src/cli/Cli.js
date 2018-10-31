@@ -1,0 +1,277 @@
+const fs = require('fs');
+const sinon = require('sinon');
+const utils = require('../../../src/utils');
+const Microservice = require('../../../src/models/Microservice');
+const Build = require('../../../src/commands/Build');
+const Exec = require('../../../src/commands/Exec');
+const Subscribe = require('../../../src/commands/Subscribe');
+const Cli = require('../../../src/cli/Cli');
+
+describe('Cli.js', () => {
+  let processExitStub;
+  let errorStub;
+
+  beforeEach(() => {
+    processExitStub = sinon.stub(process, 'exit');
+    errorStub = sinon.stub(utils, 'error');
+    sinon.stub(fs, 'existsSync').callsFake(() => true);
+    sinon.stub(fs, 'readFileSync').callsFake(() => {
+      return 'omg: 1';
+    });
+    sinon.stub(utils, 'createImageName').callsFake(async () => 'image-name');
+  });
+
+  afterEach(() => {
+    process.exit.restore();
+    utils.error.restore();
+    fs.existsSync.restore();
+    fs.readFileSync.restore();
+    utils.createImageName.restore();
+  });
+
+  describe('constructor', () => {
+    test('Cli is constructed and the process does not exit', () => {
+      new Cli();
+
+      expect(errorStub.called).toBeFalsy();
+      expect(processExitStub.called).toBeFalsy();
+    });
+
+    test('Cli is not constructed because we are not in a omg directory', () => {
+      fs.existsSync.restore();
+      sinon.stub(fs, 'existsSync').callsFake(() => false);
+      new Cli();
+
+      expect(errorStub.calledWith('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')).toBeTruthy();
+      expect(processExitStub.calledWith(1)).toBeTruthy();
+    });
+  });
+
+  describe('.buildMicroservice()', () => {
+    test('builds the microservice', () => {
+      const cli = new Cli();
+      cli.buildMicroservice();
+
+      expect(cli._microservice).toEqual(new Microservice({omg: 1}));
+      expect(errorStub.called).toBeFalsy();
+      expect(processExitStub.called).toBeFalsy();
+    });
+
+    test('errors out because the `microservice.yml` is not valid', () => {
+      fs.readFileSync.restore();
+      sinon.stub(fs, 'readFileSync').callsFake(() => 'foo: bar');
+      const cli = new Cli();
+      cli.buildMicroservice();
+
+      expect(cli._microservice).toEqual(null);
+      expect(errorStub.calledWith('Unable to build microservice. Run `omg validate` for more details')).toBeTruthy();
+      expect(processExitStub.calledWith(1)).toBeTruthy();
+    });
+  });
+
+  describe('Cli.validate(options)', () => {
+    let logStub;
+
+    beforeEach(() => {
+      logStub = sinon.stub(utils, 'log');
+    });
+
+    afterEach(() => {
+      utils.log.restore();
+    });
+
+    describe('valid `microservice.yml`', () => {
+      test('silent option', () => {
+        Cli.validate({silent: true});
+
+        expect(logStub.calledWith('')).toBeTruthy();
+        expect(processExitStub.calledWith(0)).toBeTruthy();
+      });
+
+      test('json option', () => {
+        Cli.validate({json: true});
+
+        expect(logStub.calledWith('{\n' +
+          '  "valid": true,\n' +
+          '  "yaml": {\n' +
+          '    "omg": 1\n' +
+          '  },\n' +
+          '  "errors": null,\n' +
+          '  "text": "No errors"\n' +
+          '}')).toBeTruthy();
+        expect(processExitStub.calledWith(0)).toBeTruthy();
+      });
+
+      test('no options', () => {
+        Cli.validate({});
+
+        expect(logStub.calledWith('No errors')).toBeTruthy();
+        expect(processExitStub.calledWith(0)).toBeTruthy();
+      });
+    });
+
+    describe('invalid `microservice.yml`', () => {
+      // we need to make the return value fail the test, and we already stubbed in the layer above this
+      // so we need to restore and re-wrap it, then the next layer will restore
+      beforeEach(() => {
+        fs.readFileSync.restore();
+        sinon.stub(fs, 'readFileSync').callsFake(() => {
+          return 'foo: bar';
+        });
+      });
+
+      test('silent option', () => {
+        Cli.validate({silent: true});
+
+        expect(errorStub.calledWith('')).toBeTruthy();
+        expect(processExitStub.calledWith(1)).toBeTruthy();
+      });
+
+      test('json option', () => {
+        Cli.validate({json: true});
+
+        expect(errorStub.calledWith('{\n' +
+          '  "valid": false,\n' +
+          '  "issue": {\n' +
+          '    "foo": "bar"\n' +
+          '  },\n' +
+          '  "errors": [\n' +
+          '    {\n' +
+          '      "keyword": "additionalProperties",\n' +
+          '      "dataPath": "",\n' +
+          '      "schemaPath": "#/additionalProperties",\n' +
+          '      "params": {\n' +
+          '        "additionalProperty": "foo"\n' +
+          '      },\n' +
+          '      "message": "should NOT have additional properties"\n' +
+          '    },\n' +
+          '    {\n' +
+          '      "keyword": "required",\n' +
+          '      "dataPath": "",\n' +
+          '      "schemaPath": "#/required",\n' +
+          '      "params": {\n' +
+          '        "missingProperty": "omg"\n' +
+          '      },\n' +
+          '      "message": "should have required property \'omg\'"\n' +
+          '    }\n' +
+          '  ],\n' +
+          '  "text": "root should NOT have additional properties, root should have required property \'omg\'"\n' +
+          '}')).toBeTruthy();
+        expect(processExitStub.calledWith(1)).toBeTruthy();
+      });
+
+      test('no options', () => {
+        Cli.validate({});
+
+        expect(errorStub.calledWith('root should NOT have additional properties, root should have required property \'omg\'')).toBeTruthy();
+        expect(processExitStub.calledWith(1)).toBeTruthy();
+      });
+    });
+  });
+
+  describe('.build(options)', () => {
+    let buildGoStub;
+
+   // not able to spy on constructor with sinon yet
+    beforeEach(() => {
+      buildGoStub = sinon.stub(Build.prototype, 'go');
+    });
+
+    afterEach(() => {
+      Build.prototype.go.restore();
+    });
+
+    test('builds with given tag', async () => {
+      await Cli.build({tag: 'tag'});
+
+      expect(buildGoStub.called).toBeTruthy();
+      expect(errorStub.called).toBeFalsy();
+      expect(processExitStub.called).toBeFalsy();
+    });
+
+    test('builds with git remote name', async () => {
+      await Cli.build({});
+
+      expect(buildGoStub.called).toBeTruthy();
+      expect(errorStub.called).toBeFalsy();
+      expect(processExitStub.called).toBeFalsy();
+    });
+
+    test('errors because not tag is given and no git config is present', async () => {
+      utils.createImageName.restore();
+      sinon.stub(utils, 'createImageName').callsFake(async () => {
+        throw 'error';
+      });
+      await Cli.build({});
+
+      expect(buildGoStub.called).toBeFalsy();
+      expect(errorStub.calledWith('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`')).toBeTruthy();
+      expect(processExitStub.calledWith(1)).toBeTruthy();
+    });
+  });
+
+  describe('.exec(action, options)', () => {
+    let execGoStub;
+    let utilsExecStub;
+
+    beforeEach(() => {
+      execGoStub = sinon.stub(Exec.prototype, 'go');
+      utilsExecStub = sinon.stub(utils, 'exec').callsFake(async () => 'image');
+    });
+
+    afterEach(() => {
+      Exec.prototype.go.restore();
+      utils.exec.restore();
+    });
+
+    test('does not execute action because arguments are not given', async () => {
+      const cli = new Cli();
+      cli.buildMicroservice();
+      await cli.exec('action', {});
+
+      expect(errorStub.calledWith('Failed to parse command, run `omg exec --help` for more information.')).toBeTruthy();
+      expect(processExitStub.calledWith(1)).toBeTruthy();
+      expect(execGoStub.called).toBeFalsy();
+    });
+
+    test('image option given and action is executed', async () => {
+      const cli = new Cli();
+      cli.buildMicroservice();
+      await cli.exec('action', {args: [], envs: [], image: 'image'});
+
+      expect(utilsExecStub.calledWith('docker images -f "reference=image"')).toBeTruthy();
+      expect(execGoStub.calledWith('action')).toBeTruthy();
+    });
+
+    test('image option given but is not build so action is not executed', async () => {
+      const cli = new Cli();
+      cli.buildMicroservice();
+      await cli.exec('action', {args: [], envs: [], image: 'does-not-exist'});
+
+      expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy();
+      expect(utilsExecStub.calledWith('docker images -f "reference=does-not-exist"')).toBeTruthy();
+      expect(processExitStub.calledWith(1)).toBeTruthy();
+      expect(execGoStub.called).toBeFalsy();
+    });
+  });
+
+  describe('.subscribe(event, options)', () => {
+    let subscribeGoStub;
+
+    beforeEach(() => {
+      subscribeGoStub = sinon.stub(Subscribe.prototype, 'go');
+    });
+
+    afterEach(() => {
+      Subscribe.prototype.go.restore();
+    });
+
+    test('subscribes to the event', async () => {
+      const cli = new Cli();
+      cli.buildMicroservice();
+      await cli.subscribe('event', {args: []});
+
+      expect(subscribeGoStub.calledWith('event')).toBeTruthy();
+    });
+  });
+});

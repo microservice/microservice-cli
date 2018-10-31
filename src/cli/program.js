@@ -24,15 +24,15 @@ program
   .action(async (options) => Cli.build(options));
 
 program
-  .command('exec <command>')
+  .command('exec <action>')
   .usage(' ')
   .option('-i --image <i>', 'The name of the image to spin up the microservice, if not provided a fresh image will be build based of the `Dockerfile`')
   .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender(), [])
   .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender(), [])
   .description('Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
-  .action(async (command, options) => {
+  .action(async (action, options) => {
     cli.buildMicroservice();
-    await cli.exec(command, options);
+    await cli.exec(action, options);
   });
 
 program
