@@ -1,13 +1,20 @@
 {
   "name": "omg",
-  "description": "Test and debug OMG microservices.",
-  "keywords": ["omg", "cli", "microservice", "microservices"],
-  "version": "0.0.10",
+  "description": "A CLI to interact with microservices built with the OMG standard.",
+  "keywords": [
+    "omg",
+    "cli",
+    "microservice",
+    "microservices"
+  ],
+  "version": "0.1.1",
   "main": "omg",
   "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "eslint": "eslint . --ext .ts,.js --quiet",
     "test": "jest",
-    "coverage": "jest --coverage",
-    "eslint": "eslint . --ignore-pattern coverage/ --quiet"
+    "coverage": "jest --coverage"
   },
   "bin": {
     "omg": "./omg"
@@ -15,8 +22,10 @@
   "repository": "git@github.com:microservice-guide/cli.git",
   "license": "MIT",
   "dependencies": {
+    "@types/node": "^10.12.5",
     "ajv": "^6.5.0",
     "commander": "^2.15.1",
+    "eslint": "^5.9.0",
     "log-symbols": "^2.2.0",
     "ora": "^2.1.0",
     "request": "^2.87.0",
@@ -27,42 +36,13 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-google": "^0.9.1",
+    "@types/jest": "^23.3.9",
+    "eslint-config-google": "^0.11.0",
+    "eslint-plugin-typescript": "^0.13.0",
     "jest": "^23.0.1",
-    "sinon": "^6.0.0"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "schema/**/*.js",
-      "src/**/*.js"
-    ],
-    "coverageReporters": [
-      "lcov",
-      "html"
-    ],
-    "testURL": "http://localhost"
-  },
-  "eslintConfig": {
-    "extends": [
-      "eslint:recommended",
-      "google"
-    ],
-    "rules": {
-      "max-len": 0,
-      "no-throw-literal": 0,
-      "quote-props": [
-        2,
-        "as-needed"
-      ]
-    },
-    "env": {
-      "jest": true,
-      "node": true,
-      "es6": true
-    },
-    "parserOptions": {
-      "ecmaVersion": 8
-    }
+    "sinon": "^6.0.0",
+    "ts-jest": "^23.10.4",
+    "typescript": "^3.1.6",
+    "typescript-eslint-parser": "^20.1.1"
   }
 }
