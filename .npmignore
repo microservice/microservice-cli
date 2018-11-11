@@ -3,10 +3,12 @@ node_modules/
 __tests__/
 .circleci/
 coverage/
-gulpfile.js
 .npmignore
 .gitignore
-Dockerfile
-microservice.yml
 .DS_Store
 docs/
+src/
+.eslintignore
+.eslintrc.js
+jest.config.js
+tsconfig.js

@@ -1,18 +1,18 @@
 {
   "name": "omg",
-  "description": "Test and debug OMG microservices.",
+  "description": "A CLI to interact with microservices built with the OMG standard.",
   "keywords": [
     "omg",
     "cli",
     "microservice",
     "microservices"
   ],
-  "version": "0.0.10",
+  "version": "0.1.1",
   "main": "omg",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "eslint": "eslint . --ext .ts --quiet",
+    "eslint": "eslint . --ext .ts,.js --quiet",
     "test": "jest",
     "coverage": "jest --coverage"
   },
@@ -44,60 +44,5 @@
     "ts-jest": "^23.10.4",
     "typescript": "^3.1.6",
     "typescript-eslint-parser": "^20.1.1"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "schema/**/*.js",
-      "src/**/*.js"
-    ],
-    "coverageReporters": [
-      "lcov",
-      "html"
-    ],
-    "testURL": "http://localhost",
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "tsconfig.json"
-      }
-    },
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
-    },
-    "testMatch": [
-      "<rootDir>/__tests__/**/*.(ts|js)"
-    ],
-    "testEnvironment": "node"
-  },
-  "eslintConfig": {
-    "parser": "typescript-eslint-parser",
-    "plugins": [
-      "typescript"
-    ],
-    "extends": [
-      "eslint:recommended",
-      "google"
-    ],
-    "rules": {
-      "max-len": 0,
-      "no-throw-literal": 0,
-      "quote-props": [
-        2,
-        "as-needed"
-      ],
-      "indent": ["error", 2, { "MemberExpression": 1 , "SwitchCase": 1 }]
-    },
-    "env": {
-      "jest": true,
-      "node": true,
-      "es6": true
-    },
-    "parserOptions": {
-      "ecmaVersion": 8,
-      "sourceType": "module"
-    }
   }
 }
