@@ -1,14 +1,14 @@
 import * as fs from 'fs';
 import * as http from 'http';
-import uuidv4 from 'uuid/v4';
 import * as utils from'../utils';
-import rp from 'request-promise';
+import * as  rp from 'request-promise';
 import ora from '../ora';
 import * as verify from '../verify';
 import Microservice from '../models/Microservice';
 import Action from '../models/Action';
 import Event from '../models/Event';
 const homedir = require('os').homedir();
+const uuidv4 = require('uuid/v4');
 
 /**
  * Describes a way to subscribe to an event.
@@ -65,7 +65,6 @@ export default class Subscribe {
       this._castTypes();
       const server = this._startOMGServer();
       const port = await utils.getOpenPort();
-      // server.listen(port, '127.0.0.1');
       server.listen({port, hostname: '127.0.0.1'});
 
       this._id = uuidv4();

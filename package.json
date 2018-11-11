@@ -11,9 +11,10 @@
   "main": "omg",
   "scripts": {
     "build": "tsc",
+    "watch": "tsc -w",
+    "eslint": "eslint . --quiet",
     "test": "jest",
-    "coverage": "jest --coverage",
-    "eslint": "eslint . --ignore-pattern coverage/ --quiet"
+    "coverage": "jest --coverage"
   },
   "bin": {
     "omg": "./omg"
@@ -24,6 +25,7 @@
     "@types/node": "^10.12.5",
     "ajv": "^6.5.0",
     "commander": "^2.15.1",
+    "eslint": "^5.9.0",
     "log-symbols": "^2.2.0",
     "ora": "^2.1.0",
     "request": "^2.87.0",
@@ -34,8 +36,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-google": "^0.9.1",
+    "eslint-config-google": "^0.11.0",
     "jest": "^23.0.1",
     "sinon": "^6.0.0",
     "typescript": "^3.1.6"

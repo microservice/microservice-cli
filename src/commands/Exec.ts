@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import rp from 'request-promise';
+import * as rp from 'request-promise';
 import * as querystring from 'querystring';
 import * as verify from '../verify';
 import * as utils from '../utils';
