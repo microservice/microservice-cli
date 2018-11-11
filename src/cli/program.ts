@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const program = require('commander');
-const Cli = require('./Cli');
+import * as program from 'commander';
+import Cli from './Cli';
 const appender = require('../utils').appender;
 const cli = new Cli();
 

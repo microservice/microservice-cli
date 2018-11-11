@@ -1,18 +1,22 @@
-const Http = require('./Http');
-const Format = require('./Format');
-const Event = require('./Event');
-const Command = require('./Command');
+import Http from './Http';
+import Format from './Format';
+import Event from './Event';
+import Command from './Command';
 
 /**
  * Describes an action.
  */
-class Action extends Command {
+export default class Action extends Command {
   /**
    * Build a {@link Action}.
    *
    * @param {String} name The given name
    * @param {Object} rawAction The raw data
    */
+  _output: any;
+  _eventMap: object;
+  _http: Http;
+  _format: Format;
   constructor(name, rawAction) {
     super(name, rawAction, null);
     this._output = rawAction.output;
@@ -49,7 +53,7 @@ class Action extends Command {
     if (this._eventMap === null) {
       return null;
     }
-    return Object.values(this._eventMap);
+    return (<any>Object).values(this._eventMap);
   }
 
   /**
@@ -84,5 +88,3 @@ class Action extends Command {
     return this._format;
   }
 }
-
-module.exports = Action;

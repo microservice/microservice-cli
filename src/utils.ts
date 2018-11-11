@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const _ = require('underscore');
-const $ = require('shelljs');
-const net = require('http');
+import * as fs from 'fs';
+import * as path from'path';
+import * as _ from 'underscore';
+import * as $ from 'shelljs';
+import * as net from 'http';
 
 /**
  * Used to set values in the constructors of the microservice classes.
@@ -11,7 +11,7 @@ const net = require('http');
  * @param {*} _else The value to set if val if not defined
  * @return {*} The value
  */
-function setVal(val, _else) {
+export function setVal(val, _else) {
   if (_.isUndefined(val)) {
     return _else;
   }
@@ -24,7 +24,7 @@ function setVal(val, _else) {
  * @param {Microservice} microservice The given {@link Microservice}
  * @return {Array<Integer>} The ports that need to be opened for the given {@link Microservice}
  */
-function getNeededPorts(microservice) {
+export function getNeededPorts(microservice) {
   const ports = [];
   for (let i = 0; i < microservice.actions.length; i += 1) {
     const action = microservice.actions[i];
@@ -52,7 +52,7 @@ function getNeededPorts(microservice) {
  *
  * @return {Promise<String>} The image name
  */
-async function createImageName() {
+export async function createImageName() {
   const data = await exec('git remote -v');
   return `omg/${data.match(/git@github\.com:(\w+\/[\w|-]+).git/)[1].toLowerCase()}`;
 }
@@ -64,7 +64,7 @@ async function createImageName() {
  * @param {String} errorMessage The given message to used when unable to parse
  * @return {Object} Key value of the list
  */
-function parse(list, errorMessage) {
+export function parse(list, errorMessage) {
   const dictionary = {};
   for (let i = 0; i < list.length; i += 1) {
     const split = list[i].split(/=(.+)/);
@@ -84,7 +84,7 @@ function parse(list, errorMessage) {
  * @param {String} command The command to run
  * @return {Promise<String>} The stdout if resolved, otherwise stderror
  */
-function exec(command) {
+export function exec(command): Promise<string> {
   return new Promise(function(resolve, reject) {
     $.exec(command, {silent: true}, function(code, stdout, stderr) {
       if (code !== 0) {
@@ -111,7 +111,7 @@ function validateMicroserviceDirectory() {
  *
  * @param {String} string The given sting to log
  */
-function log(string) {
+export function log(string) {
   process.stdout.write(string);
 }
 
@@ -120,11 +120,11 @@ function log(string) {
  *
  * @param {String} string The given string to log
  */
-function error(string) {
+export function error(string) {
   process.stderr.write(string);
 }
 
-const typeCast = {
+export const typeCast = {
   int: (int) => parseInt(int),
   float: (float) => parseFloat(float),
   string: (string) => string,
@@ -136,7 +136,7 @@ const typeCast = {
   any: (any) => any,
 };
 
-const dataTypes = {
+export const dataTypes = {
   int: (int) => {
     return int.match(/^[-+]?\d+$/) !== null;
   },
@@ -194,7 +194,7 @@ const dataTypes = {
  *
  * @return {Promise<Number>} The open port
  */
-function getOpenPort() {
+export function getOpenPort() {
   return new Promise((resolve) => {
     _getPort((data) => {
       resolve(data);
@@ -229,25 +229,10 @@ function getOpenPort() {
  * @param {Array} xs
  * @return {function(*=): (*|Array)}
  */
-function appender(xs) {
+export function appender(xs) {
   xs = xs || [];
   return function(x) {
     xs.push(x);
     return xs;
   };
 }
-
-module.exports = {
-  setVal,
-  getNeededPorts,
-  createImageName,
-  parse,
-  exec,
-  validateMicroserviceDirectory,
-  log,
-  error,
-  dataTypes,
-  getOpenPort,
-  typeCast,
-  appender,
-};

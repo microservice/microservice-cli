@@ -1,21 +1,30 @@
-const fs = require('fs');
-const http = require('http');
-const uuidv4 = require('uuid/v4');
-const utils = require('../utils');
+import * as fs from 'fs';
+import * as http from 'http';
+import uuidv4 from 'uuid/v4';
+import * as utils from'../utils';
+import rp from 'request-promise';
+import ora from '../ora';
+import * as verify from '../verify';
+import Microservice from '../models/Microservice';
+import Action from '../models/Action';
+import Event from '../models/Event';
 const homedir = require('os').homedir();
-const rp = require('request-promise');
-const ora = require('../ora');
-const verify = require('../verify');
 
 /**
  * Describes a way to subscribe to an event.
  */
-class Subscribe {
+export default class Subscribe {
   /**
    *
    * @param {Microservice} microservice The given {@link Microservice}
    * @param {Object} _arguments The given arguments
    */
+  _microservice: Microservice;
+  _arguments: object;
+  _action: Action;
+  _omgJson: object;
+  _event: Event;
+  _id: string;
   constructor(microservice, _arguments) {
     this._microservice = microservice;
     this._arguments = _arguments;
@@ -56,7 +65,8 @@ class Subscribe {
       this._castTypes();
       const server = this._startOMGServer();
       const port = await utils.getOpenPort();
-      server.listen(port, '127.0.0.1');
+      // server.listen(port, '127.0.0.1');
+      server.listen({port, hostname: '127.0.0.1'});
 
       this._id = uuidv4();
       await rp({
@@ -129,5 +139,3 @@ class Subscribe {
     });
   }
 }
-
-module.exports = Subscribe;

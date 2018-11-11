@@ -1,18 +1,23 @@
-const Action = require('./Action');
-const EnvironmentVariable = require('./EnvironmentVariable');
-const Volume = require('./Volume');
-const Lifecycle = require('./Lifecycle');
-const validateMicroservice = require('../../schema/schema').microservice;
+import Action from './Action';
+import EnvironmentVariable from './EnvironmentVariable';
+import Volume from './Volume';
+import Lifecycle from './Lifecycle';
+const validateMicroservice = require('../schema/schema').microservice;
 
 /**
  * Describes a microservice defined by a `microservice.yml`
  */
-class Microservice {
+export default class Microservice {
   /**
    * Builds a {@link Microservice} defined by a `microservice.yml`.
    *
    * @param {Object} microserviceYamlJson The given raw JSON of the `microservice.yml`
    */
+  _rawData: object;
+  _actionMap: object;
+  _environmentMap: object;
+  _volumeMap: object;
+  _lifecycle: Lifecycle;
   constructor(microserviceYamlJson) {
     const isValid = validateMicroservice(microserviceYamlJson);
     if (!isValid.valid) {
@@ -73,7 +78,7 @@ class Microservice {
     if (this._actionMap === null) {
       return [];
     }
-    return Object.values(this._actionMap);
+    return (<any>Object).values(this._actionMap);
   }
 
   /**
@@ -99,7 +104,7 @@ class Microservice {
     if (this._environmentMap === null) {
       return [];
     }
-    return Object.values(this._environmentMap);
+    return (<any>Object).values(this._environmentMap);
   }
 
   /**
@@ -136,7 +141,7 @@ class Microservice {
     if (this._volumeMap === null) {
       return [];
     }
-    return Object.values(this._volumeMap);
+    return (<any>Object).values(this._volumeMap);
   }
 
   /**
@@ -162,5 +167,3 @@ class Microservice {
     return this._lifecycle;
   }
 }
-
-module.exports = Microservice;

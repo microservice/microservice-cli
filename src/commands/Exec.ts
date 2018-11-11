@@ -1,15 +1,17 @@
-const fs = require('fs');
+import * as fs from 'fs';
+import rp from 'request-promise';
+import * as querystring from 'querystring';
+import * as verify from '../verify';
+import * as utils from '../utils';
+import ora from '../ora';
+import Microservice from '../models/Microservice';
+import Action from '../models/Action';
 const homedir = require('os').homedir();
-const rp = require('request-promise');
-const querystring = require('querystring');
-const verify = require('../verify');
-const utils = require('../utils');
-const ora = require('../ora');
 
 /**
  * Describes a way to execute a microservice.
  */
-class Exec {
+export default class Exec {
   /**
    * Build an {@link Exec}.
    *
@@ -18,6 +20,13 @@ class Exec {
    * @param {Object} _arguments
    * @param {Object} environmentVariables
    */
+  _dockerImage: string;
+  _microservice: Microservice;
+  _arguments: object;
+  _environmentVariables: object;
+  _dockerServiceId: string;
+  _action: Action;
+  _portMap: object;
   constructor(dockerImage, microservice, _arguments, environmentVariables) {
     this._dockerImage = dockerImage;
     this._microservice = microservice;
@@ -147,7 +156,7 @@ class Exec {
   _omgJsonFileHandler() {
     let data = {};
     if (fs.existsSync(`${homedir}/.omg.json`)) {
-      data = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`));
+      data = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`).toString());
     }
 
     data[process.cwd()] = {
@@ -370,5 +379,3 @@ class Exec {
     return this._dockerServiceId !== null;
   }
 }
-
-module.exports = Exec;

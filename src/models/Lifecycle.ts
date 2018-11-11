@@ -1,14 +1,16 @@
-const validateLifecycle = require('../../schema/schema').lifecycle;
+const validateLifecycle = require('../schema/schema').lifecycle;
 
 /**
  * Describes a lifecycle used by a {@link Microservice}.
  */
-class Lifecycle {
+export default class Lifecycle {
   /**
    * Build a {@link Lifecycle}.
    *
    * @param {Object} rawLifecycle The given raw data
    */
+  _startup: any;
+  _shutdown: object;
   constructor(rawLifecycle) {
     const isValid = validateLifecycle(rawLifecycle);
     if (!isValid.valid) {
@@ -51,5 +53,3 @@ class Lifecycle {
     return this._shutdown;
   }
 }
-
-module.exports = Lifecycle;

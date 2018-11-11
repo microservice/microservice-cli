@@ -1,10 +1,10 @@
-const Http = require('./Http');
-const Command = require('./Command');
+import Http from './Http';
+import Command from './Command';
 
 /**
  * Describes a event.
  */
-class Event extends Command {
+export default class Event extends Command {
   /**
    * Build a {@link Event}.
    *
@@ -12,6 +12,8 @@ class Event extends Command {
    * @param {String} actionName The name of this {@link Event}'s {@link Action}
    * @param {Object} rawEvent The raw data
    */
+  _subscribe: Http;
+  _unsubscribe: Http;
   constructor(name, actionName, rawEvent) {
     super(name, rawEvent, actionName);
     this._subscribe = new Http(name, rawEvent.http.subscribe, `actions.${actionName}.events.${name}.http.subscribe`, rawEvent.http.port);
@@ -40,5 +42,3 @@ class Event extends Command {
     return this._unsubscribe;
   }
 }
-
-module.exports = Event;

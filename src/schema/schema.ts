@@ -1,17 +1,15 @@
-const fs = require('fs');
-const path = require('path');
 const Ajv = require('ajv');
+const microserviceSchema = require('./schemas/microservice');
+const actionSchema = require('./schemas/action');
+const eventSchema = require('./schemas/event');
+const environmentVariableSchema = require('./schemas/environmentVariable');
+const httpSchema = require('./schemas/http');
+const formatSchema = require('./schemas/format');
+const argumentSchema = require('./schemas/argument');
+const volumeSchema = require('./schemas/volume');
+const lifecycleSchema = require('./schemas/lifecycle');
 
 const ajv = new Ajv({allErrors: true});
-const microserviceSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/microservice.json')));
-const actionSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/action.json')));
-const eventSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/event.json')));
-const environmentVariableSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/environmentVariable.json')));
-const httpSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/http.json')));
-const formatSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/format.json')));
-const argumentSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/argument.json')));
-const volumeSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/volume.json')));
-const lifecycleSchema = JSON.parse(fs.readFileSync(path.join(__dirname, './schemas/lifecycle.json')));
 
 /**
  * Runs validation on a `microservice.yml`.

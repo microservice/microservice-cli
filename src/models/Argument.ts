@@ -1,10 +1,10 @@
-const {setVal} = require('../utils');
-const validateArgument = require('../../schema/schema').argument;
+import {setVal} from '../utils';
+const validateArgument = require('../schema/schema').argument;
 
 /**
  * Describes an argument.
  */
-class Argument {
+export default class Argument {
   /**
    * Builds an {@link Argument}.
    *
@@ -12,6 +12,15 @@ class Argument {
    * @param {String} pathToArgument The path in the `microservice.yml` to this {@link Argument}
    * @param {Object} rawArguments The given raw data
    */
+  _name: string;
+  _type: any;
+  _in: string;
+  _help: string;
+  _pattern: string;
+  _enum: string[];
+  _range: object;
+  _required: boolean;
+  _default: any;
   constructor(name, pathToArgument, rawArguments) {
     const isValid = validateArgument(rawArguments);
     if (!isValid.valid) {
@@ -27,7 +36,7 @@ class Argument {
     this._range = rawArguments.range || null;
     this._required = rawArguments.required || false;
     this._default = setVal(rawArguments.default, null);
-    if ([(this._pattern !== null), (this._enum !== null), (this._range !== null)].reduce((a, v) => ((v) ? 1 + a: a)) > 1) {
+    if ([(this._pattern !== null), (this._enum !== null), (this._range !== null)].filter((b) => b).length > 1) {
       throw {
         context: `Argument with name: \`${name}\``,
         message: 'An Argument can only have a pattern, enum, or range defined',
@@ -116,5 +125,3 @@ class Argument {
     return this._default;
   }
 }
-
-module.exports = Argument;

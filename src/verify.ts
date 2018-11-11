@@ -1,5 +1,5 @@
-const _ = require('underscore');
-const {dataTypes} = require('./utils');
+import * as _ from 'underscore';
+import {dataTypes} from './utils';
 
 /**
  * Verifies the pattern, enum, and range of the given arguments.
@@ -7,7 +7,7 @@ const {dataTypes} = require('./utils');
  * @param {Command} command The given {@link Command}
  * @param {Object} args The given argument mapping
  */
-function verifyArgumentConstrains(command, args) {
+export function verifyArgumentConstrains(command, args) {
   command.arguments.forEach((a) => {
     if (Object.keys(args).includes(a.name)) {
       const argumentValue = args[a.name];
@@ -35,7 +35,7 @@ function verifyArgumentConstrains(command, args) {
  * @param {Command} command The given {@link Action} or {@link Event}
  * @param {Object} args The given argument mapping
  */
-function verifyArgumentTypes(command, args) {
+export function verifyArgumentTypes(command, args) {
   command.arguments.forEach((a) => {
     if (Object.keys(args).includes(a.name)) {
       if (!dataTypes[a.type](args[a.name])) {
@@ -51,7 +51,7 @@ function verifyArgumentTypes(command, args) {
  * @param {Microservice} microservice The given {@link Microservice}
  * @param {Object} envs The given environment variable mapping
  */
-function verifyEnvironmentVariableTypes(microservice, envs) {
+export function verifyEnvironmentVariableTypes(microservice, envs) {
   microservice.environmentVariables.forEach((e) => {
     if (Object.keys(envs).includes(e.name)) {
       if (!dataTypes[e.type](envs[e.name])) {
@@ -67,7 +67,7 @@ function verifyEnvironmentVariableTypes(microservice, envs) {
  * @param {Microservice} microservice The given {@link Microservice}
  * @param {Object} envs The given environment variable mapping
  */
-function verifyEnvironmentVariablePattern(microservice, envs) {
+export function verifyEnvironmentVariablePattern(microservice, envs) {
   microservice.environmentVariables.forEach((e) => {
     if (Object.keys(envs).includes(e.name)) {
       if ((e.pattern !== null) && (envs[e.name].match(e.pattern)) === null) {
@@ -83,7 +83,7 @@ function verifyEnvironmentVariablePattern(microservice, envs) {
  * @param {Action} action The given {@link Action}
  * @param {String} output The given output
  */
-function verifyOutputType(action, output) {
+export function verifyOutputType(action, output) {
   if (!dataTypes[action.output.type](output)) {
     throw (
         `Action: \`${action.name}\``
@@ -93,11 +93,3 @@ function verifyOutputType(action, output) {
     );
   }
 }
-
-module.exports = {
-  verifyArgumentConstrains,
-  verifyArgumentTypes,
-  verifyEnvironmentVariableTypes,
-  verifyEnvironmentVariablePattern,
-  verifyOutputType,
-};

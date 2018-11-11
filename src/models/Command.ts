@@ -1,11 +1,11 @@
-const Argument = require('./Argument');
-const validateAction = require('../../schema/schema').action;
-const validateEvent = require('../../schema/schema').event;
+import Argument from './Argument';
+const validateAction = require('../schema/schema').action;
+const validateEvent = require('../schema/schema').event;
 
 /**
  * Describes a general command. NOTE: this is used as an Abstract Class and should not be instantiated.
  */
-class Command {
+export default class Command {
   /**
    * Builds a {@link Command}.
    *
@@ -13,6 +13,10 @@ class Command {
    * @param {Object} rawCommand The raw data
    * @param {String} actionName Name of that parent action, if null, this means that this is a root action
    */
+  _isAction: boolean;
+  _name: string;
+  _help: string;
+  _argumentsMap: object;
   constructor(name, rawCommand, actionName) {
     this._isAction = actionName === null;
     let argumentPath = name;
@@ -143,7 +147,7 @@ class Command {
     if (this._argumentsMap === null) {
       return [];
     }
-    return Object.values(this._argumentsMap);
+    return (<any>Object).values(this._argumentsMap);
   }
 
   /**
@@ -160,5 +164,3 @@ class Command {
     return this._argumentsMap[argument];
   }
 }
-
-module.exports = Command;

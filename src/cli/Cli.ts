@@ -1,21 +1,24 @@
-const fs = require('fs');
-const path = require('path');
-const YAML = require('yamljs');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as YAML from 'yamljs';
+import * as utils from '../utils';
+import ora from '../ora';
+import Microservice from '../models/Microservice';
+import Build from '../commands/Build';
+import Exec from '../commands/Exec';
+import Subscribe from '../commands/Subscribe';
 const homedir = require('os').homedir();
-const utils = require('../utils');
-const ora = require('../ora');
-const Microservice = require('../models/Microservice');
-const Build = require('../commands/Build');
-const Exec = require('../commands/Exec');
-const Subscribe = require('../commands/Subscribe');
 
 /**
  * Describes the cli.
  */
-class Cli {
+export default class Cli {
   /**
    * Build an {@link Cli}.
    */
+  _microservice: Microservice;
+  _exec: Exec;
+  _subscribe: Subscribe;
   constructor() {
     if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
       utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
@@ -35,6 +38,7 @@ class Cli {
       const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
       this._microservice = new Microservice(json);
     } catch (e) {
+      console.log(e)
       utils.error('Unable to build microservice. Run `omg validate` for more details');
       process.exit(1);
     }
@@ -87,6 +91,7 @@ class Cli {
     try {
       await new Build(options.tag || await utils.createImageName()).go();
     } catch (e) {
+      console.log(e)
       utils.error('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`');
       process.exit(1);
     }
@@ -197,5 +202,3 @@ class Cli {
     process.exit();
   }
 }
-
-module.exports = Cli;

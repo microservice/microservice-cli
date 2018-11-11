@@ -1,15 +1,16 @@
-const ora = require('../ora');
-const utils = require('../utils');
+import ora from '../ora';
+import * as utils from '../utils';
 
 /**
  * Describes a way to build a microservice.
  */
-class Build {
+export default class Build {
   /**
    * Build a {@link Build}.
    *
    * @param {String} name The given name
    */
+  _name: string;
   constructor(name) {
     this._name = name;
   }
@@ -30,5 +31,3 @@ class Build {
     }
   }
 }
-
-module.exports = Build;
