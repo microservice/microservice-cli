@@ -13,12 +13,13 @@ const homedir = require('os').homedir();
  * Describes the cli.
  */
 export default class Cli {
-  /**
-   * Build an {@link Cli}.
-   */
   _microservice: Microservice;
   _exec: Exec;
   _subscribe: Subscribe;
+
+  /**
+   * Build an {@link Cli}.
+   */
   constructor() {
     if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
       utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
@@ -38,7 +39,6 @@ export default class Cli {
       const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
       this._microservice = new Microservice(json);
     } catch (e) {
-      console.log(e)
       utils.error('Unable to build microservice. Run `omg validate` for more details');
       process.exit(1);
     }
@@ -91,7 +91,6 @@ export default class Cli {
     try {
       await new Build(options.tag || await utils.createImageName()).go();
     } catch (e) {
-      console.log(e)
       utils.error('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`');
       process.exit(1);
     }
@@ -104,7 +103,7 @@ export default class Cli {
    * @param {Object} options The given object holding the command, arguments, and environment variables
    */
   async exec(action, options) {
-    let image = options.image;
+    const image = options.image;
     if (!(options.args) || !(options.envs)) {
       utils.error('Failed to parse command, run `omg exec --help` for more information.');
       process.exit(1);

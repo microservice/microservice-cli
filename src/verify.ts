@@ -86,7 +86,7 @@ export function verifyEnvironmentVariablePattern(microservice, envs) {
 export function verifyOutputType(action, output) {
   if (!dataTypes[action.output.type](output)) {
     throw (
-        `Action: \`${action.name}\``
+      `Action: \`${action.name}\``
         + ` must have output type: \`${action.output.type}\``
         + ` instead got: \`${typeof output}\``
         + ` ${output}`

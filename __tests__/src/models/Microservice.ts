@@ -1,10 +1,10 @@
-const Microservice = require('../../../src/models/Microservice');
-const Action = require('../../../src/models/Action');
-const EnvironmentVariable = require('../../../src/models/EnvironmentVariable');
-const Volume = require('../../../src/models/Volume');
-const Lifecycle = require('../../../src/models/Lifecycle');
+import Microservice from '../../../src/models/Microservice';
+import Action from '../../../src/models/Action';
+import EnvironmentVariable from '../../../src/models/EnvironmentVariable';
+import Volume from '../../../src/models/Volume';
+import Lifecycle from '../../../src/models/Lifecycle';
 
-describe('Microservice.js', () => {
+describe('Microservice.ts', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {

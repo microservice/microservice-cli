@@ -4,12 +4,6 @@ const validateEnvironmentVariable = require('../schema/schema').environmentVaria
  * Describes and environment variable.
  */
 export default class EnvironmentVariable {
-  /**
-   * Builds an {@link EnvironmentVariable}.
-   *
-   * @param {String} name The given name
-   * @param {Object} rawEnvironment The given raw data
-   */
   _name: string;
   _type: any;
   _pattern: string;
@@ -17,6 +11,13 @@ export default class EnvironmentVariable {
   _required: boolean;
   _default: any;
   _help: string;
+
+  /**
+   * Builds an {@link EnvironmentVariable}.
+   *
+   * @param {String} name The given name
+   * @param {Object} rawEnvironment The given raw data
+   */
   constructor(name, rawEnvironment) {
     const isValid = validateEnvironmentVariable(rawEnvironment);
     if (!isValid.valid) {

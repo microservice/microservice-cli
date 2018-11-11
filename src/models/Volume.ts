@@ -4,15 +4,16 @@ const validateVolume = require('../schema/schema').volume;
  * Describes a volume used by a {@link Microservice}
  */
 export default class Volume {
+  _name: string;
+  _target: string;
+  _persist: boolean;
+
   /**
    * Builds a {@link Volume}.
    *
    * @param {String} name The given name
    * @param {Object} rawVolume The given raw data
    */
-  _name: string;
-  _target: string;
-  _persist: boolean;
   constructor(name, rawVolume) {
     const isValid = validateVolume(rawVolume);
     if (!isValid.valid) {

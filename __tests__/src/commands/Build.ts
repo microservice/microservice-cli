@@ -1,9 +1,9 @@
-const sinon = require('sinon');
-const ora = require('../../../src/ora');
-const utils = require('../../../src/utils');
-const Build = require('../../../src/commands/Build');
+import * as sinon from 'sinon';
+import ora from '../../../src/ora';
+import * as utils from '../../../src/utils';
+import Build from '../../../src/commands/Build';
 
-describe('Build.js', () => {
+describe('Build.ts', () => {
   describe('.go()', () => {
     let successTextList = [];
     let execStub;
@@ -21,8 +21,8 @@ describe('Build.js', () => {
     });
 
     afterEach(() => {
-      utils.exec.restore();
-      ora.start.restore();
+      (utils.exec as any).restore();
+      (ora.start as any).restore();
       successTextList = [];
     });
 
@@ -35,7 +35,7 @@ describe('Build.js', () => {
     });
 
     test('throws an error because the image could not be build for some reason', async () => {
-      utils.exec.restore();
+      (utils.exec as any).restore();
       execStub = sinon.stub(utils, 'exec').callsFake(async () => {
         throw 'Unable to build Docker image';
       });

@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import * as path from'path';
 import * as _ from 'underscore';
 import * as $ from 'shelljs';
 import * as net from 'http';
@@ -94,16 +92,6 @@ export function exec(command): Promise<string> {
       }
     });
   });
-}
-
-/**
- * Checks that the directory contains a `microservice.yml` and a `Dockerfile`.
- */
-function validateMicroserviceDirectory() {
-  if (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) {
-    error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
-    process.exit(1);
-  }
 }
 
 /**

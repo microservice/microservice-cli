@@ -4,13 +4,14 @@ const validateFormat = require('../schema/schema').format;
  * Describes a format.
  */
 export default class Format {
+  _command: any;
+
   /**
    * Builds a {@link Format}.
    *
    * @param {String} commandName The given command name
    * @param {Object} rawFormat The given raw data
    */
-  _command: any;
   constructor(commandName, rawFormat) {
     const isValid = validateFormat(rawFormat);
     if (!isValid.valid) {

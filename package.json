@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "eslint": "eslint . --quiet",
+    "eslint": "eslint . --ext .ts --quiet",
     "test": "jest",
     "coverage": "jest --coverage"
   },
@@ -36,10 +36,14 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.9",
     "eslint-config-google": "^0.11.0",
+    "eslint-plugin-typescript": "^0.13.0",
     "jest": "^23.0.1",
     "sinon": "^6.0.0",
-    "typescript": "^3.1.6"
+    "ts-jest": "^23.10.4",
+    "typescript": "^3.1.6",
+    "typescript-eslint-parser": "^20.1.1"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -50,9 +54,29 @@
       "lcov",
       "html"
     ],
-    "testURL": "http://localhost"
+    "testURL": "http://localhost",
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.json"
+      }
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "<rootDir>/__tests__/**/*.(ts|js)"
+    ],
+    "testEnvironment": "node"
   },
   "eslintConfig": {
+    "parser": "typescript-eslint-parser",
+    "plugins": [
+      "typescript"
+    ],
     "extends": [
       "eslint:recommended",
       "google"
@@ -63,7 +87,8 @@
       "quote-props": [
         2,
         "as-needed"
-      ]
+      ],
+      "indent": ["error", 2, { "MemberExpression": 1 , "SwitchCase": 1 }]
     },
     "env": {
       "jest": true,
@@ -71,7 +96,8 @@
       "es6": true
     },
     "parserOptions": {
-      "ecmaVersion": 8
+      "ecmaVersion": 8,
+      "sourceType": "module"
     }
   }
 }

@@ -8,16 +8,17 @@ const validateMicroservice = require('../schema/schema').microservice;
  * Describes a microservice defined by a `microservice.yml`
  */
 export default class Microservice {
-  /**
-   * Builds a {@link Microservice} defined by a `microservice.yml`.
-   *
-   * @param {Object} microserviceYamlJson The given raw JSON of the `microservice.yml`
-   */
   _rawData: object;
   _actionMap: object;
   _environmentMap: object;
   _volumeMap: object;
   _lifecycle: Lifecycle;
+
+  /**
+   * Builds a {@link Microservice} defined by a `microservice.yml`.
+   *
+   * @param {Object} microserviceYamlJson The given raw JSON of the `microservice.yml`
+   */
   constructor(microserviceYamlJson) {
     const isValid = validateMicroservice(microserviceYamlJson);
     if (!isValid.valid) {

@@ -7,16 +7,17 @@ import Command from './Command';
  * Describes an action.
  */
 export default class Action extends Command {
+  _output: any;
+  _eventMap: object;
+  _http: Http;
+  _format: Format;
+
   /**
    * Build a {@link Action}.
    *
    * @param {String} name The given name
    * @param {Object} rawAction The raw data
    */
-  _output: any;
-  _eventMap: object;
-  _http: Http;
-  _format: Format;
   constructor(name, rawAction) {
     super(name, rawAction, null);
     this._output = rawAction.output;

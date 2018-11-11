@@ -12,6 +12,14 @@ const homedir = require('os').homedir();
  * Describes a way to execute a microservice.
  */
 export default class Exec {
+  _dockerImage: string;
+  _microservice: Microservice;
+  _arguments: object;
+  _environmentVariables: object;
+  _dockerServiceId: string;
+  _action: Action;
+  _portMap: object;
+
   /**
    * Build an {@link Exec}.
    *
@@ -20,13 +28,6 @@ export default class Exec {
    * @param {Object} _arguments
    * @param {Object} environmentVariables
    */
-  _dockerImage: string;
-  _microservice: Microservice;
-  _arguments: object;
-  _environmentVariables: object;
-  _dockerServiceId: string;
-  _action: Action;
-  _portMap: object;
   constructor(dockerImage, microservice, _arguments, environmentVariables) {
     this._dockerImage = dockerImage;
     this._microservice = microservice;

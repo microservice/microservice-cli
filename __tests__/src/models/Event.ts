@@ -1,8 +1,8 @@
-const Argument = require('../../../src/models/Argument');
-const Event = require('../../../src/models/Event');
-const Http = require('../../../src/models/Http');
+import Argument from '../../../src/models/Argument';
+import Event from '../../../src/models/Event';
+import Http from '../../../src/models/Http';
 
-describe('Event.js', () => {
+describe('Event.ts', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {
@@ -351,7 +351,7 @@ describe('Event.js', () => {
         method: 'post',
         port: 5000,
         path: '/sub',
-      }));
+      }, 'action.actionName.http'));
     });
   });
 
@@ -381,7 +381,7 @@ describe('Event.js', () => {
         method: 'post',
         port: 5000,
         path: '/unsub',
-      }));
+      }, 'action.actionName.http'));
     });
   });
 });

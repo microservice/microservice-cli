@@ -1,6 +1,6 @@
-const Format = require('../../../src/models/Format');
+import Format from '../../../src/models/Format';
 
-describe('Format.js', () => {
+describe('Format.ts', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {

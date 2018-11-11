@@ -1,6 +1,6 @@
-const Volume = require('../../../src/models/Volume');
+import Volume from '../../../src/models/Volume';
 
-describe('Volume.js', () => {
+describe('Volume.ts', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {

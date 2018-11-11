@@ -1,11 +1,11 @@
-const sinon = require('sinon');
-const rp = require('request-promise');
-const ora = require('../../../src/ora');
-const Exec = require('../../../src/commands/Exec');
-const Microservice = require('../../../src/models/Microservice');
-const utils = require('../../../src/utils');
+import * as sinon from 'sinon';
+import * as rp from 'request-promise';
+import ora from '../../../src/ora';
+import Exec from '../../../src/commands/Exec';
+import Microservice from '../../../src/models/Microservice';
+import * as utils from '../../../src/utils';
 
-describe('Exec.js', () => {
+describe('Exec.ts', () => {
   let successTextList = [];
   let execStub;
 
@@ -22,9 +22,9 @@ describe('Exec.js', () => {
   });
 
   afterEach(() => {
-    utils.exec.restore();
-    ora.start.restore();
-    utils.getOpenPort.restore();
+    (utils.exec as any).restore();
+    (ora.start as any).restore();
+    (utils.getOpenPort as any).restore();
     successTextList = [];
   });
 
@@ -158,10 +158,10 @@ describe('Exec.js', () => {
       });
 
       afterEach(() => {
-        rp.get.restore();
-        rp.post.restore();
-        rp.put.restore();
-        rp.delete.restore();
+        (rp.get as any).restore();
+        (rp.post as any).restore();
+        (rp.put as any).restore();
+        (rp.delete as any).restore();
       });
 
       test('command that gets', async () => {

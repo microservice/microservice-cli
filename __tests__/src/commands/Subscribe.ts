@@ -1,11 +1,11 @@
-const fs = require('fs');
-const sinon = require('sinon');
-const ora = require('../../../src/ora');
-const Subscribe = require('../../../src/commands/Subscribe');
-const Microservice = require('../../../src/models/Microservice');
+import * as fs from 'fs';
+import * as sinon from 'sinon';
+import ora from '../../../src/ora';
+import Subscribe from '../../../src/commands/Subscribe';
+import Microservice from '../../../src/models/Microservice';
 
-describe('Subscribe.js', () => {
-  let successTextList = [];
+describe('Subscribe.ts', () => {
+  const successTextList = [];
   let oraStartStub;
 
   beforeEach(() => {
@@ -33,11 +33,11 @@ describe('Subscribe.js', () => {
   });
 
   afterEach(() => {
-    ora.start.restore();
-    fs.existsSync.restore();
-    fs.readFileSync.restore();
-    JSON.parse.restore();
-    process.cwd.restore();
+    (ora.start as any).restore();
+    (fs.existsSync as any).restore();
+    (fs.readFileSync as any).restore();
+    (JSON.parse as any).restore();
+    (process.cwd as any).restore();
   });
 
   describe('.go(event)', () => {
@@ -72,7 +72,7 @@ describe('Subscribe.js', () => {
     });
 
     test('fails because the `.omg.json` file does not exist', async () => {
-      fs.existsSync.restore();
+      (fs.existsSync as any).restore();
       sinon.stub(fs, 'existsSync').callsFake(() => false);
       try {
         await new Subscribe(m, {}).go('event');
@@ -84,7 +84,7 @@ describe('Subscribe.js', () => {
     });
 
     test('fails because there is no path entry in the `.omg.json` file where this command is being ran', async () => {
-      process.cwd.restore();
+      (process.cwd as any).restore();
       sinon.stub(process, 'cwd').callsFake(() => 'wrong/path');
 
       try {

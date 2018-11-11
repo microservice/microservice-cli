@@ -1,8 +1,8 @@
-const verify = require('../../src/verify');
-const Action = require('../../src/models/Action');
-const Microservice = require('../../src/models/Microservice');
+import * as verify from '../../src/verify';
+import Action from '../../src/models/Action';
+import Microservice from '../../src/models/Microservice';
 
-describe('verify.js', () => {
+describe('verify.ts', () => {
   describe('verifyArgumentConstrains(command, args)', () => {
     test('throws an exception because an argument does not match its defined pattern', () => {
       try {

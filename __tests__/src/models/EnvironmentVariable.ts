@@ -1,6 +1,6 @@
-const EnvironmentVariable = require('../../../src/models/EnvironmentVariable');
+import EnvironmentVariable from '../../../src/models/EnvironmentVariable';
 
-describe('EnvironmentVariable.js', () => {
+describe('EnvironmentVariable.ts', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {

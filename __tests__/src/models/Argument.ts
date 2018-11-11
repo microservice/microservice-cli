@@ -1,6 +1,6 @@
-const Argument = require('../../../src/models/Argument');
+import Argument from '../../../src/models/Argument';
 
-describe('Argument.js', () => {
+describe('Argument.ts', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {

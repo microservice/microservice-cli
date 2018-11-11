@@ -1,9 +1,9 @@
-const Action = require('../../../src/models/Action');
-const Argument = require('../../../src/models/Argument');
-const Event = require('../../../src/models/Event');
-const Http = require('../../../src/models/Http');
+import Action from '../../../src/models/Action';
+import Argument from '../../../src/models/Argument';
+import Event from '../../../src/models/Event';
+import Http from '../../../src/models/Http';
 
-describe('Action.js', () => {
+describe('Action.ts', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {
@@ -411,7 +411,7 @@ describe('Action.js', () => {
         method: 'post',
         port: 5000,
         path: '/skrt',
-      }));
+      }, 'actions.actionName.http'));
     });
   });
 });

@@ -5,12 +5,13 @@ import * as utils from '../utils';
  * Describes a way to build a microservice.
  */
 export default class Build {
+  _name: string;
+
   /**
    * Build a {@link Build}.
    *
    * @param {String} name The given name
    */
-  _name: string;
   constructor(name) {
     this._name = name;
   }

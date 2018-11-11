@@ -1,6 +1,6 @@
-const Lifecycle = require('../../../src/models/Lifecycle');
+import Lifecycle from '../../../src/models/Lifecycle';
 
-describe('Lifecycle.js', () => {
+describe('Lifecycle.ts', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {

@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as http from 'http';
-import * as utils from'../utils';
-import * as  rp from 'request-promise';
+import * as utils from '../utils';
+import * as rp from 'request-promise';
 import ora from '../ora';
 import * as verify from '../verify';
 import Microservice from '../models/Microservice';
@@ -14,17 +14,18 @@ const uuidv4 = require('uuid/v4');
  * Describes a way to subscribe to an event.
  */
 export default class Subscribe {
-  /**
-   *
-   * @param {Microservice} microservice The given {@link Microservice}
-   * @param {Object} _arguments The given arguments
-   */
   _microservice: Microservice;
   _arguments: object;
   _action: Action;
   _omgJson: object;
   _event: Event;
   _id: string;
+
+  /**
+   *
+   * @param {Microservice} microservice The given {@link Microservice}
+   * @param {Object} _arguments The given arguments
+   */
   constructor(microservice, _arguments) {
     this._microservice = microservice;
     this._arguments = _arguments;
@@ -36,7 +37,7 @@ export default class Subscribe {
    * @param {String} event The given event
    */
   async go(event) {
-    let spinner = ora.start(`Subscribing to event: \`${event}\``);
+    const spinner = ora.start(`Subscribing to event: \`${event}\``);
     if (!fs.existsSync(`${homedir}/.omg.json`)) {
       throw {
         spinner,

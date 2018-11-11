@@ -4,13 +4,14 @@ const validateLifecycle = require('../schema/schema').lifecycle;
  * Describes a lifecycle used by a {@link Microservice}.
  */
 export default class Lifecycle {
+  _startup: any;
+  _shutdown: object;
+
   /**
    * Build a {@link Lifecycle}.
    *
    * @param {Object} rawLifecycle The given raw data
    */
-  _startup: any;
-  _shutdown: object;
   constructor(rawLifecycle) {
     const isValid = validateLifecycle(rawLifecycle);
     if (!isValid.valid) {
@@ -33,7 +34,7 @@ export default class Lifecycle {
         args: '',
       };
     }
-    let result = {
+    const result = {
       command: this._startup.command[0],
       args: '',
     };

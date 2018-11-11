@@ -6,6 +6,11 @@ const validateEvent = require('../schema/schema').event;
  * Describes a general command. NOTE: this is used as an Abstract Class and should not be instantiated.
  */
 export default class Command {
+  _isAction: boolean;
+  _name: string;
+  _help: string;
+  _argumentsMap: object;
+
   /**
    * Builds a {@link Command}.
    *
@@ -13,10 +18,6 @@ export default class Command {
    * @param {Object} rawCommand The raw data
    * @param {String} actionName Name of that parent action, if null, this means that this is a root action
    */
-  _isAction: boolean;
-  _name: string;
-  _help: string;
-  _argumentsMap: object;
   constructor(name, rawCommand, actionName) {
     this._isAction = actionName === null;
     let argumentPath = name;

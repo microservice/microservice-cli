@@ -5,6 +5,9 @@ import Command from './Command';
  * Describes a event.
  */
 export default class Event extends Command {
+  _subscribe: Http;
+  _unsubscribe: Http;
+
   /**
    * Build a {@link Event}.
    *
@@ -12,8 +15,6 @@ export default class Event extends Command {
    * @param {String} actionName The name of this {@link Event}'s {@link Action}
    * @param {Object} rawEvent The raw data
    */
-  _subscribe: Http;
-  _unsubscribe: Http;
   constructor(name, actionName, rawEvent) {
     super(name, rawEvent, actionName);
     this._subscribe = new Http(name, rawEvent.http.subscribe, `actions.${actionName}.events.${name}.http.subscribe`, rawEvent.http.port);

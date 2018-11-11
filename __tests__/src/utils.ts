@@ -1,7 +1,7 @@
-const utils = require('../../src/utils');
-const Microservice = require('../../src/models/Microservice');
+import * as utils from '../../src/utils';
+import Microservice from '../../src/models/Microservice';
 
-describe('utils.js', () => {
+describe('utils.ts', () => {
   describe('setVal(val, _else)', () => {
     test('sets the value to val because it\'s given', () => {
       expect(utils.setVal(1, 3)).toBe(1);

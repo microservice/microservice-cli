@@ -1,13 +1,13 @@
-const fs = require('fs');
-const sinon = require('sinon');
-const utils = require('../../../src/utils');
-const Microservice = require('../../../src/models/Microservice');
-const Build = require('../../../src/commands/Build');
-const Exec = require('../../../src/commands/Exec');
-const Subscribe = require('../../../src/commands/Subscribe');
-const Cli = require('../../../src/cli/Cli');
+import * as fs from 'fs';
+import * as sinon from 'sinon';
+import * as utils from '../../../src/utils';
+import Microservice from '../../../src/models/Microservice';
+import Build from '../../../src/commands/Build';
+import Exec from '../../../src/commands/Exec';
+import Subscribe from '../../../src/commands/Subscribe';
+import Cli from '../../../src/cli/Cli';
 
-describe('Cli.js', () => {
+describe('Cli.ts', () => {
   let processExitStub;
   let errorStub;
 
@@ -22,11 +22,11 @@ describe('Cli.js', () => {
   });
 
   afterEach(() => {
-    process.exit.restore();
-    utils.error.restore();
-    fs.existsSync.restore();
-    fs.readFileSync.restore();
-    utils.createImageName.restore();
+    (process.exit as any).restore();
+    (utils.error as any).restore();
+    (fs.existsSync as any).restore();
+    (fs.readFileSync as any).restore();
+    (utils.createImageName as any).restore();
   });
 
   describe('constructor', () => {
@@ -38,7 +38,7 @@ describe('Cli.js', () => {
     });
 
     test('Cli is not constructed because we are not in a omg directory', () => {
-      fs.existsSync.restore();
+      (fs.existsSync as any).restore();
       sinon.stub(fs, 'existsSync').callsFake(() => false);
       new Cli();
 
@@ -58,7 +58,7 @@ describe('Cli.js', () => {
     });
 
     test('errors out because the `microservice.yml` is not valid', () => {
-      fs.readFileSync.restore();
+      (fs.readFileSync as any).restore();
       sinon.stub(fs, 'readFileSync').callsFake(() => 'foo: bar');
       const cli = new Cli();
       cli.buildMicroservice();
@@ -77,7 +77,7 @@ describe('Cli.js', () => {
     });
 
     afterEach(() => {
-      utils.log.restore();
+      (utils.log as any).restore();
     });
 
     describe('valid `microservice.yml`', () => {
@@ -114,7 +114,7 @@ describe('Cli.js', () => {
       // we need to make the return value fail the test, and we already stubbed in the layer above this
       // so we need to restore and re-wrap it, then the next layer will restore
       beforeEach(() => {
-        fs.readFileSync.restore();
+        (fs.readFileSync as any).restore();
         sinon.stub(fs, 'readFileSync').callsFake(() => {
           return 'foo: bar';
         });
@@ -172,13 +172,13 @@ describe('Cli.js', () => {
   describe('.build(options)', () => {
     let buildGoStub;
 
-   // not able to spy on constructor with sinon yet
+    // not able to spy on constructor with sinon yet
     beforeEach(() => {
       buildGoStub = sinon.stub(Build.prototype, 'go');
     });
 
     afterEach(() => {
-      Build.prototype.go.restore();
+      (Build.prototype.go as any).restore();
     });
 
     test('builds with given tag', async () => {
@@ -198,7 +198,7 @@ describe('Cli.js', () => {
     });
 
     test('errors because not tag is given and no git config is present', async () => {
-      utils.createImageName.restore();
+      (utils.createImageName as any).restore();
       sinon.stub(utils, 'createImageName').callsFake(async () => {
         throw 'error';
       });
@@ -220,8 +220,8 @@ describe('Cli.js', () => {
     });
 
     afterEach(() => {
-      Exec.prototype.go.restore();
-      utils.exec.restore();
+      (Exec.prototype.go as any).restore();
+      (utils.exec as any).restore();
     });
 
     test('does not execute action because arguments are not given', async () => {
@@ -263,7 +263,7 @@ describe('Cli.js', () => {
     });
 
     afterEach(() => {
-      Subscribe.prototype.go.restore();
+      (Subscribe.prototype.go as any).restore();
     });
 
     test('subscribes to the event', async () => {
