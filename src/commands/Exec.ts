@@ -139,7 +139,6 @@ export default class Exec {
       } else if (this._action.events !== null) {
         await this._startServer();
         this._omgJsonFileHandler();
-        process.stdout.write('  Run `omg subscribe `name_of_event`` to subscribe to an event');
       }
     } catch (e) {
       throw { // TODO kill server here too

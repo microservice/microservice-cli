@@ -144,13 +144,15 @@ export default class Cli {
   /**
    * Will read the `microservice.yml` and `Dockerfile` and subscribe to the with the given event..
    *
+   * @param {String} action The givena action
    * @param {String} event The given event
    * @param {Object} options The given object holding the arguments
    */
-  async subscribe(event, options) {
+  async subscribe(action: string, event: string, options: any) {
     try {
       const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
       this._subscribe = new Subscribe(this._microservice, argsObj);
+      await this.exec(action, {args: [], envs: options.envs});
       await this._subscribe.go(event);
     } catch (error) {
       if (error.spinner) {

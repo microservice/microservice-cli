@@ -38,6 +38,7 @@ export default class Subscribe {
    */
   async go(event) {
     const spinner = ora.start(`Subscribing to event: \`${event}\``);
+    await timer(3000);
     if (!fs.existsSync(`${homedir}/.omg.json`)) {
       throw {
         spinner,
@@ -139,3 +140,5 @@ export default class Subscribe {
     });
   }
 }
+
+const timer = (ms) => new Promise((res) => setTimeout(res, ms));

@@ -36,13 +36,14 @@ program
   });
 
 program
-  .command('subscribe <event>')
+  .command('subscribe <action> <event>')
   .usage(' ')
   .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender(), [])
+  .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender(), [])
   .description('Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
-  .action(async (event, options) => {
+  .action(async (action, event, options) => {
     cli.buildMicroservice();
-    await cli.subscribe(event, options);
+    await cli.subscribe(action, event, options);
   });
 
 program
