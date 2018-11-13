@@ -78,4 +78,19 @@ export default class Exec {
       this._arguments[argument.name] = utils.typeCast[argument.type](this._arguments[argument.name]);
     }
   }
+
+  /**
+   * Formats an object of environment variables to a `-e KEY='val'` style.
+   *
+   * @return {String} The formatted string
+   * @private
+   */
+  protected formatEnvironmentVariables() {
+    let result = '';
+    const keys = Object.keys(this.environmentVariables);
+    for (let i = 0; i < keys.length; i += 1) {
+      result += ` -e ${keys[i]}="${this.environmentVariables[keys[i]]}"`;
+    }
+    return result;
+  }
 }
