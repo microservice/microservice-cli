@@ -153,7 +153,7 @@ export default class Cli {
       const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
       this._subscribe = new Subscribe(this._microservice, argsObj);
       await this.exec(action, {args: [], envs: options.envs});
-      await this._subscribe.go(event);
+      await this._subscribe.go(action, event);
     } catch (error) {
       if (error.spinner) {
         if (error.message.includes('Unable to find image')) {

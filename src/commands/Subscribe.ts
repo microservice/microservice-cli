@@ -34,9 +34,10 @@ export default class Subscribe {
   /**
    * Subscribes you to the given event.
    *
+   * @param {String} action The given action
    * @param {String} event The given event
    */
-  async go(event) {
+  async go(action: string, event:string) {
     const spinner = ora.start(`Subscribing to event: \`${event}\``);
     await timer(3000);
     if (!fs.existsSync(`${homedir}/.omg.json`)) {
@@ -53,7 +54,7 @@ export default class Subscribe {
         message: `Failed subscribing to event: \`${event}\`. You must run \`omg exec \`action_for_event\`\` before trying to subscribe to an event`,
       };
     }
-    this._action = this._microservice.getAction(this._omgJson[process.cwd()].events[event].action);
+    this._action = this._microservice.getAction(action);
     this._event = this._action.getEvent(event);
     if (!this._event.areRequiredArgumentsSupplied(this._arguments)) {
       throw {

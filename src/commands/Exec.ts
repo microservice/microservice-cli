@@ -161,14 +161,8 @@ export default class Exec {
 
     data[process.cwd()] = {
       container_id: this._dockerServiceId,
-      events: {},
       ports: {},
     };
-    for (let i = 0; i < this._action.events.length; i += 1) {
-      data[process.cwd()].events[this._action.events[i].name] = {
-        action: this._action.name,
-      };
-    }
 
     const neededPorts = Object.keys(this._portMap);
     for (let i = 0; i < neededPorts.length; i += 1) {
