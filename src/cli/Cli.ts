@@ -144,7 +144,7 @@ export default class Cli {
   /**
    * Will read the `microservice.yml` and `Dockerfile` and subscribe to the with the given event..
    *
-   * @param {String} action The givena action
+   * @param {String} action The given action
    * @param {String} event The given event
    * @param {Object} options The given object holding the arguments
    */

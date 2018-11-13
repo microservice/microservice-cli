@@ -40,12 +40,6 @@ export default class Subscribe {
   async go(action: string, event:string) {
     const spinner = ora.start(`Subscribing to event: \`${event}\``);
     await timer(3000);
-    if (!fs.existsSync(`${homedir}/.omg.json`)) {
-      throw {
-        spinner,
-        message: `Failed subscribing to event: \`${event}\`. You must run \`omg exec \`action_for_event\`\` before trying to subscribe to an event`,
-      };
-    }
 
     this._omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
     if (!this._omgJson[process.cwd()]) {
