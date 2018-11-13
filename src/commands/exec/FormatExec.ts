@@ -5,26 +5,23 @@ import * as utils from '../../utils';
 import * as verify from '../../verify';
 
 /**
- *
+ * Represents a docker exec execution of an {@link Action}.
  */
 export default class FormatExec extends Exec {
   /**
-   * TODO
-   * @param {string} dockerImage
-   * @param {Microservice} microservice
-   * @param {Object} _arguments
-   * @param {Object} environmentVariables
+   * Builds a {@link FormatExec}.
+   *
+   * @param {String} dockerImage The given docker image
+   * @param {Microservice} microservice The given {@link Microservice}
+   * @param {Object} _arguments The given argument map
+   * @param {Object} environmentVariables the given environment  map
    */
   constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     super(dockerImage, microservice, _arguments, environmentVariables);
   }
 
-  /**
-   * TODO
-   * @param {string} action
-   * @return {Promise<void>}
-   */
-  async exec(action: string) {
+  /** @inheritdoc */
+  public async exec(action: string) {
     this.action = this.microservice.getAction(action);
     const spinner = ora.start(`Running action: \`${this.action.name}\``);
 

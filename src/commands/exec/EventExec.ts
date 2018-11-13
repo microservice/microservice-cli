@@ -6,7 +6,7 @@ import ora from '../../ora';
 const homedir = require('os').homedir();
 
 /**
- * Used to represent an execution of an {@link Event} {@link Action}
+ * Represents a execution of an {@link Action}'s {@link Event}.
  */
 export default class EventExec extends Exec {
   private portMap: any;
@@ -14,7 +14,7 @@ export default class EventExec extends Exec {
   /**
    * Builds an {@link EventExec}.
    *
-   * @param {string} dockerImage The given docker image
+   * @param {String} dockerImage The given docker image
    * @param {Microservice} microservice The given {@link Microservice}
    * @param {Object} _arguments The given argument map
    * @param {Object} environmentVariables The given environment map

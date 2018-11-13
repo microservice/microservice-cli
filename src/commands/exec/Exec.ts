@@ -3,7 +3,7 @@ import Action from '../../models/Action';
 import Microservice from '../../models/Microservice';
 
 /**
- *
+ * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
  */
 export default abstract class Exec {
   protected dockerImage: string;
@@ -14,11 +14,12 @@ export default abstract class Exec {
   protected action: Action;
 
   /**
+   * Use to help build a {@link FormatExec}, {@link HttpExec}, or an {@link EventExec}.
    *
-   * @param {string} dockerImage
-   * @param {Microservice} microservice
-   * @param {Object} _arguments
-   * @param {Object} environmentVariables
+   * @param {String} dockerImage The given docker image
+   * @param {Microservice} microservice The given {@link Microservice}
+   * @param {Object} _arguments The argument map
+   * @param {Object} environmentVariables The environment map
    */
   protected constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     this.dockerImage = dockerImage;
@@ -83,7 +84,6 @@ export default abstract class Exec {
    * Formats an object of environment variables to a `-e KEY='val'` style.
    *
    * @return {String} The formatted string
-   * @private
    */
   protected formatEnvironmentVariables(): string {
     let result = '';

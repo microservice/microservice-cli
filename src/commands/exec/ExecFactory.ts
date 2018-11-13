@@ -17,7 +17,7 @@ export default class ExecFactory {
   /**
    * Build an {@link ExecFactory}.
    *
-   * @param {string} dockerImage The given docker image
+   * @param {String} dockerImage The given docker image
    * @param {Microservice} microservice The given {@link Microservice}
    * @param {Object} _arguments The given argument map
    * @param {Object} environmentVariables the given environment  map

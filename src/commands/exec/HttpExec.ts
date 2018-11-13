@@ -7,30 +7,25 @@ import * as utils from '../../utils';
 import * as verify from '../../verify';
 
 /**
- * TODO
+ * Represents an http execution of an {@link Action}.
  */
 export default class HttpExec extends Exec {
   private portMap: any;
 
   /**
-   * TODO
+   * Builds a {@link HttpExec}.
    *
-   * @param {string} dockerImage
-   * @param {Microservice} microservice
-   * @param {Object} _arguments
-   * @param {Object} environmentVariables
+   * @param {String} dockerImage The given docker image
+   * @param {Microservice} microservice The given {@link Microservice}
+   * @param {Object} _arguments The given argument map
+   * @param {Object} environmentVariables the given environment  map
    */
   constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     super(dockerImage, microservice, _arguments, environmentVariables);
   }
 
-  /**
-   * TODO
-   *
-   * @param action
-   * @return {Promise<void>}
-   */
-  async exec(action) {
+  /** @inheritdoc */
+  public async exec(action) {
     this.action = this.microservice.getAction(action);
 
     await this.startServer();
@@ -43,10 +38,8 @@ export default class HttpExec extends Exec {
 
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
-   *
-   * @private
    */
-  private async startServer() {
+  private async startServer(): Promise<void> {
     this.portMap = {};
     const spinner = ora.start('Starting Docker container');
     const neededPorts = utils.getNeededPorts(this.microservice);
@@ -59,7 +52,6 @@ export default class HttpExec extends Exec {
     }
 
     let portString = '';
-
     for (let i = 0; i < neededPorts.length; i += 1) {
       this.portMap[neededPorts[i]] = openPorts[i];
       portString += `-p ${openPorts[i]}:${neededPorts[i]} `;
@@ -75,9 +67,9 @@ export default class HttpExec extends Exec {
    * Run this {@link Exec}'s {@link Action} that interfaces via HTTP.
    *
    * @param {Number} port The given sever started in Docker
-   * @return {Promise<Object>} The response of the Http request
+   * @return {Promise<String>} The response of the Http request
    */
-  protected async httpCommand(port) {
+  private async httpCommand(port: number): Promise<string> {
     let data;
     const httpData = this.formatHttp(port);
     try {
@@ -121,7 +113,7 @@ export default class HttpExec extends Exec {
    * @param {Number} port The given server info
    * @return {{url: String, jsonData: Object}} The url and data
    */
-  private formatHttp(port) {
+  private formatHttp(port: number): any {
     const jsonData = {};
     const queryParams = {};
     let url = `http://localhost:${port}${this.action.http.path}`;
@@ -151,7 +143,7 @@ export default class HttpExec extends Exec {
   /**
    * Stops a running Docker service.
    */
-  async serverKill() {
+  async serverKill(): Promise<void> {
     const spinner = ora.start(`Stopping Docker container: ${this.dockerServiceId.substring(0, 12)}`);
     await utils.exec(`docker kill ${this.dockerServiceId.substring(0, 12)}`);
     spinner.succeed(`Stopped Docker container: ${this.dockerServiceId.substring(0, 12)}`);
