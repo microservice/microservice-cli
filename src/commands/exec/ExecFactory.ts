@@ -1,26 +1,26 @@
-import Exec from "./Exec";
-import Microservice from "../../models/Microservice";
-import FormatExec from "./FormatExec";
-import HttpExec from "./HttpExec";
-import EventExec from "./EventExec";
-import Action from "../../models/Action";
+import Exec from './Exec';
+import Microservice from '../../models/Microservice';
+import FormatExec from './FormatExec';
+import HttpExec from './HttpExec';
+import EventExec from './EventExec';
+import Action from '../../models/Action';
 
 /**
- * TODO
+ * Represents a factory to build an {@link Exec}.
  */
 export default class ExecFactory {
-  private dockerImage: string;
-  private microservice: Microservice;
-  private _arguments: any;
-  private environmentVariables: any;
+  private readonly dockerImage: string;
+  private readonly microservice: Microservice;
+  private readonly _arguments: any;
+  private readonly environmentVariables: any;
 
   /**
-   * TODO.
+   * Build an {@link ExecFactory}.
    *
-   * @param {string} dockerImage
-   * @param {Microservice} microservice
-   * @param {Object} _arguments
-   * @param {Object} environmentVariables
+   * @param {string} dockerImage The given docker image
+   * @param {Microservice} microservice The given {@link Microservice}
+   * @param {Object} _arguments The given argument map
+   * @param {Object} environmentVariables the given environment  map
    */
   constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     this.dockerImage = dockerImage;
@@ -30,10 +30,10 @@ export default class ExecFactory {
   }
 
   /**
-   * TODO
+   * Builds a {@link FormatExec}, {@link HttpExec}, or {@link EventExec} based on the given {@link Action}.
    *
-   * @param {Action} action
-   * @return {Exec}
+   * @param {Action} action The given {@link Action}
+   * @return {Exec} The {@link FormatExec}, {@link HttpExec}, or {@link EventExec}
    */
   getExec(action: Action): Exec {
     if (action.format !== null) {

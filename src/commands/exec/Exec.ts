@@ -1,6 +1,6 @@
+import * as utils from '../../utils';
 import Action from '../../models/Action';
 import Microservice from '../../models/Microservice';
-import * as utils from '../../utils';
 
 /**
  *
@@ -94,5 +94,10 @@ export default abstract class Exec {
     return result;
   }
 
-  public abstract async exec(action): Promise<void>;
+  /**
+   * Executes the given {@link Action}.
+   *
+   * @param {String} action
+   */
+  public abstract async exec(action: string): Promise<void>;
 }

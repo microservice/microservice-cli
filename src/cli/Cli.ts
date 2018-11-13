@@ -6,8 +6,8 @@ import ora from '../ora';
 import Microservice from '../models/Microservice';
 import Build from '../commands/Build';
 import Subscribe from '../commands/Subscribe';
-import Exec from "../commands/exec/Exec";
-import ExecFactory from "../commands/exec/ExecFactory";
+import Exec from '../commands/exec/Exec';
+import ExecFactory from '../commands/exec/ExecFactory';
 const homedir = require('os').homedir();
 
 /**

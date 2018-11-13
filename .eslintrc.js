@@ -10,6 +10,8 @@ module.exports = {
   rules: {
     'max-len': 0,
     'no-throw-literal': 0,
+    'no-undef': 0,
+    'no-unused-vars': 0,
     'quote-props': [
       2,
       'as-needed',
