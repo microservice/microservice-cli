@@ -5,12 +5,9 @@ import * as utils from '../utils';
 import ora from '../ora';
 import Microservice from '../models/Microservice';
 import Build from '../commands/Build';
-// import Exec from '../commands/Exec';
-import FormatExec from '../commands/exec/FormatExec';
-import HttpExec from '../commands/exec/HttpExec';
-import EventExec from '../commands/exec/EventExec'
 import Subscribe from '../commands/Subscribe';
-import Action from "../models/Action";
+import Exec from "../commands/exec/Exec";
+import ExecFactory from "../commands/exec/ExecFactory";
 const homedir = require('os').homedir();
 
 /**
@@ -18,10 +15,7 @@ const homedir = require('os').homedir();
  */
 export default class Cli {
   _microservice: Microservice;
-  // _exec: Exec;
-  _formatExec: FormatExec;
-  _httpExec: HttpExec;
-  _eventExec: EventExec;
+  _exec: Exec;
   _subscribe: Subscribe;
 
   /**
@@ -33,9 +27,7 @@ export default class Cli {
       process.exit(1);
     }
     this._microservice = null;
-    // this._exec = null;
-    this._formatExec = null;
-    this._httpExec = null;
+    this._exec = null;
     this._subscribe = null;
   }
 
@@ -112,7 +104,6 @@ export default class Cli {
    * @param {Object} options The given object holding the command, arguments, and environment variables
    */
   async exec(action, options) {
-
     const image = options.image;
     if (!(options.args) || !(options.envs)) {
       utils.error('Failed to parse command, run `omg exec --help` for more information.');
@@ -133,26 +124,12 @@ export default class Cli {
     }
 
     try {
-      const _action: Action = this._microservice.getAction(action);
+      const _action = this._microservice.getAction(action);
       const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
       const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
 
-      if (_action.format !== null) {
-        this._formatExec = new FormatExec(options.image, this._microservice, argsObj, envObj);
-        await this._formatExec.exec(action);
-      } else if (_action.http !== null) {
-        this._httpExec = new HttpExec(options.image, this._microservice, argsObj, envObj);
-        await this._httpExec.exec(action);
-      } else if (_action.events !== null) {
-        this._eventExec = new EventExec(options.image, this._microservice, argsObj, envObj);
-        await this._eventExec.exec(action);
-      }
-
-
-
-
-      // this._exec = new Exec(`${options.image}`, this._microservice, argsObj, envObj);
-      // await this._exec.go(action);
+      this._exec = new ExecFactory(options.image, this._microservice, argsObj, envObj).getExec(_action);
+      await this._exec.exec(action);
     } catch (error) {
       if (error.spinner) {
         if (error.message.includes('Unable to find image')) {

@@ -8,6 +8,13 @@ import * as verify from '../../verify';
  *
  */
 export default class FormatExec extends Exec {
+  /**
+   * TODO
+   * @param {string} dockerImage
+   * @param {Microservice} microservice
+   * @param {Object} _arguments
+   * @param {Object} environmentVariables
+   */
   constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     super(dockerImage, microservice, _arguments, environmentVariables);
   }

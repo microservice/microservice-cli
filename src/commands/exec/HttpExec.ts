@@ -1,17 +1,35 @@
 import * as rp from 'request-promise';
 import * as querystring from 'querystring';
-import Microservice from "../../models/Microservice";
-import Exec from "./Exec";
+import Microservice from '../../models/Microservice';
+import Exec from './Exec';
 import ora from '../../ora';
 import * as utils from '../../utils';
 import * as verify from '../../verify';
 
+/**
+ * TODO
+ */
 export default class HttpExec extends Exec {
   private portMap: any;
+
+  /**
+   * TODO
+   *
+   * @param {string} dockerImage
+   * @param {Microservice} microservice
+   * @param {Object} _arguments
+   * @param {Object} environmentVariables
+   */
   constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     super(dockerImage, microservice, _arguments, environmentVariables);
   }
 
+  /**
+   * TODO
+   *
+   * @param action
+   * @return {Promise<void>}
+   */
   async exec(action) {
     this.action = this.microservice.getAction(action);
 
@@ -138,5 +156,4 @@ export default class HttpExec extends Exec {
     await utils.exec(`docker kill ${this.dockerServiceId.substring(0, 12)}`);
     spinner.succeed(`Stopped Docker container: ${this.dockerServiceId.substring(0, 12)}`);
   }
-
 }

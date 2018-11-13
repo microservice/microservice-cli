@@ -1,11 +1,11 @@
-import * as utils from '../../utils';
-import Microservice from '../../models/Microservice';
 import Action from '../../models/Action';
+import Microservice from '../../models/Microservice';
+import * as utils from '../../utils';
 
 /**
  *
  */
-export default class Exec {
+export default abstract class Exec {
   protected dockerImage: string;
   protected microservice: Microservice;
   protected _arguments: any;
@@ -20,7 +20,7 @@ export default class Exec {
    * @param {Object} _arguments
    * @param {Object} environmentVariables
    */
-  constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
+  protected constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     this.dockerImage = dockerImage;
     this.microservice = microservice;
     this._arguments = _arguments;
@@ -32,7 +32,7 @@ export default class Exec {
   /**
    * Sets a {@link Action}'s default arguments.
    */
-  protected setDefaultArguments() {
+  protected setDefaultArguments(): void {
     for (let i = 0; i < this.action.arguments.length; i += 1) {
       const argument = this.action.arguments[i];
       if (!this._arguments[argument.name]) {
@@ -50,7 +50,7 @@ export default class Exec {
   /**
    * Sets a {@link Microservice}'s default {@link EnvironmentVariable}s and variables from the system environment variables.
    */
-  protected setDefaultEnvironmentVariables() {
+  protected setDefaultEnvironmentVariables(): void {
     for (let i = 0; i < this.microservice.environmentVariables.length; i += 1) {
       const environmentVariable = this.microservice.environmentVariables[i];
       if (!this.environmentVariables[environmentVariable.name]) {
@@ -71,7 +71,7 @@ export default class Exec {
   /**
    * Cast the types of the arguments. Everything comes in as a string so it's important to convert to given type.
    */
-  protected castTypes() {
+  protected castTypes(): void {
     const argumentList = Object.keys(this._arguments);
     for (let i = 0; i < argumentList.length; i += 1) {
       const argument = this.action.getArgument(argumentList[i]);
@@ -85,7 +85,7 @@ export default class Exec {
    * @return {String} The formatted string
    * @private
    */
-  protected formatEnvironmentVariables() {
+  protected formatEnvironmentVariables(): string {
     let result = '';
     const keys = Object.keys(this.environmentVariables);
     for (let i = 0; i < keys.length; i += 1) {
@@ -93,4 +93,6 @@ export default class Exec {
     }
     return result;
   }
+
+  public abstract async exec(action): Promise<void>;
 }
