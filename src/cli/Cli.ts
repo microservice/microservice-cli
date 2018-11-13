@@ -8,6 +8,7 @@ import Build from '../commands/Build';
 // import Exec from '../commands/Exec';
 import FormatExec from '../commands/exec/FormatExec';
 import HttpExec from '../commands/exec/HttpExec';
+import EventExec from '../commands/exec/EventExec'
 import Subscribe from '../commands/Subscribe';
 import Action from "../models/Action";
 const homedir = require('os').homedir();
@@ -20,6 +21,7 @@ export default class Cli {
   // _exec: Exec;
   _formatExec: FormatExec;
   _httpExec: HttpExec;
+  _eventExec: EventExec;
   _subscribe: Subscribe;
 
   /**
@@ -141,9 +143,9 @@ export default class Cli {
       } else if (_action.http !== null) {
         this._httpExec = new HttpExec(options.image, this._microservice, argsObj, envObj);
         await this._httpExec.exec(action);
-
       } else if (_action.events !== null) {
-
+        this._eventExec = new EventExec(options.image, this._microservice, argsObj, envObj);
+        await this._eventExec.exec(action);
       }
 
 
