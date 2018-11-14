@@ -18,7 +18,7 @@ const ajv = new Ajv({allErrors: true});
  * @param {Object} validator The given validation function
  * @return {Object} Stringified Json of the results
  */
-function validate(json, validator) {
+function validate(json: any, validator: any): any {
   const valid = validator(json);
   if (valid) {
     return {
@@ -37,13 +37,13 @@ function validate(json, validator) {
 }
 
 module.exports = {
-  microservice: (o) => validate(o, ajv.compile(microserviceSchema)),
-  action: (o) => validate(o, ajv.compile(actionSchema)),
-  event: (o) => validate(o, ajv.compile(eventSchema)),
-  environmentVariable: (o) => validate(o, ajv.compile(environmentVariableSchema)),
-  http: (o) => validate(o, ajv.compile(httpSchema)),
-  format: (o) => validate(o, ajv.compile(formatSchema)),
-  argument: (o) => validate(o, ajv.compile(argumentSchema)),
-  volume: (o) => validate(o, ajv.compile(volumeSchema)),
-  lifecycle: (o) => validate(o, ajv.compile(lifecycleSchema)),
+  microservice: (o: any) => validate(o, ajv.compile(microserviceSchema)),
+  action: (o: any) => validate(o, ajv.compile(actionSchema)),
+  event: (o: any) => validate(o, ajv.compile(eventSchema)),
+  environmentVariable: (o: any) => validate(o, ajv.compile(environmentVariableSchema)),
+  http: (o: any) => validate(o, ajv.compile(httpSchema)),
+  format: (o: any) => validate(o, ajv.compile(formatSchema)),
+  argument: (o: any) => validate(o, ajv.compile(argumentSchema)),
+  volume: (o: any) => validate(o, ajv.compile(volumeSchema)),
+  lifecycle: (o: any) => validate(o, ajv.compile(lifecycleSchema)),
 };

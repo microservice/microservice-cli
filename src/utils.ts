@@ -1,6 +1,7 @@
 import * as _ from 'underscore';
 import * as $ from 'shelljs';
 import * as net from 'http';
+import Microservice from "./models/Microservice";
 
 /**
  * Used to set values in the constructors of the microservice classes.
@@ -9,7 +10,7 @@ import * as net from 'http';
  * @param {*} _else The value to set if val if not defined
  * @return {*} The value
  */
-export function setVal(val, _else) {
+export function setVal(val: any, _else: any): any {
   if (_.isUndefined(val)) {
     return _else;
   }
@@ -22,7 +23,7 @@ export function setVal(val, _else) {
  * @param {Microservice} microservice The given {@link Microservice}
  * @return {Array<Integer>} The ports that need to be opened for the given {@link Microservice}
  */
-export function getNeededPorts(microservice) {
+export function getNeededPorts(microservice: Microservice): number[] {
   const ports = [];
   for (let i = 0; i < microservice.actions.length; i += 1) {
     const action = microservice.actions[i];
@@ -50,7 +51,7 @@ export function getNeededPorts(microservice) {
  *
  * @return {Promise<String>} The image name
  */
-export async function createImageName() {
+export async function createImageName(): Promise<string> {
   const data = await exec('git remote -v');
   return `omg/${data.match(/git@github\.com:(\w+\/[\w|-]+).git/)[1].toLowerCase()}`;
 }
@@ -62,7 +63,7 @@ export async function createImageName() {
  * @param {String} errorMessage The given message to used when unable to parse
  * @return {Object} Key value of the list
  */
-export function parse(list, errorMessage) {
+export function parse(list: string[], errorMessage: string): any {
   const dictionary = {};
   for (let i = 0; i < list.length; i += 1) {
     const split = list[i].split(/=(.+)/);
@@ -82,7 +83,7 @@ export function parse(list, errorMessage) {
  * @param {String} command The command to run
  * @return {Promise<String>} The stdout if resolved, otherwise stderror
  */
-export function exec(command): Promise<string> {
+export function exec(command: string): Promise<string> {
   return new Promise(function(resolve, reject) {
     $.exec(command, {silent: true}, function(code, stdout, stderr) {
       if (code !== 0) {
@@ -99,7 +100,7 @@ export function exec(command): Promise<string> {
  *
  * @param {String} string The given sting to log
  */
-export function log(string) {
+export function log(string: string): void {
   process.stdout.write(string);
 }
 
@@ -108,36 +109,36 @@ export function log(string) {
  *
  * @param {String} string The given string to log
  */
-export function error(string) {
+export function error(string: string): void {
   process.stderr.write(string);
 }
 
 export const typeCast = {
-  int: (int) => parseInt(int),
-  float: (float) => parseFloat(float),
-  string: (string) => string,
-  uuid: (uuid) => uuid,
-  list: (list) => JSON.parse(list),
-  map: (map) => JSON.parse(map),
-  boolean: (boolean) => boolean === 'true',
-  path: (path) => path,
-  any: (any) => any,
+  int: (int: string): number => parseInt(int),
+  float: (float: string): number => parseFloat(float),
+  string: (string: string): string => string,
+  uuid: (uuid: string): string => uuid, // TODO make uuid type
+  list: (list: any): any[] => JSON.parse(list),
+  map: (map: string): any => JSON.parse(map), // TODO make a type here
+  boolean: (boolean: string): boolean => boolean === 'true',
+  path: (path: string): string => path, // TODO type here
+  any: (any: any): any => any,
 };
 
 export const dataTypes = {
-  int: (int) => {
+  int: (int: string): boolean => {
     return int.match(/^[-+]?\d+$/) !== null;
   },
-  float: (float) => {
+  float: (float: string): boolean => {
     return !isNaN(parseFloat(float)) && parseFloat(float).toString().indexOf('.') !== -1;
   },
-  string: (string) => {
+  string: (string: string): boolean => {
     return true;
   },
-  uuid: (uuid) => {
+  uuid: (uuid: string): boolean => {
     return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/) !== null;
   },
-  list: (list) => {
+  list: (list: string): boolean => {
     try {
       return (
         (Array.isArray(list) && typeof list === 'object')
@@ -147,7 +148,7 @@ export const dataTypes = {
       return false;
     }
   },
-  map: (map) => {
+  map: (map: string): boolean => {
     try {
       return (
         (!Array.isArray(map) && typeof map === 'object')
@@ -157,10 +158,10 @@ export const dataTypes = {
       return false;
     }
   },
-  boolean: (boolean) => {
+  boolean: (boolean: string): boolean => {
     return boolean === 'false' || boolean === 'true';
   },
-  path: (path) => {
+  path: (path: string): boolean => {
     try {
       JSON.parse(path);
       return false;
@@ -172,7 +173,7 @@ export const dataTypes = {
       return typeof path === 'string';
     }
   },
-  any: (any) => {
+  any: (any: string): boolean => {
     return true;
   },
 };
@@ -182,9 +183,9 @@ export const dataTypes = {
  *
  * @return {Promise<Number>} The open port
  */
-export function getOpenPort() {
+export function getOpenPort(): Promise<number> {
   return new Promise((resolve) => {
-    _getPort((data) => {
+    getPort((data) => {
       resolve(data);
     });
   });
@@ -194,9 +195,8 @@ export function getOpenPort() {
    * the callback with the port.
    *
    * @param {Function} cb The given callback
-   * @private
    */
-  function _getPort(cb) {
+  function getPort(cb: Function): void {
     const server = net.createServer();
     const port = Math.floor(Math.random() * 15000) + 2000; // port range 2000 to 17000
     server.listen(port, () => {
@@ -206,7 +206,7 @@ export function getOpenPort() {
       server.close();
     });
     server.on('error', () => {
-      _getPort(cb);
+      getPort(cb);
     });
   }
 }
@@ -217,7 +217,7 @@ export function getOpenPort() {
  * @param {Array} xs
  * @return {function(*=): (*|Array)}
  */
-export function appender(xs) {
+export function appender(xs: any[]): Function {
   xs = xs || [];
   return function(x) {
     xs.push(x);
