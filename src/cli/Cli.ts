@@ -14,9 +14,9 @@ const homedir = require('os').homedir();
  * Describes the cli.
  */
 export default class Cli {
-  _microservice: Microservice;
-  _exec: Exec;
-  _subscribe: Subscribe;
+  private microservice: Microservice = null;
+  private _exec: Exec = null;
+  private _subscribe: Subscribe = null;
 
   /**
    * Build an {@link Cli}.
@@ -26,19 +26,16 @@ export default class Cli {
       utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
       process.exit(1);
     }
-    this._microservice = null;
-    this._exec = null;
-    this._subscribe = null;
   }
 
   /**
    * Builds a {@link Microservice} based ton the `microservice.yml` file. If the build throws an error the user
    * will be directed to run `omg validate`.
    */
-  buildMicroservice() {
+  buildMicroservice(): void {
     try {
       const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
-      this._microservice = new Microservice(json);
+      this.microservice = new Microservice(json);
     } catch (e) {
       utils.error('Unable to build microservice. Run `omg validate` for more details');
       process.exit(1);
@@ -52,7 +49,7 @@ export default class Cli {
    * @param {Object} options The given options (json, silent, or text)
    * @return {String} The string to be printed to the console
    */
-  static _processValidateOutput(data, options) {
+  private static processValidateOutput(data: any, options: any): string {
     if (options.json) {
       return JSON.stringify(data, null, 2);
     } else if (options.silent) {
@@ -71,14 +68,14 @@ export default class Cli {
    *
    * @param {Object} options The given options (json, silent, or text)
    */
-  static validate(options) {
+  static validate(options: any): void {
     const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
     try {
       const m = new Microservice(json);
-      utils.log(Cli._processValidateOutput(m.rawData, options));
+      utils.log(Cli.processValidateOutput(m.rawData, options));
       process.exit(0);
     } catch (e) {
-      utils.error(Cli._processValidateOutput(e, options));
+      utils.error(Cli.processValidateOutput(e, options));
       process.exit(1);
     }
   }
@@ -88,7 +85,7 @@ export default class Cli {
    *
    * @param {Object} options The given name
    */
-  static async build(options) {
+  static async build(options: any): Promise<void> {
     try {
       await new Build(options.tag || await utils.createImageName()).go();
     } catch (e) {
@@ -103,7 +100,7 @@ export default class Cli {
    * @param {String} action The command to run
    * @param {Object} options The given object holding the command, arguments, and environment variables
    */
-  async exec(action, options) {
+  async exec(action: string, options: any): Promise<void> {
     const image = options.image;
     if (!(options.args) || !(options.envs)) {
       utils.error('Failed to parse command, run `omg exec --help` for more information.');
@@ -124,11 +121,11 @@ export default class Cli {
     }
 
     try {
-      const _action = this._microservice.getAction(action);
+      const _action = this.microservice.getAction(action);
       const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
       const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
 
-      this._exec = new ExecFactory(options.image, this._microservice, argsObj, envObj).getExec(_action);
+      this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
       await this._exec.exec(action);
     } catch (error) {
       if (error.spinner) {
@@ -154,7 +151,7 @@ export default class Cli {
   async subscribe(action: string, event: string, options: any) {
     try {
       const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
-      this._subscribe = new Subscribe(this._microservice, argsObj);
+      this._subscribe = new Subscribe(this.microservice, argsObj);
       await this.exec(action, {args: [], envs: options.envs});
       await this._subscribe.go(action, event);
     } catch (error) {
@@ -174,7 +171,7 @@ export default class Cli {
   /**
    * Kills a docker process that is associated with the microservice.
    */
-  static async shutdown() {
+  static async shutdown(): Promise<void> {
     const spinner = ora.start('Shutting down microservice');
     const infoMessage = 'Microservice not shutdown because it was not running';
     if (!fs.existsSync(`${homedir}/.omg.json`)) {

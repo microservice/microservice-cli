@@ -4,9 +4,9 @@ const validateHttp = require('../schema/schema').http;
  * Describes an http setup.
  */
 export default class Http {
-  _method: string;
-  _port: number;
-  _path: string;
+  private readonly _method: string;
+  private readonly _port: number;
+  private readonly _path: string;
 
   /**
    * Builds an {@link Http} setup.
@@ -16,7 +16,7 @@ export default class Http {
    * @param {String} pathToHttp Path in the `microservice.yml` file to this {@link Http}
    * @param {Integer} [port] If no port given on rawHttp, this port will be used
    */
-  constructor(commandName, rawHttp, pathToHttp, port=null) {
+  constructor(commandName: string, rawHttp: any, pathToHttp: string, port:number=null) {
     if (!rawHttp.port && port) {
       rawHttp.port = port;
     }
@@ -35,7 +35,7 @@ export default class Http {
    *
    * @return {String} The method
    */
-  get method() {
+  public get method(): string {
     return this._method;
   }
 
@@ -44,7 +44,7 @@ export default class Http {
    *
    * @return {Integer} The port
    */
-  get port() {
+  public get port(): number {
     return this._port;
   }
 
@@ -53,7 +53,7 @@ export default class Http {
    *
    * @return {String} The endpoint
    */
-  get path() {
+  public get path(): string {
     return this._path;
   }
 }

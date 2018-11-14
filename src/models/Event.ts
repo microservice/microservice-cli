@@ -5,8 +5,8 @@ import Command from './Command';
  * Describes a event.
  */
 export default class Event extends Command {
-  _subscribe: Http;
-  _unsubscribe: Http;
+  private readonly _subscribe: Http;
+  private readonly _unsubscribe: Http;
 
   /**
    * Build a {@link Event}.
@@ -15,13 +15,13 @@ export default class Event extends Command {
    * @param {String} actionName The name of this {@link Event}'s {@link Action}
    * @param {Object} rawEvent The raw data
    */
-  constructor(name, actionName, rawEvent) {
+  constructor(name: string, actionName: string, rawEvent: any) {
     super(name, rawEvent, actionName);
     this._subscribe = new Http(name, rawEvent.http.subscribe, `actions.${actionName}.events.${name}.http.subscribe`, rawEvent.http.port);
     this._unsubscribe = ((rawEvent.http.unsubscribe) ? new Http(name, rawEvent.http.unsubscribe, `actions.${actionName}.events.${name}.http.unsubscribe`, rawEvent.http.port) : null);
-    this._checkHttpArguments(this._subscribe);
+    this.checkHttpArguments(this._subscribe);
     if (this._unsubscribe !== null) {
-      this._checkHttpArguments(this._unsubscribe);
+      this.checkHttpArguments(this._unsubscribe);
     }
   }
 
@@ -30,7 +30,7 @@ export default class Event extends Command {
    *
    * @return {Http} The {@link Http} service
    */
-  get subscribe() {
+  public get subscribe(): Http {
     return this._subscribe;
   }
 
@@ -39,7 +39,7 @@ export default class Event extends Command {
    *
    * @return {Http} The {@link Http} service
    */
-  get unsubscribe() {
+  public get unsubscribe(): Http {
     return this._unsubscribe;
   }
 }

@@ -4,7 +4,7 @@ const validateFormat = require('../schema/schema').format;
  * Describes a format.
  */
 export default class Format {
-  _command: any;
+  private readonly _command: any;
 
   /**
    * Builds a {@link Format}.
@@ -12,7 +12,7 @@ export default class Format {
    * @param {String} commandName The given command name
    * @param {Object} rawFormat The given raw data
    */
-  constructor(commandName, rawFormat) {
+  constructor(commandName: string, rawFormat: any) {
     const isValid = validateFormat(rawFormat);
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(/data/g, `commands.${commandName}.format`);
@@ -34,7 +34,7 @@ export default class Format {
    *
    * @return {String} The command for this {@link Format}
    */
-  get command() {
+  public get command(): string {
     return this._command;
   }
 }

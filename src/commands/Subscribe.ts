@@ -14,20 +14,20 @@ const uuidv4 = require('uuid/v4');
  * Describes a way to subscribe to an event.
  */
 export default class Subscribe {
-  _microservice: Microservice;
-  _arguments: object;
-  _action: Action;
-  _omgJson: object;
-  _event: Event;
-  _id: string;
+  private readonly microservice: Microservice;
+  private readonly _arguments: object;
+  private action: Action;
+  private omgJson: object;
+  private event: Event;
+  private id: string;
 
   /**
    *
    * @param {Microservice} microservice The given {@link Microservice}
    * @param {Object} _arguments The given arguments
    */
-  constructor(microservice, _arguments) {
-    this._microservice = microservice;
+  constructor(microservice: Microservice, _arguments: any) {
+    this.microservice = microservice;
     this._arguments = _arguments;
   }
 
@@ -41,35 +41,35 @@ export default class Subscribe {
     const spinner = ora.start(`Subscribing to event: \`${event}\``);
     await timer(3000);
 
-    this._omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
-    if (!this._omgJson[process.cwd()]) {
+    this.omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
+    if (!this.omgJson[process.cwd()]) {
       throw {
         spinner,
         message: `Failed subscribing to event: \`${event}\`. You must run \`omg exec \`action_for_event\`\` before trying to subscribe to an event`,
       };
     }
-    this._action = this._microservice.getAction(action);
-    this._event = this._action.getEvent(event);
-    if (!this._event.areRequiredArgumentsSupplied(this._arguments)) {
+    this.action = this.microservice.getAction(action);
+    this.event = this.action.getEvent(event);
+    if (!this.event.areRequiredArgumentsSupplied(this._arguments)) {
       throw {
         spinner,
-        message: `Failed subscribing to event: \`${event}\`. Need to supply required arguments: \`${this._event.requiredArguments.toString()}\``,
+        message: `Failed subscribing to event: \`${event}\`. Need to supply required arguments: \`${this.event.requiredArguments.toString()}\``,
       };
     }
 
     try {
-      verify.verifyArgumentTypes(this._event, this._arguments);
+      verify.verifyArgumentTypes(this.event, this._arguments);
       this._castTypes();
       const server = this._startOMGServer();
       const port = await utils.getOpenPort();
       server.listen({port, hostname: '127.0.0.1'});
 
-      this._id = uuidv4();
+      this.id = uuidv4();
       await rp({
-        method: this._event.subscribe.method,
-        uri: `http://localhost:${this._omgJson[process.cwd()].ports[this._event.subscribe.port]}${this._event.subscribe.path}`,
+        method: this.event.subscribe.method,
+        uri: `http://localhost:${this.omgJson[process.cwd()].ports[this.event.subscribe.port]}${this.event.subscribe.path}`,
         body: {
-          id: this._id,
+          id: this.id,
           endpoint: `http://host.docker.internal:${port}`,
           data: this._arguments,
         },
@@ -113,7 +113,7 @@ export default class Subscribe {
   _castTypes() {
     const argumentList = Object.keys(this._arguments);
     for (let i = 0; i < argumentList.length; i += 1) {
-      const argument = this._event.getArgument(argumentList[i]);
+      const argument = this.event.getArgument(argumentList[i]);
       this._arguments[argument.name] = utils.typeCast[argument.type](this._arguments[argument.name]);
     }
   }
@@ -122,14 +122,14 @@ export default class Subscribe {
    * Unsubscribe this {@link Subscribe}'s {@link Event}.
    */
   async unsubscribe() {
-    if (this._event.unsubscribe === null) {
+    if (this.event.unsubscribe === null) {
       return;
     }
     await rp({
-      method: this._event.unsubscribe.method,
-      uri: `http://localhost:${this._omgJson[process.cwd()].ports[this._event.unsubscribe.port]}${this._event.unsubscribe.path}`,
+      method: this.event.unsubscribe.method,
+      uri: `http://localhost:${this.omgJson[process.cwd()].ports[this.event.unsubscribe.port]}${this.event.unsubscribe.path}`,
       body: {
-        id: this._id,
+        id: this.id,
       },
       json: true,
     });

@@ -1,15 +1,16 @@
 import Argument from './Argument';
+import Http from './Http';
 const validateAction = require('../schema/schema').action;
 const validateEvent = require('../schema/schema').event;
 
 /**
  * Describes a general command. NOTE: this is used as an Abstract Class and should not be instantiated.
  */
-export default class Command {
-  _isAction: boolean;
-  _name: string;
-  _help: string;
-  _argumentsMap: object;
+export default abstract class Command {
+  protected readonly _isAction: boolean;
+  protected readonly _name: string;
+  protected readonly _help: string;
+  protected argumentsMap: object;
 
   /**
    * Builds a {@link Command}.
@@ -18,7 +19,7 @@ export default class Command {
    * @param {Object} rawCommand The raw data
    * @param {String} actionName Name of that parent action, if null, this means that this is a root action
    */
-  constructor(name, rawCommand, actionName) {
+  protected constructor(name: string, rawCommand: any, actionName: string=null) {
     this._isAction = actionName === null;
     let argumentPath = name;
     if (this._isAction) {
@@ -37,12 +38,12 @@ export default class Command {
     }
     this._name = name;
     this._help = rawCommand.help || null;
-    this._argumentsMap = null;
+    this.argumentsMap = null;
     if (rawCommand.arguments) {
-      this._argumentsMap = {};
+      this.argumentsMap = {};
       const _arguments = Object.keys(rawCommand.arguments);
       for (let i = 0; i < _arguments.length; i += 1) {
-        this._argumentsMap[_arguments[i]] = new Argument(_arguments[i], argumentPath, rawCommand.arguments[_arguments[i]]);
+        this.argumentsMap[_arguments[i]] = new Argument(_arguments[i], argumentPath, rawCommand.arguments[_arguments[i]]);
       }
     }
   }
@@ -51,9 +52,8 @@ export default class Command {
    * Check validity of an http interfacing {@link Command}.
    *
    * @param {Http} http The given {@link Http}
-   * @private
    */
-  _checkHttpArguments(http) {
+  protected checkHttpArguments(http: Http): any {
     let _path = http.path;
     let commandType = 'action';
     let commandTypeUpper = 'Action';
@@ -101,7 +101,7 @@ export default class Command {
    *
    * @return {String} The name
    */
-  get name() {
+  public get name(): string {
     return this._name;
   }
 
@@ -110,7 +110,7 @@ export default class Command {
    *
    * @return {String} The help
    */
-  get help() {
+  public get help(): string {
     return this._help;
   }
 
@@ -120,7 +120,7 @@ export default class Command {
    * @param {Object} _arguments The given argument mapping
    * @return {Boolean} True if all required arguments are supplied, otherwise false
    */
-  areRequiredArgumentsSupplied(_arguments) {
+  public areRequiredArgumentsSupplied(_arguments: any): boolean {
     const requiredArguments = this.requiredArguments;
     for (let i = 0; i < requiredArguments.length; i += 1) {
       if (!Object.keys(_arguments).includes(requiredArguments[i])) {
@@ -135,7 +135,7 @@ export default class Command {
    *
    * @return {Array<String>} The required {@link Argument}'s names
    */
-  get requiredArguments() {
+  public get requiredArguments(): string[] {
     return this.arguments.filter((a) => a.isRequired()).map((a) => a.name);
   }
 
@@ -144,11 +144,11 @@ export default class Command {
    *
    * @return {Array<Argument>} The {@link Argument}s
    */
-  get arguments() {
-    if (this._argumentsMap === null) {
+  public get arguments(): Argument[] {
+    if (this.argumentsMap === null) {
       return [];
     }
-    return (<any>Object).values(this._argumentsMap);
+    return (<any>Object).values(this.argumentsMap);
   }
 
   /**
@@ -158,10 +158,10 @@ export default class Command {
    * @throws {String} If the argument does not exists
    * @return {Argument} The {@link Argument} with given name
    */
-  getArgument(argument) {
-    if ((this._argumentsMap === null) || (!this._argumentsMap[argument])) {
+  public getArgument(argument): Argument {
+    if ((this.argumentsMap === null) || (!this.argumentsMap[argument])) {
       throw `Argument \`${argument}\` does not exist`;
     }
-    return this._argumentsMap[argument];
+    return this.argumentsMap[argument];
   }
 }
