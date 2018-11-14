@@ -1,5 +1,6 @@
 import Http from './Http';
 import Command from './Command';
+const validateEvent = require('../schema/schema').event;
 
 /**
  * Describes a event.
@@ -16,7 +17,12 @@ export default class Event extends Command {
    * @param {Object} rawEvent The raw data
    */
   constructor(name: string, actionName: string, rawEvent: any) {
-    super(name, rawEvent, actionName);
+    super(name, rawEvent, `${actionName}.events.${name}`);
+    const isValid = validateEvent(rawEvent);
+    if (!isValid.valid) {
+      isValid.text = isValid.text.replace('data', `actions.${actionName}.events.${name}`);
+      throw isValid;
+    }
     this._subscribe = new Http(name, rawEvent.http.subscribe, `actions.${actionName}.events.${name}.http.subscribe`, rawEvent.http.port);
     this._unsubscribe = ((rawEvent.http.unsubscribe) ? new Http(name, rawEvent.http.unsubscribe, `actions.${actionName}.events.${name}.http.unsubscribe`, rawEvent.http.port) : null);
     this.checkHttpArguments(this._subscribe);

@@ -2,6 +2,7 @@ import Http from './Http';
 import Format from './Format';
 import Event from './Event';
 import Command from './Command';
+const validateAction = require('../schema/schema').action;
 
 /**
  * Describes an action.
@@ -18,8 +19,13 @@ export default class Action extends Command {
    * @param {String} name The given name
    * @param {Object} rawAction The raw data
    */
-  constructor(name: string, rawAction:any) {
-    super(name, rawAction, null);
+  constructor(name: string, rawAction: any) {
+    const isValid = validateAction(rawAction);
+    if (!isValid.valid) {
+      isValid.text = isValid.text.replace(/data/g, `actions.${name}`);
+      throw isValid;
+    }
+    super(name, rawAction, name);
     this._output = rawAction.output;
     this.eventMap = null;
     if (rawAction.events) {

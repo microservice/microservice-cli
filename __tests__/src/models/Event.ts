@@ -15,7 +15,7 @@ describe('Event.ts', () => {
             message: 'should have required property \'http\'',
             params: {missingProperty: 'http'},
             schemaPath: '#/required',
-          }], issue: {}, text: 'actions.events.name should have required property \'http\'', valid: false,
+          }], issue: {}, text: 'actions.action.events.name should have required property \'http\'', valid: false,
         });
       }
     });

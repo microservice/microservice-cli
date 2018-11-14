@@ -1,7 +1,5 @@
 import Argument from './Argument';
 import Http from './Http';
-const validateAction = require('../schema/schema').action;
-const validateEvent = require('../schema/schema').event;
 
 /**
  * Describes a general command. NOTE: this is used as an Abstract Class and should not be instantiated.
@@ -17,25 +15,10 @@ export default abstract class Command {
    *
    * @param {String} name The given name
    * @param {Object} rawCommand The raw data
-   * @param {String} actionName Name of that parent action, if null, this means that this is a root action
+   * @param {String} argumentPath Name of that parent action, if null, this means that this is a root action
    */
-  protected constructor(name: string, rawCommand: any, actionName: string=null) {
-    this._isAction = actionName === null;
-    let argumentPath = name;
-    if (this._isAction) {
-      const isValid = validateAction(rawCommand);
-      if (!isValid.valid) {
-        isValid.text = isValid.text.replace(/data/g, `actions.${name}`);
-        throw isValid;
-      }
-    } else {
-      argumentPath = `${actionName}.events.${name}`;
-      const isValid = validateEvent(rawCommand);
-      if (!isValid.valid) {
-        isValid.text = isValid.text.replace('data', `actions.events.${name}`);
-        throw isValid;
-      }
-    }
+  protected constructor(name: string, rawCommand: any, argumentPath: string) {
+    this._isAction = name === argumentPath;
     this._name = name;
     this._help = rawCommand.help || null;
     this.argumentsMap = null;
