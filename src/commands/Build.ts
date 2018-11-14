@@ -19,11 +19,12 @@ export default class Build {
   /**
    * Builds a Docker image with this {@link Build}'s name prefaced with `omg/` and tagged with `local`.
    */
-  async go(): Promise<void> {
+  async go(): Promise<string> {
     const spinner = ora.start('Building Docker image');
     try {
       await utils.exec(`docker build -t ${this.name} .`);
       spinner.succeed(`Built Docker image with name: ${this.name}`);
+      return this.name;
     } catch (e) {
       throw {
         spinner,

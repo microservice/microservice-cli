@@ -20,7 +20,7 @@ program
   .command('build')
   .usage(' ')
   .option('-t --tag, <t>', 'The tag name of the image')
-  .description('Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a tag name must be provided. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
+  .description('Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a uuid will be used to name the image')
   .action(async (options) => Cli.build(options));
 
 program

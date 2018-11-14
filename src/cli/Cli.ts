@@ -85,13 +85,8 @@ export default class Cli {
    *
    * @param {Object} options The given name
    */
-  static async build(options: any): Promise<void> {
-    try {
-      await new Build(options.tag || await utils.createImageName()).go();
-    } catch (e) {
-      utils.error('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`');
-      process.exit(1);
-    }
+  static async build(options: any): Promise<string> {
+    return await new Build(options.tag || await utils.createImageName()).go();
   }
 
   /**
@@ -116,8 +111,7 @@ export default class Cli {
         return;
       }
     } else {
-      await Cli.build({});
-      options.image = await utils.createImageName();
+      options.image = await Cli.build({});
     }
 
     try {
