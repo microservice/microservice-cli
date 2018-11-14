@@ -1,19 +1,13 @@
-import {setVal} from '../utils';
+import Item from './Item';
 const validateArgument = require('../schema/schema').argument;
 
 /**
  * Describes an argument.
  */
-export default class Argument {
-  private readonly _name: string;
-  private readonly _type: any;
+export default class Argument extends Item {
   private readonly _in: string;
-  private readonly _help: string;
-  private readonly _pattern: string;
   private readonly _enum: string[];
   private readonly _range: any;
-  private readonly required: boolean;
-  private readonly _default: any;
 
   /**
    * Builds an {@link Argument}.
@@ -28,39 +22,16 @@ export default class Argument {
       isValid.text = isValid.text.replace(/data/g, `actions.${pathToArgument}.arguments.${name}`);
       throw isValid;
     }
-    this._name = name;
-    this._type = rawArguments.type;
+    super(name, rawArguments);
     this._in = rawArguments.in || null;
-    this._help = rawArguments.help || null;
-    this._pattern = rawArguments.pattern || null;
     this._enum = rawArguments.enum || null;
     this._range = rawArguments.range || null;
-    this.required = rawArguments.required || false;
-    this._default = setVal(rawArguments.default, null);
-    if ([(this._pattern !== null), (this._enum !== null), (this._range !== null)].filter((b) => b).length > 1) {
+    if ([(this.pattern !== null), (this._enum !== null), (this._range !== null)].filter((b) => b).length > 1) {
       throw {
         context: `Argument with name: \`${name}\``,
         message: 'An Argument can only have a pattern, enum, or range defined',
       };
     }
-  }
-
-  /**
-   * Get the name of this {@link Argument}.
-   *
-   * @return {String} The name
-   */
-  public get name(): string {
-    return this._name;
-  }
-
-  /**
-   * Get the type of this {@link Argument}.
-   *
-   * @return {*} The type
-   */
-  public get type(): string {
-    return this._type;
   }
 
   /**
@@ -70,24 +41,6 @@ export default class Argument {
    */
   public get in(): string {
     return this._in;
-  }
-
-  /**
-   * Get the help of this {@link Argument}.
-   *
-   * @return {String} The help
-   */
-  public get help(): string {
-    return this._help;
-  }
-
-  /**
-   * Get the patter of this {@link Argument}.
-   *
-   * @return {*|null}
-   */
-  public get pattern(): string {
-    return this._pattern;
   }
 
   /**
@@ -106,23 +59,5 @@ export default class Argument {
    */
   public get range(): any {
     return this._range;
-  }
-
-  /**
-   * Check to see if this {@link Argument} is required.
-   *
-   * @return {Boolean} True if required, otherwise false
-   */
-  public isRequired(): boolean {
-    return this.required;
-  }
-
-  /**
-   * Get the default value of this {@link Argument}.
-   *
-   * @return {*|null} The default value
-   */
-  public get default(): any {
-    return this._default;
   }
 }
