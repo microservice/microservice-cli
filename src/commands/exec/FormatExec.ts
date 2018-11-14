@@ -23,44 +23,12 @@ export default class FormatExec extends Exec {
   /** @inheritdoc */
   public async exec(action: string) {
     this.action = this.microservice.getAction(action);
+
     const spinner = ora.start(`Running action: \`${this.action.name}\``);
-
-    this.setDefaultArguments();
-    this.setDefaultEnvironmentVariables();
-
-    if (!this.action.areRequiredArgumentsSupplied(this._arguments)) {
-      throw {
-        spinner,
-        message: `Failed action: \`${action}\`. Need to supply required arguments: \`${this.action.requiredArguments.toString()}\``,
-      };
-    }
-    if (!this.microservice.areRequiredEnvironmentVariablesSupplied(this.environmentVariables)) {
-      throw {
-        spinner,
-        message: `Failed action: \`${action}\`. Need to supply required environment variables: \`${this.microservice.requiredEnvironmentVariables.toString()}\``,
-      };
-    }
-
-
-    try {
-      verify.verifyArgumentTypes(this.action, this._arguments);
-      this.castTypes();
-      verify.verifyArgumentConstrains(this.action, this._arguments);
-
-      verify.verifyEnvironmentVariableTypes(this.microservice, this.environmentVariables);
-      verify.verifyEnvironmentVariablePattern(this.microservice, this.environmentVariables);
-
-      const containerID = await this.startDockerExecContainer();
-      const output = await this.runDockerExecCommand(containerID);
-      verify.verifyOutputType(this.action, output);
-      await utils.exec(`docker kill ${containerID}`);
-      spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
-    } catch (e) {
-      throw {
-        spinner,
-        message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
-      };
-    }
+    const containerID = await this.startDockerExecContainer();
+    const output = await this.runDockerExecCommand(containerID);
+    await utils.exec(`docker kill ${containerID}`);
+    spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
   }
 
   /**
