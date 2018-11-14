@@ -38,7 +38,7 @@ export default class Action extends Command {
     this._http = ((rawAction.http) ? new Http(name, rawAction.http, `actions.${name}.http`, null) : null);
     this._format = ((rawAction.format) ? new Format(name, rawAction.format) : null);
     if (this._http !== null) {
-      this.checkHttpArguments(this._http);
+      this.checkHttpArguments(this._http, 'action', 'Action');
     }
   }
 

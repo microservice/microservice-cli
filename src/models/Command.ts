@@ -5,7 +5,6 @@ import Http from './Http';
  * Describes a general command. NOTE: this is used as an Abstract Class and should not be instantiated.
  */
 export default abstract class Command {
-  protected readonly _isAction: boolean;
   protected readonly _name: string;
   protected readonly _help: string;
   protected argumentsMap: object;
@@ -18,7 +17,6 @@ export default abstract class Command {
    * @param {String} argumentPath Name of that parent action, if null, this means that this is a root action
    */
   protected constructor(name: string, rawCommand: any, argumentPath: string) {
-    this._isAction = name === argumentPath;
     this._name = name;
     this._help = rawCommand.help || null;
     this.argumentsMap = null;
@@ -35,15 +33,11 @@ export default abstract class Command {
    * Check validity of an http interfacing {@link Command}.
    *
    * @param {Http} http The given {@link Http}
+   * @param {String} commandType 'event' or 'action'
+   * @param {String} commandTypeUpper 'Event' or 'Action'
    */
-  protected checkHttpArguments(http: Http): any {
+  protected checkHttpArguments(http: Http, commandType: string, commandTypeUpper: string): void {
     let _path = http.path;
-    let commandType = 'action';
-    let commandTypeUpper = 'Action';
-    if (!this._isAction) {
-      commandType = 'event';
-      commandTypeUpper = 'Event';
-    }
 
     for (let i = 0; i < this.arguments.length; i += 1) {
       const argument = this.arguments[i];
