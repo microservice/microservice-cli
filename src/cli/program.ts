@@ -6,7 +6,7 @@ const appender = require('../utils').appender;
 const cli = new Cli();
 
 program
-  .version('0.1.1');
+  .version('0.1.3');
 
 program
   .command('validate')

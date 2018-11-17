@@ -100,7 +100,7 @@ export function exec(command): Promise<string> {
  * @param {String} string The given sting to log
  */
 export function log(string) {
-  process.stdout.write(string);
+  process.stdout.write(`${string}\n`);
 }
 
 /**
@@ -109,7 +109,7 @@ export function log(string) {
  * @param {String} string The given string to log
  */
 export function error(string) {
-  process.stderr.write(string);
+  process.stderr.write(`${string}\n`);
 }
 
 export const typeCast = {
