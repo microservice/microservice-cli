@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as utils from '../utils';
-import * as rp from 'request-promise';
 import ora from '../ora';
 import * as verify from '../verify';
 import Microservice from '../models/Microservice';
@@ -9,6 +8,7 @@ import Action from '../models/Action';
 import Event from '../models/Event';
 const homedir = require('os').homedir();
 const uuidv4 = require('uuid/v4');
+import * as rp from '../request';
 
 /**
  * Describes a way to subscribe to an event.
@@ -39,15 +39,9 @@ export default class Subscribe {
    */
   async go(action: string, event:string) {
     const spinner = ora.start(`Subscribing to event: \`${event}\``);
-    await timer(3000);
+    // await timer(1500);
 
     this.omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
-    if (!this.omgJson[process.cwd()]) {
-      throw {
-        spinner,
-        message: `Failed subscribing to event: \`${event}\`. You must run \`omg exec \`action_for_event\`\` before trying to subscribe to an event`,
-      };
-    }
     this.action = this.microservice.getAction(action);
     this.event = this.action.getEvent(event);
     if (!this.event.areRequiredArgumentsSupplied(this._arguments)) {
@@ -65,7 +59,25 @@ export default class Subscribe {
       server.listen({port, hostname: '127.0.0.1'});
 
       this.id = uuidv4();
-      await rp({
+      await this.subscribe(port);
+      spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
+    } catch (e) {
+      throw {
+        spinner,
+        message: `Failed subscribe to event: \`${event}\`. ${e.toString().trim()}`,
+      };
+    }
+  }
+
+  /**
+   * Subscribes to an event, the try catch is needed for the slow start of the container. (same issue with http commands)
+   *
+   * @param {Number} port The given port to request on
+   * @return {Promise<void>}
+   */
+  private async subscribe(port: number): Promise<void> {
+    try {
+      await rp.makeRequest({
         method: this.event.subscribe.method,
         uri: `http://localhost:${this.omgJson[process.cwd()].ports[this.event.subscribe.port]}${this.event.subscribe.path}`,
         body: {
@@ -75,16 +87,11 @@ export default class Subscribe {
         },
         json: true,
       });
-      spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
     } catch (e) {
-      let message = `Failed subscribe to event: \`${event}\`. ${e.toString().trim()}`;
-      if (e.error.code === 'ECONNREFUSED') {
-        message = `No running process to subscribe to for event: \`${event}\`. Be sure to run the action for the given event (\`omg exec \`action_for_event\`\`)`;
+      if (e.name === 'RequestError') {
+        return this.subscribe(port);
       }
-      throw {
-        spinner,
-        message,
-      };
+      throw e;
     }
   }
 
@@ -125,7 +132,7 @@ export default class Subscribe {
     if (this.event.unsubscribe === null) {
       return;
     }
-    await rp({
+    await rp.makeRequest({
       method: this.event.unsubscribe.method,
       uri: `http://localhost:${this.omgJson[process.cwd()].ports[this.event.unsubscribe.port]}${this.event.unsubscribe.path}`,
       body: {
