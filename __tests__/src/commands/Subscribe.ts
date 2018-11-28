@@ -88,7 +88,7 @@ describe('Subscribe.ts', () => {
       }
     });
 
-    test('subscribes to the event', async () => { // TODO http mocking
+    test('subscribes to the event', async () => {
       await new Subscribe(m, {x: '1'}).go('foo', 'bar');
 
       expect(rpMakeRequestStub.args[0][0].body.data).toEqual({x: 1});
