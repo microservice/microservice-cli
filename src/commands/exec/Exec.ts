@@ -130,6 +130,20 @@ export default abstract class Exec {
   }
 
   /**
+   * Checks it a Docker process is running.
+   *
+   * @return {Boolean} True if a Docker process is running, otherwise false
+   */
+  public isDockerProcessRunning(): boolean {
+    return false;
+  }
+
+  /**
+   * Stops a running Docker service.
+   */
+  public async serverKill(): Promise<void> {}
+
+  /**
    * Executes the given {@link Action}.
    *
    * @param {String} action

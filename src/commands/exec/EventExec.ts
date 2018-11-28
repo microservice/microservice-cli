@@ -86,4 +86,18 @@ export default class EventExec extends Exec {
     }
     fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(data), 'utf8');
   }
+
+  /** @inheritdoc */
+  public isDockerProcessRunning(): boolean {
+    return this.dockerServiceId !== null;
+  }
+
+  /**
+   * Stops a running Docker service.
+   */
+  async serverKill(): Promise<void> {
+    const spinner = ora.start(`Stopping Docker container: ${this.dockerServiceId.substring(0, 12)}`);
+    await utils.exec(`docker kill ${this.dockerServiceId.substring(0, 12)}`);
+    spinner.succeed(`Stopped Docker container: ${this.dockerServiceId.substring(0, 12)}`);
+  }
 }

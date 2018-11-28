@@ -188,12 +188,12 @@ export default class Cli {
    * Catch the `CtrlC` command to stop running containers.
    */
   async controlC() {
-    // if (this._exec && this._exec.isDockerProcessRunning()) {
-    //   await this._exec.serverKill();
-    // }
-    // if (this._subscribe) {
-    //   await this._subscribe.unsubscribe();
-    // }
+    if (this._subscribe) {
+      await this._subscribe.unsubscribe();
+    }
+    if (this._exec && this._exec.isDockerProcessRunning()) {
+      await this._exec.serverKill();
+    }
     process.exit();
   }
 }
