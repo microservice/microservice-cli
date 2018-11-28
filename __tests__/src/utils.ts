@@ -21,7 +21,7 @@ describe('utils.ts', () => {
       expect(utils.getNeededPorts(m)).toEqual([]);
     });
 
-    test('returns a list consisting of the port 5050 and 6060 because it is used by an http interfacing action', () => {
+    test('returns a list consisting of the port 5050 and 6060 because it is used by a http interfacing action', () => {
       const m = new Microservice({
         omg: 1,
         lifecycle: {

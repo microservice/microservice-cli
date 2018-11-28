@@ -25,10 +25,20 @@ export default class FormatExec extends Exec {
     this.action = this.microservice.getAction(action);
 
     const spinner = ora.start(`Running action: \`${this.action.name}\``);
-    const containerID = await this.startDockerExecContainer();
-    const output = await this.runDockerExecCommand(containerID);
-    await utils.exec(`docker kill ${containerID}`);
-    spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
+    this.preChecks(spinner);
+    try {
+      this.verification();
+      const containerID = await this.startDockerExecContainer();
+      const output = await this.runDockerExecCommand(containerID);
+      verify.verifyOutputType(this.action, output);
+      await utils.exec(`docker kill ${containerID}`);
+      spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
+    } catch (e) {
+      throw {
+        spinner,
+        message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
+      };
+    }
   }
 
   /**

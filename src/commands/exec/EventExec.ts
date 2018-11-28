@@ -24,9 +24,18 @@ export default class EventExec extends Exec {
   }
 
   /** @inheritdoc */
-  async exec(action): Promise<void> {
-    await this.startServer();
-    this.omgJsonFileHandler();
+  public async exec(action): Promise<void> {
+    const spinner = ora.start('Starting Docker container');
+    try {
+      await this.startServer();
+      this.omgJsonFileHandler();
+    } catch (e) {
+      throw {
+        spinner,
+        message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
+      };
+    }
+    spinner.succeed(`Stared Docker container with id: ${this.dockerServiceId.substring(0, 12)}`);
   }
 
   /**
@@ -34,7 +43,6 @@ export default class EventExec extends Exec {
    */
   private async startServer(): Promise<void> {
     this.portMap = {};
-    const spinner = ora.start('Starting Docker container');
     const neededPorts = utils.getNeededPorts(this.microservice);
     const openPorts = [];
     while (neededPorts.length !== openPorts.length) {
@@ -52,7 +60,6 @@ export default class EventExec extends Exec {
     portString = portString.trim();
 
     this.dockerServiceId = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
-    spinner.succeed(`Stared Docker container with id: ${this.dockerServiceId.substring(0, 12)}`);
   }
 
   /**

@@ -1,4 +1,5 @@
 import * as utils from '../../utils';
+import * as verify from '../../verify';
 import Action from '../../models/Action';
 import Microservice from '../../models/Microservice';
 
@@ -31,9 +32,43 @@ export default abstract class Exec {
   }
 
   /**
+   * Checks if required arguments and environment variables are given and will also set their default values.
+   *
+   * @param {Object} spinner The spinner for the {@link Exec}
+   */
+  protected preChecks(spinner: any) {
+    this.setDefaultArguments();
+    this.setDefaultEnvironmentVariables();
+    if (!this.action.areRequiredArgumentsSupplied(this._arguments)) {
+      throw {
+        spinner,
+        message: `Failed action: \`${this.action.name}\`. Need to supply required arguments: \`${this.action.requiredArguments.toString()}\``,
+      };
+    }
+    if (!this.microservice.areRequiredEnvironmentVariablesSupplied(this.environmentVariables)) {
+      throw {
+        spinner,
+        message: `Failed action: \`${this.action.name}\`. Need to supply required environment variables: \`${this.microservice.requiredEnvironmentVariables.toString()}\``,
+      };
+    }
+  }
+
+  /**
+   * Runs verification on arguments and environment variables.
+   */
+  protected verification() {
+    verify.verifyArgumentTypes(this.action, this._arguments);
+    this.castTypes();
+    verify.verifyArgumentConstrains(this.action, this._arguments);
+
+    verify.verifyEnvironmentVariableTypes(this.microservice, this.environmentVariables);
+    verify.verifyEnvironmentVariablePattern(this.microservice, this.environmentVariables);
+  }
+
+  /**
    * Sets a {@link Action}'s default arguments.
    */
-  protected setDefaultArguments(): void {
+  private setDefaultArguments(): void {
     for (let i = 0; i < this.action.arguments.length; i += 1) {
       const argument = this.action.arguments[i];
       if (!this._arguments[argument.name]) {
@@ -51,7 +86,7 @@ export default abstract class Exec {
   /**
    * Sets a {@link Microservice}'s default {@link EnvironmentVariable}s and variables from the system environment variables.
    */
-  protected setDefaultEnvironmentVariables(): void {
+  private setDefaultEnvironmentVariables(): void {
     for (let i = 0; i < this.microservice.environmentVariables.length; i += 1) {
       const environmentVariable = this.microservice.environmentVariables[i];
       if (!this.environmentVariables[environmentVariable.name]) {

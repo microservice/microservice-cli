@@ -20,7 +20,7 @@ describe('Event.ts', () => {
       }
     });
 
-    test('throws an exception because an http action\'s argument does not provide a location for the arguments', () => {
+    test('throws an exception because a http action\'s argument does not provide a location for the arguments', () => {
       try {
         new Event('name', 'action', {
           http: {
@@ -49,7 +49,7 @@ describe('Event.ts', () => {
       }
     });
 
-    test('throws an exception because an http action\'s path argument is not defined in the endpoint for the http call', () => {
+    test('throws an exception because a http action\'s path argument is not defined in the endpoint for the http call', () => {
       try {
         new Event('name', 'action', {
           http: {
@@ -79,7 +79,7 @@ describe('Event.ts', () => {
       }
     });
 
-    test('throws an exception because an http action\'s path argument is not marked required or given a default value', () => {
+    test('throws an exception because a http action\'s path argument is not marked required or given a default value', () => {
       try {
         new Event('name', 'action', {
           http: {
@@ -109,7 +109,7 @@ describe('Event.ts', () => {
       }
     });
 
-    test('throws an exception because an http action has path parameters in endpoint that aren\'t defined as arguments', () => {
+    test('throws an exception because a http action has path parameters in endpoint that aren\'t defined as arguments', () => {
       try {
         new Event('name', 'action', {
           http: {

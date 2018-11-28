@@ -7,7 +7,7 @@ import * as utils from '../../utils';
 import * as verify from '../../verify';
 
 /**
- * Represents an http execution of an {@link Action}.
+ * Represents a http execution of an {@link Action}.
  */
 export default class HttpExec extends Exec {
   private portMap: any;
@@ -30,10 +30,20 @@ export default class HttpExec extends Exec {
 
     await this.startServer();
     const spinner = ora.start(`Running action: \`${this.action.name}\``);
-    const output = await this.httpCommand(this.portMap[this.action.http.port]);
-    verify.verifyOutputType(this.action, output.trim());
-    spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
-    await this.serverKill();
+    this.preChecks(spinner);
+
+    try {
+      this.verification();
+      const output = await this.httpCommand(this.portMap[this.action.http.port]);
+      verify.verifyOutputType(this.action, output.trim());
+      spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
+      await this.serverKill();
+    } catch (e) {
+      throw { // still need to kill server here too
+        spinner,
+        message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
+      };
+    }
   }
 
   /**

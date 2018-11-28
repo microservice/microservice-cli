@@ -30,7 +30,7 @@ export default abstract class Command {
   }
 
   /**
-   * Check validity of an http interfacing {@link Command}.
+   * Check validity of a http interfacing {@link Command}.
    *
    * @param {Http} http The given {@link Http}
    * @param {String} commandType 'event' or 'action'

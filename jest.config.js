@@ -1,7 +1,6 @@
 module.exports = {
   collectCoverageFrom: [
-    'schema/**/*.js',
-    'src/**/*.js',
+    'src/**/*.ts',
   ],
   coverageReporters: [
     'lcov',

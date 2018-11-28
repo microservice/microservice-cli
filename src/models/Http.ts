@@ -1,7 +1,7 @@
 const validateHttp = require('../schema/schema').http;
 
 /**
- * Describes an http setup.
+ * Describes a http setup.
  */
 export default class Http {
   private readonly _method: string;
