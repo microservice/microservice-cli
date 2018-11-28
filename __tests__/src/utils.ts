@@ -21,7 +21,7 @@ describe('utils.ts', () => {
       expect(utils.getNeededPorts(m)).toEqual([]);
     });
 
-    test('returns a list consisting of the port 5050 and 6060 because it is used by an http interfacing action', () => {
+    test('returns a list consisting of the port 5050 and 6060 because it is used by a http interfacing action', () => {
       const m = new Microservice({
         omg: 1,
         lifecycle: {
@@ -165,17 +165,14 @@ describe('utils.ts', () => {
 
     test('type checks a stringified list', () => {
       expect(utils.dataTypes['list']('["data"]')).toBeTruthy();
-      expect(utils.dataTypes['list'](['data'])).toBeTruthy();
       expect(utils.dataTypes['list']('{"data": "value"}')).toBeFalsy();
       expect(utils.dataTypes['list']('asd')).toBeFalsy();
-      expect(utils.dataTypes['list']({a: 1})).toBeFalsy();
+      expect(utils.dataTypes['list']('{"a": 1}')).toBeFalsy();
     });
 
     test('type checks a stringified map', () => {
       expect(utils.dataTypes['map']('{"data": "value"}')).toBeTruthy();
-      expect(utils.dataTypes['map']({data: 'value'})).toBeTruthy();
       expect(utils.dataTypes['map']('["data"]')).toBeFalsy();
-      expect(utils.dataTypes['map'](['data'])).toBeFalsy();
       expect(utils.dataTypes['map']('asd')).toBeFalsy();
     });
 

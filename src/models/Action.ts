@@ -2,15 +2,16 @@ import Http from './Http';
 import Format from './Format';
 import Event from './Event';
 import Command from './Command';
+const validateAction = require('../schema/schema').action;
 
 /**
  * Describes an action.
  */
 export default class Action extends Command {
-  _output: any;
-  _eventMap: object;
-  _http: Http;
-  _format: Format;
+  private readonly _output: any;
+  private readonly eventMap: object;
+  private readonly _http: Http;
+  private readonly _format: Format;
 
   /**
    * Build a {@link Action}.
@@ -18,30 +19,35 @@ export default class Action extends Command {
    * @param {String} name The given name
    * @param {Object} rawAction The raw data
    */
-  constructor(name, rawAction) {
-    super(name, rawAction, null);
+  constructor(name: string, rawAction: any) {
+    const isValid = validateAction(rawAction);
+    if (!isValid.valid) {
+      isValid.text = isValid.text.replace(/data/g, `actions.${name}`);
+      throw isValid;
+    }
+    super(name, rawAction, name);
     this._output = rawAction.output;
-    this._eventMap = null;
+    this.eventMap = null;
     if (rawAction.events) {
-      this._eventMap = {};
+      this.eventMap = {};
       const eventList = Object.keys(rawAction.events);
       for (let i = 0; i < eventList.length; i += 1) {
-        this._eventMap[eventList[i]] = new Event(eventList[i], name, rawAction.events[eventList[i]]);
+        this.eventMap[eventList[i]] = new Event(eventList[i], name, rawAction.events[eventList[i]]);
       }
     }
     this._http = ((rawAction.http) ? new Http(name, rawAction.http, `actions.${name}.http`, null) : null);
     this._format = ((rawAction.format) ? new Format(name, rawAction.format) : null);
     if (this._http !== null) {
-      this._checkHttpArguments(this._http);
+      this.checkHttpArguments(this._http, 'action', 'Action');
     }
   }
 
   /**
    * The output type of this {@link Action}.
    *
-   * @return {Object} The output type
+   * @return {*} The output type
    */
-  get output() {
+  public get output(): any {
     return this._output;
   }
 
@@ -50,11 +56,11 @@ export default class Action extends Command {
    *
    * @return {Array<Event>|null} The {@link Event}s
    */
-  get events() {
-    if (this._eventMap === null) {
+  public get events(): Event[] {
+    if (this.eventMap === null) {
       return null;
     }
-    return (<any>Object).values(this._eventMap);
+    return (<any>Object).values(this.eventMap);
   }
 
   /**
@@ -64,11 +70,11 @@ export default class Action extends Command {
    * @throws {String} If the event does not exist
    * @return {Event}
    */
-  getEvent(event) {
-    if ((this._eventMap === null) || (!this._eventMap[event])) {
+  public getEvent(event): Event {
+    if ((this.eventMap === null) || (!this.eventMap[event])) {
       throw `Event \`${event}\` does not exist`;
     }
-    return this._eventMap[event];
+    return this.eventMap[event];
   }
 
   /**
@@ -76,7 +82,7 @@ export default class Action extends Command {
    *
    * @return {Http} The {@link Http} service
    */
-  get http() {
+  public get http(): Http {
     return this._http;
   }
 
@@ -85,7 +91,7 @@ export default class Action extends Command {
    *
    * @return {Format} The {@link Action}'s format
    */
-  get format() {
+  public get format(): Format {
     return this._format;
   }
 }

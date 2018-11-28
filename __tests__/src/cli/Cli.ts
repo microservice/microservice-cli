@@ -1,9 +1,8 @@
 import * as fs from 'fs';
 import * as sinon from 'sinon';
 import * as utils from '../../../src/utils';
-import Microservice from '../../../src/models/Microservice';
 import Build from '../../../src/commands/Build';
-import Exec from '../../../src/commands/Exec';
+import FormatExec from '../../../src/commands/exec/FormatExec';
 import Subscribe from '../../../src/commands/Subscribe';
 import Cli from '../../../src/cli/Cli';
 
@@ -16,7 +15,22 @@ describe('Cli.ts', () => {
     errorStub = sinon.stub(utils, 'error');
     sinon.stub(fs, 'existsSync').callsFake(() => true);
     sinon.stub(fs, 'readFileSync').callsFake(() => {
-      return 'omg: 1';
+      return 'omg: 1\n' +
+        'actions:\n' +
+        '  action:\n' +
+        '    format:\n' +
+        '      command: ["action.sh"]\n' +
+        '  eventAction:\n' +
+        '    events:\n' +
+        '      event:\n' +
+        '        http:\n' +
+        '          port: 5000\n' +
+        '          subscribe:\n' +
+        '            method: post\n' +
+        '            path: /subscribe\n' +
+        '          unsubscribe:\n' +
+        '            path: /unsubscribe\n' +
+        '            method: delete';
     });
     sinon.stub(utils, 'createImageName').callsFake(async () => 'image-name');
   });
@@ -52,7 +66,6 @@ describe('Cli.ts', () => {
       const cli = new Cli();
       cli.buildMicroservice();
 
-      expect(cli._microservice).toEqual(new Microservice({omg: 1}));
       expect(errorStub.called).toBeFalsy();
       expect(processExitStub.called).toBeFalsy();
     });
@@ -63,7 +76,6 @@ describe('Cli.ts', () => {
       const cli = new Cli();
       cli.buildMicroservice();
 
-      expect(cli._microservice).toEqual(null);
       expect(errorStub.calledWith('Unable to build microservice. Run `omg validate` for more details')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
     });
@@ -94,7 +106,35 @@ describe('Cli.ts', () => {
         expect(logStub.calledWith('{\n' +
           '  "valid": true,\n' +
           '  "yaml": {\n' +
-          '    "omg": 1\n' +
+          '    "omg": 1,\n' +
+          '    "actions": {\n' +
+          '      "action": {\n' +
+          '        "format": {\n' +
+          '          "command": [\n' +
+          '            "action.sh"\n' +
+          '          ]\n' +
+          '        }\n' +
+          '      },\n' +
+          '      "eventAction": {\n' +
+          '        "events": {\n' +
+          '          "event": {\n' +
+          '            "http": {\n' +
+          '              "port": 5000,\n' +
+          '              "subscribe": {\n' +
+          '                "method": "post",\n' +
+          '                "path": "/subscribe",\n' +
+          '                "port": 5000\n' +
+          '              },\n' +
+          '              "unsubscribe": {\n' +
+          '                "path": "/unsubscribe",\n' +
+          '                "method": "delete",\n' +
+          '                "port": 5000\n' +
+          '              }\n' +
+          '            }\n' +
+          '          }\n' +
+          '        }\n' +
+          '      }\n' +
+          '    }\n' +
           '  },\n' +
           '  "errors": null,\n' +
           '  "text": "No errors"\n' +
@@ -202,25 +242,26 @@ describe('Cli.ts', () => {
       sinon.stub(utils, 'createImageName').callsFake(async () => {
         throw 'error';
       });
-      await Cli.build({});
-
-      expect(buildGoStub.called).toBeFalsy();
-      expect(errorStub.calledWith('The tag flag must be provided because no git config is present. Example: `omg build -t omg/my/service`')).toBeTruthy();
-      expect(processExitStub.calledWith(1)).toBeTruthy();
+      try {
+        await Cli.build({});
+      } catch (e) {
+        expect(buildGoStub.called).toBeFalsy();
+        expect(e).toBe('error');
+      }
     });
   });
 
   describe('.exec(action, options)', () => {
-    let execGoStub;
+    let formatExecExecStub;
     let utilsExecStub;
 
     beforeEach(() => {
-      execGoStub = sinon.stub(Exec.prototype, 'go');
+      formatExecExecStub = sinon.stub(FormatExec.prototype, 'exec');
       utilsExecStub = sinon.stub(utils, 'exec').callsFake(async () => 'image');
     });
 
     afterEach(() => {
-      (Exec.prototype.go as any).restore();
+      (FormatExec.prototype.exec as any).restore();
       (utils.exec as any).restore();
     });
 
@@ -231,7 +272,7 @@ describe('Cli.ts', () => {
 
       expect(errorStub.calledWith('Failed to parse command, run `omg exec --help` for more information.')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
-      expect(execGoStub.called).toBeFalsy();
+      expect(formatExecExecStub.called).toBeFalsy();
     });
 
     test('image option given and action is executed', async () => {
@@ -240,7 +281,7 @@ describe('Cli.ts', () => {
       await cli.exec('action', {args: [], envs: [], image: 'image'});
 
       expect(utilsExecStub.calledWith('docker images -f "reference=image"')).toBeTruthy();
-      expect(execGoStub.calledWith('action')).toBeTruthy();
+      expect(formatExecExecStub.calledWith('action')).toBeTruthy();
     });
 
     test('image option given but is not build so action is not executed', async () => {
@@ -251,27 +292,31 @@ describe('Cli.ts', () => {
       expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy();
       expect(utilsExecStub.calledWith('docker images -f "reference=does-not-exist"')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
-      expect(execGoStub.called).toBeFalsy();
+      expect(formatExecExecStub.called).toBeFalsy();
     });
   });
 
   describe('.subscribe(event, options)', () => {
+    let cliExecStub;
     let subscribeGoStub;
 
     beforeEach(() => {
+      cliExecStub = sinon.stub(Cli.prototype, 'exec');
       subscribeGoStub = sinon.stub(Subscribe.prototype, 'go');
     });
 
     afterEach(() => {
+      (Cli.prototype.exec as any).restore();
       (Subscribe.prototype.go as any).restore();
     });
 
     test('subscribes to the event', async () => {
       const cli = new Cli();
       cli.buildMicroservice();
-      await cli.subscribe('event', {args: []});
+      await cli.subscribe('eventAction', 'event', {args: [], envs: []});
 
-      expect(subscribeGoStub.calledWith('event')).toBeTruthy();
+      expect(cliExecStub.args[0]).toEqual(['eventAction', {args: [], envs: []}]);
+      expect(subscribeGoStub.args[0]).toEqual(['eventAction', 'event']);
     });
   });
 });
