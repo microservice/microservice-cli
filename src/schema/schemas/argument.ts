@@ -18,9 +18,10 @@ module.exports = {
           'object',
           'boolean',
           'path',
+          'any',
         ],
       },
-      pattern: '^(number|int|float|string|uuid|list|map|boolean|path|object)$',
+      pattern: '^(number|int|float|string|uuid|list|map|boolean|path|object|any)$',
     },
     help: {
       type: 'string',

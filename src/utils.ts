@@ -105,8 +105,8 @@ export function exec(command: string): Promise<string> {
  *
  * @param {String} string The given sting to log
  */
-export function log(string: string): void {
-  process.stdout.write(string);
+export function log(string) {
+  process.stdout.write(`${string}\n`);
 }
 
 /**
@@ -114,8 +114,8 @@ export function log(string: string): void {
  *
  * @param {String} string The given string to log
  */
-export function error(string: string): void {
-  process.stderr.write(string);
+export function error(string) {
+  process.stderr.write(`${string}\n`);
 }
 
 export const typeCast = {

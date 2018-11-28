@@ -28,12 +28,12 @@ describe('Argument.ts', () => {
           errors: [{
             dataPath: '.type',
             keyword: 'pattern',
-            message: 'should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|object)$"',
-            params: {pattern: '^(number|int|float|string|uuid|list|map|boolean|path|object)$'},
+            message: 'should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|object|any)$"',
+            params: {pattern: '^(number|int|float|string|uuid|list|map|boolean|path|object|any)$'},
             schemaPath: '#/properties/type/pattern',
           }],
           issue: {type: 'bob'},
-          text: 'actions.action.arguments.name.type should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|object)$"',
+          text: 'actions.action.arguments.name.type should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|object|any)$"',
           valid: false,
         });
       }
