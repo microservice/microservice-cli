@@ -2,7 +2,6 @@ import * as _ from 'underscore';
 import * as $ from 'shelljs';
 import * as net from 'http';
 import Microservice from './models/Microservice';
-const uuidv4 = require('uuid/v4');
 
 /**
  * Used to set values in the constructors of the microservice classes.
@@ -57,7 +56,7 @@ export async function createImageName(): Promise<string> {
     const data = await exec('git remote -v');
     return `omg/${data.match(/git@github\.com:(\w+\/[\w|-]+).git/)[1].toLowerCase()}`;
   } catch (e) {
-    return `omg/${uuidv4()}`;
+    return `omg/${Buffer.from(process.cwd()).toString('base64').toLowerCase()}`;
   }
 }
 
