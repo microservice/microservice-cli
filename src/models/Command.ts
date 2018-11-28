@@ -7,6 +7,7 @@ import Http from './Http';
 export default abstract class Command {
   protected readonly _name: string;
   protected readonly _help: string;
+  protected readonly _output: any;
   protected argumentsMap: object;
 
   /**
@@ -19,6 +20,7 @@ export default abstract class Command {
   protected constructor(name: string, rawCommand: any, argumentPath: string) {
     this._name = name;
     this._help = rawCommand.help || null;
+    this._output = rawCommand.output;
     this.argumentsMap = null;
     if (rawCommand.arguments) {
       this.argumentsMap = {};
@@ -83,12 +85,21 @@ export default abstract class Command {
   }
 
   /**
-   * Get's hel for this {@link Command}.
+   * Get's help for this {@link Command}.
    *
    * @return {String} The help
    */
   public get help(): string {
     return this._help;
+  }
+
+  /**
+   * Get's the output type for this {@link Command}.
+   *
+   * @return {Object} The output type
+   */
+  public get output(): any {
+    return this._output;
   }
 
   /**

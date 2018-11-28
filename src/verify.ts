@@ -83,14 +83,14 @@ export function verifyEnvironmentVariablePattern(microservice: Microservice, env
 /**
  * Verifies the output type of a container.
  *
- * @param {Action} action The given {@link Action}
+ * @param {Command} command The given {@link Action}
  * @param {String} output The given output
  */
-export function verifyOutputType(action: Action, output: string) {
-  if (!dataTypes[action.output.type](output)) {
+export function verifyOutputType(command: Command, output: string) {
+  if (!dataTypes[command.output.type](output)) {
     throw (
-      `Action: \`${action.name}\``
-        + ` must have output type: \`${action.output.type}\``
+      `Action: \`${command.name}\``
+        + ` must have output type: \`${command.output.type}\``
         + ` instead got: \`${typeof output}\``
         + ` ${output}`
     );

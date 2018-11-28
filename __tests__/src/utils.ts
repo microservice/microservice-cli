@@ -132,6 +132,10 @@ describe('utils.ts', () => {
       expect(typeof utils.typeCast['map']('{"key": "val"}')).toBe('object');
     });
 
+    test('cast an object', () => {
+      expect(typeof utils.typeCast['object']('{"key": "val"}')).toBe('object');
+    });
+
     test('cast a boolean', () => {
       expect(typeof utils.typeCast['boolean']('true')).toBe('boolean');
     });
@@ -174,6 +178,12 @@ describe('utils.ts', () => {
       expect(utils.dataTypes['map']('{"data": "value"}')).toBeTruthy();
       expect(utils.dataTypes['map']('["data"]')).toBeFalsy();
       expect(utils.dataTypes['map']('asd')).toBeFalsy();
+    });
+
+    test('type checks a stringified object', () => {
+      expect(utils.dataTypes['object']('{"data": "value"}')).toBeTruthy();
+      expect(utils.dataTypes['object']('["data"]')).toBeFalsy();
+      expect(utils.dataTypes['object']('asd')).toBeFalsy();
     });
 
     test('type checks a stringified boolean', () => {

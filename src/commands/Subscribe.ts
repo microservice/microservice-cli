@@ -39,7 +39,6 @@ export default class Subscribe {
    */
   async go(action: string, event:string) {
     const spinner = ora.start(`Subscribing to event: \`${event}\``);
-    // await timer(1500);
 
     this.omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
     this.action = this.microservice.getAction(action);
@@ -53,8 +52,8 @@ export default class Subscribe {
 
     try {
       verify.verifyArgumentTypes(this.event, this._arguments);
-      this._castTypes();
-      const server = this._startOMGServer();
+      this.castTypes();
+      const server = this.startOMGServer();
       const port = await utils.getOpenPort();
       server.listen({port, hostname: '127.0.0.1'});
 
@@ -99,13 +98,17 @@ export default class Subscribe {
    * Starts a server for a streaming service to POST back to.
    *
    * @return {Server} The server
-   * @private
    */
-  _startOMGServer() {
+  private startOMGServer() {
     return http.createServer((req, res) => {
       if (req.method === 'POST') {
         req.on('data', async (data) => {
-          process.stdout.write(`${data}\n`);
+          try {
+            verify.verifyOutputType(this.event, data.toString());
+            utils.log(data);
+          } catch (e) {
+            utils.error(e);
+          }
         });
         res.end('Done');
       }
@@ -114,10 +117,8 @@ export default class Subscribe {
 
   /**
    * Cast the types of the arguments. Everything comes in as a string so it's important to convert to given type.
-   *
-   * @private
    */
-  _castTypes() {
+  private castTypes() {
     const argumentList = Object.keys(this._arguments);
     for (let i = 0; i < argumentList.length; i += 1) {
       const argument = this.event.getArgument(argumentList[i]);
@@ -142,5 +143,3 @@ export default class Subscribe {
     });
   }
 }
-
-const timer = (ms) => new Promise((res) => setTimeout(res, ms));

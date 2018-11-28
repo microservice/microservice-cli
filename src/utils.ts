@@ -125,6 +125,7 @@ export const typeCast = {
   uuid: (uuid: string): string => uuid,
   list: (list: any): any[] => JSON.parse(list),
   map: (map: string): any => JSON.parse(map),
+  object: (object: string): any => JSON.parse(object),
   boolean: (boolean: string): boolean => boolean === 'true',
   path: (path: string): string => path,
   any: (any: any): any => any,
@@ -158,6 +159,16 @@ export const dataTypes = {
       return (
         (!Array.isArray(map) && typeof map === 'object')
         || JSON.parse(map).toString() === '[object Object]'
+      );
+    } catch (e) {
+      return false;
+    }
+  },
+  object: (object: string): boolean => {
+    try {
+      return ( // still need to check properties
+        (!Array.isArray(object) && typeof object === 'object')
+        || JSON.parse(object).toString() === '[object Object]'
       );
     } catch (e) {
       return false;

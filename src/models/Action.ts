@@ -8,7 +8,6 @@ const validateAction = require('../schema/schema').action;
  * Describes an action.
  */
 export default class Action extends Command {
-  private readonly _output: any;
   private readonly eventMap: object;
   private readonly _http: Http;
   private readonly _format: Format;
@@ -26,7 +25,6 @@ export default class Action extends Command {
       throw isValid;
     }
     super(name, rawAction, name);
-    this._output = rawAction.output;
     this.eventMap = null;
     if (rawAction.events) {
       this.eventMap = {};
@@ -40,15 +38,6 @@ export default class Action extends Command {
     if (this._http !== null) {
       this.checkHttpArguments(this._http, 'action', 'Action');
     }
-  }
-
-  /**
-   * The output type of this {@link Action}.
-   *
-   * @return {*} The output type
-   */
-  public get output(): any {
-    return this._output;
   }
 
   /**
