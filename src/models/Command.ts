@@ -1,66 +1,45 @@
 import Argument from './Argument';
-const validateAction = require('../schema/schema').action;
-const validateEvent = require('../schema/schema').event;
+import Http from './Http';
 
 /**
  * Describes a general command. NOTE: this is used as an Abstract Class and should not be instantiated.
  */
-export default class Command {
-  _isAction: boolean;
-  _name: string;
-  _help: string;
-  _argumentsMap: object;
+export default abstract class Command {
+  protected readonly _name: string;
+  protected readonly _help: string;
+  protected readonly _output: any;
+  protected argumentsMap: object;
 
   /**
    * Builds a {@link Command}.
    *
    * @param {String} name The given name
    * @param {Object} rawCommand The raw data
-   * @param {String} actionName Name of that parent action, if null, this means that this is a root action
+   * @param {String} argumentPath Name of that parent action, if null, this means that this is a root action
    */
-  constructor(name, rawCommand, actionName) {
-    this._isAction = actionName === null;
-    let argumentPath = name;
-    if (this._isAction) {
-      const isValid = validateAction(rawCommand);
-      if (!isValid.valid) {
-        isValid.text = isValid.text.replace(/data/g, `actions.${name}`);
-        throw isValid;
-      }
-    } else {
-      argumentPath = `${actionName}.events.${name}`;
-      const isValid = validateEvent(rawCommand);
-      if (!isValid.valid) {
-        isValid.text = isValid.text.replace('data', `actions.events.${name}`);
-        throw isValid;
-      }
-    }
+  protected constructor(name: string, rawCommand: any, argumentPath: string) {
     this._name = name;
     this._help = rawCommand.help || null;
-    this._argumentsMap = null;
+    this._output = rawCommand.output;
+    this.argumentsMap = null;
     if (rawCommand.arguments) {
-      this._argumentsMap = {};
+      this.argumentsMap = {};
       const _arguments = Object.keys(rawCommand.arguments);
       for (let i = 0; i < _arguments.length; i += 1) {
-        this._argumentsMap[_arguments[i]] = new Argument(_arguments[i], argumentPath, rawCommand.arguments[_arguments[i]]);
+        this.argumentsMap[_arguments[i]] = new Argument(_arguments[i], argumentPath, rawCommand.arguments[_arguments[i]]);
       }
     }
   }
 
   /**
-   * Check validity of an http interfacing {@link Command}.
+   * Check validity of a http interfacing {@link Command}.
    *
    * @param {Http} http The given {@link Http}
-   * @private
+   * @param {String} commandType 'event' or 'action'
+   * @param {String} commandTypeUpper 'Event' or 'Action'
    */
-  _checkHttpArguments(http) {
+  protected checkHttpArguments(http: Http, commandType: string, commandTypeUpper: string): void {
     let _path = http.path;
-    let commandType = 'action';
-    let commandTypeUpper = 'Action';
-    if (!this._isAction) {
-      commandType = 'event';
-      commandTypeUpper = 'Event';
-    }
 
     for (let i = 0; i < this.arguments.length; i += 1) {
       const argument = this.arguments[i];
@@ -101,17 +80,26 @@ export default class Command {
    *
    * @return {String} The name
    */
-  get name() {
+  public get name(): string {
     return this._name;
   }
 
   /**
-   * Get's hel for this {@link Command}.
+   * Get's help for this {@link Command}.
    *
    * @return {String} The help
    */
-  get help() {
+  public get help(): string {
     return this._help;
+  }
+
+  /**
+   * Get's the output type for this {@link Command}.
+   *
+   * @return {Object} The output type
+   */
+  public get output(): any {
+    return this._output;
   }
 
   /**
@@ -120,7 +108,7 @@ export default class Command {
    * @param {Object} _arguments The given argument mapping
    * @return {Boolean} True if all required arguments are supplied, otherwise false
    */
-  areRequiredArgumentsSupplied(_arguments) {
+  public areRequiredArgumentsSupplied(_arguments: any): boolean {
     const requiredArguments = this.requiredArguments;
     for (let i = 0; i < requiredArguments.length; i += 1) {
       if (!Object.keys(_arguments).includes(requiredArguments[i])) {
@@ -135,7 +123,7 @@ export default class Command {
    *
    * @return {Array<String>} The required {@link Argument}'s names
    */
-  get requiredArguments() {
+  public get requiredArguments(): string[] {
     return this.arguments.filter((a) => a.isRequired()).map((a) => a.name);
   }
 
@@ -144,11 +132,11 @@ export default class Command {
    *
    * @return {Array<Argument>} The {@link Argument}s
    */
-  get arguments() {
-    if (this._argumentsMap === null) {
+  public get arguments(): Argument[] {
+    if (this.argumentsMap === null) {
       return [];
     }
-    return (<any>Object).values(this._argumentsMap);
+    return (<any>Object).values(this.argumentsMap);
   }
 
   /**
@@ -158,10 +146,10 @@ export default class Command {
    * @throws {String} If the argument does not exists
    * @return {Argument} The {@link Argument} with given name
    */
-  getArgument(argument) {
-    if ((this._argumentsMap === null) || (!this._argumentsMap[argument])) {
+  public getArgument(argument): Argument {
+    if ((this.argumentsMap === null) || (!this.argumentsMap[argument])) {
       throw `Argument \`${argument}\` does not exist`;
     }
-    return this._argumentsMap[argument];
+    return this.argumentsMap[argument];
   }
 }

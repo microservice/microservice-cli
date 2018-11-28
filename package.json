@@ -7,7 +7,7 @@
     "microservice",
     "microservices"
   ],
-  "version": "0.1.3",
+  "version": "0.2.0",
   "main": "omg",
   "scripts": {
     "build": "tsc",
@@ -22,10 +22,8 @@
   "repository": "git@github.com:microservice-guide/cli.git",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^10.12.5",
     "ajv": "^6.5.0",
     "commander": "^2.15.1",
-    "eslint": "^5.9.0",
     "log-symbols": "^2.2.0",
     "ora": "^2.1.0",
     "request": "^2.87.0",
@@ -37,6 +35,8 @@
   },
   "devDependencies": {
     "@types/jest": "^23.3.9",
+    "@types/node": "^10.12.5",
+    "eslint": "^5.9.0",
     "eslint-config-google": "^0.11.0",
     "eslint-plugin-typescript": "^0.13.0",
     "jest": "^23.0.1",

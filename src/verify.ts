@@ -1,5 +1,8 @@
 import * as _ from 'underscore';
 import {dataTypes} from './utils';
+import Command from './models/Command';
+import Microservice from './models/Microservice';
+import Action from './models/Action';
 
 /**
  * Verifies the pattern, enum, and range of the given arguments.
@@ -7,7 +10,7 @@ import {dataTypes} from './utils';
  * @param {Command} command The given {@link Command}
  * @param {Object} args The given argument mapping
  */
-export function verifyArgumentConstrains(command, args) {
+export function verifyArgumentConstrains(command: Command, args: any): void {
   command.arguments.forEach((a) => {
     if (Object.keys(args).includes(a.name)) {
       const argumentValue = args[a.name];
@@ -35,7 +38,7 @@ export function verifyArgumentConstrains(command, args) {
  * @param {Command} command The given {@link Action} or {@link Event}
  * @param {Object} args The given argument mapping
  */
-export function verifyArgumentTypes(command, args) {
+export function verifyArgumentTypes(command: Command, args: any): void {
   command.arguments.forEach((a) => {
     if (Object.keys(args).includes(a.name)) {
       if (!dataTypes[a.type](args[a.name])) {
@@ -51,7 +54,7 @@ export function verifyArgumentTypes(command, args) {
  * @param {Microservice} microservice The given {@link Microservice}
  * @param {Object} envs The given environment variable mapping
  */
-export function verifyEnvironmentVariableTypes(microservice, envs) {
+export function verifyEnvironmentVariableTypes(microservice: Microservice, envs: any): void {
   microservice.environmentVariables.forEach((e) => {
     if (Object.keys(envs).includes(e.name)) {
       if (!dataTypes[e.type](envs[e.name])) {
@@ -67,7 +70,7 @@ export function verifyEnvironmentVariableTypes(microservice, envs) {
  * @param {Microservice} microservice The given {@link Microservice}
  * @param {Object} envs The given environment variable mapping
  */
-export function verifyEnvironmentVariablePattern(microservice, envs) {
+export function verifyEnvironmentVariablePattern(microservice: Microservice, envs: any): void {
   microservice.environmentVariables.forEach((e) => {
     if (Object.keys(envs).includes(e.name)) {
       if ((e.pattern !== null) && (envs[e.name].match(e.pattern)) === null) {
@@ -80,14 +83,14 @@ export function verifyEnvironmentVariablePattern(microservice, envs) {
 /**
  * Verifies the output type of a container.
  *
- * @param {Action} action The given {@link Action}
+ * @param {Command} command The given {@link Action}
  * @param {String} output The given output
  */
-export function verifyOutputType(action, output) {
-  if (!dataTypes[action.output.type](output)) {
+export function verifyOutputType(command: Command, output: string) {
+  if (!dataTypes[command.output.type](output)) {
     throw (
-      `Action: \`${action.name}\``
-        + ` must have output type: \`${action.output.type}\``
+      `Action: \`${command.name}\``
+        + ` must have output type: \`${command.output.type}\``
         + ` instead got: \`${typeof output}\``
         + ` ${output}`
     );

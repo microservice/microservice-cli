@@ -6,7 +6,7 @@ const appender = require('../utils').appender;
 const cli = new Cli();
 
 program
-  .version('0.1.3');
+  .version('0.2.0');
 
 program
   .command('validate')
@@ -20,7 +20,7 @@ program
   .command('build')
   .usage(' ')
   .option('-t --tag, <t>', 'The tag name of the image')
-  .description('Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a tag name must be provided. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
+  .description('Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a uuid will be used to name the image')
   .action(async (options) => Cli.build(options));
 
 program
@@ -36,13 +36,14 @@ program
   });
 
 program
-  .command('subscribe <event>')
+  .command('subscribe <action> <event>')
   .usage(' ')
   .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender(), [])
+  .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender(), [])
   .description('Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
-  .action(async (event, options) => {
+  .action(async (action, event, options) => {
     cli.buildMicroservice();
-    await cli.subscribe(event, options);
+    await cli.subscribe(action, event, options);
   });
 
 program

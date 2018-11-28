@@ -4,9 +4,9 @@ const validateVolume = require('../schema/schema').volume;
  * Describes a volume used by a {@link Microservice}
  */
 export default class Volume {
-  _name: string;
-  _target: string;
-  _persist: boolean;
+  private readonly _name: string;
+  private readonly _target: string;
+  private readonly persist: boolean;
 
   /**
    * Builds a {@link Volume}.
@@ -14,7 +14,7 @@ export default class Volume {
    * @param {String} name The given name
    * @param {Object} rawVolume The given raw data
    */
-  constructor(name, rawVolume) {
+  constructor(name: string, rawVolume: any) {
     const isValid = validateVolume(rawVolume);
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(/data/g, `volumes.${name}`);
@@ -22,7 +22,7 @@ export default class Volume {
     }
     this._name = name;
     this._target = rawVolume.target;
-    this._persist = rawVolume.persist || false;
+    this.persist = rawVolume.persist || false;
   }
 
   /**
@@ -30,7 +30,7 @@ export default class Volume {
    *
    * @return {String} The name
    */
-  get name() {
+  public get name(): string {
     return this._name;
   }
 
@@ -39,7 +39,7 @@ export default class Volume {
    *
    * @return {String} The target
    */
-  get target() {
+  public get target(): string {
     return this._target;
   }
 
@@ -48,7 +48,7 @@ export default class Volume {
    *
    * @return {Boolean} True if persistent, otherwise false
    */
-  doesPersist() {
-    return this._persist;
+  public doesPersist(): boolean {
+    return this.persist;
   }
 }
