@@ -122,11 +122,11 @@ export const typeCast = {
   int: (int: string): number => parseInt(int),
   float: (float: string): number => parseFloat(float),
   string: (string: string): string => string,
-  uuid: (uuid: string): string => uuid, // TODO make uuid type
+  uuid: (uuid: string): string => uuid,
   list: (list: any): any[] => JSON.parse(list),
-  map: (map: string): any => JSON.parse(map), // TODO make a type here
+  map: (map: string): any => JSON.parse(map),
   boolean: (boolean: string): boolean => boolean === 'true',
-  path: (path: string): string => path, // TODO type here
+  path: (path: string): string => path,
   any: (any: any): any => any,
 };
 
