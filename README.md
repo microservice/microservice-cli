@@ -17,7 +17,9 @@ npm install -g omg
 ## Commands
 ### `omg validate`
 ```
-  Validate the structure of a `microservice.yml`
+  Usage: validate [options]
+
+  Validate the structure of a `microservice.yml` in the current directory
 
   Options:
 
@@ -28,7 +30,9 @@ npm install -g omg
 
 ## `omg build`
 ```
-  Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a tag name must be provided.
+  Usage: build [options]
+
+  Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a random string will be used
 
   Options:
 
@@ -38,28 +42,35 @@ npm install -g omg
 
 ## `omg exec`
 ```
-  Run actions defined in your `microservice.yml`.
+  Usage: exec [options] <action>
+
+  Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`
 
   Options:
 
     -i --image <i>  The name of the image to spin up the microservice, if not provided a fresh image will be build based of the `Dockerfile`
-    -a --args <a>   Arguments to be passed to the command, must be of the form `key="val"`
-    -e --envs <e>   Environment variables to be passed to run environment, must be of the form `key="val"`
+    -a --args <a>   Arguments to be passed to the command, must be of the form `key="val"` (default: )
+    -e --envs <e>   Environment variables to be passed to run environment, must be of the form `key="val"` (default: )
     -h, --help      output usage information
 ```
 
 ## `omg subscribe`
 ```
-  Subscribe to an event defined in your `microservice.yml`.
+  Usage: subscribe [options] <action> <event>
+
+  Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`
 
   Options:
 
-    -a --args <a>  Arguments to be passed to the command, must be of the form `key="val"`
+    -a --args <a>  Arguments to be passed to the event, must be of the form `key="val"` (default: )
+    -e --envs <e>  Environment variables to be passed to run environment, must be of the form `key="val"` (default: )
     -h, --help     output usage information
 ```
 
 ## `omg shutdown`
 ```
+  Usage: shutdown [options]
+
   Shutdown a microservice process that was started by an event command
 
   Options:

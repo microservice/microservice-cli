@@ -4,21 +4,12 @@ The [slack](https://github.com/microservice/slack) microservice is used for this
 ## Subscribing to an event
 ### Input
 ```
-omg subscribe hears -a channel="CAL6YMP9C"
+omg subscribe bot hears -a channel="CAL6YMP9C" -e BOT_TOKEN="xoxb-*********************"
 ```
 
 ### Output
 ```
+✔ Built Docker image with name: omg/microservice/slack
+✔ Stared Docker container with id: 6cba78b23954
 ✔ Subscribed to event: `hears` data will be posted to this terminal window when appropriate
-```
-
-## Trying to subscribe to an event who's action was not ran
-### Input
-```
-omg subscribe hears -a channel="CAL6YMP9C"
-```
-
-### Output
-```
-✖ Failed subscribing to event: `hears`. You must run `omg exec `action_for_event`` before trying to subscribe to an event
 ```

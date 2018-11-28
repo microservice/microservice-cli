@@ -43,31 +43,4 @@ omg exec list_channels -e BOT_TOKEN="xoxb-***************************"
 ```
 
 ## An action that has [events](https://microservice.guide/schema/events/)
-The [slack](https://github.com/microservice/slack) microservice is used for this example.
-
-### Input
-```
-omg exec bot -e BOT_TOKEN="xoxb--***************************""
-```
-
-### Output
-```
-✔ Built Docker image with name: omg/microservice/slack
-✔ Stared Docker container with id: 25fcd9dba0b5
-  Run `omg subscribe `name_of_event`` to subscribe to an event
-```
-Docs on subscribe can be found [here](/docs/example-subscribe.md).
-
-## Other
-### `--image`, or `-i` flag
-If you already have an image, use the `-i` flag.
-
-#### Input
-```
-omg exec -i rand string -a length=10
-```
-
-#### Output
-```
-✔ Ran action: `string` with output: ePLJcaopEw
-```
+[See](/docs/example-subscribe.md).
