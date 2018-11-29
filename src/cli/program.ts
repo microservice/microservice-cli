@@ -5,9 +5,10 @@ import Cli from './Cli';
 const appender = require('../utils').appender;
 const cli = new Cli();
 
+
 program
   .description('For more details on the commands below, run `omg `(validate|build|exec|subscribe|shutdown)` --help`')
-  .version('0.2.0');
+  .version('0.2.1');
 
 program
   .command('validate')
@@ -48,7 +49,8 @@ program
   .description('Shutdown a microservice process that was started by an event command')
   .action(async () => await Cli.shutdown());
 
-if (process.argv.length === 2) {
+// needed because there is no default catch all command with commander.js
+if ((process.argv.length < 3) ||(!['validate', 'build', 'exec', 'subscribe', 'shutdown'].includes(process.argv[2]))) {
   program.help();
 }
 
