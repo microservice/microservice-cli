@@ -69,7 +69,7 @@ export default class HttpExec extends Exec {
     portString = portString.trim();
 
     this.dockerServiceId = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
-    spinner.succeed(`Stared Docker container with id: ${this.dockerServiceId.substring(0, 12)}`);
+    spinner.succeed(`Started Docker container with id: ${this.dockerServiceId.substring(0, 12)}`);
   }
 
 

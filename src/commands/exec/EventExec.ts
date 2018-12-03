@@ -39,7 +39,7 @@ export default class EventExec extends Exec {
         message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
       };
     }
-    spinner.succeed(`Stared Docker container with id: ${this.dockerServiceId.substring(0, 12)}`);
+    spinner.succeed(`Started Docker container with id: ${this.dockerServiceId.substring(0, 12)}`);
   }
 
   /**
