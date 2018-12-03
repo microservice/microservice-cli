@@ -25,7 +25,7 @@ omg exec list_channels -e BOT_TOKEN="xoxb-***************************"
 ### Output
 ```
 ✔ Built Docker image with name: omg/microservice/slack
-✔ Stared Docker container with id: 77e8a383eb56
+✔ Started Docker container with id: 77e8a383eb56
 ✔ Ran action: `list_channels` with output: [{
   "id": "CAJK0FL1W",
   "name": "random",

@@ -61,7 +61,7 @@ describe('HttpExec.js', () => {
         },
       }), {}, {}).exec('get');
 
-      expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran action: `get` with output: get data', 'Stopped Docker container: `execStub`']);
+      expect(successTextList).toEqual(['Started Docker container with id: `execStub`', 'Ran action: `get` with output: get data', 'Stopped Docker container: `execStub`']);
       expect(execStub.args[0][0]).toEqual('docker run -d -p 5555:5555 --entrypoint node fake_docker_id app.js');
       expect(execStub.args[1][0]).toEqual('docker kill `execStub`');
       expect(rpGetStub.calledWith('http://localhost:5555/get')).toBeTruthy();
@@ -108,7 +108,7 @@ describe('HttpExec.js', () => {
         data: 'data',
       }, {}).exec('post');
 
-      expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran action: `post` with output: post data', 'Stopped Docker container: `execStub`']);
+      expect(successTextList).toEqual(['Started Docker container with id: `execStub`', 'Ran action: `post` with output: post data', 'Stopped Docker container: `execStub`']);
       expect(execStub.args[0][0]).toEqual('docker run -d -p 5555:5555 --entrypoint node fake_docker_id app.js');
       expect(execStub.args[1][0]).toEqual('docker kill `execStub`');
       expect(rpPostStub.calledWith('http://localhost:5555/person/2?isMale=true', {
@@ -139,7 +139,7 @@ describe('HttpExec.js', () => {
         },
       }), {}, {}).exec('put');
 
-      expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran action: `put` with output: put data', 'Stopped Docker container: `execStub`']);
+      expect(successTextList).toEqual(['Started Docker container with id: `execStub`', 'Ran action: `put` with output: put data', 'Stopped Docker container: `execStub`']);
       expect(execStub.args[0][0]).toEqual('docker run -d -p 5555:7777 --entrypoint node fake_docker_id app.js');
       expect(execStub.args[1][0]).toEqual('docker kill `execStub`');
       expect(rpPutStub.calledWith('http://localhost:5555/cheese', {
@@ -179,7 +179,7 @@ describe('HttpExec.js', () => {
         id: '2',
       }, {}).exec('delete');
 
-      expect(successTextList).toEqual(['Stared Docker container with id: `execStub`', 'Ran action: `delete` with output: delete data', 'Stopped Docker container: `execStub`']);
+      expect(successTextList).toEqual(['Started Docker container with id: `execStub`', 'Ran action: `delete` with output: delete data', 'Stopped Docker container: `execStub`']);
       expect(execStub.args[0][0]).toEqual('docker run -d -p 5555:5555 --entrypoint node fake_docker_id app.js');
       expect(execStub.args[1][0]).toEqual('docker kill `execStub`');
       expect(rpDeleteStub.calledWith('http://localhost:5555/user/2')).toBeTruthy();
