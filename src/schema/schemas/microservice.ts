@@ -8,7 +8,7 @@ module.exports = {
       properties: {
         version: {
           type: 'string',
-          pattern: '[0-9]*\\.[0-9]*\\.[0-9]*',
+          pattern: '[0-9]*\.[0-9]*\.[0-9]*',
         },
         title: {
           type: 'string',
