@@ -50,7 +50,7 @@ program
   .action(async () => await Cli.shutdown());
 
 // needed because there is no default catch all command with commander.js
-if ((process.argv.length < 3) ||(!['validate', 'build', 'exec', 'subscribe', 'shutdown'].includes(process.argv[2]))) {
+if ((process.argv.length < 3) || (!['validate', 'build', 'exec', 'subscribe', 'shutdown', '--version'].includes(process.argv[2]))) {
   program.help();
 }
 
