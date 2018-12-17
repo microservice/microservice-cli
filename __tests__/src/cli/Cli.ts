@@ -212,6 +212,14 @@ describe('Cli.ts', () => {
   describe('.build(options)', () => {
     let buildGoStub;
 
+    beforeEach(() => {
+      sinon.stub(utils, 'exec');
+    });
+
+    afterEach(() => {
+      (utils.exec as any).restore();
+    });
+
     // not able to spy on constructor with sinon yet
     beforeEach(() => {
       buildGoStub = sinon.stub(Build.prototype, 'go');

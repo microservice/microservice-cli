@@ -29,6 +29,18 @@ export default class Cli {
   }
 
   /**
+   * Checks if Docker is running by running `docker ps`.
+   */
+  private static async checkDocker() {
+    try {
+      await utils.exec('docker ps');
+    } catch (e) {
+      utils.error('Docker must be running to us the cli');
+      process.exit(1);
+    }
+  }
+
+  /**
    * Builds a {@link Microservice} based ton the `microservice.yml` file. If the build throws an error the user
    * will be directed to run `omg validate`.
    */
@@ -86,6 +98,7 @@ export default class Cli {
    * @param {Object} options The given name
    */
   static async build(options: any): Promise<string> {
+    await Cli.checkDocker();
     return await new Build(options.tag || await utils.createImageName()).go();
   }
 
@@ -96,6 +109,7 @@ export default class Cli {
    * @param {Object} options The given object holding the command, arguments, and environment variables
    */
   async exec(action: string, options: any): Promise<void> {
+    await Cli.checkDocker();
     const image = options.image;
     if (!(options.args) || !(options.envs)) {
       utils.error('Failed to parse command, run `omg exec --help` for more information.');
@@ -143,6 +157,7 @@ export default class Cli {
    * @param {Object} options The given object holding the arguments
    */
   async subscribe(action: string, event: string, options: any) {
+    await Cli.checkDocker();
     try {
       const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
       this._subscribe = new Subscribe(this.microservice, argsObj);
@@ -166,6 +181,7 @@ export default class Cli {
    * Kills a docker process that is associated with the microservice.
    */
   static async shutdown(): Promise<void> {
+    await Cli.checkDocker();
     const spinner = ora.start('Shutting down microservice');
     const infoMessage = 'Microservice not shutdown because it was not running';
     if (!fs.existsSync(`${homedir}/.omg.json`)) {
