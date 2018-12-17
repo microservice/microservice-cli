@@ -49,8 +49,7 @@ export default class Cli {
       const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
       this.microservice = new Microservice(json);
     } catch (e) {
-      utils.error('Unable to build microservice. Run `omg validate` for more details');
-      process.exit(1);
+      Cli.validate({});
     }
   }
 

@@ -76,7 +76,7 @@ describe('Cli.ts', () => {
       const cli = new Cli();
       cli.buildMicroservice();
 
-      expect(errorStub.calledWith('Unable to build microservice. Run `omg validate` for more details')).toBeTruthy();
+      expect(errorStub.calledWith('root should NOT have additional properties, root should have required property \'omg\'')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
     });
   });
