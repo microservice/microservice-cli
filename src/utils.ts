@@ -56,7 +56,7 @@ export async function createImageName(): Promise<string> {
     const data = await exec('git remote -v');
     return `omg/${data.match(/git@github\.com:(\w+\/[\w|-]+).git/)[1].toLowerCase()}`;
   } catch (e) {
-    return `omg/${Buffer.from(process.cwd()).toString('base64').toLowerCase()}`;
+    return `omg/${Buffer.from(process.cwd()).toString('base64').toLowerCase().replace(/=/g, '')}`;
   }
 }
 
