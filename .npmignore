@@ -12,3 +12,4 @@ src/
 .eslintrc.js
 jest.config.js
 tsconfig.js
+package-lock.json
