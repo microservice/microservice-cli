@@ -39,7 +39,8 @@ export default class HttpExec extends Exec {
       spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
       await this.serverKill();
     } catch (e) {
-      throw { // still need to kill server here too
+      await utils.exec(`docker kill ${this.dockerServiceId.substring(0, 12)}`);
+      throw {
         spinner,
         message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
       };
