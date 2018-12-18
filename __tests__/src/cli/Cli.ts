@@ -244,19 +244,6 @@ describe('Cli.ts', () => {
       expect(errorStub.called).toBeFalsy();
       expect(processExitStub.called).toBeFalsy();
     });
-
-    test('errors because not tag is given and no git config is present', async () => {
-      (utils.createImageName as any).restore();
-      sinon.stub(utils, 'createImageName').callsFake(async () => {
-        throw 'error';
-      });
-      try {
-        await Cli.build({});
-      } catch (e) {
-        expect(buildGoStub.called).toBeFalsy();
-        expect(e).toBe('error');
-      }
-    });
   });
 
   describe('.exec(action, options)', () => {

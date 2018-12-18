@@ -98,7 +98,12 @@ export default class Cli {
    */
   static async build(options: any): Promise<string> {
     await Cli.checkDocker();
-    return await new Build(options.tag || await utils.createImageName()).go();
+    try {
+      return await new Build(options.tag || await utils.createImageName()).go();
+    } catch (e) {
+      e.spinner.fail(`Failed to build: ${e.message}`);
+      process.exit(1);
+    }
   }
 
   /**
