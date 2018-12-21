@@ -11,6 +11,7 @@ import * as verify from '../../verify';
  */
 export default class HttpExec extends Exec {
   private portMap: any;
+  private isServerRunning = false;
 
   /**
    * Builds a {@link HttpExec}.
@@ -35,11 +36,14 @@ export default class HttpExec extends Exec {
     try {
       this.verification();
       const output = await this.httpCommand(this.portMap[this.action.http.port]);
+      this.isServerRunning = true;
       verify.verifyOutputType(this.action, output.trim());
       spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
       await this.serverKill();
     } catch (e) {
-      await utils.exec(`docker kill ${this.dockerServiceId.substring(0, 12)}`);
+      if (this.isServerRunning) {
+        await utils.exec(`docker kill ${this.dockerServiceId.substring(0, 12)}`);
+      }
       throw {
         spinner,
         message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
