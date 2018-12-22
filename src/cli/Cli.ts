@@ -132,25 +132,37 @@ export default class Cli {
       options.image = await Cli.build({});
     }
 
-    try {
-      const _action = this.microservice.getAction(action);
-      const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
-      const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
+    // console.log('hi');
+    const _action = this.microservice.getAction(action);
+    const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
+    const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
 
-      this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
-      await this._exec.exec(action);
-    } catch (error) {
-      if (error.spinner) {
-        if (error.message.includes('Unable to find image')) {
-          error.spinner.fail(`${error.message.split('.')[0]}. Container not built. Run \`omg build \`container_name\`\``);
-        } else {
-          error.spinner.fail(error.message);
-        }
-      } else {
-        process.stderr.write(error.message);
-      }
-      process.exit(1);
-    }
+
+    this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
+    const spinner = ora.start(`Starting Docker container`); // 1. start service
+    const containerID = await this._exec.startService();
+    spinner.succeed('Started Docker container');
+    await this._exec.exec(action, containerID); // 3. start service
+
+    // try {
+    //   const _action = this.microservice.getAction(action);
+    //   const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
+    //   const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
+    //
+    //   this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
+    //   await this._exec.exec(action);
+    // } catch (error) {
+    //   if (error.spinner) {
+    //     if (error.message.includes('Unable to find image')) {
+    //       error.spinner.fail(`${error.message.split('.')[0]}. Container not built. Run \`omg build \`container_name\`\``);
+    //     } else {
+    //       error.spinner.fail(error.message);
+    //     }
+    //   } else {
+    //     process.stderr.write(error.message);
+    //   }
+    //   process.exit(1);
+    // }
   }
 
   /**

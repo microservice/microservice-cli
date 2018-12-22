@@ -148,5 +148,7 @@ export default abstract class Exec {
    *
    * @param {String} action
    */
-  public abstract async exec(action: string): Promise<void>;
+  public abstract async exec(action: string, containerID: string): Promise<void>;
+
+  public abstract async startService(): Promise<string>;
 }

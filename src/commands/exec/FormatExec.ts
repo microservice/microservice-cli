@@ -21,14 +21,14 @@ export default class FormatExec extends Exec {
   }
 
   /** @inheritdoc */
-  public async exec(action: string) {
+  public async exec(action: string, containerID: string): Promise<void> {
     this.action = this.microservice.getAction(action);
 
     const spinner = ora.start(`Running action: \`${this.action.name}\``);
     this.preChecks(spinner);
     try {
       this.verification();
-      const containerID = await this.startDockerExecContainer();
+      // const containerID = await this.startDockerExecContainer();
       const output = await this.runDockerExecCommand(containerID);
       verify.verifyOutputType(this.action, output);
       await utils.exec(`docker kill ${containerID}`);
@@ -47,7 +47,7 @@ export default class FormatExec extends Exec {
    *
    * @return {Promise<String>} The id of the started container
    */
-  private async startDockerExecContainer(): Promise<string> {
+  public async startService(): Promise<string> {
     const lifecycle = this.microservice.lifecycle;
     if ((lifecycle !== null) && (lifecycle.startup !== null)) {
       return await utils.exec(`docker run -td ${this.dockerImage} ${lifecycle.startup.command} ${lifecycle.startup.args}`);
