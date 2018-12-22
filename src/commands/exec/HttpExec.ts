@@ -26,7 +26,7 @@ export default class HttpExec extends Exec {
   }
 
   /** @inheritdoc */
-  public async exec(action, containerID): Promise<void> {
+  public async exec(action): Promise<void> {
     this.action = this.microservice.getAction(action);
 
     await this.startServer();
@@ -52,7 +52,6 @@ export default class HttpExec extends Exec {
   }
 
   public async startService() {
-    return '';
   }
 
   /**

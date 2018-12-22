@@ -13,6 +13,7 @@ export default abstract class Exec {
   protected environmentVariables: any;
   protected dockerServiceId: string;
   protected action: Action;
+  protected containerID: string = null;
 
   /**
    * Use to help build a {@link FormatExec}, {@link HttpExec}, or an {@link EventExec}.
@@ -148,7 +149,11 @@ export default abstract class Exec {
    *
    * @param {String} action
    */
-  public abstract async exec(action: string, containerID: string): Promise<void>;
+  public abstract async exec(action: string): Promise<void>;
 
-  public abstract async startService(): Promise<string>;
+  public abstract async startService(): Promise<void>;
+
+  public async isRunning(): Promise<boolean> {
+    return JSON.parse(await utils.exec(`docker inspect ${this.containerID}`))[0].State.Running;
+  }
 }

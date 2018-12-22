@@ -139,10 +139,14 @@ export default class Cli {
 
 
     this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
-    const spinner = ora.start(`Starting Docker container`); // 1. start service
-    const containerID = await this._exec.startService();
+    const spinner = ora.start(`Starting Docker container`);
+    await this._exec.startService(); // 1. start service
     spinner.succeed('Started Docker container');
-    await this._exec.exec(action, containerID); // 3. start service
+    if (!await this._exec.isRunning()) { // 2. health check
+      utils.error('TODO ERROR NOT RUNNING');
+      process.exit(1);
+    }
+    await this._exec.exec(action); // 3. start service
 
     // try {
     //   const _action = this.microservice.getAction(action);

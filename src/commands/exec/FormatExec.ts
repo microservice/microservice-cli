@@ -21,7 +21,7 @@ export default class FormatExec extends Exec {
   }
 
   /** @inheritdoc */
-  public async exec(action: string, containerID: string): Promise<void> {
+  public async exec(action: string): Promise<void> {
     this.action = this.microservice.getAction(action);
 
     const spinner = ora.start(`Running action: \`${this.action.name}\``);
@@ -29,9 +29,9 @@ export default class FormatExec extends Exec {
     try {
       this.verification();
       // const containerID = await this.startDockerExecContainer();
-      const output = await this.runDockerExecCommand(containerID);
+      const output = await this.runDockerExecCommand(this.containerID);
       verify.verifyOutputType(this.action, output);
-      await utils.exec(`docker kill ${containerID}`);
+      await utils.exec(`docker kill ${this.containerID}`);
       spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
     } catch (e) {
       throw {
@@ -47,12 +47,12 @@ export default class FormatExec extends Exec {
    *
    * @return {Promise<String>} The id of the started container
    */
-  public async startService(): Promise<string> {
+  public async startService(): Promise<void> {
     const lifecycle = this.microservice.lifecycle;
     if ((lifecycle !== null) && (lifecycle.startup !== null)) {
-      return await utils.exec(`docker run -td ${this.dockerImage} ${lifecycle.startup.command} ${lifecycle.startup.args}`);
+      this.containerID = await utils.exec(`docker run -td ${this.dockerImage} ${lifecycle.startup.command} ${lifecycle.startup.args}`);
     } else {
-      return await utils.exec(`docker run -td ${this.dockerImage} tail -f /dev/null`);
+      this.containerID = await utils.exec(`docker run -td ${this.dockerImage} tail -f /dev/null`);
     }
   }
 
