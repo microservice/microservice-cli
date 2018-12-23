@@ -80,7 +80,7 @@ export default class Cli {
    * @param {Object} options The given options (json, silent, or text)
    */
   static validate(options: any): void {
-    const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
+    const json = Cli.readYAML(path.join(process.cwd(), 'microservice.yml'));
     try {
       const m = new Microservice(json);
       utils.log(Cli.processValidateOutput(m.rawData, options));
@@ -215,5 +215,20 @@ export default class Cli {
       await this._exec.serverKill();
     }
     process.exit();
+  }
+
+  /**
+   * Read's a `microservice.yml` file to a string.
+   *
+   * @param {String} path The given path
+   * @return {String} Returns file in string form
+   */
+  private static readYAML(path: string): string {
+    try {
+      return YAML.parse(fs.readFileSync(path).toString());
+    } catch (e) {
+      utils.error(`Issue with microservice.yml: ${e.message}`);
+      process.exit(1);
+    }
   }
 }
