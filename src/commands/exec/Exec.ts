@@ -37,18 +37,18 @@ export default abstract class Exec {
    *
    * @param {Object} spinner The spinner for the {@link Exec}
    */
-  protected preChecks(spinner: any) {
+  protected preChecks() {
     this.setDefaultArguments();
     this.setDefaultEnvironmentVariables();
     if (!this.action.areRequiredArgumentsSupplied(this._arguments)) {
       throw {
-        spinner,
+        spinner: null,
         message: `Failed action: \`${this.action.name}\`. Need to supply required arguments: \`${this.action.requiredArguments.toString()}\``,
       };
     }
     if (!this.microservice.areRequiredEnvironmentVariablesSupplied(this.environmentVariables)) {
       throw {
-        spinner,
+        spinner: null,
         message: `Failed action: \`${this.action.name}\`. Need to supply required environment variables: \`${this.microservice.requiredEnvironmentVariables.toString()}\``,
       };
     }
@@ -149,11 +149,16 @@ export default abstract class Exec {
    *
    * @param {String} action
    */
-  public abstract async exec(action: string): Promise<void>;
+  public abstract async exec(action: string): Promise<string>;
 
   public abstract async startService(): Promise<void>;
 
   public async isRunning(): Promise<boolean> {
+    // console.log(await utils.exec(`docker inspect ${this.containerID}`))
     return JSON.parse(await utils.exec(`docker inspect ${this.containerID}`))[0].State.Running;
+  }
+
+  public async getLogs() {
+    return `  Docker logs:\n${await utils.exec(`docker logs ${this.containerID}`)}`;
   }
 }

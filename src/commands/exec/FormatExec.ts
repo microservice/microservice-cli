@@ -21,23 +21,21 @@ export default class FormatExec extends Exec {
   }
 
   /** @inheritdoc */
-  public async exec(action: string): Promise<void> {
+  public async exec(action: string): Promise<string> {
     this.action = this.microservice.getAction(action);
 
-    const spinner = ora.start(`Running action: \`${this.action.name}\``);
-    this.preChecks(spinner);
+    // const spinner = ora.start(`Running action: \`${this.action.name}\``);
+    this.preChecks();
     try {
       this.verification();
       // const containerID = await this.startDockerExecContainer();
       const output = await this.runDockerExecCommand(this.containerID);
       verify.verifyOutputType(this.action, output);
       await utils.exec(`docker kill ${this.containerID}`);
-      spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
+      return output.trim();
+      // spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
     } catch (e) {
-      throw {
-        spinner,
-        message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
-      };
+      throw e;
     }
   }
 
@@ -63,6 +61,7 @@ export default class FormatExec extends Exec {
    * @return {Promise<String>} stdout if command runs with exit code 0, otherwise stderror
    */
   private async runDockerExecCommand(containerID: string): Promise<string> {
+    // console.log(`docker exec ${containerID} ${this.action.format.command}${this.formatExec()}`);
     return await utils.exec(`docker exec ${containerID} ${this.action.format.command}${this.formatExec()}`);
   }
 

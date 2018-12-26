@@ -139,14 +139,27 @@ export default class Cli {
 
 
     this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
-    const spinner = ora.start(`Starting Docker container`);
+    let spinner = ora.start(`Starting Docker container`);
     await this._exec.startService(); // 1. start service
     spinner.succeed('Started Docker container');
+    spinner = ora.start(`Health check`);
+    await timer(100);
     if (!await this._exec.isRunning()) { // 2. health check
-      utils.error('TODO ERROR NOT RUNNING');
+      spinner.fail('Health check failed')
+      utils.error(await this._exec.getLogs());
       process.exit(1);
     }
-    await this._exec.exec(action); // 3. start service
+    spinner.succeed(`Health check passed`);
+    spinner = ora.start(`Running action: \`${action}\``);
+    try {
+      const output = await this._exec.exec(action); // 3. run service
+      spinner.succeed(`Ran action: \`${action}\` with output: ${output}`);
+    } catch (e) {
+      // spinner.fail(e);
+      console.log('ERROR:::::::::ERROR\n');
+      console.log(e);
+      process.exit(1);
+    }
 
     // try {
     //   const _action = this.microservice.getAction(action);
@@ -248,3 +261,5 @@ export default class Cli {
     }
   }
 }
+
+const timer = (ms) => new Promise( (res) => setTimeout(res, ms));

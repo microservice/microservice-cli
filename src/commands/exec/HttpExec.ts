@@ -26,12 +26,12 @@ export default class HttpExec extends Exec {
   }
 
   /** @inheritdoc */
-  public async exec(action): Promise<void> {
+  public async exec(action): Promise<string> {
     this.action = this.microservice.getAction(action);
 
     await this.startServer();
     const spinner = ora.start(`Running action: \`${this.action.name}\``);
-    this.preChecks(spinner);
+    this.preChecks();
 
     try {
       this.verification();
@@ -40,6 +40,7 @@ export default class HttpExec extends Exec {
       verify.verifyOutputType(this.action, output.trim());
       spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
       await this.serverKill();
+      return '';
     } catch (e) {
       if (this.isServerRunning) {
         await utils.exec(`docker kill ${this.dockerServiceId.substring(0, 12)}`);

@@ -25,21 +25,22 @@ export default class EventExec extends Exec {
 
 
   /** @inheritdoc */
-  public async exec(action): Promise<void> {
+  public async exec(action): Promise<string> {
     const spinner = ora.start('Starting Docker container');
     this.action = this.microservice.getAction(action);
-    this.preChecks(spinner);
+    this.preChecks();
     try {
       this.verification();
       await this.startServer();
       this.omgJsonFileHandler();
+      spinner.succeed(`Started Docker container with id: ${this.dockerServiceId.substring(0, 12)}`);
+      return '';
     } catch (e) {
       throw {
         spinner,
         message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
       };
     }
-    spinner.succeed(`Started Docker container with id: ${this.dockerServiceId.substring(0, 12)}`);
   }
 
   public async startService() {

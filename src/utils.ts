@@ -87,9 +87,9 @@ export function parse(list: string[], errorMessage: string): any {
  * @param {String} command The command to run
  * @return {Promise<String>} The stdout if resolved, otherwise stderror
  */
-export function exec(command: string): Promise<string> {
+export function exec(command: string, silent: boolean=true): Promise<string> {
   return new Promise(function(resolve, reject) {
-    $.exec(command, {silent: true}, function(code, stdout, stderr) {
+    $.exec(command, {silent}, function(code, stdout, stderr) {
       if (code !== 0) {
         reject(stderr.trim());
       } else {
