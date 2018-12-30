@@ -45,13 +45,14 @@ export default class FormatExec extends Exec {
    *
    * @return {Promise<String>} The id of the started container
    */
-  public async startService(): Promise<void> {
+  public async startService(): Promise<string> {
     const lifecycle = this.microservice.lifecycle;
     if ((lifecycle !== null) && (lifecycle.startup !== null)) {
       this.containerID = await utils.exec(`docker run -td ${this.dockerImage} ${lifecycle.startup.command} ${lifecycle.startup.args}`);
     } else {
       this.containerID = await utils.exec(`docker run -td ${this.dockerImage} tail -f /dev/null`);
     }
+    return this.containerID;
   }
 
   /**

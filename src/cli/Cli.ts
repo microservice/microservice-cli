@@ -144,8 +144,8 @@ export default class Cli {
 
     this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
     let spinner = ora.start(`Starting Docker container`);
-    await this._exec.startService(); // 1. start service
-    spinner.succeed('Started Docker container');
+    const startedID = await this._exec.startService(); // 1. start service
+    spinner.succeed(`Started Docker container: ${startedID.substring(0, 12)}`);
     spinner = ora.start(`Health check`);
     await timer(1000);
     if (!await this._exec.isRunning()) { // 2. health check
@@ -163,26 +163,9 @@ export default class Cli {
       utils.error(`  ${e}`);
       process.exit(1);
     }
-
-    // try {
-    //   const _action = this.microservice.getAction(action);
-    //   const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
-    //   const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
-    //
-    //   this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
-    //   await this._exec.exec(action);
-    // } catch (error) {
-    //   if (error.spinner) {
-    //     if (error.message.includes('Unable to find image')) {
-    //       error.spinner.fail(`${error.message.split('.')[0]}. Container not built. Run \`omg build \`container_name\`\``);
-    //     } else {
-    //       error.spinner.fail(error.message);
-    //     }
-    //   } else {
-    //     process.stderr.write(error.message);
-    //   }
-    //   process.exit(1);
-    // }
+    spinner = ora.start(`Stopping Docker container: ${startedID.substring(0, 12)}`)
+    const stoppedID = await this._exec.stopService();
+    spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);
   }
 
   /**

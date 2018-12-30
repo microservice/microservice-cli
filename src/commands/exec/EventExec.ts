@@ -44,6 +44,7 @@ export default class EventExec extends Exec {
   }
 
   public async startService() {
+    return '';
   }
 
   /**

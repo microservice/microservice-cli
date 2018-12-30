@@ -50,7 +50,7 @@ export default class HttpExec extends Exec {
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
    */
-  public async startService(): Promise<void> {
+  public async startService(): Promise<string> {
     this.portMap = {};
     const neededPorts = utils.getNeededPorts(this.microservice);
     const openPorts = [];
@@ -69,8 +69,12 @@ export default class HttpExec extends Exec {
     portString = portString.trim();
 
     this.containerID = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
+    return this.containerID;
   }
 
+  public async stopService(): Promise<string> {
+    return await utils.exec(`docker kill ${this.containerID}`);
+  }
 
   /**
    * Run this {@link Exec}'s {@link Action} that interfaces via HTTP.
