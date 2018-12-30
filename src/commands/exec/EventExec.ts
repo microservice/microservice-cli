@@ -31,26 +31,17 @@ export default class EventExec extends Exec {
     this.preChecks();
     try {
       this.verification();
-      await this.startServer();
       this.omgJsonFileHandler();
-      spinner.succeed(`Started Docker container with id: ${this.dockerServiceId.substring(0, 12)}`);
       return '';
     } catch (e) {
-      throw {
-        spinner,
-        message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
-      };
+      throw `Failed action: \`${action}\`. ${e.toString().trim()}`;
     }
-  }
-
-  public async startService() {
-    return '';
   }
 
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
    */
-  private async startServer(): Promise<void> {
+  public async startService(): Promise<string> {
     this.portMap = {};
     const neededPorts = utils.getNeededPorts(this.microservice);
     const openPorts = [];
@@ -68,7 +59,8 @@ export default class EventExec extends Exec {
     }
     portString = portString.trim();
 
-    this.dockerServiceId = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
+    this.containerID = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
+    return this.containerID;
   }
 
   /**
@@ -81,7 +73,7 @@ export default class EventExec extends Exec {
     }
 
     data[process.cwd()] = {
-      container_id: this.dockerServiceId,
+      container_id: this.containerID,
       ports: {},
     };
 
@@ -94,15 +86,15 @@ export default class EventExec extends Exec {
 
   /** @inheritdoc */
   public isDockerProcessRunning(): boolean {
-    return this.dockerServiceId !== null;
+    return this.containerID !== null;
   }
 
   /**
    * Stops a running Docker service.
    */
   async serverKill(): Promise<void> {
-    const spinner = ora.start(`Stopping Docker container: ${this.dockerServiceId.substring(0, 12)}`);
-    await utils.exec(`docker kill ${this.dockerServiceId.substring(0, 12)}`);
-    spinner.succeed(`Stopped Docker container: ${this.dockerServiceId.substring(0, 12)}`);
+    const spinner = ora.start(`Stopping Docker container: ${this.containerID.substring(0, 12)}`);
+    await utils.exec(`docker kill ${this.containerID.substring(0, 12)}`);
+    spinner.succeed(`Stopped Docker container: ${this.containerID.substring(0, 12)}`);
   }
 }

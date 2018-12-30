@@ -163,9 +163,12 @@ export default class Cli {
       utils.error(`  ${e}`);
       process.exit(1);
     }
-    spinner = ora.start(`Stopping Docker container: ${startedID.substring(0, 12)}`)
-    const stoppedID = await this._exec.stopService();
-    spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);
+
+    if (this._exec.constructor.name !== 'EventExec') { // bad
+      spinner = ora.start(`Stopping Docker container: ${startedID.substring(0, 12)}`)
+      const stoppedID = await this._exec.stopService();
+      spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);
+    }
   }
 
   /**
@@ -177,23 +180,10 @@ export default class Cli {
    */
   async subscribe(action: string, event: string, options: any) {
     await Cli.checkDocker();
-    try {
-      const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
-      this._subscribe = new Subscribe(this.microservice, argsObj);
-      await this.exec(action, {args: [], envs: options.envs});
-      await this._subscribe.go(action, event);
-    } catch (error) {
-      if (error.spinner) {
-        if (error.message.includes('Unable to find image')) {
-          error.spinner.fail(`${error.message.split('.')[0]}. Container not built. Run \`omg build \`container_name\`\``);
-        } else {
-          error.spinner.fail(error.message);
-        }
-      } else {
-        process.stderr.write(error.message);
-      }
-      process.exit(1);
-    }
+    const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
+    this._subscribe = new Subscribe(this.microservice, argsObj);
+    await this.exec(action, {args: [], envs: options.envs});
+    await this._subscribe.go(action, event);
   }
 
   /**
