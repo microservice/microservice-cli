@@ -141,7 +141,7 @@ export default class Cli {
     await this._exec.startService(); // 1. start service
     spinner.succeed('Started Docker container');
     spinner = ora.start(`Health check`);
-    await timer(100);
+    await timer(1000);
     if (!await this._exec.isRunning()) { // 2. health check
       spinner.fail('Health check failed')
       utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
@@ -154,7 +154,7 @@ export default class Cli {
       spinner.succeed(`Ran action: \`${action}\` with output: ${output}`);
     } catch (e) {
       spinner.fail(`Failed action: \`${action}\``);
-      utils.error(`  ${e}`)
+      utils.error(`  ${e}`);
       process.exit(1);
     }
 

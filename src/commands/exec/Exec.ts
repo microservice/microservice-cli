@@ -154,7 +154,6 @@ export default abstract class Exec {
   public abstract async startService(): Promise<void>;
 
   public async isRunning(): Promise<boolean> {
-    // console.log(await utils.exec(`docker inspect ${this.containerID}`))
     return JSON.parse(await utils.exec(`docker inspect ${this.containerID}`))[0].State.Running;
   }
 

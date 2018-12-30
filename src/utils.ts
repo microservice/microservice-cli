@@ -82,7 +82,7 @@ export function parse(list: string[], errorMessage: string): any {
 }
 
 /**
- * Promise wrapper for the `exec`.
+ * Promise wrapper for the `exec`. TODO look into why we need those if in the if for code !== 0
  *
  * @param {String} command The command to run
  * @param {Boolean} [silent=true] True if silent, otherwise false
@@ -98,7 +98,11 @@ export function exec(command: string, silent: boolean=true): Promise<string> {
           reject(stderr.trim());
         }
       } else {
-        resolve(stdout.trim());
+        if (stdout === '') {
+          resolve(stderr.trim());
+        } else {
+          resolve(stdout.trim());
+        }
       }
     });
   });
