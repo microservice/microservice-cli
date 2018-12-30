@@ -61,7 +61,6 @@ export default class FormatExec extends Exec {
    * @return {Promise<String>} stdout if command runs with exit code 0, otherwise stderror
    */
   private async runDockerExecCommand(containerID: string): Promise<string> {
-    // console.log(`docker exec ${containerID} ${this.action.format.command}${this.formatExec()}`);
     return await utils.exec(`docker exec ${containerID} ${this.action.format.command}${this.formatExec()}`);
   }
 

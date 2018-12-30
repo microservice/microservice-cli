@@ -159,6 +159,6 @@ export default abstract class Exec {
   }
 
   public async getLogs() {
-    return `  Docker logs:\n${await utils.exec(`docker logs ${this.containerID}`)}`;
+    return await utils.exec(`docker logs ${this.containerID}`);
   }
 }

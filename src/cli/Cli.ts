@@ -132,11 +132,9 @@ export default class Cli {
       options.image = await Cli.build({});
     }
 
-    // console.log('hi');
     const _action = this.microservice.getAction(action);
     const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
     const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
-
 
     this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
     let spinner = ora.start(`Starting Docker container`);
@@ -146,7 +144,7 @@ export default class Cli {
     await timer(100);
     if (!await this._exec.isRunning()) { // 2. health check
       spinner.fail('Health check failed')
-      utils.error(await this._exec.getLogs());
+      utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
       process.exit(1);
     }
     spinner.succeed(`Health check passed`);
@@ -155,9 +153,8 @@ export default class Cli {
       const output = await this._exec.exec(action); // 3. run service
       spinner.succeed(`Ran action: \`${action}\` with output: ${output}`);
     } catch (e) {
-      // spinner.fail(e);
-      console.log('ERROR:::::::::ERROR\n');
-      console.log(e);
+      spinner.fail(`Failed action: \`${action}\``);
+      utils.error(`  ${e}`)
       process.exit(1);
     }
 
