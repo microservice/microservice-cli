@@ -38,16 +38,11 @@ export default class Subscribe {
    * @param {String} event The given event
    */
   async go(action: string, event:string) {
-    const spinner = ora.start(`Subscribing to event: \`${event}\``);
-
     this.omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
     this.action = this.microservice.getAction(action);
     this.event = this.action.getEvent(event);
     if (!this.event.areRequiredArgumentsSupplied(this._arguments)) {
-      throw {
-        spinner,
-        message: `Failed subscribing to event: \`${event}\`. Need to supply required arguments: \`${this.event.requiredArguments.toString()}\``,
-      };
+      throw `Failed subscribing to event: \`${event}\`. Need to supply required arguments: \`${this.event.requiredArguments.toString()}\``;
     }
 
     try {
@@ -59,12 +54,8 @@ export default class Subscribe {
 
       this.id = uuidv4();
       await this.subscribe(port);
-      spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
     } catch (e) {
-      throw {
-        spinner,
-        message: `Failed subscribe to event: \`${event}\`. ${e.toString().trim()}`,
-      };
+      throw `Failed subscribe to event: \`${event}\`. ${e.toString().trim()}`;
     }
   }
 

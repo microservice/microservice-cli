@@ -26,7 +26,6 @@ export default class EventExec extends Exec {
 
   /** @inheritdoc */
   public async exec(action): Promise<string> {
-    const spinner = ora.start('Starting Docker container');
     this.action = this.microservice.getAction(action);
     this.preChecks();
     try {

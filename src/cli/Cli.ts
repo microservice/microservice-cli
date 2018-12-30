@@ -133,14 +133,16 @@ export default class Cli {
     }
 
     let _action;
+    let argsObj;
+    let envObj
     try {
       _action = this.microservice.getAction(action);
+      argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
+      envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
     } catch (e) {
       utils.error(e);
       process.exit(1);
     }
-    const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
-    const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
 
     this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
     let spinner = ora.start(`Starting Docker container`);
@@ -149,7 +151,7 @@ export default class Cli {
     spinner = ora.start(`Health check`);
     await timer(1000);
     if (!await this._exec.isRunning()) { // 2. health check
-      spinner.fail('Health check failed')
+      spinner.fail('Health check failed');
       utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
       process.exit(1);
     }
@@ -165,7 +167,7 @@ export default class Cli {
     }
 
     if (this._exec.constructor.name !== 'EventExec') { // bad
-      spinner = ora.start(`Stopping Docker container: ${startedID.substring(0, 12)}`)
+      spinner = ora.start(`Stopping Docker container: ${startedID.substring(0, 12)}`);
       const stoppedID = await this._exec.stopService();
       spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);
     }
@@ -180,10 +182,19 @@ export default class Cli {
    */
   async subscribe(action: string, event: string, options: any) {
     await Cli.checkDocker();
-    const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
-    this._subscribe = new Subscribe(this.microservice, argsObj);
     await this.exec(action, {args: [], envs: options.envs});
+    const spinner = ora.start(`Subscribing to event: \`${event}\``);
+    let argsObj;
+    try {
+      argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
+    } catch (e) {
+      spinner.fail(`Failed action: \`${action}\``);
+      utils.error(`  ${e}`);
+      process.exit(1);
+    }
+    this._subscribe = new Subscribe(this.microservice, argsObj);
     await this._subscribe.go(action, event);
+    spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
   }
 
   /**
