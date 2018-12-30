@@ -9,7 +9,6 @@ import * as verify from '../../verify';
  * Represents a http execution of an {@link Action}.
  */
 export default class HttpExec extends Exec {
-  private portMap: any;
   private isServerRunning = false;
 
   /**
@@ -44,31 +43,6 @@ export default class HttpExec extends Exec {
       // }
       throw `Failed action: \`${action}\`. ${e.toString().trim()}`;
     }
-  }
-
-  /**
-   * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
-   */
-  public async startService(): Promise<string> {
-    this.portMap = {};
-    const neededPorts = utils.getNeededPorts(this.microservice);
-    const openPorts = [];
-    while (neededPorts.length !== openPorts.length) {
-      const possiblePort = await utils.getOpenPort();
-      if (!openPorts.includes(possiblePort)) {
-        openPorts.push(possiblePort);
-      }
-    }
-
-    let portString = '';
-    for (let i = 0; i < neededPorts.length; i += 1) {
-      this.portMap[neededPorts[i]] = openPorts[i];
-      portString += `-p ${openPorts[i]}:${neededPorts[i]} `;
-    }
-    portString = portString.trim();
-
-    this.containerID = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
-    return this.containerID;
   }
 
   /**

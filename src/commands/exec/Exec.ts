@@ -7,6 +7,7 @@ import Microservice from '../../models/Microservice';
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
  */
 export default abstract class Exec {
+  protected portMap: any;
   protected dockerImage: string;
   protected microservice: Microservice;
   protected _arguments: any;
@@ -146,7 +147,30 @@ export default abstract class Exec {
    */
   public abstract async exec(action: string): Promise<string>;
 
-  public abstract async startService(): Promise<string>;
+  /**
+   * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
+   */
+  public async startService(): Promise<string> {
+    this.portMap = {};
+    const neededPorts = utils.getNeededPorts(this.microservice);
+    const openPorts = [];
+    while (neededPorts.length !== openPorts.length) {
+      const possiblePort = await utils.getOpenPort();
+      if (!openPorts.includes(possiblePort)) {
+        openPorts.push(possiblePort);
+      }
+    }
+
+    let portString = '';
+    for (let i = 0; i < neededPorts.length; i += 1) {
+      this.portMap[neededPorts[i]] = openPorts[i];
+      portString += `-p ${openPorts[i]}:${neededPorts[i]} `;
+    }
+    portString = portString.trim();
+
+    this.containerID = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
+    return this.containerID;
+  }
 
   /**
    * Stops a running Docker service.
