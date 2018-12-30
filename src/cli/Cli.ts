@@ -132,7 +132,13 @@ export default class Cli {
       options.image = await Cli.build({});
     }
 
-    const _action = this.microservice.getAction(action);
+    let _action;
+    try {
+      _action = this.microservice.getAction(action);
+    } catch (e) {
+      utils.error(e);
+      process.exit(1);
+    }
     const argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
     const envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
 
