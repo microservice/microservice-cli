@@ -17,6 +17,7 @@ export default class Cli {
   private microservice: Microservice = null;
   private _exec: Exec = null;
   private _subscribe: Subscribe = null;
+  private startedID: string;
 
   /**
    * Build an {@link Cli}.
@@ -146,8 +147,8 @@ export default class Cli {
 
     this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
     let spinner = ora.start(`Starting Docker container`);
-    const startedID = await this._exec.startService(); // 1. start service
-    spinner.succeed(`Started Docker container: ${startedID.substring(0, 12)}`);
+    this.startedID = await this._exec.startService(); // 1. start service
+    spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`);
     spinner = ora.start(`Health check`);
     await timer(1000);
     if (!await this._exec.isRunning()) { // 2. health check
@@ -167,7 +168,7 @@ export default class Cli {
     }
 
     if (this._exec.constructor.name !== 'EventExec') { // bad
-      spinner = ora.start(`Stopping Docker container: ${startedID.substring(0, 12)}`);
+      spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`);
       const stoppedID = await this._exec.stopService();
       spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);
     }
@@ -224,12 +225,14 @@ export default class Cli {
    * Catch the `CtrlC` command to stop running containers.
    */
   async controlC() {
+    const spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`);
     if (this._subscribe) {
       await this._subscribe.unsubscribe();
     }
     if (this._exec && this._exec.isDockerProcessRunning()) {
-      await this._exec.serverKill();
+      await this._exec.stopService();
     }
+    spinner.succeed(`Stopped Docker container: ${this.startedID.substring(0, 12)}`);
     process.exit();
   }
 

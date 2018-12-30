@@ -1,6 +1,5 @@
 import Exec from './Exec';
 import Microservice from '../../models/Microservice';
-import ora from '../../ora';
 import * as utils from '../../utils';
 import * as verify from '../../verify';
 
@@ -52,6 +51,10 @@ export default class FormatExec extends Exec {
     } else {
       this.containerID = await utils.exec(`docker run -td ${this.dockerImage} tail -f /dev/null`);
     }
+    return this.containerID;
+  }
+
+  public async stopService(): Promise<string> {
     return this.containerID;
   }
 

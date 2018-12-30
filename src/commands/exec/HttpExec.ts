@@ -2,7 +2,6 @@ import * as rp from 'request-promise';
 import * as querystring from 'querystring';
 import Microservice from '../../models/Microservice';
 import Exec from './Exec';
-import ora from '../../ora';
 import * as utils from '../../utils';
 import * as verify from '../../verify';
 
@@ -70,10 +69,6 @@ export default class HttpExec extends Exec {
 
     this.containerID = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
     return this.containerID;
-  }
-
-  public async stopService(): Promise<string> {
-    return await utils.exec(`docker kill ${this.containerID}`);
   }
 
   /**
@@ -151,14 +146,5 @@ export default class HttpExec extends Exec {
       url,
       jsonData,
     };
-  }
-
-  /**
-   * Stops a running Docker service.
-   */
-  async serverKill(): Promise<void> {
-    const spinner = ora.start(`Stopping Docker container: ${this.containerID.substring(0, 12)}`);
-    await utils.exec(`docker kill ${this.containerID.substring(0, 12)}`);
-    spinner.succeed(`Stopped Docker container: ${this.containerID.substring(0, 12)}`);
   }
 }

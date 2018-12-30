@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as utils from '../utils';
-import ora from '../ora';
 import * as verify from '../verify';
 import Microservice from '../models/Microservice';
 import Action from '../models/Action';

@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import Exec from './Exec';
 import Microservice from '../../models/Microservice';
 import * as utils from '../../utils';
-import ora from '../../ora';
 const homedir = require('os').homedir();
 
 /**
@@ -86,14 +85,5 @@ export default class EventExec extends Exec {
   /** @inheritdoc */
   public isDockerProcessRunning(): boolean {
     return this.containerID !== null;
-  }
-
-  /**
-   * Stops a running Docker service.
-   */
-  async serverKill(): Promise<void> {
-    const spinner = ora.start(`Stopping Docker container: ${this.containerID.substring(0, 12)}`);
-    await utils.exec(`docker kill ${this.containerID.substring(0, 12)}`);
-    spinner.succeed(`Stopped Docker container: ${this.containerID.substring(0, 12)}`);
   }
 }

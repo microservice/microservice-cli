@@ -140,11 +140,6 @@ export default abstract class Exec {
   }
 
   /**
-   * Stops a running Docker service.
-   */
-  public async serverKill(): Promise<void> {}
-
-  /**
    * Executes the given {@link Action}.
    *
    * @param {String} action
@@ -153,8 +148,11 @@ export default abstract class Exec {
 
   public abstract async startService(): Promise<string>;
 
+  /**
+   * Stops a running Docker service.
+   */
   public async stopService(): Promise<string> {
-    return this.containerID;
+    return await utils.exec(`docker kill ${this.containerID}`);
   }
 
   public async isRunning(): Promise<boolean> {
