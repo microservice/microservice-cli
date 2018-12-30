@@ -2,7 +2,6 @@ import * as rp from 'request-promise';
 import * as querystring from 'querystring';
 import Microservice from '../../models/Microservice';
 import Exec from './Exec';
-import * as utils from '../../utils';
 import * as verify from '../../verify';
 
 /**

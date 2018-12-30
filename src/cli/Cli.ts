@@ -135,7 +135,7 @@ export default class Cli {
 
     let _action;
     let argsObj;
-    let envObj
+    let envObj;
     try {
       _action = this.microservice.getAction(action);
       argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');

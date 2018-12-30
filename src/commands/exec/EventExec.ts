@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import Exec from './Exec';
 import Microservice from '../../models/Microservice';
-import * as utils from '../../utils';
 const homedir = require('os').homedir();
 
 /**

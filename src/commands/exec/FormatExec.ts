@@ -51,10 +51,6 @@ export default class FormatExec extends Exec {
     return this.containerID;
   }
 
-  public async stopService(): Promise<string> {
-    return this.containerID;
-  }
-
   /**
    * Runs a given command via Docker cli.
    *
