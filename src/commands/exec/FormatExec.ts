@@ -23,16 +23,13 @@ export default class FormatExec extends Exec {
   public async exec(action: string): Promise<string> {
     this.action = this.microservice.getAction(action);
 
-    // const spinner = ora.start(`Running action: \`${this.action.name}\``);
     this.preChecks();
     try {
       this.verification();
-      // const containerID = await this.startDockerExecContainer();
       const output = await this.runDockerExecCommand(this.containerID);
       verify.verifyOutputType(this.action, output);
       await utils.exec(`docker kill ${this.containerID}`);
       return output.trim();
-      // spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
     } catch (e) {
       throw e;
     }

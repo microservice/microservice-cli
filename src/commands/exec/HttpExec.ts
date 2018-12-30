@@ -35,12 +35,8 @@ export default class HttpExec extends Exec {
       const output = await this.httpCommand(this.portMap[this.action.http.port]);
       this.isServerRunning = true;
       verify.verifyOutputType(this.action, output.trim());
-      // await this.serverKill();
       return output;
     } catch (e) {
-      // if (this.isServerRunning) {
-      //   await utils.exec(`docker kill ${this.containerID.substring(0, 12)}`);
-      // }
       throw `Failed action: \`${action}\`. ${e.toString().trim()}`;
     }
   }
