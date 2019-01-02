@@ -31,7 +31,7 @@ describe('FormatExec.ts', () => {
       }), {}, {}).startService();
       expect(containerID).toBe('`execStub`');
       expect(execStub.args).toEqual([
-        ['docker run -td fake_docker_id tail -f /dev/null'],
+        ['docker run -td --entrypoint tail fake_docker_id -f /dev/null'],
       ]);
     });
 
@@ -54,7 +54,7 @@ describe('FormatExec.ts', () => {
       }), {}, {}).startService();
       expect(containerID).toBe('`execStub`');
       expect(execStub.args).toEqual([
-        ['docker run -td fake_docker_id node start.js'],
+        ['docker run -td --entrypoint node fake_docker_id start.js'],
       ]);
     });
   });
@@ -160,7 +160,7 @@ describe('FormatExec.ts', () => {
       }
     });
 
-    test('runs the command', async () => {
+    test('runs the action with dev null', async () => {
       const formatExec = new FormatExec('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
@@ -176,12 +176,38 @@ describe('FormatExec.ts', () => {
 
       await formatExec.exec('test');
       expect(execStub.args).toEqual([
-        ['docker run -td fake_docker_id tail -f /dev/null'],
+        ['docker run -td --entrypoint tail fake_docker_id -f /dev/null'],
         ['docker exec `execStub` test.sh'],
       ]);
     });
 
-    test('runs an exec command and fills in default environment variables and arguments', async () => {
+    test('runs the action with given lifecycle', async () => {
+      const formatExec = new FormatExec('fake_docker_id', new Microservice({
+        omg: 1,
+        actions: {
+          test: {
+            format: {
+              command: 'test.sh',
+            },
+            output: {type: 'string'},
+          },
+        },
+        lifecycle: {
+          startup: {
+            command: ['start.sh', 'arg1'],
+          },
+        },
+      }), {}, {});
+      await formatExec.startService();
+
+      await formatExec.exec('test');
+      expect(execStub.args).toEqual([
+        ['docker run -td --entrypoint start.sh fake_docker_id arg1'],
+        ['docker exec `execStub` test.sh'],
+      ]);
+    });
+
+    test('runs an exec action and fills in default environment variables and arguments', async () => {
       const formatExec = new FormatExec('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
@@ -215,7 +241,7 @@ describe('FormatExec.ts', () => {
 
       await formatExec.exec('steve');
       expect(execStub.args).toEqual([
-        ['docker run -td fake_docker_id tail -f /dev/null'],
+        ['docker run -td --entrypoint tail fake_docker_id -f /dev/null'],
         ['docker exec `execStub` steve.sh \'{"foo":3,"bar":{"foo":"bar"}}\''],
       ]);
     });
@@ -239,7 +265,7 @@ describe('FormatExec.ts', () => {
 
       await formatExec.stopService();
       expect(execStub.args).toEqual([
-        ['docker run -td fake_docker_id tail -f /dev/null'],
+        ['docker run -td --entrypoint tail fake_docker_id -f /dev/null'],
         ['docker exec `execStub` test.sh'],
         ['docker kill `execStub`'],
       ]);
