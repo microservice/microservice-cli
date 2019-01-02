@@ -91,7 +91,7 @@ export default class Microservice {
    */
   public getAction(action): Action {
     if ((this.actionMap === null) || (!this.actionMap[action])) {
-      throw {message: `Action: \`${action}\` does not exist`};
+      throw `Action: \`${action}\` does not exist`;
     }
     return this.actionMap[action];
   }

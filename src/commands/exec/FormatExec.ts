@@ -1,6 +1,5 @@
 import Exec from './Exec';
 import Microservice from '../../models/Microservice';
-import ora from '../../ora';
 import * as utils from '../../utils';
 import * as verify from '../../verify';
 
@@ -21,23 +20,17 @@ export default class FormatExec extends Exec {
   }
 
   /** @inheritdoc */
-  public async exec(action: string) {
+  public async exec(action: string): Promise<string> {
     this.action = this.microservice.getAction(action);
 
-    const spinner = ora.start(`Running action: \`${this.action.name}\``);
-    this.preChecks(spinner);
+    this.preChecks();
     try {
       this.verification();
-      const containerID = await this.startDockerExecContainer();
-      const output = await this.runDockerExecCommand(containerID);
+      const output = await this.runDockerExecCommand(this.containerID);
       verify.verifyOutputType(this.action, output);
-      await utils.exec(`docker kill ${containerID}`);
-      spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
+      return output.trim();
     } catch (e) {
-      throw {
-        spinner,
-        message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
-      };
+      throw e;
     }
   }
 
@@ -47,13 +40,14 @@ export default class FormatExec extends Exec {
    *
    * @return {Promise<String>} The id of the started container
    */
-  private async startDockerExecContainer(): Promise<string> {
+  public async startService(): Promise<string> {
     const lifecycle = this.microservice.lifecycle;
     if ((lifecycle !== null) && (lifecycle.startup !== null)) {
-      return await utils.exec(`docker run -td ${this.dockerImage} ${lifecycle.startup.command} ${lifecycle.startup.args}`);
+      this.containerID = await utils.exec(`docker run -td ${this.dockerImage} ${lifecycle.startup.command} ${lifecycle.startup.args}`);
     } else {
-      return await utils.exec(`docker run -td ${this.dockerImage} tail -f /dev/null`);
+      this.containerID = await utils.exec(`docker run -td ${this.dockerImage} tail -f /dev/null`);
     }
+    return this.containerID;
   }
 
   /**

@@ -2,15 +2,12 @@ import * as rp from 'request-promise';
 import * as querystring from 'querystring';
 import Microservice from '../../models/Microservice';
 import Exec from './Exec';
-import ora from '../../ora';
-import * as utils from '../../utils';
 import * as verify from '../../verify';
 
 /**
  * Represents a http execution of an {@link Action}.
  */
 export default class HttpExec extends Exec {
-  private portMap: any;
   private isServerRunning = false;
 
   /**
@@ -26,57 +23,20 @@ export default class HttpExec extends Exec {
   }
 
   /** @inheritdoc */
-  public async exec(action) {
+  public async exec(action): Promise<string> {
     this.action = this.microservice.getAction(action);
 
-    await this.startServer();
-    const spinner = ora.start(`Running action: \`${this.action.name}\``);
-    this.preChecks(spinner);
-
+    this.preChecks();
     try {
       this.verification();
       const output = await this.httpCommand(this.portMap[this.action.http.port]);
       this.isServerRunning = true;
       verify.verifyOutputType(this.action, output.trim());
-      spinner.succeed(`Ran action: \`${this.action.name}\` with output: ${output.trim()}`);
-      await this.serverKill();
+      return output;
     } catch (e) {
-      if (this.isServerRunning) {
-        await utils.exec(`docker kill ${this.dockerServiceId.substring(0, 12)}`);
-      }
-      throw {
-        spinner,
-        message: `Failed action: \`${action}\`. ${e.toString().trim()}`,
-      };
+      throw `Failed action: \`${action}\`. ${e.toString().trim()}`;
     }
   }
-
-  /**
-   * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
-   */
-  private async startServer(): Promise<void> {
-    this.portMap = {};
-    const spinner = ora.start('Starting Docker container');
-    const neededPorts = utils.getNeededPorts(this.microservice);
-    const openPorts = [];
-    while (neededPorts.length !== openPorts.length) {
-      const possiblePort = await utils.getOpenPort();
-      if (!openPorts.includes(possiblePort)) {
-        openPorts.push(possiblePort);
-      }
-    }
-
-    let portString = '';
-    for (let i = 0; i < neededPorts.length; i += 1) {
-      this.portMap[neededPorts[i]] = openPorts[i];
-      portString += `-p ${openPorts[i]}:${neededPorts[i]} `;
-    }
-    portString = portString.trim();
-
-    this.dockerServiceId = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
-    spinner.succeed(`Started Docker container with id: ${this.dockerServiceId.substring(0, 12)}`);
-  }
-
 
   /**
    * Run this {@link Exec}'s {@link Action} that interfaces via HTTP.
@@ -153,14 +113,5 @@ export default class HttpExec extends Exec {
       url,
       jsonData,
     };
-  }
-
-  /**
-   * Stops a running Docker service.
-   */
-  async serverKill(): Promise<void> {
-    const spinner = ora.start(`Stopping Docker container: ${this.dockerServiceId.substring(0, 12)}`);
-    await utils.exec(`docker kill ${this.dockerServiceId.substring(0, 12)}`);
-    spinner.succeed(`Stopped Docker container: ${this.dockerServiceId.substring(0, 12)}`);
   }
 }

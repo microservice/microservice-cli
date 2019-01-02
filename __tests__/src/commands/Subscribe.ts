@@ -2,23 +2,13 @@ import * as fs from 'fs';
 import * as sinon from 'sinon';
 import * as rp from '../../../src/request';
 import * as utils from '../../../src/utils';
-import ora from '../../../src/ora';
 import Subscribe from '../../../src/commands/Subscribe';
 import Microservice from '../../../src/models/Microservice';
 
 describe('Subscribe.ts', () => {
-  const successTextList = [];
-  let oraStartStub;
   let rpMakeRequestStub;
 
   beforeEach(() => {
-    oraStartStub = sinon.stub(ora, 'start').callsFake(() => {
-      return {
-        succeed: (text) => {
-          successTextList.push(text);
-        },
-      };
-    });
     rpMakeRequestStub = sinon.stub(rp, 'makeRequest').callsFake(async () => {
       return {};
     });
@@ -38,7 +28,6 @@ describe('Subscribe.ts', () => {
   });
 
   afterEach(() => {
-    (ora.start as any).restore();
     (fs.existsSync as any).restore();
     (fs.readFileSync as any).restore();
     (JSON.parse as any).restore();
@@ -82,9 +71,7 @@ describe('Subscribe.ts', () => {
       try {
         await new Subscribe(m, {}).go('foo', 'bar');
       } catch (e) {
-        expect(oraStartStub.calledWith('Subscribing to event: `bar`'));
-        expect(e.spinner).toBeTruthy();
-        expect(e.message).toBe('Failed subscribing to event: `bar`. Need to supply required arguments: `x`');
+        expect(e).toBe('Failed subscribing to event: `bar`. Need to supply required arguments: `x`');
       }
     });
 

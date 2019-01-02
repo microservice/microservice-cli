@@ -7,12 +7,14 @@ import Microservice from '../../models/Microservice';
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
  */
 export default abstract class Exec {
+  protected portMap: any;
   protected dockerImage: string;
   protected microservice: Microservice;
   protected _arguments: any;
   protected environmentVariables: any;
   protected dockerServiceId: string;
   protected action: Action;
+  protected containerID: string = null;
 
   /**
    * Use to help build a {@link FormatExec}, {@link HttpExec}, or an {@link EventExec}.
@@ -36,18 +38,18 @@ export default abstract class Exec {
    *
    * @param {Object} spinner The spinner for the {@link Exec}
    */
-  protected preChecks(spinner: any) {
+  protected preChecks() {
     this.setDefaultArguments();
     this.setDefaultEnvironmentVariables();
     if (!this.action.areRequiredArgumentsSupplied(this._arguments)) {
       throw {
-        spinner,
+        spinner: null,
         message: `Failed action: \`${this.action.name}\`. Need to supply required arguments: \`${this.action.requiredArguments.toString()}\``,
       };
     }
     if (!this.microservice.areRequiredEnvironmentVariablesSupplied(this.environmentVariables)) {
       throw {
-        spinner,
+        spinner: null,
         message: `Failed action: \`${this.action.name}\`. Need to supply required environment variables: \`${this.microservice.requiredEnvironmentVariables.toString()}\``,
       };
     }
@@ -139,14 +141,64 @@ export default abstract class Exec {
   }
 
   /**
-   * Stops a running Docker service.
+   * Executes the given {@link Action} and returns the output.
+   *
+   * @param {String} action The given action
+   * @return {String} The output
    */
-  public async serverKill(): Promise<void> {}
+  public abstract async exec(action: string): Promise<string>;
 
   /**
-   * Executes the given {@link Action}.
+   * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
    *
-   * @param {String} action
+   * @return {String} The id of the container
    */
-  public abstract async exec(action: string): Promise<void>;
+  public async startService(): Promise<string> {
+    this.portMap = {};
+    const neededPorts = utils.getNeededPorts(this.microservice);
+    const openPorts = [];
+    while (neededPorts.length !== openPorts.length) {
+      const possiblePort = await utils.getOpenPort();
+      if (!openPorts.includes(possiblePort)) {
+        openPorts.push(possiblePort);
+      }
+    }
+
+    let portString = '';
+    for (let i = 0; i < neededPorts.length; i += 1) {
+      this.portMap[neededPorts[i]] = openPorts[i];
+      portString += `-p ${openPorts[i]}:${neededPorts[i]} `;
+    }
+    portString = portString.trim();
+
+    this.containerID = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
+    return this.containerID;
+  }
+
+  /**
+   * Stops a running Docker service, if it is already stopped just return the id of that container.
+   *
+   * @return {String} The containerID that has been stopped
+   */
+  public async stopService(): Promise<string> {
+    return await utils.exec(`docker kill ${this.containerID}`);
+  }
+
+  /**
+   * Checks if there is a Docker process running.
+   *
+   * @return {Boolean} True if running, otherwise false
+   */
+  public async isRunning(): Promise<boolean> {
+    return JSON.parse(await utils.exec(`docker inspect ${this.containerID}`))[0].State.Running;
+  }
+
+  /**
+   * Gets the Docker logs.
+   *
+   * return {String} The Docker logs
+   */
+  public async getLogs(): Promise<string> {
+    return await utils.exec(`docker logs ${this.containerID}`);
+  }
 }

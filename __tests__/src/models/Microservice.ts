@@ -121,7 +121,7 @@ describe('Microservice.ts', () => {
       try {
         m.getAction('bar');
       } catch (e) {
-        expect(e).toEqual({message: 'Action: `bar` does not exist'});
+        expect(e).toEqual('Action: `bar` does not exist');
       }
     });
 
