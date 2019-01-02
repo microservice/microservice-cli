@@ -146,6 +146,10 @@ export default class Cli {
     }
 
     this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
+    if ((process.argv[2] === 'exec') && (this._exec.constructor.name === 'EventExec')) {
+      utils.error(`Action \`${action}\` is and event. Use \`omg subscribe\``);
+      process.exit(1);
+    }
     let spinner = ora.start(`Starting Docker container`);
     this.startedID = await this._exec.startService(); // 1. start service
     spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`);
