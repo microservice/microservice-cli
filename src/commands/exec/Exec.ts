@@ -40,18 +40,11 @@ export default abstract class Exec {
    */
   protected preChecks() {
     this.setDefaultArguments();
-    this.setDefaultEnvironmentVariables();
     if (!this.action.areRequiredArgumentsSupplied(this._arguments)) {
-      throw {
-        spinner: null,
-        message: `Failed action: \`${this.action.name}\`. Need to supply required arguments: \`${this.action.requiredArguments.toString()}\``,
-      };
+      throw `Need to supply required arguments: \`${this.action.requiredArguments.toString()}\``;
     }
     if (!this.microservice.areRequiredEnvironmentVariablesSupplied(this.environmentVariables)) {
-      throw {
-        spinner: null,
-        message: `Failed action: \`${this.action.name}\`. Need to supply required environment variables: \`${this.microservice.requiredEnvironmentVariables.toString()}\``,
-      };
+      throw `Need to supply required environment variables: \`${this.microservice.requiredEnvironmentVariables.toString()}\``;
     }
   }
 
@@ -88,7 +81,7 @@ export default abstract class Exec {
   /**
    * Sets a {@link Microservice}'s default {@link EnvironmentVariable}s and variables from the system environment variables.
    */
-  private setDefaultEnvironmentVariables(): void {
+  protected setDefaultEnvironmentVariables(): void {
     for (let i = 0; i < this.microservice.environmentVariables.length; i += 1) {
       const environmentVariable = this.microservice.environmentVariables[i];
       if (!this.environmentVariables[environmentVariable.name]) {
@@ -154,6 +147,7 @@ export default abstract class Exec {
    * @return {String} The id of the container
    */
   public async startService(): Promise<string> {
+    this.setDefaultEnvironmentVariables();
     this.portMap = {};
     const neededPorts = utils.getNeededPorts(this.microservice);
     const openPorts = [];

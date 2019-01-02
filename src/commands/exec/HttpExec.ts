@@ -8,8 +8,6 @@ import * as verify from '../../verify';
  * Represents a http execution of an {@link Action}.
  */
 export default class HttpExec extends Exec {
-  private isServerRunning = false;
-
   /**
    * Builds a {@link HttpExec}.
    *
@@ -30,7 +28,6 @@ export default class HttpExec extends Exec {
     try {
       this.verification();
       const output = await this.httpCommand(this.portMap[this.action.http.port]);
-      this.isServerRunning = true;
       verify.verifyOutputType(this.action, output.trim());
       return output;
     } catch (e) {

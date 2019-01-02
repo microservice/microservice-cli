@@ -174,7 +174,7 @@ export default class Cli {
       process.exit(1);
     }
 
-    if (this._exec.constructor.name !== 'EventExec') { // bad
+    if (this._exec.constructor.name !== 'EventExec') {
       spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`);
       const stoppedID = await this._exec.stopService();
       spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);

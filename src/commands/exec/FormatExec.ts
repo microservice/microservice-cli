@@ -41,6 +41,7 @@ export default class FormatExec extends Exec {
    * @return {Promise<String>} The id of the started container
    */
   public async startService(): Promise<string> {
+    this.setDefaultEnvironmentVariables();
     const lifecycle = this.microservice.lifecycle;
     if ((lifecycle !== null) && (lifecycle.startup !== null)) {
       this.containerID = await utils.exec(`docker run -td${this.formatEnvironmentVariables()} --entrypoint ${lifecycle.startup.command} ${this.dockerImage} ${lifecycle.startup.args}`);

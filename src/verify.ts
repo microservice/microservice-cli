@@ -87,7 +87,7 @@ export function verifyEnvironmentVariablePattern(microservice: Microservice, env
  * @param {String} output The given output
  */
 export function verifyOutputType(command: Command, output: string) {
-  if (!dataTypes[command.output.type](output)) {
+  if ((command.output) && (command.output.type) && (!dataTypes[command.output.type](output))) {
     throw (
       `Action: \`${command.name}\``
         + ` must have output type: \`${command.output.type}\``
