@@ -22,16 +22,11 @@ export default class FormatExec extends Exec {
   /** @inheritdoc */
   public async exec(action: string): Promise<string> {
     this.action = this.microservice.getAction(action);
-
     this.preChecks();
-    try {
-      this.verification();
-      const output = await this.runDockerExecCommand(this.containerID);
-      verify.verifyOutputType(this.action, output);
-      return output.trim();
-    } catch (e) {
-      throw e;
-    }
+    this.verification();
+    const output = await this.runDockerExecCommand(this.containerID);
+    verify.verifyOutputType(this.action, output);
+    return output.trim();
   }
 
   /**
