@@ -22,16 +22,11 @@ export default class FormatExec extends Exec {
   /** @inheritdoc */
   public async exec(action: string): Promise<string> {
     this.action = this.microservice.getAction(action);
-
     this.preChecks();
-    try {
-      this.verification();
-      const output = await this.runDockerExecCommand(this.containerID);
-      verify.verifyOutputType(this.action, output);
-      return output.trim();
-    } catch (e) {
-      throw e;
-    }
+    this.verification();
+    const output = await this.runDockerExecCommand(this.containerID);
+    verify.verifyOutputType(this.action, output);
+    return output.trim();
   }
 
   /**
@@ -41,6 +36,7 @@ export default class FormatExec extends Exec {
    * @return {Promise<String>} The id of the started container
    */
   public async startService(): Promise<string> {
+    this.setDefaultEnvironmentVariables();
     const lifecycle = this.microservice.lifecycle;
     if ((lifecycle !== null) && (lifecycle.startup !== null)) {
       this.containerID = await utils.exec(`docker run -td${this.formatEnvironmentVariables()} --entrypoint ${lifecycle.startup.command} ${this.dockerImage} ${lifecycle.startup.args}`);

@@ -125,7 +125,7 @@ describe('FormatExec.ts', () => {
           },
         }), {}, {}).exec('tom');
       } catch (e) {
-        expect(e.message).toBe('Failed action: `tom`. Need to supply required arguments: `foo`');
+        expect(e).toBe('Need to supply required arguments: `foo`');
       }
     });
 
@@ -156,7 +156,7 @@ describe('FormatExec.ts', () => {
           foo: '1.1',
         }, {}).exec('tom');
       } catch (e) {
-        expect(e.message).toBe('Failed action: `tom`. Need to supply required environment variables: `TOKEN`');
+        expect(e).toBe('Need to supply required environment variables: `TOKEN`');
       }
     });
 
@@ -241,7 +241,7 @@ describe('FormatExec.ts', () => {
 
       await formatExec.exec('steve');
       expect(execStub.args).toEqual([
-        ['docker run -td --entrypoint tail fake_docker_id -f /dev/null'],
+        ['docker run -td -e BOB_TOKEN="BOBBY" --entrypoint tail fake_docker_id -f /dev/null'],
         ['docker exec `execStub` steve.sh \'{"foo":3,"bar":{"foo":"bar"}}\''],
       ]);
     });

@@ -8,8 +8,6 @@ import * as verify from '../../verify';
  * Represents a http execution of an {@link Action}.
  */
 export default class HttpExec extends Exec {
-  private isServerRunning = false;
-
   /**
    * Builds a {@link HttpExec}.
    *
@@ -23,19 +21,13 @@ export default class HttpExec extends Exec {
   }
 
   /** @inheritdoc */
-  public async exec(action): Promise<string> {
+  public async exec(action: string): Promise<string> {
     this.action = this.microservice.getAction(action);
-
     this.preChecks();
-    try {
-      this.verification();
-      const output = await this.httpCommand(this.portMap[this.action.http.port]);
-      this.isServerRunning = true;
-      verify.verifyOutputType(this.action, output.trim());
-      return output;
-    } catch (e) {
-      throw `Failed action: \`${action}\`. ${e.toString().trim()}`;
-    }
+    this.verification();
+    const output = await this.httpCommand(this.portMap[this.action.http.port]);
+    verify.verifyOutputType(this.action, output.trim());
+    return output;
   }
 
   /**
