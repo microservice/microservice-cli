@@ -26,9 +26,7 @@ export default class HttpExec extends Exec {
   public async exec(action): Promise<string> {
     this.action = this.microservice.getAction(action);
 
-    // await this.startServer();
     this.preChecks();
-
     try {
       this.verification();
       const output = await this.httpCommand(this.portMap[this.action.http.port]);

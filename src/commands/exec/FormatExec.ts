@@ -28,7 +28,6 @@ export default class FormatExec extends Exec {
       this.verification();
       const output = await this.runDockerExecCommand(this.containerID);
       verify.verifyOutputType(this.action, output);
-      await utils.exec(`docker kill ${this.containerID}`);
       return output.trim();
     } catch (e) {
       throw e;

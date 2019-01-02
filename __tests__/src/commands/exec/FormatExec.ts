@@ -1,30 +1,108 @@
 import * as sinon from 'sinon';
-import ora from '../../../../src/ora';
 import FormatExec from '../../../../src/commands/exec/FormatExec';
 import Microservice from '../../../../src/models/Microservice';
 import * as utils from '../../../../src/utils';
 
 describe('FormatExec.ts', () => {
-  let successTextList = [];
   let execStub;
 
   beforeEach(() => {
     execStub = sinon.stub(utils, 'exec').callsFake(async () => '`execStub`');
-    sinon.stub(ora, 'start').callsFake(() => {
-      return {
-        succeed: (text) => {
-          successTextList.push(text);
-        },
-      };
-    });
     sinon.stub(utils, 'getOpenPort').callsFake(async () => 5555);
   });
 
   afterEach(() => {
     (utils.exec as any).restore();
-    (ora.start as any).restore();
     (utils.getOpenPort as any).restore();
-    successTextList = [];
+  });
+
+  describe('.startService()', () => {
+    test('starts service with dev null default', async () => {
+      const containerID = await new FormatExec('fake_docker_id', new Microservice({
+        omg: 1,
+        actions: {
+          test: {
+            format: {
+              command: 'test.sh',
+            },
+            output: {type: 'string'},
+          },
+        },
+      }), {}, {}).startService();
+      expect(containerID).toBe('`execStub`');
+      expect(execStub.args).toEqual([
+        ['docker run -td fake_docker_id tail -f /dev/null'],
+      ]);
+    });
+
+    test('starts service with lifecycle', async () => {
+      const containerID = await new FormatExec('fake_docker_id', new Microservice({
+        omg: 1,
+        actions: {
+          test: {
+            format: {
+              command: 'test.sh',
+            },
+            output: {type: 'string'},
+          },
+        },
+        lifecycle: {
+          startup: {
+            command: ['node', 'start.js'],
+          },
+        },
+      }), {}, {}).startService();
+      expect(containerID).toBe('`execStub`');
+      expect(execStub.args).toEqual([
+        ['docker run -td fake_docker_id node start.js'],
+      ]);
+    });
+  });
+
+  describe('.isRunning()', () => {
+    test('not running', async () => {
+      (utils.exec as any).restore();
+      execStub = sinon.stub(utils, 'exec').callsFake(async () => '[{"State":{"Running":false}}]');
+
+      expect(await new FormatExec('fake_docker_id', new Microservice({
+        omg: 1,
+        actions: {
+          test: {
+            format: {
+              command: 'test.sh',
+            },
+            output: {type: 'string'},
+          },
+        },
+        lifecycle: {
+          startup: {
+            command: ['node', 'start.js'],
+          },
+        },
+      }), {}, {}).isRunning()).toBeFalsy();
+    });
+
+    test('running', async () => {
+      (utils.exec as any).restore();
+      execStub = sinon.stub(utils, 'exec').callsFake(async () => '[{"State":{"Running":true}}]');
+
+      expect(await new FormatExec('fake_docker_id', new Microservice({
+        omg: 1,
+        actions: {
+          test: {
+            format: {
+              command: 'test.sh',
+            },
+            output: {type: 'string'},
+          },
+        },
+        lifecycle: {
+          startup: {
+            command: ['node', 'start.js'],
+          },
+        },
+      }), {}, {}).isRunning()).toBeTruthy();
+    });
   });
 
   describe('.exec(action)', () => {
@@ -83,7 +161,7 @@ describe('FormatExec.ts', () => {
     });
 
     test('runs the command', async () => {
-      await new FormatExec('fake_docker_id', new Microservice({
+      const formatExec = new FormatExec('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           test: {
@@ -93,18 +171,18 @@ describe('FormatExec.ts', () => {
             output: {type: 'string'},
           },
         },
-      }), {}, {}).exec('test');
+      }), {}, {});
+      await formatExec.startService();
 
-      expect(successTextList).toEqual(['Ran action: `test` with output: `execStub`']);
+      await formatExec.exec('test');
       expect(execStub.args).toEqual([
         ['docker run -td fake_docker_id tail -f /dev/null'],
         ['docker exec `execStub` test.sh'],
-        ['docker kill `execStub`'],
       ]);
     });
 
     test('runs an exec command and fills in default environment variables and arguments', async () => {
-      await new FormatExec('fake_docker_id', new Microservice({
+      const formatExec = new FormatExec('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           steve: {
@@ -132,12 +210,37 @@ describe('FormatExec.ts', () => {
             default: 'BOBBY',
           },
         },
-      }), {}, {}).exec('steve');
+      }), {}, {});
+      await formatExec.startService();
 
-      expect(successTextList).toEqual(['Ran action: `steve` with output: `execStub`']);
+      await formatExec.exec('steve');
       expect(execStub.args).toEqual([
         ['docker run -td fake_docker_id tail -f /dev/null'],
         ['docker exec `execStub` steve.sh \'{"foo":3,"bar":{"foo":"bar"}}\''],
+      ]);
+    });
+  });
+
+  describe('.stopService()', () => {
+    test('stops the service', async () => {
+      const formatExec = new FormatExec('fake_docker_id', new Microservice({
+        omg: 1,
+        actions: {
+          test: {
+            format: {
+              command: 'test.sh',
+            },
+            output: {type: 'string'},
+          },
+        },
+      }), {}, {});
+      await formatExec.startService();
+      await formatExec.exec('test');
+
+      await formatExec.stopService();
+      expect(execStub.args).toEqual([
+        ['docker run -td fake_docker_id tail -f /dev/null'],
+        ['docker exec `execStub` test.sh'],
         ['docker kill `execStub`'],
       ]);
     });

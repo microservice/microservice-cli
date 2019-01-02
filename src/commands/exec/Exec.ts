@@ -181,10 +181,7 @@ export default abstract class Exec {
    * @return {String} The containerID that has been stopped
    */
   public async stopService(): Promise<string> {
-    if (await this.isRunning()) {
-      return await utils.exec(`docker kill ${this.containerID}`);
-    }
-    return this.containerID;
+    return await utils.exec(`docker kill ${this.containerID}`);
   }
 
   /**

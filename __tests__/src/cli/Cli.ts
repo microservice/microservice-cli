@@ -1,7 +1,9 @@
 import * as fs from 'fs';
 import * as sinon from 'sinon';
 import * as utils from '../../../src/utils';
+import ora from '../../../src/ora';
 import Build from '../../../src/commands/Build';
+import Exec from '../../../src/commands/exec/Exec';
 import FormatExec from '../../../src/commands/exec/FormatExec';
 import Subscribe from '../../../src/commands/Subscribe';
 import Cli from '../../../src/cli/Cli';
@@ -11,6 +13,11 @@ describe('Cli.ts', () => {
   let errorStub;
 
   beforeEach(() => {
+    sinon.stub(ora, 'start').callsFake(() => {
+      return {
+        succeed: (text) => {},
+      };
+    });
     processExitStub = sinon.stub(process, 'exit');
     errorStub = sinon.stub(utils, 'error');
     sinon.stub(fs, 'existsSync').callsFake(() => true);
@@ -36,6 +43,7 @@ describe('Cli.ts', () => {
   });
 
   afterEach(() => {
+    (ora.start as any).restore();
     (process.exit as any).restore();
     (utils.error as any).restore();
     (fs.existsSync as any).restore();
@@ -253,11 +261,13 @@ describe('Cli.ts', () => {
     beforeEach(() => {
       formatExecExecStub = sinon.stub(FormatExec.prototype, 'exec');
       utilsExecStub = sinon.stub(utils, 'exec').callsFake(async () => 'image');
+      sinon.stub(Exec.prototype, 'isRunning').callsFake(async () => true);
     });
 
     afterEach(() => {
       (FormatExec.prototype.exec as any).restore();
       (utils.exec as any).restore();
+      (Exec.prototype.isRunning as any).restore();
     });
 
     test('does not execute action because arguments are not given', async () => {
