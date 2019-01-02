@@ -162,6 +162,9 @@ export default class Cli {
       const output = await this._exec.exec(action); // 3. run service
       spinner.succeed(`Ran action: \`${action}\` with output: ${output}`);
     } catch (e) {
+      if (await this._exec.isRunning()) {
+        await this._exec.stopService();
+      }
       spinner.fail(`Failed action: \`${action}\``);
       utils.error(`  ${e}`);
       process.exit(1);
