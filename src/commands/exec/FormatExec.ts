@@ -26,9 +26,9 @@ export default class FormatExec extends Exec {
     this.verification();
     const output = await this.runDockerExecCommand(this.containerID);
     verify.verifyOutputType(this.action, output);
-    // if ((this.action.output) && (this.action.output.type) && ((this.action.output.type === 'map') || this.action.output.type === 'object')) {
-    //   return JSON.stringify(JSON.parse(output.trim()), null, 2);
-    // }
+    if ((this.action.output) && (this.action.output.type) && ((this.action.output.type === 'map') || this.action.output.type === 'object')) {
+      return JSON.stringify(JSON.parse(output.trim()), null, 2);
+    }
     return output.trim();
   }
 

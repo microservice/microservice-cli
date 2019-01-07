@@ -95,7 +95,11 @@ export default class Subscribe {
         req.on('data', async (data) => {
           try {
             verify.verifyOutputType(this.event, data.toString());
-            utils.log(data);
+            if ((this.event.output) && (this.event.output.type) && ((this.event.output.type === 'map') || this.event.output.type === 'object')) {
+              utils.log(JSON.stringify(JSON.parse(data), null, 2));
+            } else {
+              utils.log(data);
+            }
           } catch (e) {
             utils.error(e);
           }
