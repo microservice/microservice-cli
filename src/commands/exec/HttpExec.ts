@@ -1,3 +1,4 @@
+import * as _ from 'underscore';
 import * as rp from 'request-promise';
 import * as querystring from 'querystring';
 import Microservice from '../../models/Microservice';
@@ -27,7 +28,7 @@ export default class HttpExec extends Exec {
     this.verification();
     const output = await this.httpCommand(this.portMap[this.action.http.port]);
     verify.verifyOutputType(this.action, output.trim());
-    return output;
+    return JSON.stringify(JSON.parse(output), null, 2);
   }
 
   /**
@@ -88,7 +89,9 @@ export default class HttpExec extends Exec {
       const argument = this.action.arguments[i];
       switch (this.action.getArgument(argument.name).in) {
         case 'query':
-          queryParams[argument.name] = this._arguments[argument.name];
+          if (!_.isUndefined(this._arguments[argument.name])) {
+            queryParams[argument.name] = this._arguments[argument.name];
+          }
           break;
         case 'path':
           url = url.replace(`{{${argument.name}}}`, this._arguments[argument.name]);
