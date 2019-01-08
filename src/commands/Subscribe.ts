@@ -8,6 +8,7 @@ import Event from '../models/Event';
 const homedir = require('os').homedir();
 const uuidv4 = require('uuid/v4');
 import * as rp from '../request';
+import Exec from './exec/Exec';
 
 /**
  * Describes a way to subscribe to an event.
@@ -15,6 +16,7 @@ import * as rp from '../request';
 export default class Subscribe {
   private readonly microservice: Microservice;
   private readonly _arguments: object;
+  private readonly exec: Exec;
   private action: Action;
   private omgJson: object;
   private event: Event;
@@ -24,10 +26,12 @@ export default class Subscribe {
    *
    * @param {Microservice} microservice The given {@link Microservice}
    * @param {Object} _arguments The given arguments
+   * @param {Exec} exec The {@link Exec} object that started the event
    */
-  constructor(microservice: Microservice, _arguments: any) {
+  constructor(microservice: Microservice, _arguments: any, exec: Exec) {
     this.microservice = microservice;
     this._arguments = _arguments;
+    this.exec = exec;
   }
 
   /**
@@ -44,18 +48,13 @@ export default class Subscribe {
       throw `Failed subscribing to event: \`${event}\`. Need to supply required arguments: \`${this.event.requiredArguments.toString()}\``;
     }
 
-    try {
-      verify.verifyArgumentTypes(this.event, this._arguments);
-      this.castTypes();
-      const server = this.startOMGServer();
-      const port = await utils.getOpenPort();
-      server.listen({port, hostname: '127.0.0.1'});
-
-      this.id = uuidv4();
-      await this.subscribe(port);
-    } catch (e) {
-      throw `Failed subscribe to event: \`${event}\`. ${e.toString().trim()}`;
-    }
+    verify.verifyArgumentTypes(this.event, this._arguments);
+    this.castTypes();
+    const server = this.startOMGServer();
+    const port = await utils.getOpenPort();
+    server.listen({port, hostname: '127.0.0.1'});
+    this.id = uuidv4();
+    await this.subscribe(port);
   }
 
   /**
@@ -65,23 +64,16 @@ export default class Subscribe {
    * @return {Promise<void>}
    */
   private async subscribe(port: number): Promise<void> {
-    try {
-      await rp.makeRequest({
-        method: this.event.subscribe.method,
-        uri: `http://localhost:${this.omgJson[process.cwd()].ports[this.event.subscribe.port]}${this.event.subscribe.path}`,
-        body: {
-          id: this.id,
-          endpoint: `http://host.docker.internal:${port}`,
-          data: this._arguments,
-        },
-        json: true,
-      });
-    } catch (e) {
-      if (e.name === 'RequestError') {
-        return this.subscribe(port);
-      }
-      throw e;
-    }
+    await rp.makeRequest({
+      method: this.event.subscribe.method,
+      uri: `http://localhost:${this.omgJson[process.cwd()].ports[this.event.subscribe.port]}${this.event.subscribe.path}`,
+      body: {
+        id: this.id,
+        endpoint: `http://host.docker.internal:${port}`,
+        data: this._arguments,
+      },
+      json: true,
+    });
   }
 
   /**
@@ -103,8 +95,8 @@ export default class Subscribe {
           } catch (e) {
             utils.error(e);
           }
+          res.end('Done');
         });
-        res.end('Done');
       }
     });
   }

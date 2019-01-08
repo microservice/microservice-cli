@@ -154,7 +154,7 @@ export default class Cli {
     this.startedID = await this._exec.startService(); // 1. start service
     spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`);
     spinner = ora.start(`Health check`);
-    await timer(1000);
+    await new Promise( (res) => setTimeout(res, 1000)); // wait for the container to start
     if (!await this._exec.isRunning()) { // 2. health check
       spinner.fail('Health check failed');
       utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
@@ -196,13 +196,25 @@ export default class Cli {
     try {
       argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
     } catch (e) {
-      spinner.fail(`Failed action: \`${action}\``);
-      utils.error(`  ${e}`);
+      spinner.fail(`Failed action: \`${action}\`: ${e}`);
       process.exit(1);
     }
-    this._subscribe = new Subscribe(this.microservice, argsObj);
-    await this._subscribe.go(action, event);
-    spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
+    this._subscribe = new Subscribe(this.microservice, argsObj, this._exec);
+    try {
+      await this._subscribe.go(action, event);
+      spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
+      const that = this;
+      setInterval(async () => {
+        if (!await that._exec.isRunning()) {
+          utils.error(`\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._exec.getLogs()}`);
+          process.exit(1);
+        }
+      }, 1500);
+    } catch (e) {
+      spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`);
+      utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
+      process.exit(1);
+    }
   }
 
   /**
@@ -258,5 +270,3 @@ export default class Cli {
     }
   }
 }
-
-const timer = (ms) => new Promise( (res) => setTimeout(res, ms));
