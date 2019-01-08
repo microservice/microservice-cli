@@ -40,39 +40,31 @@ export default class HttpExec extends Exec {
   private async httpCommand(port: number): Promise<string> {
     let data;
     const httpData = this.formatHttp(port);
-    try {
-      switch (this.action.http.method) {
-        case 'get':
-          data = await rp.get(httpData.url);
-          break;
-        case 'post':
-          data = await rp.post(httpData.url, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(httpData.jsonData),
-          });
-          break;
-        case 'put':
-          data = await rp.put(httpData.url, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(httpData.jsonData),
-          });
-          break;
-        case 'delete':
-          data = await rp.delete(httpData.url);
-          break;
-      }
-      return data;
-    } catch (e) {
-      if (e.message === 'Error: socket hang up') { // this may cause an issue https://github.com/microservices/microservice-cli/issues/18
-        return await this.httpCommand(port);
-      } else {
-        throw e;
-      }
+    switch (this.action.http.method) {
+      case 'get':
+        data = await rp.get(httpData.url);
+        break;
+      case 'post':
+        data = await rp.post(httpData.url, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(httpData.jsonData),
+        });
+        break;
+      case 'put':
+        data = await rp.put(httpData.url, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(httpData.jsonData),
+        });
+        break;
+      case 'delete':
+        data = await rp.delete(httpData.url);
+        break;
     }
+    return data;
   }
 
   /**
