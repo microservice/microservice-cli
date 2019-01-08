@@ -196,13 +196,18 @@ export default class Cli {
     try {
       argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
     } catch (e) {
-      spinner.fail(`Failed action: \`${action}\``);
-      utils.error(`  ${e}`);
+      spinner.fail(`Failed action: \`${action}\`: ${e}`);
       process.exit(1);
     }
-    this._subscribe = new Subscribe(this.microservice, argsObj);
-    await this._subscribe.go(action, event);
-    spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
+    this._subscribe = new Subscribe(this.microservice, argsObj, this._exec);
+    try {
+      await this._subscribe.go(action, event);
+      spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
+    } catch (e) {
+      spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`);
+      utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
+      process.exit(1);
+    }
   }
 
   /**
