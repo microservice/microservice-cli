@@ -95,8 +95,8 @@ export default class Subscribe {
           } catch (e) {
             utils.error(e);
           }
+          res.end('Done');
         });
-        res.end('Done');
       }
     });
   }

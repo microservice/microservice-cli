@@ -154,7 +154,7 @@ export default class Cli {
     this.startedID = await this._exec.startService(); // 1. start service
     spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`);
     spinner = ora.start(`Health check`);
-    await timer(1000);
+    await new Promise( (res) => setTimeout(res, 1000)); // wait for the container to start
     if (!await this._exec.isRunning()) { // 2. health check
       spinner.fail('Health check failed');
       utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
@@ -203,6 +203,13 @@ export default class Cli {
     try {
       await this._subscribe.go(action, event);
       spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
+      const that = this;
+      setInterval(async () => {
+        if (!await that._exec.isRunning()) {
+          utils.error(`\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._exec.getLogs()}`);
+          process.exit(1);
+        }
+      }, 1500);
     } catch (e) {
       spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`);
       utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
@@ -263,5 +270,3 @@ export default class Cli {
     }
   }
 }
-
-const timer = (ms) => new Promise( (res) => setTimeout(res, ms));
