@@ -13,10 +13,10 @@ describe('HttpExec.js', () => {
 
   beforeEach(() => {
     execStub = sinon.stub(utils, 'exec').callsFake(async () => '`execStub`');
-    rpGetStub = sinon.stub(rp, 'get').callsFake(async () => 'get data');
-    rpPostStub = sinon.stub(rp, 'post').callsFake(async () => 'post data');
-    rpPutStub = sinon.stub(rp, 'put').callsFake(async () => 'put data');
-    rpDeleteStub = sinon.stub(rp, 'delete').callsFake(async () => 'delete data');
+    rpGetStub = sinon.stub(rp, 'get').callsFake(async () => '{"data": "get data"}');
+    rpPostStub = sinon.stub(rp, 'post').callsFake(async () => '{"data": "post data"}');
+    rpPutStub = sinon.stub(rp, 'put').callsFake(async () => '{"data": "put data"}');
+    rpDeleteStub = sinon.stub(rp, 'delete').callsFake(async () => '{"data": "delete data"}');
     sinon.stub(utils, 'getOpenPort').callsFake(async () => 5555);
   });
 
