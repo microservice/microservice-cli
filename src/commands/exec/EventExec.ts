@@ -24,13 +24,9 @@ export default class EventExec extends Exec {
   public async exec(action): Promise<string> {
     this.action = this.microservice.getAction(action);
     this.preChecks();
-    try {
-      this.verification();
-      this.omgJsonFileHandler();
-      return '';
-    } catch (e) {
-      throw `Failed action: \`${action}\`. ${e.toString().trim()}`;
-    }
+    this.verification();
+    this.omgJsonFileHandler();
+    return '';
   }
 
   /**

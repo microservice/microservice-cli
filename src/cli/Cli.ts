@@ -169,8 +169,7 @@ export default class Cli {
       if (await this._exec.isRunning()) {
         await this._exec.stopService();
       }
-      spinner.fail(`Failed action: \`${action}\``);
-      utils.error(`  ${e}`);
+      spinner.fail(`Failed action: \`${action}\`: ${e}`);
       process.exit(1);
     }
 
@@ -211,8 +210,14 @@ export default class Cli {
         }
       }, 1500);
     } catch (e) {
+      if (await this._exec.isRunning()) {
+        await this._exec.stopService();
+      }
+      const logs = await this._exec.getLogs();
       spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`);
-      utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
+      if (logs) {
+        utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
+      }
       process.exit(1);
     }
   }
