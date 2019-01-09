@@ -16,6 +16,7 @@ describe('Cli.ts', () => {
     sinon.stub(ora, 'start').callsFake(() => {
       return {
         succeed: (text) => {},
+        info: (text) => {},
       };
     });
     processExitStub = sinon.stub(process, 'exit');

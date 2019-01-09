@@ -99,10 +99,13 @@ export default class Cli {
    */
   static async build(options: any): Promise<string> {
     await Cli.checkDocker();
+    ora.start().info('Building Docker image');
     try {
-      return await new Build(options.tag || await utils.createImageName()).go();
+      const data = await new Build(options.tag || await utils.createImageName()).go();
+      ora.start().succeed('Building Docker image');
+      return data;
     } catch (e) {
-      e.spinner.fail(`Failed to build: ${e.message}`);
+      ora.start().fail(`Failed to build: ${e}`);
       process.exit(1);
     }
   }
