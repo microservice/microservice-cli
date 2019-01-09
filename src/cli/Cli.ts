@@ -101,9 +101,9 @@ export default class Cli {
     await Cli.checkDocker();
     ora.start().info('Building Docker image');
     try {
-      const data = await new Build(options.tag || await utils.createImageName()).go();
-      ora.start().succeed('Building Docker image');
-      return data;
+      const name = await new Build(options.tag || await utils.createImageName()).go();
+      ora.start().succeed(`Built Docker image with name: ${name}`);
+      return name;
     } catch (e) {
       ora.start().fail(`Failed to build: ${e}`);
       process.exit(1);
