@@ -50,6 +50,7 @@ export default class Subscribe {
 
     verify.verifyArgumentTypes(this.event, this._arguments);
     this.castTypes();
+    verify.verifyArgumentConstrains(this.event, this._arguments);
     const server = this.startOMGServer();
     const port = await utils.getOpenPort();
     server.listen({port, hostname: '127.0.0.1'});

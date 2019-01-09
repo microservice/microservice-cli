@@ -35,8 +35,6 @@ export default abstract class Exec {
 
   /**
    * Checks if required arguments and environment variables are given and will also set their default values.
-   *
-   * @param {Object} spinner The spinner for the {@link Exec}
    */
   protected preChecks() {
     this.setDefaultArguments();
