@@ -36,7 +36,7 @@ export default class Cli {
     try {
       await utils.exec('docker ps');
     } catch (e) {
-      utils.error('Docker must be running to us the cli');
+      utils.error('Docker must be running to use the cli');
       process.exit(1);
     }
   }
