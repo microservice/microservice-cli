@@ -2,6 +2,7 @@ import Exec from './Exec';
 import Microservice from '../../models/Microservice';
 import * as utils from '../../utils';
 import * as verify from '../../verify';
+const fs = require('fs');
 
 /**
  * Represents a docker exec execution of an {@link Action}.
@@ -44,7 +45,9 @@ export default class FormatExec extends Exec {
     if ((lifecycle !== null) && (lifecycle.startup !== null)) {
       this.containerID = await utils.exec(`docker run -td${this.formatEnvironmentVariables()} --entrypoint ${lifecycle.startup.command} ${this.dockerImage} ${lifecycle.startup.args}`);
     } else {
-      this.containerID = await utils.exec(`docker run -td${this.formatEnvironmentVariables()} --entrypoint tail ${this.dockerImage} -f /dev/null`);
+      const container = await utils.docker.createContainer({Image: this.dockerImage, Cmd: ['tail', '-f', '/dev/null']});
+      await container.start();
+      this.containerID = container.$subject.id;
     }
     return this.containerID;
   }
@@ -56,7 +59,13 @@ export default class FormatExec extends Exec {
    * @return {Promise<String>} stdout if command runs with exit code 0, otherwise stderror
    */
   private async runDockerExecCommand(containerID: string): Promise<string> {
-    return await utils.exec(`docker exec ${containerID} ${this.action.format.command}${this.formatExec()}`);
+    const container = utils.docker.getContainer(this.containerID);
+    const exec = await container.exec({Cmd: ['node', 'cli.js', 'boolean']});
+    console.log(exec)
+    const data = await exec.start();
+    console.log(data.output);
+    return 'false'
+    // return await utils.exec(`docker exec ${containerID} ${this.action.format.command}${this.formatExec()}`);
   }
 
   /**

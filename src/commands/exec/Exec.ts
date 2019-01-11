@@ -182,7 +182,8 @@ export default abstract class Exec {
    * @return {Boolean} True if running, otherwise false
    */
   public async isRunning(): Promise<boolean> {
-    return JSON.parse(await utils.exec(`docker inspect ${this.containerID}`))[0].State.Running;
+    const container = utils.docker.getContainer(this.containerID);
+    return (await container.inspect()).State.Running;
   }
 
   /**

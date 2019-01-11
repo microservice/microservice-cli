@@ -2,6 +2,8 @@ import * as _ from 'underscore';
 import * as $ from 'shelljs';
 import * as net from 'http';
 import Microservice from './models/Microservice';
+const Docker = require('dockerode-promise');
+export const docker = new Docker();
 
 /**
  * Used to set values in the constructors of the microservice classes.
