@@ -8,7 +8,7 @@ const cli = new Cli();
 
 program
   .description('For more details on the commands below, run `omg `(validate|build|exec|subscribe|shutdown)` --help`')
-  .version('0.5.2');
+  .version('0.5.5');
 
 program
   .command('validate')
