@@ -18,14 +18,14 @@ export default class Build {
   /**
    * Builds a Docker image with this {@link Build}'s name prefaced with `omg/` and tagged with `local`.
    */
-  async go(): Promise<string> {
-    await utils.docker.buildImage({
-      context: process.cwd(),
-      src: ['Dockerfile'],
-    }, {
-      t: this.name
-    })
-    // await utils.exec(`docker build -t ${this.name} .`, false);
+  async go(): Promise<string> { // TODO
+    // await utils.docker.buildImage({
+    //   context: process.cwd(),
+    //   src: ['Dockerfile'],
+    // }, {
+    //   t: this.name,
+    // });
+    await utils.exec(`docker build -t ${this.name} .`, false);
     return this.name;
   }
 }

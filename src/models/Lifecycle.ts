@@ -29,20 +29,9 @@ export default class Lifecycle {
    */
   public get startup(): any {
     if (typeof this._startup.command === 'string') {
-      return {
-        command: this._startup.command,
-        args: '',
-      };
+      return this._startup.command.split(' ');
     }
-    const result = {
-      command: this._startup.command[0],
-      args: '',
-    };
-    for (let i = 1; i < this._startup.command.length; i += 1) {
-      result.args += this._startup.command[i] + ' ';
-    }
-    result.args = result.args.trim();
-    return result;
+    return this._startup.command;
   }
 
   /**

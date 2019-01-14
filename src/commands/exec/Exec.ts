@@ -113,13 +113,20 @@ export default abstract class Exec {
    *
    * @return {String} The formatted string
    */
-  protected formatEnvironmentVariables(): string {
-    let result = '';
+  protected formatEnvironmentVariables(): string[] {
+    const result = [];
     const keys = Object.keys(this.environmentVariables);
     for (let i = 0; i < keys.length; i += 1) {
-      result += ` -e ${keys[i]}="${this.environmentVariables[keys[i]]}"`;
+      result.push(`${keys[i]}=${this.environmentVariables[keys[i]]}`);
     }
+    // console.log(result)
     return result;
+    // let result = '';
+    // const keys = Object.keys(this.environmentVariables);
+    // for (let i = 0; i < keys.length; i += 1) {
+    //   result += ` -e ${keys[i]}="${this.environmentVariables[keys[i]]}"`;
+    // }
+    // return result;
   }
 
   /**
@@ -173,7 +180,9 @@ export default abstract class Exec {
    * @return {String} The containerID that has been stopped
    */
   public async stopService(): Promise<string> {
-    return await utils.exec(`docker kill ${this.containerID}`);
+    const container = utils.docker.getContainer(this.containerID);
+    await container.kill();
+    return this.containerID;
   }
 
   /**
