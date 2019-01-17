@@ -83,9 +83,7 @@ export default class FormatExec extends Exec {
       });
     });
 
-
     return (data as string)
-    // return await utils.exec(`docker exec ${containerID} ${this.action.format.command}${this.formatExec()}`);
   }
 
   /**

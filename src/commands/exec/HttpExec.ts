@@ -26,7 +26,7 @@ export default class HttpExec extends Exec {
     this.action = this.microservice.getAction(action);
     this.preChecks();
     this.verification();
-    const output = await this.httpCommand(this.portMap[this.action.http.port]);
+    const output = await this.httpCommand(this.portMap[`${this.action.http.port}/tcp`][0].HostPort);
     verify.verifyOutputType(this.action, output.trim());
     if ((this.action.output) && (this.action.output.type) && ((this.action.output.type === 'map') || this.action.output.type === 'object')) {
       return JSON.stringify(JSON.parse(output.trim()), null, 2);

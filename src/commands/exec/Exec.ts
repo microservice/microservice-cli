@@ -8,6 +8,7 @@ import Microservice from '../../models/Microservice';
  */
 export default abstract class Exec {
   protected portMap: any;
+  protected exposedPorts: any;
   protected dockerImage: string;
   protected microservice: Microservice;
   protected _arguments: any;
@@ -153,7 +154,12 @@ export default abstract class Exec {
    */
   public async startService(): Promise<string> {
     this.setDefaultEnvironmentVariables();
+
+
+
+
     this.portMap = {};
+    this.exposedPorts = {};
     const neededPorts = utils.getNeededPorts(this.microservice);
     const openPorts = [];
     while (neededPorts.length !== openPorts.length) {
@@ -165,12 +171,28 @@ export default abstract class Exec {
 
     let portString = '';
     for (let i = 0; i < neededPorts.length; i += 1) {
-      this.portMap[neededPorts[i]] = openPorts[i];
+      this.exposedPorts[`${neededPorts[i]}/tcp`] = {};
+      this.portMap[`${neededPorts[i]}/tcp`] = [{'HostPort': openPorts[i].toString()}];
       portString += `-p ${openPorts[i]}:${neededPorts[i]} `;
     }
     portString = portString.trim();
 
-    this.containerID = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
+
+    const container = await utils.docker.createContainer({
+      Image: this.dockerImage,
+      Cmd: this.microservice.lifecycle.startup,
+      Env: this.formatEnvironmentVariables(),
+      ExposedPorts: this.exposedPorts,
+      HostConfig: {
+        PortBindings: this.portMap,
+      },
+    });
+
+    await container.start()
+    this.containerID = container.$subject.id;
+
+
+    // this.containerID = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
     return this.containerID;
   }
 
