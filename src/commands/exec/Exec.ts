@@ -7,9 +7,9 @@ import Microservice from '../../models/Microservice';
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
  */
 export default abstract class Exec {
-  protected portMap: any;
-  protected exposedPorts: any;
-  protected thisIsThePortMap: any;
+  protected portMap: any = {}
+  protected exposedPorts: any = {}
+  protected portBindings: any = {};
   protected dockerImage: string;
   protected microservice: Microservice;
   protected _arguments: any;
@@ -121,14 +121,7 @@ export default abstract class Exec {
     for (let i = 0; i < keys.length; i += 1) {
       result.push(`${keys[i]}=${this.environmentVariables[keys[i]]}`);
     }
-    // console.log(result)
     return result;
-    // let result = '';
-    // const keys = Object.keys(this.environmentVariables);
-    // for (let i = 0; i < keys.length; i += 1) {
-    //   result += ` -e ${keys[i]}="${this.environmentVariables[keys[i]]}"`;
-    // }
-    // return result;
   }
 
   /**
@@ -155,13 +148,6 @@ export default abstract class Exec {
    */
   public async startService(): Promise<string> {
     this.setDefaultEnvironmentVariables();
-
-
-
-
-    this.portMap = {};
-    this.exposedPorts = {};
-    this.thisIsThePortMap = {};
     const neededPorts = utils.getNeededPorts(this.microservice);
     const openPorts = [];
     while (neededPorts.length !== openPorts.length) {
@@ -171,15 +157,11 @@ export default abstract class Exec {
       }
     }
 
-    let portString = '';
     for (let i = 0; i < neededPorts.length; i += 1) {
+      this.portMap[neededPorts[i]] = openPorts[i];
       this.exposedPorts[`${neededPorts[i]}/tcp`] = {};
-      this.thisIsThePortMap[neededPorts[i]] = openPorts[i];
-      this.portMap[`${neededPorts[i]}/tcp`] = [{'HostPort': openPorts[i].toString()}];
-      portString += `-p ${openPorts[i]}:${neededPorts[i]} `;
+      this.portBindings[`${neededPorts[i]}/tcp`] = [{HostPort: openPorts[i].toString()}];
     }
-    portString = portString.trim();
-
 
     const container = await utils.docker.createContainer({
       Image: this.dockerImage,
@@ -187,15 +169,12 @@ export default abstract class Exec {
       Env: this.formatEnvironmentVariables(),
       ExposedPorts: this.exposedPorts,
       HostConfig: {
-        PortBindings: this.portMap,
+        PortBindings: this.portBindings,
       },
     });
+    await container.start();
 
-    await container.start()
     this.containerID = container.$subject.id;
-
-
-    // this.containerID = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
     return this.containerID;
   }
 

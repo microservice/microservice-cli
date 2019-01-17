@@ -43,9 +43,9 @@ export default class EventExec extends Exec {
       ports: {},
     };
 
-    const neededPorts = Object.keys(this.thisIsThePortMap);
+    const neededPorts = Object.keys(this.portMap);
     for (let i = 0; i < neededPorts.length; i += 1) {
-      data[process.cwd()].ports[neededPorts[i]] = this.thisIsThePortMap[neededPorts[i]];
+      data[process.cwd()].ports[neededPorts[i]] = this.portMap[neededPorts[i]];
     }
     fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(data), 'utf8');
   }

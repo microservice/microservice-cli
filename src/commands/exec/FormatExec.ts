@@ -2,7 +2,7 @@ import Exec from './Exec';
 import Microservice from '../../models/Microservice';
 import * as utils from '../../utils';
 import * as verify from '../../verify';
-import {throws} from "assert";
+import {throws} from 'assert';
 const fs = require('fs');
 
 /**
@@ -83,7 +83,7 @@ export default class FormatExec extends Exec {
       });
     });
 
-    return (data as string)
+    return (data as string);
   }
 
   /**
