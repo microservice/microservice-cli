@@ -28,7 +28,10 @@ export default class HttpExec extends Exec {
     this.verification();
     const output = await this.httpCommand(this.portMap[this.action.http.port]);
     verify.verifyOutputType(this.action, output.trim());
-    return JSON.stringify(JSON.parse(output), null, 2);
+    if ((this.action.output) && (this.action.output.type) && ((this.action.output.type === 'map') || this.action.output.type === 'object')) {
+      return JSON.stringify(JSON.parse(output.trim()), null, 2);
+    }
+    return output.trim();
   }
 
   /**
