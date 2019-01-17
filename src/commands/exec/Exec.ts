@@ -9,6 +9,7 @@ import Microservice from '../../models/Microservice';
 export default abstract class Exec {
   protected portMap: any;
   protected exposedPorts: any;
+  protected thisIsThePortMap: any;
   protected dockerImage: string;
   protected microservice: Microservice;
   protected _arguments: any;
@@ -160,6 +161,7 @@ export default abstract class Exec {
 
     this.portMap = {};
     this.exposedPorts = {};
+    this.thisIsThePortMap = {};
     const neededPorts = utils.getNeededPorts(this.microservice);
     const openPorts = [];
     while (neededPorts.length !== openPorts.length) {
@@ -172,6 +174,7 @@ export default abstract class Exec {
     let portString = '';
     for (let i = 0; i < neededPorts.length; i += 1) {
       this.exposedPorts[`${neededPorts[i]}/tcp`] = {};
+      this.thisIsThePortMap[neededPorts[i]] = openPorts[i];
       this.portMap[`${neededPorts[i]}/tcp`] = [{'HostPort': openPorts[i].toString()}];
       portString += `-p ${openPorts[i]}:${neededPorts[i]} `;
     }
