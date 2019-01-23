@@ -206,6 +206,6 @@ export default abstract class Exec {
    */
   public async getStderr(): Promise<string> {
     const container = utils.docker.getContainer(this.containerID);
-    return (await container.logs({stderr: true})).toString()
+    return (await container.logs({stderr: true})).toString().trim();
   }
 }

@@ -110,6 +110,18 @@ export function exec(command: string, silent: boolean=true): Promise<string> {
   });
 }
 
+export function doesContainerExist(name, containers) {
+  for (let i = 0; i < containers.length; i += 1) {
+    for (let j = 0; j < containers[i].RepoTags.length; j += 1) {
+      if (containers[i].RepoTags[j].includes(name)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 /**
  * Log a string to stdout.
  *

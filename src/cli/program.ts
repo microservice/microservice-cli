@@ -44,11 +44,6 @@ program
     await cli.subscribe(action, event, options);
   });
 
-program
-  .command('shutdown')
-  .description('Shutdown a microservice process that was started by an event command')
-  .action(async () => await Cli.shutdown());
-
 // needed because there is no default catch all command with commander.js
 if ((process.argv.length < 3) || (!['validate', 'build', 'exec', 'subscribe', 'shutdown', '--version'].includes(process.argv[2]))) {
   program.help();
