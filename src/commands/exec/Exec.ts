@@ -204,7 +204,8 @@ export default abstract class Exec {
    *
    * return {String} The Docker logs
    */
-  public async getLogs(): Promise<string> {
-    return await utils.exec(`docker logs ${this.containerID}`);
+  public async getStderr(): Promise<string> {
+    const container = utils.docker.getContainer(this.containerID);
+    return (await container.logs({stderr: true})).toString()
   }
 }

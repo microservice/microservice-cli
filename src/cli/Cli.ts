@@ -160,7 +160,7 @@ export default class Cli {
     await new Promise( (res) => setTimeout(res, 1000)); // wait for the container to start
     if (!await this._exec.isRunning()) { // 2. health check
       spinner.fail('Health check failed');
-      utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
+      utils.error(`  Docker logs:\n${await this._exec.getStderr()}`);
       process.exit(1);
     }
     spinner.succeed(`Health check passed`);
@@ -208,7 +208,7 @@ export default class Cli {
       const that = this;
       setInterval(async () => {
         if (!await that._exec.isRunning()) {
-          utils.error(`\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._exec.getLogs()}`);
+          utils.error(`\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._exec.getStderr()}`);
           process.exit(1);
         }
       }, 1500);
@@ -216,10 +216,10 @@ export default class Cli {
       if (await this._exec.isRunning()) {
         await this._exec.stopService();
       }
-      const logs = await this._exec.getLogs();
+      const logs = await this._exec.getStderr();
       spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`);
       if (logs) {
-        utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
+        utils.error(`  Docker logs:\n${await this._exec.getStderr()}`);
       }
       process.exit(1);
     }
