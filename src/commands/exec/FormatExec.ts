@@ -56,7 +56,7 @@ export default class FormatExec extends Exec {
   }
 
   /**
-   * Runs a given command via Docker cli.
+   * Runs a given command via Docker API.
    *
    * @param {String} containerID The given id of the docker container
    * @return {Promise<String>} stdout if command runs with exit code 0, otherwise stderror
