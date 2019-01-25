@@ -24,6 +24,6 @@ describe('Format.ts', () => {
       command: ['node', 'app.js'],
     });
 
-    expect(f.command).toBe('node app.js');
+    expect(f.command).toEqual(['node', 'app.js']);
   });
 });

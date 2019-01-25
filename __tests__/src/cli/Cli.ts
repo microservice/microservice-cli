@@ -11,11 +11,14 @@ import Cli from '../../../src/cli/Cli';
 describe('Cli.ts', () => {
   let processExitStub;
   let errorStub;
+  let successList = [];
 
   beforeEach(() => {
     sinon.stub(ora, 'start').callsFake(() => {
       return {
-        succeed: (text) => {},
+        succeed: (text) => {
+          successList.push(text);
+        },
         info: (text) => {},
       };
     });
@@ -44,6 +47,7 @@ describe('Cli.ts', () => {
   });
 
   afterEach(() => {
+    successList = [];
     (ora.start as any).restore();
     (process.exit as any).restore();
     (utils.error as any).restore();
@@ -257,18 +261,25 @@ describe('Cli.ts', () => {
 
   describe('.exec(action, options)', () => {
     let formatExecExecStub;
-    let utilsExecStub;
 
     beforeEach(() => {
-      formatExecExecStub = sinon.stub(FormatExec.prototype, 'exec');
-      utilsExecStub = sinon.stub(utils, 'exec').callsFake(async () => 'image');
+      sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['image']}]);
+
+
+      sinon.stub(FormatExec.prototype, 'startService').callsFake(async () => 'started_id');
       sinon.stub(Exec.prototype, 'isRunning').callsFake(async () => true);
+      formatExecExecStub = sinon.stub(FormatExec.prototype, 'exec').callsFake(async (action) => 'output');
+      sinon.stub(Exec.prototype, 'stopService').callsFake(async () => 'stoped_id');
     });
 
     afterEach(() => {
-      (FormatExec.prototype.exec as any).restore();
-      (utils.exec as any).restore();
+      (utils.docker.listImages as any).restore();
+
+
+      (FormatExec.prototype.startService as any).restore();
       (Exec.prototype.isRunning as any).restore();
+      (FormatExec.prototype.exec as any).restore();
+      (Exec.prototype.stopService as any).restore();
     });
 
     test('does not execute action because arguments are not given', async () => {
@@ -282,21 +293,24 @@ describe('Cli.ts', () => {
     });
 
     test('image option given and action is executed', async () => {
+      (utils.docker.listImages as any).restore();
+      sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['image']}]);
       const cli = new Cli();
       cli.buildMicroservice();
       await cli.exec('action', {args: [], envs: [], image: 'image'});
 
-      expect(utilsExecStub.calledWith('docker images -f "reference=image"')).toBeTruthy();
+      expect(successList).toEqual(['Started Docker container: started_id', 'Health check passed', 'Ran action: `action` with output: output', 'Stopped Docker container: stoped_id']);
       expect(formatExecExecStub.calledWith('action')).toBeTruthy();
     });
 
     test('image option given but is not build so action is not executed', async () => {
+      (utils.docker.listImages as any).restore();
+      sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['wrong']}]);
       const cli = new Cli();
       cli.buildMicroservice();
       await cli.exec('action', {args: [], envs: [], image: 'does-not-exist'});
 
       expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy();
-      expect(utilsExecStub.calledWith('docker images -f "reference=does-not-exist"')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
       expect(formatExecExecStub.called).toBeFalsy();
     });
