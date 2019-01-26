@@ -2,7 +2,7 @@ import RunFactory from '../../../../src/commands/run/RunFactory';
 import FormatRun from '../../../../src/commands/run/FormatRun';
 import Microservice from '../../../../src/models/Microservice';
 import Action from '../../../../src/models/Action';
-import EventExec from '../../../../src/commands/run/EventExec';
+import EventRun from '../../../../src/commands/run/EventRun';
 import HttpRun from '../../../../src/commands/run/HttpRun';
 
 describe('RunFactory.ts', () => {
@@ -50,7 +50,7 @@ describe('RunFactory.ts', () => {
       expect(httpExec).toEqual(new HttpRun('dockerImage', m, {}, {}));
     });
 
-    test('gets an EventExec', () => {
+    test('gets an EventRun', () => {
       expect(1).toBe(1);
       const rawEventAction = {
         events: {
@@ -77,8 +77,8 @@ describe('RunFactory.ts', () => {
       });
       const eventExec = new RunFactory('dockerImage', m, {}, {}).getRun(new Action('foo', rawEventAction));
 
-      expect(eventExec.constructor.name).toBe('EventExec');
-      expect(eventExec).toEqual(new EventExec('dockerImage', m, {}, {}));
+      expect(eventExec.constructor.name).toBe('EventRun');
+      expect(eventExec).toEqual(new EventRun('dockerImage', m, {}, {}));
     });
   });
 });
