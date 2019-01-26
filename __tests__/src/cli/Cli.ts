@@ -44,6 +44,7 @@ describe('Cli.ts', () => {
         '            method: delete';
     });
     sinon.stub(utils, 'createImageName').callsFake(async () => 'image-name');
+    sinon.stub(utils.docker, 'ping')
   });
 
   afterEach(() => {
@@ -54,6 +55,7 @@ describe('Cli.ts', () => {
     (fs.existsSync as any).restore();
     (fs.readFileSync as any).restore();
     (utils.createImageName as any).restore();
+    (utils.docker.ping as any).restore();
   });
 
   describe('constructor', () => {
@@ -264,8 +266,6 @@ describe('Cli.ts', () => {
 
     beforeEach(() => {
       sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['image']}]);
-
-
       sinon.stub(FormatExec.prototype, 'startService').callsFake(async () => 'started_id');
       sinon.stub(Exec.prototype, 'isRunning').callsFake(async () => true);
       formatExecExecStub = sinon.stub(FormatExec.prototype, 'exec').callsFake(async (action) => 'output');
@@ -274,8 +274,6 @@ describe('Cli.ts', () => {
 
     afterEach(() => {
       (utils.docker.listImages as any).restore();
-
-
       (FormatExec.prototype.startService as any).restore();
       (Exec.prototype.isRunning as any).restore();
       (FormatExec.prototype.exec as any).restore();
