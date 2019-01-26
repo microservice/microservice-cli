@@ -40,9 +40,9 @@ npm install -g omg
     -h, --help     output usage information
 ```
 
-## `omg exec`
+## `omg run`
 ```
-  Usage: exec [options] <action>
+  Usage: run [options] <action>
 
   Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`
 
