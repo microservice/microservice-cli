@@ -1,11 +1,11 @@
-# `omg exec` example
+# `omg run` example
 
 ## [command](https://microservice.guide/schema/interface/#command)
 The [random](https://github.com/microservice/random) microservice is used for this example.
 
 ### Input
 ```
-omg exec string -a length=10
+omg run string -a length=10
 ```
 
 ### Output
@@ -34,7 +34,7 @@ The [slack](https://github.com/microservice/slack) microservice is used for this
 
 ### Input
 ```
-omg exec list_channels -e BOT_TOKEN="xoxb-***************************"
+omg run list_channels -e BOT_TOKEN="xoxb-***************************"
 ```
 
 ### Output

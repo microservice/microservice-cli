@@ -7,7 +7,7 @@ const cli = new Cli();
 
 
 program
-  .description('For more details on the commands below, run `omg `(validate|build|exec|subscribe|shutdown)` --help`')
+  .description('For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`')
   .version('0.7.1');
 
 program
@@ -24,14 +24,14 @@ program
   .action(async (options) => await Cli.build(options));
 
 program
-  .command('exec <action>')
+  .command('run <action>')
   .option('-i --image <i>', 'The name of the image to spin up the microservice, if not provided a fresh image will be build based of the `Dockerfile`')
   .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender(), [])
   .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender(), [])
   .description('Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
   .action(async (action, options) => {
     cli.buildMicroservice();
-    await cli.exec(action, options);
+    await cli.run(action, options);
   });
 
 program
@@ -45,7 +45,7 @@ program
   });
 
 // needed because there is no default catch all command with commander.js
-if ((process.argv.length < 3) || (!['validate', 'build', 'exec', 'subscribe', 'shutdown', '--version'].includes(process.argv[2]))) {
+if ((process.argv.length < 3) || (!['validate', 'build', 'run', 'subscribe', 'shutdown', '--version'].includes(process.argv[2]))) {
   program.help();
 }
 

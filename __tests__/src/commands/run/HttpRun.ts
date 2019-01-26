@@ -1,10 +1,10 @@
 import * as sinon from 'sinon';
 import * as rp from 'request-promise';
-import HttpExec from '../../../../src/commands/exec/HttpExec';
+import HttpRun from '../../../../src/commands/run/HttpRun';
 import Microservice from '../../../../src/models/Microservice';
 import * as utils from '../../../../src/utils';
 
-describe('HttpExec.js', () => {
+describe('HttpRun.js', () => {
   let rpGetStub;
   let rpPostStub;
   let rpPutStub;
@@ -38,7 +38,7 @@ describe('HttpExec.js', () => {
 
   describe('.startService()', () => {
     test('starts service with lifecycle', async () => {
-      const containerID = await new HttpExec('fake_docker_id', new Microservice({
+      const containerID = await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           get: {
@@ -103,7 +103,7 @@ describe('HttpExec.js', () => {
     });
 
     test('not running', async () => {
-      expect(await new HttpExec('fake_docker_id', new Microservice({
+      expect(await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           get: {
@@ -137,7 +137,7 @@ describe('HttpExec.js', () => {
         };
       });
 
-      expect(await new HttpExec('fake_docker_id', new Microservice({
+      expect(await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           get: {
@@ -160,7 +160,7 @@ describe('HttpExec.js', () => {
 
   describe('.exec(action)', () => {
     test('action that gets', async () => {
-      const httpExec = new HttpExec('fake_docker_id', new Microservice({
+      const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           get: {
@@ -178,15 +178,15 @@ describe('HttpExec.js', () => {
           },
         },
       }), {}, {});
-      await httpExec.startService();
+      await httpRun.startService();
 
-      const data = await httpExec.exec('get');
+      const data = await httpRun.exec('get');
       expect(data).toBe('get_data');
       expect(rpGetStub.calledWith('http://localhost:5555/get')).toBeTruthy();
     });
 
     test('action that posts', async () => {
-      const httpExec = new HttpExec('fake_docker_id', new Microservice({
+      const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           post: {
@@ -225,9 +225,9 @@ describe('HttpExec.js', () => {
         person_id: '2',
         data: 'data',
       }, {});
-      await httpExec.startService();
+      await httpRun.startService();
 
-      const data = await httpExec.exec('post');
+      const data = await httpRun.exec('post');
       expect(data).toBe('post_data');
       expect(rpPostStub.calledWith('http://localhost:5555/person/2?isMale=true', {
         headers: {
@@ -238,7 +238,7 @@ describe('HttpExec.js', () => {
     });
 
     test('action that puts', async () => {
-      const httpExec = new HttpExec('fake_docker_id', new Microservice({
+      const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           put: {
@@ -256,9 +256,9 @@ describe('HttpExec.js', () => {
           },
         },
       }), {}, {});
-      await httpExec.startService();
+      await httpRun.startService();
 
-      const data = await httpExec.exec('put');
+      const data = await httpRun.exec('put');
       expect(data).toBe('put_data');
       expect(rpPutStub.calledWith('http://localhost:5555/cheese', {
         headers: {
@@ -269,7 +269,7 @@ describe('HttpExec.js', () => {
     });
 
     test('action that deletes', async () => {
-      const httpExec = new HttpExec('fake_docker_id', new Microservice({
+      const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           delete: {
@@ -296,9 +296,9 @@ describe('HttpExec.js', () => {
       }), {
         id: '2',
       }, {});
-      await httpExec.startService();
+      await httpRun.startService();
 
-      const data = await httpExec.exec('delete');
+      const data = await httpRun.exec('delete');
       expect(data).toBe('delete_data');
       expect(rpDeleteStub.calledWith('http://localhost:5555/user/2')).toBeTruthy();
     });

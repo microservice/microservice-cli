@@ -1,21 +1,21 @@
-import Exec from './Exec';
+import Run from './Run';
 import Microservice from '../../models/Microservice';
-import FormatExec from './FormatExec';
-import HttpExec from './HttpExec';
-import EventExec from './EventExec';
+import FormatRun from './FormatRun';
+import HttpRun from './HttpRun';
+import EventRun from './EventRun';
 import Action from '../../models/Action';
 
 /**
- * Represents a factory to build an {@link Exec}.
+ * Represents a factory to build an {@link Run}.
  */
-export default class ExecFactory {
+export default class RunFactory {
   private readonly dockerImage: string;
   private readonly microservice: Microservice;
   private readonly _arguments: any;
   private readonly environmentVariables: any;
 
   /**
-   * Build an {@link ExecFactory}.
+   * Build an {@link RunFactory}.
    *
    * @param {String} dockerImage The given docker image
    * @param {Microservice} microservice The given {@link Microservice}
@@ -30,18 +30,18 @@ export default class ExecFactory {
   }
 
   /**
-   * Builds a {@link FormatExec}, {@link HttpExec}, or {@link EventExec} based on the given {@link Action}.
+   * Builds a {@link FormatRun}, {@link HttpRun}, or {@link EventRun} based on the given {@link Action}.
    *
    * @param {Action} action The given {@link Action}
-   * @return {Exec} The {@link FormatExec}, {@link HttpExec}, or {@link EventExec}
+   * @return {Run} The {@link FormatRun}, {@link HttpRun}, or {@link EventRun}
    */
-  getExec(action: Action): Exec {
+  getRun(action: Action): Run {
     if (action.format !== null) {
-      return new FormatExec(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
+      return new FormatRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
     } else if (action.http !== null) {
-      return new HttpExec(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
+      return new HttpRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
     } else if (action.events !== null) {
-      return new EventExec(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
+      return new EventRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
     }
   }
 }

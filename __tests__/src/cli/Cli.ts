@@ -3,8 +3,8 @@ import * as sinon from 'sinon';
 import * as utils from '../../../src/utils';
 import ora from '../../../src/ora';
 import Build from '../../../src/commands/Build';
-import Exec from '../../../src/commands/exec/Exec';
-import FormatExec from '../../../src/commands/exec/FormatExec';
+import Run from '../../../src/commands/run/Run';
+import FormatRun from '../../../src/commands/run/FormatRun';
 import Subscribe from '../../../src/commands/Subscribe';
 import Cli from '../../../src/cli/Cli';
 
@@ -261,33 +261,33 @@ describe('Cli.ts', () => {
     });
   });
 
-  describe('.exec(action, options)', () => {
-    let formatExecExecStub;
+  describe('.run(action, options)', () => {
+    let formatRunRunStub;
 
     beforeEach(() => {
       sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['image']}]);
-      sinon.stub(FormatExec.prototype, 'startService').callsFake(async () => 'started_id');
-      sinon.stub(Exec.prototype, 'isRunning').callsFake(async () => true);
-      formatExecExecStub = sinon.stub(FormatExec.prototype, 'exec').callsFake(async (action) => 'output');
-      sinon.stub(Exec.prototype, 'stopService').callsFake(async () => 'stoped_id');
+      sinon.stub(FormatRun.prototype, 'startService').callsFake(async () => 'started_id');
+      sinon.stub(Run.prototype, 'isRunning').callsFake(async () => true);
+      formatRunRunStub = sinon.stub(FormatRun.prototype, 'exec').callsFake(async (action) => 'output');
+      sinon.stub(Run.prototype, 'stopService').callsFake(async () => 'stoped_id');
     });
 
     afterEach(() => {
       (utils.docker.listImages as any).restore();
-      (FormatExec.prototype.startService as any).restore();
-      (Exec.prototype.isRunning as any).restore();
-      (FormatExec.prototype.exec as any).restore();
-      (Exec.prototype.stopService as any).restore();
+      (FormatRun.prototype.startService as any).restore();
+      (Run.prototype.isRunning as any).restore();
+      (FormatRun.prototype.exec as any).restore();
+      (Run.prototype.stopService as any).restore();
     });
 
     test('does not execute action because arguments are not given', async () => {
       const cli = new Cli();
       cli.buildMicroservice();
-      await cli.exec('action', {});
+      await cli.run('action', {});
 
-      expect(errorStub.calledWith('Failed to parse command, run `omg exec --help` for more information.')).toBeTruthy();
+      expect(errorStub.calledWith('Failed to parse command, run `omg run --help` for more information.')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
-      expect(formatExecExecStub.called).toBeFalsy();
+      expect(formatRunRunStub.called).toBeFalsy();
     });
 
     test('image option given and action is executed', async () => {
@@ -295,10 +295,10 @@ describe('Cli.ts', () => {
       sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['image']}]);
       const cli = new Cli();
       cli.buildMicroservice();
-      await cli.exec('action', {args: [], envs: [], image: 'image'});
+      await cli.run('action', {args: [], envs: [], image: 'image'});
 
       expect(successList).toEqual(['Started Docker container: started_id', 'Health check passed', 'Ran action: `action` with output: output', 'Stopped Docker container: stoped_id']);
-      expect(formatExecExecStub.calledWith('action')).toBeTruthy();
+      expect(formatRunRunStub.calledWith('action')).toBeTruthy();
     });
 
     test('image option given but is not build so action is not executed', async () => {
@@ -306,25 +306,25 @@ describe('Cli.ts', () => {
       sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['wrong']}]);
       const cli = new Cli();
       cli.buildMicroservice();
-      await cli.exec('action', {args: [], envs: [], image: 'does-not-exist'});
+      await cli.run('action', {args: [], envs: [], image: 'does-not-exist'});
 
       expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
-      expect(formatExecExecStub.called).toBeFalsy();
+      expect(formatRunRunStub.called).toBeFalsy();
     });
   });
 
   describe('.subscribe(event, options)', () => {
-    let cliExecStub;
+    let cliRunStub;
     let subscribeGoStub;
 
     beforeEach(() => {
-      cliExecStub = sinon.stub(Cli.prototype, 'exec');
+      cliRunStub = sinon.stub(Cli.prototype, 'run');
       subscribeGoStub = sinon.stub(Subscribe.prototype, 'go');
     });
 
     afterEach(() => {
-      (Cli.prototype.exec as any).restore();
+      (Cli.prototype.run as any).restore();
       (Subscribe.prototype.go as any).restore();
     });
 
@@ -333,7 +333,7 @@ describe('Cli.ts', () => {
       cli.buildMicroservice();
       await cli.subscribe('eventAction', 'event', {args: [], envs: []});
 
-      expect(cliExecStub.args[0]).toEqual(['eventAction', {args: [], envs: []}]);
+      expect(cliRunStub.args[0]).toEqual(['eventAction', {args: [], envs: []}]);
       expect(subscribeGoStub.args[0]).toEqual(['eventAction', 'event']);
     });
   });

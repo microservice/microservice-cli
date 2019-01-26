@@ -2,15 +2,15 @@ import * as _ from 'underscore';
 import * as rp from 'request-promise';
 import * as querystring from 'querystring';
 import Microservice from '../../models/Microservice';
-import Exec from './Exec';
+import Run from './Run';
 import * as verify from '../../verify';
 
 /**
  * Represents a http execution of an {@link Action}.
  */
-export default class HttpExec extends Exec {
+export default class HttpRun extends Run {
   /**
-   * Builds a {@link HttpExec}.
+   * Builds a {@link HttpRun}.
    *
    * @param {String} dockerImage The given docker image
    * @param {Microservice} microservice The given {@link Microservice}
@@ -35,7 +35,7 @@ export default class HttpExec extends Exec {
   }
 
   /**
-   * Run this {@link Exec}'s {@link Action} that interfaces via HTTP.
+   * Run this {@link HttpRun}'s {@link Action} that interfaces via HTTP.
    *
    * @param {Number} port The given sever started in Docker
    * @return {Promise<String>} The response of the Http request
@@ -71,7 +71,7 @@ export default class HttpExec extends Exec {
   }
 
   /**
-   * Formats an Http request based on this {@link Exec}'s {@link Action}.
+   * Formats an Http request based on this {@link HttpRun}'s {@link Action}.
    *
    * @param {Number} port The given server info
    * @return {{url: String, jsonData: Object}} The url and data

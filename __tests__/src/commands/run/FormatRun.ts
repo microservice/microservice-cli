@@ -1,9 +1,9 @@
 import * as sinon from 'sinon';
-import FormatExec from '../../../../src/commands/exec/FormatExec';
+import FormatRun from '../../../../src/commands/run/FormatRun';
 import Microservice from '../../../../src/models/Microservice';
 import * as utils from '../../../../src/utils';
 
-describe('FormatExec.ts', () => {
+describe('FormatRun.ts', () => {
   beforeEach(() => {
     sinon.stub(utils, 'getOpenPort').callsFake(async () => 5555);
   });
@@ -31,7 +31,7 @@ describe('FormatExec.ts', () => {
     });
 
     test('starts service with dev null default', async () => {
-      const containerID = await new FormatExec('fake_docker_id', new Microservice({
+      const containerID = await new FormatRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           test: {
@@ -52,7 +52,7 @@ describe('FormatExec.ts', () => {
     });
 
     test('starts service with lifecycle', async () => {
-      const containerID = await new FormatExec('fake_docker_id', new Microservice({
+      const containerID = await new FormatRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           test: {
@@ -100,7 +100,7 @@ describe('FormatExec.ts', () => {
     });
 
     test('not running', async () => {
-      expect(await new FormatExec('fake_docker_id', new Microservice({
+      expect(await new FormatRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           test: {
@@ -132,7 +132,7 @@ describe('FormatExec.ts', () => {
         };
       });
 
-      expect(await new FormatExec('fake_docker_id', new Microservice({
+      expect(await new FormatRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           test: {
@@ -154,7 +154,7 @@ describe('FormatExec.ts', () => {
   describe('.exec(action)', () => {
     test('throws an exception because not all required arguments are supplied', async () => {
       try {
-        await new FormatExec('fake_docker_id', new Microservice({
+        await new FormatRun('fake_docker_id', new Microservice({
           omg: 1,
           actions: {
             tom: {
@@ -177,7 +177,7 @@ describe('FormatExec.ts', () => {
 
     test('throws an exception because not all required environment variables are supplied', async () => {
       try {
-        await new FormatExec('fake_docker_id', new Microservice({
+        await new FormatRun('fake_docker_id', new Microservice({
           omg: 1,
           actions: {
             tom: {

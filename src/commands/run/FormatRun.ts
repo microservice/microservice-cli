@@ -1,4 +1,4 @@
-import Exec from './Exec';
+import Run from './Run';
 import Microservice from '../../models/Microservice';
 import * as utils from '../../utils';
 import * as verify from '../../verify';
@@ -8,9 +8,9 @@ const fs = require('fs');
 /**
  * Represents a docker exec execution of an {@link Action}.
  */
-export default class FormatExec extends Exec {
+export default class FormatRun extends Run {
   /**
-   * Builds a {@link FormatExec}.
+   * Builds a {@link FormatRun}.
    *
    * @param {String} dockerImage The given docker image
    * @param {Microservice} microservice The given {@link Microservice}
