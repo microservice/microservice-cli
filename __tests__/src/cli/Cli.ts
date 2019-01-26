@@ -3,8 +3,8 @@ import * as sinon from 'sinon';
 import * as utils from '../../../src/utils';
 import ora from '../../../src/ora';
 import Build from '../../../src/commands/Build';
-import Exec from '../../../src/commands/exec/Exec';
-import FormatExec from '../../../src/commands/exec/FormatExec';
+import Exec from '../../../src/commands/run/Exec';
+import FormatExec from '../../../src/commands/run/FormatExec';
 import Subscribe from '../../../src/commands/Subscribe';
 import Cli from '../../../src/cli/Cli';
 

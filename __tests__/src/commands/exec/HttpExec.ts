@@ -1,6 +1,6 @@
 import * as sinon from 'sinon';
 import * as rp from 'request-promise';
-import HttpExec from '../../../../src/commands/exec/HttpExec';
+import HttpExec from '../../../../src/commands/run/HttpExec';
 import Microservice from '../../../../src/models/Microservice';
 import * as utils from '../../../../src/utils';
 

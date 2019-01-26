@@ -4,7 +4,7 @@ import * as rp from '../../../src/request';
 import * as utils from '../../../src/utils';
 import Subscribe from '../../../src/commands/Subscribe';
 import Microservice from '../../../src/models/Microservice';
-import HttpExec from '../../../src/commands/exec/HttpExec';
+import HttpExec from '../../../src/commands/run/HttpExec';
 
 describe('Subscribe.ts', () => {
   let rpMakeRequestStub;

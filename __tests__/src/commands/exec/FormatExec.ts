@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import FormatExec from '../../../../src/commands/exec/FormatExec';
+import FormatExec from '../../../../src/commands/run/FormatExec';
 import Microservice from '../../../../src/models/Microservice';
 import * as utils from '../../../../src/utils';
 

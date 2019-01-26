@@ -1,9 +1,9 @@
-import ExecFactory from '../../../../src/commands/exec/ExecFactory';
-import FormatExec from '../../../../src/commands/exec/FormatExec';
+import ExecFactory from '../../../../src/commands/run/ExecFactory';
+import FormatExec from '../../../../src/commands/run/FormatExec';
 import Microservice from '../../../../src/models/Microservice';
 import Action from '../../../../src/models/Action';
-import EventExec from '../../../../src/commands/exec/EventExec';
-import HttpExec from '../../../../src/commands/exec/HttpExec';
+import EventExec from '../../../../src/commands/run/EventExec';
+import HttpExec from '../../../../src/commands/run/HttpExec';
 
 describe('ExecFactory.ts', () => {
   describe('.getExec', () => {

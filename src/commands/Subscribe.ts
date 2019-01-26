@@ -8,7 +8,7 @@ import Event from '../models/Event';
 const homedir = require('os').homedir();
 const uuidv4 = require('uuid/v4');
 import * as rp from '../request';
-import Exec from './exec/Exec';
+import Exec from './run/Exec';
 
 /**
  * Describes a way to subscribe to an event.
