@@ -1,10 +1,10 @@
 import * as sinon from 'sinon';
 import * as rp from 'request-promise';
-import HttpExec from '../../../../src/commands/run/HttpExec';
+import HttpRun from '../../../../src/commands/run/HttpRun';
 import Microservice from '../../../../src/models/Microservice';
 import * as utils from '../../../../src/utils';
 
-describe('HttpExec.js', () => {
+describe('HttpRun.js', () => {
   let rpGetStub;
   let rpPostStub;
   let rpPutStub;
@@ -38,7 +38,7 @@ describe('HttpExec.js', () => {
 
   describe('.startService()', () => {
     test('starts service with lifecycle', async () => {
-      const containerID = await new HttpExec('fake_docker_id', new Microservice({
+      const containerID = await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           get: {
@@ -103,7 +103,7 @@ describe('HttpExec.js', () => {
     });
 
     test('not running', async () => {
-      expect(await new HttpExec('fake_docker_id', new Microservice({
+      expect(await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           get: {
@@ -137,7 +137,7 @@ describe('HttpExec.js', () => {
         };
       });
 
-      expect(await new HttpExec('fake_docker_id', new Microservice({
+      expect(await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           get: {
@@ -160,7 +160,7 @@ describe('HttpExec.js', () => {
 
   describe('.exec(action)', () => {
     test('action that gets', async () => {
-      const httpExec = new HttpExec('fake_docker_id', new Microservice({
+      const httpExec = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           get: {
@@ -186,7 +186,7 @@ describe('HttpExec.js', () => {
     });
 
     test('action that posts', async () => {
-      const httpExec = new HttpExec('fake_docker_id', new Microservice({
+      const httpExec = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           post: {
@@ -238,7 +238,7 @@ describe('HttpExec.js', () => {
     });
 
     test('action that puts', async () => {
-      const httpExec = new HttpExec('fake_docker_id', new Microservice({
+      const httpExec = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           put: {
@@ -269,7 +269,7 @@ describe('HttpExec.js', () => {
     });
 
     test('action that deletes', async () => {
-      const httpExec = new HttpExec('fake_docker_id', new Microservice({
+      const httpExec = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           delete: {

@@ -3,7 +3,7 @@ import FormatRun from '../../../../src/commands/run/FormatRun';
 import Microservice from '../../../../src/models/Microservice';
 import Action from '../../../../src/models/Action';
 import EventExec from '../../../../src/commands/run/EventExec';
-import HttpExec from '../../../../src/commands/run/HttpExec';
+import HttpRun from '../../../../src/commands/run/HttpRun';
 
 describe('RunFactory.ts', () => {
   describe('.getRun', () => {
@@ -25,7 +25,7 @@ describe('RunFactory.ts', () => {
       expect(formatExec).toEqual(new FormatRun('dockerImage', m, {}, {}));
     });
 
-    test('gets an HttpExec', () => {
+    test('gets an HttpRun', () => {
       const rawHttpAction = {
         http: {
           method: 'post',
@@ -46,8 +46,8 @@ describe('RunFactory.ts', () => {
       });
       const httpExec = new RunFactory('dockerImage', m, {}, {}).getRun(new Action('foo', rawHttpAction));
 
-      expect(httpExec.constructor.name).toBe('HttpExec');
-      expect(httpExec).toEqual(new HttpExec('dockerImage', m, {}, {}));
+      expect(httpExec.constructor.name).toBe('HttpRun');
+      expect(httpExec).toEqual(new HttpRun('dockerImage', m, {}, {}));
     });
 
     test('gets an EventExec', () => {

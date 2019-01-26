@@ -4,7 +4,7 @@ import * as rp from '../../../src/request';
 import * as utils from '../../../src/utils';
 import Subscribe from '../../../src/commands/Subscribe';
 import Microservice from '../../../src/models/Microservice';
-import HttpExec from '../../../src/commands/run/HttpExec';
+import HttpRun from '../../../src/commands/run/HttpRun';
 
 describe('Subscribe.ts', () => {
   let rpMakeRequestStub;
@@ -70,14 +70,14 @@ describe('Subscribe.ts', () => {
 
     test('fails because required arguments are not supplied', async () => {
       try {
-        await new Subscribe(m, {}, new HttpExec('docker_image', m, {}, {})).go('foo', 'bar');
+        await new Subscribe(m, {}, new HttpRun('docker_image', m, {}, {})).go('foo', 'bar');
       } catch (e) {
         expect(e).toBe('Failed subscribing to event: `bar`. Need to supply required arguments: `x`');
       }
     });
 
     test('subscribes to the event', async () => {
-      await new Subscribe(m, {x: '1'}, new HttpExec('docker_image', m, {}, {})).go('foo', 'bar');
+      await new Subscribe(m, {x: '1'}, new HttpRun('docker_image', m, {}, {})).go('foo', 'bar');
 
       expect(rpMakeRequestStub.args[0][0].body.data).toEqual({x: 1});
       expect(rpMakeRequestStub.args[0][0].body.endpoint).toEqual('http://host.docker.internal:4444');

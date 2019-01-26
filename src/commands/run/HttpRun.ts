@@ -8,9 +8,9 @@ import * as verify from '../../verify';
 /**
  * Represents a http execution of an {@link Action}.
  */
-export default class HttpExec extends Run {
+export default class HttpRun extends Run {
   /**
-   * Builds a {@link HttpExec}.
+   * Builds a {@link HttpRun}.
    *
    * @param {String} dockerImage The given docker image
    * @param {Microservice} microservice The given {@link Microservice}
