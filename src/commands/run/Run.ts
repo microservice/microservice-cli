@@ -6,7 +6,7 @@ import Microservice from '../../models/Microservice';
 /**
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
  */
-export default abstract class Exec {
+export default abstract class Run {
   protected portMap: any = {}
   protected exposedPorts: any = {}
   protected portBindings: any = {};

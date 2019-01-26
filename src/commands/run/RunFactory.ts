@@ -6,16 +6,16 @@ import EventExec from './EventExec';
 import Action from '../../models/Action';
 
 /**
- * Represents a factory to build an {@link Exec}.
+ * Represents a factory to build an {@link Run}.
  */
-export default class ExecFactory {
+export default class RunFactory {
   private readonly dockerImage: string;
   private readonly microservice: Microservice;
   private readonly _arguments: any;
   private readonly environmentVariables: any;
 
   /**
-   * Build an {@link ExecFactory}.
+   * Build an {@link RunFactory}.
    *
    * @param {String} dockerImage The given docker image
    * @param {Microservice} microservice The given {@link Microservice}
@@ -33,7 +33,7 @@ export default class ExecFactory {
    * Builds a {@link FormatExec}, {@link HttpExec}, or {@link EventExec} based on the given {@link Action}.
    *
    * @param {Action} action The given {@link Action}
-   * @return {Exec} The {@link FormatExec}, {@link HttpExec}, or {@link EventExec}
+   * @return {Run} The {@link FormatExec}, {@link HttpExec}, or {@link EventExec}
    */
   getExec(action: Action): Run {
     if (action.format !== null) {

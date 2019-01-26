@@ -1,11 +1,11 @@
-import ExecFactory from '../../../../src/commands/run/ExecFactory';
+import RunFactory from '../../../../src/commands/run/RunFactory';
 import FormatExec from '../../../../src/commands/run/FormatExec';
 import Microservice from '../../../../src/models/Microservice';
 import Action from '../../../../src/models/Action';
 import EventExec from '../../../../src/commands/run/EventExec';
 import HttpExec from '../../../../src/commands/run/HttpExec';
 
-describe('ExecFactory.ts', () => {
+describe('RunFactory.ts', () => {
   describe('.getExec', () => {
     test('gets a FormatExec', () => {
       const rawFormatAction = {
@@ -19,7 +19,7 @@ describe('ExecFactory.ts', () => {
           foo: rawFormatAction,
         },
       });
-      const formatExec = new ExecFactory('dockerImage', m, {}, {}).getExec(new Action('foo', rawFormatAction));
+      const formatExec = new RunFactory('dockerImage', m, {}, {}).getExec(new Action('foo', rawFormatAction));
 
       expect(formatExec.constructor.name).toBe('FormatExec');
       expect(formatExec).toEqual(new FormatExec('dockerImage', m, {}, {}));
@@ -50,7 +50,7 @@ describe('ExecFactory.ts', () => {
           foo: rawEventAction,
         },
       });
-      const eventExec = new ExecFactory('dockerImage', m, {}, {}).getExec(new Action('foo', rawEventAction));
+      const eventExec = new RunFactory('dockerImage', m, {}, {}).getExec(new Action('foo', rawEventAction));
 
       expect(eventExec.constructor.name).toBe('EventExec');
       expect(eventExec).toEqual(new EventExec('dockerImage', m, {}, {}));
@@ -75,7 +75,7 @@ describe('ExecFactory.ts', () => {
           },
         },
       });
-      const httpExec = new ExecFactory('dockerImage', m, {}, {}).getExec(new Action('foo', rawHttpAction));
+      const httpExec = new RunFactory('dockerImage', m, {}, {}).getExec(new Action('foo', rawHttpAction));
 
       expect(httpExec.constructor.name).toBe('HttpExec');
       expect(httpExec).toEqual(new HttpExec('dockerImage', m, {}, {}));

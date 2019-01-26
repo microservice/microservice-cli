@@ -7,7 +7,7 @@ import Microservice from '../models/Microservice';
 import Build from '../commands/Build';
 import Subscribe from '../commands/Subscribe';
 import Run from '../commands/run/Run';
-import ExecFactory from '../commands/run/ExecFactory';
+import RunFactory from '../commands/run/RunFactory';
 const homedir = require('os').homedir();
 
 /**
@@ -147,7 +147,7 @@ export default class Cli {
       process.exit(1);
     }
 
-    this._run = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
+    this._run = new RunFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
     if ((process.argv[2] === 'exec') && (this._run.constructor.name === 'EventExec')) {
       utils.error(`Action \`${action}\` is and event. Use \`omg subscribe\``);
       process.exit(1);
