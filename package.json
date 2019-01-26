@@ -7,7 +7,7 @@
     "microservice",
     "microservices"
   ],
-  "version": "0.6.5",
+  "version": "0.6.6",
   "main": "omg",
   "scripts": {
     "build": "tsc",
@@ -24,6 +24,8 @@
   "dependencies": {
     "ajv": "^6.5.0",
     "commander": "^2.15.1",
+    "dockerode": "^2.5.8",
+    "dockerode-promise": "^0.1.0",
     "log-symbols": "^2.2.0",
     "ora": "^2.1.0",
     "request": "^2.87.0",

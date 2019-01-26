@@ -2,6 +2,8 @@ import * as _ from 'underscore';
 import * as $ from 'shelljs';
 import * as net from 'http';
 import Microservice from './models/Microservice';
+const Docker = require('dockerode-promise');
+export const docker = new Docker();
 
 /**
  * Used to set values in the constructors of the microservice classes.
@@ -106,6 +108,25 @@ export function exec(command: string, silent: boolean=true): Promise<string> {
       }
     });
   });
+}
+
+/**
+ * Checks if a docker container exists with the given name.
+ *
+ * @param {String} name The given name
+ * @param {Array<Object>} containers The given containers
+ * @return {Boolean} True if it exists, otherwise, false
+ */
+export function doesContainerExist(name: string, containers: any[]): boolean {
+  for (let i = 0; i < containers.length; i += 1) {
+    for (let j = 0; j < containers[i].RepoTags.length; j += 1) {
+      if (containers[i].RepoTags[j].includes(name)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 /**

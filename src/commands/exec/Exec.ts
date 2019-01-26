@@ -7,7 +7,9 @@ import Microservice from '../../models/Microservice';
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
  */
 export default abstract class Exec {
-  protected portMap: any;
+  protected portMap: any = {}
+  protected exposedPorts: any = {}
+  protected portBindings: any = {};
   protected dockerImage: string;
   protected microservice: Microservice;
   protected _arguments: any;
@@ -113,11 +115,11 @@ export default abstract class Exec {
    *
    * @return {String} The formatted string
    */
-  protected formatEnvironmentVariables(): string {
-    let result = '';
+  protected formatEnvironmentVariables(): string[] {
+    const result = [];
     const keys = Object.keys(this.environmentVariables);
     for (let i = 0; i < keys.length; i += 1) {
-      result += ` -e ${keys[i]}="${this.environmentVariables[keys[i]]}"`;
+      result.push(`${keys[i]}=${this.environmentVariables[keys[i]]}`);
     }
     return result;
   }
@@ -146,7 +148,6 @@ export default abstract class Exec {
    */
   public async startService(): Promise<string> {
     this.setDefaultEnvironmentVariables();
-    this.portMap = {};
     const neededPorts = utils.getNeededPorts(this.microservice);
     const openPorts = [];
     while (neededPorts.length !== openPorts.length) {
@@ -156,14 +157,24 @@ export default abstract class Exec {
       }
     }
 
-    let portString = '';
     for (let i = 0; i < neededPorts.length; i += 1) {
       this.portMap[neededPorts[i]] = openPorts[i];
-      portString += `-p ${openPorts[i]}:${neededPorts[i]} `;
+      this.exposedPorts[`${neededPorts[i]}/tcp`] = {};
+      this.portBindings[`${neededPorts[i]}/tcp`] = [{HostPort: openPorts[i].toString()}];
     }
-    portString = portString.trim();
 
-    this.containerID = await utils.exec(`docker run -d ${portString}${this.formatEnvironmentVariables()} --entrypoint ${this.microservice.lifecycle.startup.command} ${this.dockerImage} ${this.microservice.lifecycle.startup.args}`);
+    const container = await utils.docker.createContainer({
+      Image: this.dockerImage,
+      Cmd: this.microservice.lifecycle.startup,
+      Env: this.formatEnvironmentVariables(),
+      ExposedPorts: this.exposedPorts,
+      HostConfig: {
+        PortBindings: this.portBindings,
+      },
+    });
+    await container.start();
+
+    this.containerID = container.$subject.id;
     return this.containerID;
   }
 
@@ -173,7 +184,9 @@ export default abstract class Exec {
    * @return {String} The containerID that has been stopped
    */
   public async stopService(): Promise<string> {
-    return await utils.exec(`docker kill ${this.containerID}`);
+    const container = utils.docker.getContainer(this.containerID);
+    await container.kill();
+    return this.containerID;
   }
 
   /**
@@ -182,7 +195,8 @@ export default abstract class Exec {
    * @return {Boolean} True if running, otherwise false
    */
   public async isRunning(): Promise<boolean> {
-    return JSON.parse(await utils.exec(`docker inspect ${this.containerID}`))[0].State.Running;
+    const container = utils.docker.getContainer(this.containerID);
+    return (await container.inspect()).State.Running;
   }
 
   /**
@@ -190,7 +204,8 @@ export default abstract class Exec {
    *
    * return {String} The Docker logs
    */
-  public async getLogs(): Promise<string> {
-    return await utils.exec(`docker logs ${this.containerID}`);
+  public async getStderr(): Promise<string> {
+    const container = utils.docker.getContainer(this.containerID);
+    return (await container.logs({stderr: true})).toString().trim();
   }
 }

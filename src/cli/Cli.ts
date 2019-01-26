@@ -34,7 +34,7 @@ export default class Cli {
    */
   private static async checkDocker() {
     try {
-      await utils.exec('docker ps');
+      await utils.docker.ping();
     } catch (e) {
       utils.error('Docker must be running to use the cli');
       process.exit(1);
@@ -126,8 +126,7 @@ export default class Cli {
     }
 
     if (options.image) {
-      const images = await utils.exec(`docker images -f "reference=${image}"`);
-      if (!images.includes(options.image)) {
+      if (!utils.doesContainerExist(options.image, (await utils.docker.listImages()))) {
         utils.error(`Image for microservice is not built. Run \`omg build\` to build the image.`);
         process.exit(1);
         return;
@@ -160,7 +159,7 @@ export default class Cli {
     await new Promise( (res) => setTimeout(res, 1000)); // wait for the container to start
     if (!await this._exec.isRunning()) { // 2. health check
       spinner.fail('Health check failed');
-      utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
+      utils.error(`  Docker logs:\n${await this._exec.getStderr()}`);
       process.exit(1);
     }
     spinner.succeed(`Health check passed`);
@@ -208,7 +207,7 @@ export default class Cli {
       const that = this;
       setInterval(async () => {
         if (!await that._exec.isRunning()) {
-          utils.error(`\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._exec.getLogs()}`);
+          utils.error(`\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._exec.getStderr()}`);
           process.exit(1);
         }
       }, 1500);
@@ -216,35 +215,12 @@ export default class Cli {
       if (await this._exec.isRunning()) {
         await this._exec.stopService();
       }
-      const logs = await this._exec.getLogs();
+      const logs = await this._exec.getStderr();
       spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`);
       if (logs) {
-        utils.error(`  Docker logs:\n${await this._exec.getLogs()}`);
+        utils.error(`  Docker logs:\n${await this._exec.getStderr()}`);
       }
       process.exit(1);
-    }
-  }
-
-  /**
-   * Kills a docker process that is associated with the microservice.
-   */
-  static async shutdown(): Promise<void> {
-    await Cli.checkDocker();
-    const spinner = ora.start('Shutting down microservice');
-    const infoMessage = 'Microservice not shutdown because it was not running';
-    if (!fs.existsSync(`${homedir}/.omg.json`)) {
-      spinner.info(infoMessage);
-    }
-
-    const omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'));
-    if (omgJson[process.cwd()]) {
-      const containerId = omgJson[process.cwd()].container_id;
-      await utils.exec(`docker kill ${containerId}`);
-      delete omgJson[process.cwd()];
-      fs.writeFileSync(`${homedir}/.omg.json`, JSON.stringify(omgJson), 'utf8');
-      spinner.succeed(`Microservice with container id: \`${containerId.substring(0, 12)}\` successfully shutdown`);
-    } else {
-      spinner.info(infoMessage);
     }
   }
 

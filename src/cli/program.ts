@@ -8,7 +8,7 @@ const cli = new Cli();
 
 program
   .description('For more details on the commands below, run `omg `(validate|build|exec|subscribe|shutdown)` --help`')
-  .version('0.6.5');
+  .version('0.6.6');
 
 program
   .command('validate')
@@ -43,11 +43,6 @@ program
     cli.buildMicroservice();
     await cli.subscribe(action, event, options);
   });
-
-program
-  .command('shutdown')
-  .description('Shutdown a microservice process that was started by an event command')
-  .action(async () => await Cli.shutdown());
 
 // needed because there is no default catch all command with commander.js
 if ((process.argv.length < 3) || (!['validate', 'build', 'exec', 'subscribe', 'shutdown', '--version'].includes(process.argv[2]))) {

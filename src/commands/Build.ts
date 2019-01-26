@@ -19,7 +19,7 @@ export default class Build {
    * Builds a Docker image with this {@link Build}'s name prefaced with `omg/` and tagged with `local`.
    */
   async go(): Promise<string> {
-    await utils.exec(`docker build -t ${this.name} .`, false);
+    await utils.exec(`docker build -t ${this.name} .`, false); // This needs to be changed to use dockerode
     return this.name;
   }
 }
