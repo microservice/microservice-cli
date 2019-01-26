@@ -5,27 +5,34 @@ import Microservice from '../../../../src/models/Microservice';
 import * as utils from '../../../../src/utils';
 
 describe('HttpExec.js', () => {
-  let execStub;
   let rpGetStub;
   let rpPostStub;
   let rpPutStub;
   let rpDeleteStub;
+  let utilsDockerCreateContainer;
 
   beforeEach(() => {
-    execStub = sinon.stub(utils, 'exec').callsFake(async () => '`execStub`');
-    rpGetStub = sinon.stub(rp, 'get').callsFake(async () => '{"data": "get data"}');
-    rpPostStub = sinon.stub(rp, 'post').callsFake(async () => '{"data": "post data"}');
-    rpPutStub = sinon.stub(rp, 'put').callsFake(async () => '{"data": "put data"}');
-    rpDeleteStub = sinon.stub(rp, 'delete').callsFake(async () => '{"data": "delete data"}');
+    rpGetStub = sinon.stub(rp, 'get').callsFake(async () => 'get_data');
+    rpPostStub = sinon.stub(rp, 'post').callsFake(async () => 'post_data');
+    rpPutStub = sinon.stub(rp, 'put').callsFake(async () => 'put_data');
+    rpDeleteStub = sinon.stub(rp, 'delete').callsFake(async () => 'delete_data');
+    utilsDockerCreateContainer = sinon.stub(utils.docker, 'createContainer').callsFake(async () => {
+      return {
+        start: () => {},
+        $subject: {
+          id: 'fake_docker_id',
+        },
+      };
+    });
     sinon.stub(utils, 'getOpenPort').callsFake(async () => 5555);
   });
 
   afterEach(() => {
-    (utils.exec as any).restore();
     (rp.get as any).restore();
     (rp.post as any).restore();
     (rp.put as any).restore();
     (rp.delete as any).restore();
+    (utils.docker.createContainer as any).restore();
     (utils.getOpenPort as any).restore();
   });
 
@@ -50,16 +57,52 @@ describe('HttpExec.js', () => {
         },
       }), {}, {}).startService();
 
-      expect(containerID).toBe('`execStub`');
-      expect(execStub.args).toEqual([['docker run -d -p 5555:5555 --entrypoint node fake_docker_id app.js']]);
+      expect(utilsDockerCreateContainer.calledWith({
+        Image: 'fake_docker_id',
+        Cmd: [
+          'node',
+          'app.js',
+        ],
+        Env: [],
+        ExposedPorts: {
+          '5555/tcp': {},
+        },
+        HostConfig: {
+          PortBindings: {
+            '5555/tcp': [
+              {
+                HostPort: '5555',
+              },
+            ],
+          },
+        },
+      })).toBeTruthy();
+      expect(containerID).toBe('fake_docker_id');
     });
   });
 
   describe('.isRunning()', () => {
-    test('not running', async () => {
-      (utils.exec as any).restore();
-      execStub = sinon.stub(utils, 'exec').callsFake(async () => '[{"State":{"Running":false}}]');
+    let utilsDockerGetContainer;
 
+    beforeEach(() => {
+      utilsDockerGetContainer = sinon.stub(utils.docker, 'getContainer').callsFake((container) => {
+        return {
+          inspect: async () => {
+            return {
+              State: {
+                Running: false,
+              },
+            };
+          },
+        };
+      });
+    });
+
+    afterEach(() => {
+      (utils.docker.getContainer as any).restore();
+    });
+
+    test('not running', async () => {
       expect(await new HttpExec('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
@@ -81,8 +124,18 @@ describe('HttpExec.js', () => {
     });
 
     test('running', async () => {
-      (utils.exec as any).restore();
-      execStub = sinon.stub(utils, 'exec').callsFake(async () => '[{"State":{"Running":true}}]');
+      (utils.docker.getContainer as any).restore();
+      utilsDockerGetContainer = sinon.stub(utils.docker, 'getContainer').callsFake((container) => {
+        return {
+          inspect: async () => {
+            return {
+              State: {
+                Running: true,
+              },
+            };
+          },
+        };
+      });
 
       expect(await new HttpExec('fake_docker_id', new Microservice({
         omg: 1,
@@ -127,8 +180,8 @@ describe('HttpExec.js', () => {
       }), {}, {});
       await httpExec.startService();
 
-      await httpExec.exec('get');
-      expect(execStub.args).toEqual([['docker run -d -p 5555:5555 --entrypoint node fake_docker_id app.js']]);
+      const data = await httpExec.exec('get');
+      expect(data).toBe('get_data');
       expect(rpGetStub.calledWith('http://localhost:5555/get')).toBeTruthy();
     });
 
@@ -174,8 +227,8 @@ describe('HttpExec.js', () => {
       }, {});
       await httpExec.startService();
 
-      await httpExec.exec('post');
-      expect(execStub.args).toEqual([['docker run -d -p 5555:5555 --entrypoint node fake_docker_id app.js']]);
+      const data = await httpExec.exec('post');
+      expect(data).toBe('post_data');
       expect(rpPostStub.calledWith('http://localhost:5555/person/2?isMale=true', {
         headers: {
           'Content-Type': 'application/json',
@@ -205,8 +258,8 @@ describe('HttpExec.js', () => {
       }), {}, {});
       await httpExec.startService();
 
-      await httpExec.exec('put');
-      expect(execStub.args).toEqual([['docker run -d -p 5555:7777 --entrypoint node fake_docker_id app.js']]);
+      const data = await httpExec.exec('put');
+      expect(data).toBe('put_data');
       expect(rpPutStub.calledWith('http://localhost:5555/cheese', {
         headers: {
           'Content-Type': 'application/json',
@@ -245,8 +298,8 @@ describe('HttpExec.js', () => {
       }, {});
       await httpExec.startService();
 
-      await httpExec.exec('delete');
-      expect(execStub.args).toEqual([['docker run -d -p 5555:5555 --entrypoint node fake_docker_id app.js']]);
+      const data = await httpExec.exec('delete');
+      expect(data).toBe('delete_data');
       expect(rpDeleteStub.calledWith('http://localhost:5555/user/2')).toBeTruthy();
     });
   });

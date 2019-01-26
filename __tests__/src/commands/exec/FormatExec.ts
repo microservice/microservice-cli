@@ -19,16 +19,16 @@ describe('FormatExec.ts', () => {
       utilsDockerCreateContainer = sinon.stub(utils.docker, 'createContainer').callsFake(async (data) => {
         return {
           $subject: {
-            id: 'fake_docker_id'
+            id: 'fake_docker_id',
           },
-          start: () => {}
-        }
+          start: () => {},
+        };
       });
-    })
+    });
 
     afterEach(() => {
-      (utils.docker.createContainer as any).restore()
-    })
+      (utils.docker.createContainer as any).restore();
+    });
 
     test('starts service with dev null default', async () => {
       const containerID = await new FormatExec('fake_docker_id', new Microservice({
@@ -46,7 +46,7 @@ describe('FormatExec.ts', () => {
       expect(utilsDockerCreateContainer.calledWith({
         Image: 'fake_docker_id',
         Cmd: ['tail', '-f', '/dev/null'],
-        Env: []
+        Env: [],
       })).toBeTruthy();
       expect(containerID).toBe('fake_docker_id');
     });
@@ -72,7 +72,7 @@ describe('FormatExec.ts', () => {
       expect(utilsDockerCreateContainer.calledWith({
         Image: 'fake_docker_id',
         Cmd: ['node', 'start.js'],
-        Env: []
+        Env: [],
       })).toBeTruthy();
       expect(containerID).toBe('fake_docker_id');
     });
@@ -87,18 +87,18 @@ describe('FormatExec.ts', () => {
           inspect: async () => {
             return {
               State: {
-                Running: false
-              }
-            }
-          }
-        }
-      })
-    })
+                Running: false,
+              },
+            };
+          },
+        };
+      });
+    });
 
     afterEach(() => {
       (utils.docker.getContainer as any).restore();
-    })
-    
+    });
+
     test('not running', async () => {
       expect(await new FormatExec('fake_docker_id', new Microservice({
         omg: 1,
@@ -125,12 +125,12 @@ describe('FormatExec.ts', () => {
           inspect: async () => {
             return {
               State: {
-                Running: true
-              }
-            }
-          }
-        }
-      })
+                Running: true,
+              },
+            };
+          },
+        };
+      });
 
       expect(await new FormatExec('fake_docker_id', new Microservice({
         omg: 1,
@@ -254,37 +254,37 @@ describe('FormatExec.ts', () => {
     //   ]);
     // });
 
-  //   test('runs an exec action and fills in default environment variables and arguments', async () => {
-  //     const formatExec = new FormatExec('fake_docker_id', new Microservice({
-  //       omg: 1,
-  //       actions: {
-  //         steve: {
-  //           format: {
-  //             command: 'steve.sh',
-  //           },
-  //           output: {type: 'string'},
-  //           arguments: {
-  //             foo: {
-  //               type: 'int',
-  //               default: 3,
-  //             },
-  //             bar: {
-  //               type: 'map',
-  //               default: {
-  //                 foo: 'bar',
-  //               },
-  //             },
-  //           },
-  //         },
-  //       },
-  //       environment: {
-  //         BOB_TOKEN: {
-  //           type: 'string',
-  //           default: 'BOBBY',
-  //         },
-  //       },
-  //     }), {}, {});
-  //     await formatExec.startService();
+    //   test('runs an exec action and fills in default environment variables and arguments', async () => {
+    //     const formatExec = new FormatExec('fake_docker_id', new Microservice({
+    //       omg: 1,
+    //       actions: {
+    //         steve: {
+    //           format: {
+    //             command: 'steve.sh',
+    //           },
+    //           output: {type: 'string'},
+    //           arguments: {
+    //             foo: {
+    //               type: 'int',
+    //               default: 3,
+    //             },
+    //             bar: {
+    //               type: 'map',
+    //               default: {
+    //                 foo: 'bar',
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //       environment: {
+    //         BOB_TOKEN: {
+    //           type: 'string',
+    //           default: 'BOBBY',
+    //         },
+    //       },
+    //     }), {}, {});
+    //     await formatExec.startService();
 
   //     await formatExec.exec('steve');
   //     expect(execStub.args).toEqual([
