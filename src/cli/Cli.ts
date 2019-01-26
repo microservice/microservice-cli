@@ -147,7 +147,7 @@ export default class Cli {
       process.exit(1);
     }
 
-    this._run = new RunFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
+    this._run = new RunFactory(options.image, this.microservice, argsObj, envObj).getRun(_action);
     if ((process.argv[2] === 'exec') && (this._run.constructor.name === 'EventExec')) {
       utils.error(`Action \`${action}\` is and event. Use \`omg subscribe\``);
       process.exit(1);

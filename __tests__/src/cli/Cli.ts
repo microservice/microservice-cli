@@ -4,7 +4,7 @@ import * as utils from '../../../src/utils';
 import ora from '../../../src/ora';
 import Build from '../../../src/commands/Build';
 import Run from '../../../src/commands/run/Run';
-import FormatExec from '../../../src/commands/run/FormatExec';
+import FormatRun from '../../../src/commands/run/FormatRun';
 import Subscribe from '../../../src/commands/Subscribe';
 import Cli from '../../../src/cli/Cli';
 
@@ -266,17 +266,17 @@ describe('Cli.ts', () => {
 
     beforeEach(() => {
       sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['image']}]);
-      sinon.stub(FormatExec.prototype, 'startService').callsFake(async () => 'started_id');
+      sinon.stub(FormatRun.prototype, 'startService').callsFake(async () => 'started_id');
       sinon.stub(Run.prototype, 'isRunning').callsFake(async () => true);
-      formatExecExecStub = sinon.stub(FormatExec.prototype, 'exec').callsFake(async (action) => 'output');
+      formatExecExecStub = sinon.stub(FormatRun.prototype, 'exec').callsFake(async (action) => 'output');
       sinon.stub(Run.prototype, 'stopService').callsFake(async () => 'stoped_id');
     });
 
     afterEach(() => {
       (utils.docker.listImages as any).restore();
-      (FormatExec.prototype.startService as any).restore();
+      (FormatRun.prototype.startService as any).restore();
       (Run.prototype.isRunning as any).restore();
-      (FormatExec.prototype.exec as any).restore();
+      (FormatRun.prototype.exec as any).restore();
       (Run.prototype.stopService as any).restore();
     });
 

@@ -1,6 +1,6 @@
 import Run from './Run';
 import Microservice from '../../models/Microservice';
-import FormatExec from './FormatExec';
+import FormatRun from './FormatRun';
 import HttpExec from './HttpExec';
 import EventExec from './EventExec';
 import Action from '../../models/Action';
@@ -35,9 +35,9 @@ export default class RunFactory {
    * @param {Action} action The given {@link Action}
    * @return {Run} The {@link FormatExec}, {@link HttpExec}, or {@link EventExec}
    */
-  getExec(action: Action): Run {
+  getRun(action: Action): Run {
     if (action.format !== null) {
-      return new FormatExec(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
+      return new FormatRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
     } else if (action.http !== null) {
       return new HttpExec(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
     } else if (action.events !== null) {
