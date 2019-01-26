@@ -206,29 +206,4 @@ describe('FormatExec.ts', () => {
       }
     });
   });
-
-  // describe('.stopService()', () => {
-  //   test('stops the service', async () => {
-  //     const formatExec = new FormatExec('fake_docker_id', new Microservice({
-  //       omg: 1,
-  //       actions: {
-  //         test: {
-  //           format: {
-  //             command: 'test.sh',
-  //           },
-  //           output: {type: 'string'},
-  //         },
-  //       },
-  //     }), {}, {});
-  //     await formatExec.startService();
-  //     await formatExec.exec('test');
-
-  //     await formatExec.stopService();
-  //     expect(execStub.args).toEqual([
-  //       ['docker run -td --entrypoint tail fake_docker_id -f /dev/null'],
-  //       ['docker exec `execStub` test.sh'],
-  //       ['docker kill `execStub`'],
-  //     ]);
-  //   });
-  // });
 });
