@@ -8,7 +8,7 @@ import Event from '../models/Event';
 const homedir = require('os').homedir();
 const uuidv4 = require('uuid/v4');
 import * as rp from '../request';
-import Exec from './run/Exec';
+import Run from './run/Run';
 
 /**
  * Describes a way to subscribe to an event.
@@ -16,7 +16,7 @@ import Exec from './run/Exec';
 export default class Subscribe {
   private readonly microservice: Microservice;
   private readonly _arguments: object;
-  private readonly exec: Exec;
+  private readonly exec: Run;
   private action: Action;
   private omgJson: object;
   private event: Event;
@@ -28,7 +28,7 @@ export default class Subscribe {
    * @param {Object} _arguments The given arguments
    * @param {Exec} exec The {@link Exec} object that started the event
    */
-  constructor(microservice: Microservice, _arguments: any, exec: Exec) {
+  constructor(microservice: Microservice, _arguments: any, exec: Run) {
     this.microservice = microservice;
     this._arguments = _arguments;
     this.exec = exec;

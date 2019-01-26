@@ -2,13 +2,13 @@ import * as _ from 'underscore';
 import * as rp from 'request-promise';
 import * as querystring from 'querystring';
 import Microservice from '../../models/Microservice';
-import Exec from './Exec';
+import Run from './Run';
 import * as verify from '../../verify';
 
 /**
  * Represents a http execution of an {@link Action}.
  */
-export default class HttpExec extends Exec {
+export default class HttpExec extends Run {
   /**
    * Builds a {@link HttpExec}.
    *

@@ -1,12 +1,12 @@
 import * as fs from 'fs';
-import Exec from './Exec';
+import Run from './Run';
 import Microservice from '../../models/Microservice';
 const homedir = require('os').homedir();
 
 /**
  * Represents a execution of an {@link Action}'s {@link Event}.
  */
-export default class EventExec extends Exec {
+export default class EventExec extends Run {
   /**
    * Builds an {@link EventExec}.
    *

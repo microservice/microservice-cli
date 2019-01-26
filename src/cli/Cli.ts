@@ -6,7 +6,7 @@ import ora from '../ora';
 import Microservice from '../models/Microservice';
 import Build from '../commands/Build';
 import Subscribe from '../commands/Subscribe';
-import Exec from '../commands/run/Exec';
+import Run from '../commands/run/Run';
 import ExecFactory from '../commands/run/ExecFactory';
 const homedir = require('os').homedir();
 
@@ -15,7 +15,7 @@ const homedir = require('os').homedir();
  */
 export default class Cli {
   private microservice: Microservice = null;
-  private _exec: Exec = null;
+  private _run: Run = null;
   private _subscribe: Subscribe = null;
   private startedID: string;
 
@@ -147,37 +147,37 @@ export default class Cli {
       process.exit(1);
     }
 
-    this._exec = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
-    if ((process.argv[2] === 'exec') && (this._exec.constructor.name === 'EventExec')) {
+    this._run = new ExecFactory(options.image, this.microservice, argsObj, envObj).getExec(_action);
+    if ((process.argv[2] === 'exec') && (this._run.constructor.name === 'EventExec')) {
       utils.error(`Action \`${action}\` is and event. Use \`omg subscribe\``);
       process.exit(1);
     }
     let spinner = ora.start(`Starting Docker container`);
-    this.startedID = await this._exec.startService(); // 1. start service
+    this.startedID = await this._run.startService(); // 1. start service
     spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`);
     spinner = ora.start(`Health check`);
     await new Promise( (res) => setTimeout(res, 1000)); // wait for the container to start
-    if (!await this._exec.isRunning()) { // 2. health check
+    if (!await this._run.isRunning()) { // 2. health check
       spinner.fail('Health check failed');
-      utils.error(`  Docker logs:\n${await this._exec.getStderr()}`);
+      utils.error(`  Docker logs:\n${await this._run.getStderr()}`);
       process.exit(1);
     }
     spinner.succeed(`Health check passed`);
     spinner = ora.start(`Running action: \`${action}\``);
     try {
-      const output = await this._exec.exec(action); // 3. run service
+      const output = await this._run.exec(action); // 3. run service
       spinner.succeed(`Ran action: \`${action}\` with output: ${output}`);
     } catch (e) {
-      if (await this._exec.isRunning()) {
-        await this._exec.stopService();
+      if (await this._run.isRunning()) {
+        await this._run.stopService();
       }
       spinner.fail(`Failed action: \`${action}\`: ${e}`);
       process.exit(1);
     }
 
-    if (this._exec.constructor.name !== 'EventExec') {
+    if (this._run.constructor.name !== 'EventExec') {
       spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`);
-      const stoppedID = await this._exec.stopService();
+      const stoppedID = await this._run.stopService();
       spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);
     }
   }
@@ -200,25 +200,25 @@ export default class Cli {
       spinner.fail(`Failed action: \`${action}\`: ${e}`);
       process.exit(1);
     }
-    this._subscribe = new Subscribe(this.microservice, argsObj, this._exec);
+    this._subscribe = new Subscribe(this.microservice, argsObj, this._run);
     try {
       await this._subscribe.go(action, event);
       spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
       const that = this;
       setInterval(async () => {
-        if (!await that._exec.isRunning()) {
-          utils.error(`\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._exec.getStderr()}`);
+        if (!await that._run.isRunning()) {
+          utils.error(`\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._run.getStderr()}`);
           process.exit(1);
         }
       }, 1500);
     } catch (e) {
-      if (await this._exec.isRunning()) {
-        await this._exec.stopService();
+      if (await this._run.isRunning()) {
+        await this._run.stopService();
       }
-      const logs = await this._exec.getStderr();
+      const logs = await this._run.getStderr();
       spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`);
       if (logs) {
-        utils.error(`  Docker logs:\n${await this._exec.getStderr()}`);
+        utils.error(`  Docker logs:\n${await this._run.getStderr()}`);
       }
       process.exit(1);
     }
@@ -232,8 +232,8 @@ export default class Cli {
     if (this._subscribe) {
       await this._subscribe.unsubscribe();
     }
-    if (this._exec && this._exec.isDockerProcessRunning()) {
-      await this._exec.stopService();
+    if (this._run && this._run.isDockerProcessRunning()) {
+      await this._run.stopService();
     }
     spinner.succeed(`Stopped Docker container: ${this.startedID.substring(0, 12)}`);
     process.exit();

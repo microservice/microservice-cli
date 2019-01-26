@@ -1,4 +1,4 @@
-import Exec from './Exec';
+import Run from './Run';
 import Microservice from '../../models/Microservice';
 import FormatExec from './FormatExec';
 import HttpExec from './HttpExec';
@@ -35,7 +35,7 @@ export default class ExecFactory {
    * @param {Action} action The given {@link Action}
    * @return {Exec} The {@link FormatExec}, {@link HttpExec}, or {@link EventExec}
    */
-  getExec(action: Action): Exec {
+  getExec(action: Action): Run {
     if (action.format !== null) {
       return new FormatExec(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
     } else if (action.http !== null) {
