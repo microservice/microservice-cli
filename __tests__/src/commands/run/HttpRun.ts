@@ -160,7 +160,7 @@ describe('HttpRun.js', () => {
 
   describe('.exec(action)', () => {
     test('action that gets', async () => {
-      const httpExec = new HttpRun('fake_docker_id', new Microservice({
+      const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           get: {
@@ -178,15 +178,15 @@ describe('HttpRun.js', () => {
           },
         },
       }), {}, {});
-      await httpExec.startService();
+      await httpRun.startService();
 
-      const data = await httpExec.exec('get');
+      const data = await httpRun.exec('get');
       expect(data).toBe('get_data');
       expect(rpGetStub.calledWith('http://localhost:5555/get')).toBeTruthy();
     });
 
     test('action that posts', async () => {
-      const httpExec = new HttpRun('fake_docker_id', new Microservice({
+      const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           post: {
@@ -225,9 +225,9 @@ describe('HttpRun.js', () => {
         person_id: '2',
         data: 'data',
       }, {});
-      await httpExec.startService();
+      await httpRun.startService();
 
-      const data = await httpExec.exec('post');
+      const data = await httpRun.exec('post');
       expect(data).toBe('post_data');
       expect(rpPostStub.calledWith('http://localhost:5555/person/2?isMale=true', {
         headers: {
@@ -238,7 +238,7 @@ describe('HttpRun.js', () => {
     });
 
     test('action that puts', async () => {
-      const httpExec = new HttpRun('fake_docker_id', new Microservice({
+      const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           put: {
@@ -256,9 +256,9 @@ describe('HttpRun.js', () => {
           },
         },
       }), {}, {});
-      await httpExec.startService();
+      await httpRun.startService();
 
-      const data = await httpExec.exec('put');
+      const data = await httpRun.exec('put');
       expect(data).toBe('put_data');
       expect(rpPutStub.calledWith('http://localhost:5555/cheese', {
         headers: {
@@ -269,7 +269,7 @@ describe('HttpRun.js', () => {
     });
 
     test('action that deletes', async () => {
-      const httpExec = new HttpRun('fake_docker_id', new Microservice({
+      const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         actions: {
           delete: {
@@ -296,9 +296,9 @@ describe('HttpRun.js', () => {
       }), {
         id: '2',
       }, {});
-      await httpExec.startService();
+      await httpRun.startService();
 
-      const data = await httpExec.exec('delete');
+      const data = await httpRun.exec('delete');
       expect(data).toBe('delete_data');
       expect(rpDeleteStub.calledWith('http://localhost:5555/user/2')).toBeTruthy();
     });

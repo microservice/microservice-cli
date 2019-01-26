@@ -1,4 +1,4 @@
-# `omg exec` example
+# `omg run` example
 
 ## [command](https://microservice.guide/schema/interface/#command)
 The [random](https://github.com/microservice/random) microservice is used for this example.

@@ -19,10 +19,10 @@ describe('RunFactory.ts', () => {
           foo: rawFormatAction,
         },
       });
-      const formatExec = new RunFactory('dockerImage', m, {}, {}).getRun(new Action('foo', rawFormatAction));
+      const formatRun = new RunFactory('dockerImage', m, {}, {}).getRun(new Action('foo', rawFormatAction));
 
-      expect(formatExec.constructor.name).toBe('FormatRun');
-      expect(formatExec).toEqual(new FormatRun('dockerImage', m, {}, {}));
+      expect(formatRun.constructor.name).toBe('FormatRun');
+      expect(formatRun).toEqual(new FormatRun('dockerImage', m, {}, {}));
     });
 
     test('gets an HttpRun', () => {
@@ -44,10 +44,10 @@ describe('RunFactory.ts', () => {
           },
         },
       });
-      const httpExec = new RunFactory('dockerImage', m, {}, {}).getRun(new Action('foo', rawHttpAction));
+      const httpRun = new RunFactory('dockerImage', m, {}, {}).getRun(new Action('foo', rawHttpAction));
 
-      expect(httpExec.constructor.name).toBe('HttpRun');
-      expect(httpExec).toEqual(new HttpRun('dockerImage', m, {}, {}));
+      expect(httpRun.constructor.name).toBe('HttpRun');
+      expect(httpRun).toEqual(new HttpRun('dockerImage', m, {}, {}));
     });
 
     test('gets an EventRun', () => {
@@ -75,10 +75,10 @@ describe('RunFactory.ts', () => {
           foo: rawEventAction,
         },
       });
-      const eventExec = new RunFactory('dockerImage', m, {}, {}).getRun(new Action('foo', rawEventAction));
+      const eventRun = new RunFactory('dockerImage', m, {}, {}).getRun(new Action('foo', rawEventAction));
 
-      expect(eventExec.constructor.name).toBe('EventRun');
-      expect(eventExec).toEqual(new EventRun('dockerImage', m, {}, {}));
+      expect(eventRun.constructor.name).toBe('EventRun');
+      expect(eventRun).toEqual(new EventRun('dockerImage', m, {}, {}));
     });
   });
 });

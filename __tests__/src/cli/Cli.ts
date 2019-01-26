@@ -262,13 +262,13 @@ describe('Cli.ts', () => {
   });
 
   describe('.run(action, options)', () => {
-    let formatExecExecStub;
+    let formatRunRunStub;
 
     beforeEach(() => {
       sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['image']}]);
       sinon.stub(FormatRun.prototype, 'startService').callsFake(async () => 'started_id');
       sinon.stub(Run.prototype, 'isRunning').callsFake(async () => true);
-      formatExecExecStub = sinon.stub(FormatRun.prototype, 'exec').callsFake(async (action) => 'output');
+      formatRunRunStub = sinon.stub(FormatRun.prototype, 'exec').callsFake(async (action) => 'output');
       sinon.stub(Run.prototype, 'stopService').callsFake(async () => 'stoped_id');
     });
 
@@ -285,9 +285,9 @@ describe('Cli.ts', () => {
       cli.buildMicroservice();
       await cli.run('action', {});
 
-      expect(errorStub.calledWith('Failed to parse command, run `omg exec --help` for more information.')).toBeTruthy();
+      expect(errorStub.calledWith('Failed to parse command, run `omg run --help` for more information.')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
-      expect(formatExecExecStub.called).toBeFalsy();
+      expect(formatRunRunStub.called).toBeFalsy();
     });
 
     test('image option given and action is executed', async () => {
@@ -298,7 +298,7 @@ describe('Cli.ts', () => {
       await cli.run('action', {args: [], envs: [], image: 'image'});
 
       expect(successList).toEqual(['Started Docker container: started_id', 'Health check passed', 'Ran action: `action` with output: output', 'Stopped Docker container: stoped_id']);
-      expect(formatExecExecStub.calledWith('action')).toBeTruthy();
+      expect(formatRunRunStub.calledWith('action')).toBeTruthy();
     });
 
     test('image option given but is not build so action is not executed', async () => {
@@ -310,16 +310,16 @@ describe('Cli.ts', () => {
 
       expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
-      expect(formatExecExecStub.called).toBeFalsy();
+      expect(formatRunRunStub.called).toBeFalsy();
     });
   });
 
   describe('.subscribe(event, options)', () => {
-    let cliExecStub;
+    let cliRunStub;
     let subscribeGoStub;
 
     beforeEach(() => {
-      cliExecStub = sinon.stub(Cli.prototype, 'run');
+      cliRunStub = sinon.stub(Cli.prototype, 'run');
       subscribeGoStub = sinon.stub(Subscribe.prototype, 'go');
     });
 
@@ -333,7 +333,7 @@ describe('Cli.ts', () => {
       cli.buildMicroservice();
       await cli.subscribe('eventAction', 'event', {args: [], envs: []});
 
-      expect(cliExecStub.args[0]).toEqual(['eventAction', {args: [], envs: []}]);
+      expect(cliRunStub.args[0]).toEqual(['eventAction', {args: [], envs: []}]);
       expect(subscribeGoStub.args[0]).toEqual(['eventAction', 'event']);
     });
   });

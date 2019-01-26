@@ -120,7 +120,7 @@ export default class Cli {
     await Cli.checkDocker();
     const image = options.image;
     if (!(options.args) || !(options.envs)) {
-      utils.error('Failed to parse command, run `omg exec --help` for more information.');
+      utils.error('Failed to parse command, run `omg run --help` for more information.');
       process.exit(1);
       return;
     }
@@ -148,7 +148,7 @@ export default class Cli {
     }
 
     this._run = new RunFactory(options.image, this.microservice, argsObj, envObj).getRun(_action);
-    if ((process.argv[2] === 'exec') && (this._run.constructor.name === 'EventExec')) {
+    if ((process.argv[2] === 'run') && (this._run.constructor.name === 'EventRun')) {
       utils.error(`Action \`${action}\` is and event. Use \`omg subscribe\``);
       process.exit(1);
     }
@@ -175,7 +175,7 @@ export default class Cli {
       process.exit(1);
     }
 
-    if (this._run.constructor.name !== 'EventExec') {
+    if (this._run.constructor.name !== 'EventRun') {
       spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`);
       const stoppedID = await this._run.stopService();
       spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);

@@ -19,7 +19,7 @@ export default abstract class Run {
   protected containerID: string = null;
 
   /**
-   * Use to help build a {@link FormatExec}, {@link HttpExec}, or an {@link EventExec}.
+   * Use to help build a {@link FormatRun}, {@link HttpRun}, or an {@link EventRun}.
    *
    * @param {String} dockerImage The given docker image
    * @param {Microservice} microservice The given {@link Microservice}

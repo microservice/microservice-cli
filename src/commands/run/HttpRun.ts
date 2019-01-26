@@ -35,7 +35,7 @@ export default class HttpRun extends Run {
   }
 
   /**
-   * Run this {@link Exec}'s {@link Action} that interfaces via HTTP.
+   * Run this {@link HttpRun}'s {@link Action} that interfaces via HTTP.
    *
    * @param {Number} port The given sever started in Docker
    * @return {Promise<String>} The response of the Http request
@@ -71,7 +71,7 @@ export default class HttpRun extends Run {
   }
 
   /**
-   * Formats an Http request based on this {@link Exec}'s {@link Action}.
+   * Formats an Http request based on this {@link HttpRun}'s {@link Action}.
    *
    * @param {Number} port The given server info
    * @return {{url: String, jsonData: Object}} The url and data
