@@ -261,7 +261,7 @@ describe('Cli.ts', () => {
     });
   });
 
-  describe('.exec(action, options)', () => {
+  describe('.run(action, options)', () => {
     let formatExecExecStub;
 
     beforeEach(() => {
@@ -283,7 +283,7 @@ describe('Cli.ts', () => {
     test('does not execute action because arguments are not given', async () => {
       const cli = new Cli();
       cli.buildMicroservice();
-      await cli.exec('action', {});
+      await cli.run('action', {});
 
       expect(errorStub.calledWith('Failed to parse command, run `omg exec --help` for more information.')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
@@ -295,7 +295,7 @@ describe('Cli.ts', () => {
       sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['image']}]);
       const cli = new Cli();
       cli.buildMicroservice();
-      await cli.exec('action', {args: [], envs: [], image: 'image'});
+      await cli.run('action', {args: [], envs: [], image: 'image'});
 
       expect(successList).toEqual(['Started Docker container: started_id', 'Health check passed', 'Ran action: `action` with output: output', 'Stopped Docker container: stoped_id']);
       expect(formatExecExecStub.calledWith('action')).toBeTruthy();
@@ -306,7 +306,7 @@ describe('Cli.ts', () => {
       sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['wrong']}]);
       const cli = new Cli();
       cli.buildMicroservice();
-      await cli.exec('action', {args: [], envs: [], image: 'does-not-exist'});
+      await cli.run('action', {args: [], envs: [], image: 'does-not-exist'});
 
       expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
@@ -319,12 +319,12 @@ describe('Cli.ts', () => {
     let subscribeGoStub;
 
     beforeEach(() => {
-      cliExecStub = sinon.stub(Cli.prototype, 'exec');
+      cliExecStub = sinon.stub(Cli.prototype, 'run');
       subscribeGoStub = sinon.stub(Subscribe.prototype, 'go');
     });
 
     afterEach(() => {
-      (Cli.prototype.exec as any).restore();
+      (Cli.prototype.run as any).restore();
       (Subscribe.prototype.go as any).restore();
     });
 

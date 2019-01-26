@@ -116,7 +116,7 @@ export default class Cli {
    * @param {String} action The command to run
    * @param {Object} options The given object holding the command, arguments, and environment variables
    */
-  async exec(action: string, options: any): Promise<void> {
+  async run(action: string, options: any): Promise<void> {
     await Cli.checkDocker();
     const image = options.image;
     if (!(options.args) || !(options.envs)) {
@@ -191,7 +191,7 @@ export default class Cli {
    */
   async subscribe(action: string, event: string, options: any) {
     await Cli.checkDocker();
-    await this.exec(action, {args: [], envs: options.envs});
+    await this.run(action, {args: [], envs: options.envs});
     const spinner = ora.start(`Subscribing to event: \`${event}\``);
     let argsObj;
     try {

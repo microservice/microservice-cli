@@ -31,7 +31,7 @@ program
   .description('Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
   .action(async (action, options) => {
     cli.buildMicroservice();
-    await cli.exec(action, options);
+    await cli.run(action, options);
   });
 
 program
