@@ -44,7 +44,7 @@ describe('Cli.ts', () => {
         '            method: delete';
     });
     sinon.stub(utils, 'createImageName').callsFake(async () => 'image-name');
-    sinon.stub(utils.docker, 'ping')
+    sinon.stub(utils.docker, 'ping');
   });
 
   afterEach(() => {
