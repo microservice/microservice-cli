@@ -69,10 +69,12 @@ describe('Cli.ts', () => {
     test('Cli is not constructed because we are not in a omg directory', () => {
       (fs.existsSync as any).restore();
       sinon.stub(fs, 'existsSync').callsFake(() => false);
+      const argvStub = sinon.stub(process, 'argv').value([1, 2, 3]);
       new Cli();
 
       expect(errorStub.calledWith('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
+      argvStub.restore();
     });
   });
 
