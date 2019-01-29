@@ -269,3 +269,27 @@ export function appender(xs: any[]): Function {
     return xs;
   };
 }
+
+export function checkActionInterface(data: any): any {
+  const noIssues = {
+    issueWithAction: false,
+    text: null,
+  }
+
+  if (!data.actions) {
+    return noIssues;
+  }
+
+  const actionMap = data.actions;
+  for (let actionName of Object.keys(actionMap)) {
+    let action = actionMap[actionName];
+    if (!action.http && !action.format && !action.rpc && !action.events) {
+      return {
+        issueWithAction: true,
+        text: 'TODO change this message',
+      }
+    }
+  }
+
+  return noIssues;
+}
