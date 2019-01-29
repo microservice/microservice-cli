@@ -93,7 +93,7 @@ describe('Cli.ts', () => {
       const cli = new Cli();
       cli.buildMicroservice();
 
-      expect(errorStub.calledWith('root should NOT have additional properties, root should have required property \'omg\'')).toBeTruthy();
+      expect(errorStub.calledWith('2 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property \'omg\'')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
     });
   });
@@ -220,7 +220,7 @@ describe('Cli.ts', () => {
       test('no options', () => {
         Cli.validate({});
 
-        expect(errorStub.calledWith('root should NOT have additional properties, root should have required property \'omg\'')).toBeTruthy();
+        expect(errorStub.calledWith('2 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property \'omg\'')).toBeTruthy();
         expect(processExitStub.calledWith(1)).toBeTruthy();
       });
     });
