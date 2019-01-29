@@ -78,7 +78,7 @@ export default class Cli {
         return errorString;
       }
       const errors = errorString.split(', ');
-      const errorCount = errors.length
+      const errorCount = errors.length;
       const formattedError = [`${errorCount} error${((errorCount === 1) ? '' : 's')} found:`];
       for (let i = 0; i < errors.length; i += 1) {
         formattedError.push(`\n  ${i + 1}. ${errors[i]}`);

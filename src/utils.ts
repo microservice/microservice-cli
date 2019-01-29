@@ -270,24 +270,33 @@ export function appender(xs: any[]): Function {
   };
 }
 
-export function checkActionInterface(data: any): any {
+/**
+ * Checks if any action in he given microserviceJson does not have
+ * and interface (http, format, rpc, xor events).
+ *
+ * @param {Object} microserviceJson The given microservice json
+ * @return {Object} Returns {issueWithAction: false, text: null} if no
+ *                  issues, otherwiesr return object with issueWithAction
+ *                  true and text holding the error message
+ */
+export function checkActionInterface(microserviceJson: any): any {
   const noIssues = {
     issueWithAction: false,
     text: null,
-  }
+  };
 
-  if (!data.actions) {
+  if (!microserviceJson.actions) {
     return noIssues;
   }
 
-  const actionMap = data.actions;
-  for (let actionName of Object.keys(actionMap)) {
-    let action = actionMap[actionName];
+  const actionMap = microserviceJson.actions;
+  for (const actionName of Object.keys(actionMap)) {
+    const action = actionMap[actionName];
     if (!action.http && !action.format && !action.rpc && !action.events) {
       return {
         issueWithAction: true,
         text: 'TODO change this message',
-      }
+      };
     }
   }
 
