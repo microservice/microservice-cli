@@ -257,7 +257,7 @@ export function getOpenPort(): Promise<number> {
 }
 
 /**
- * Used to append the environment variable options into [args...]
+ * Used to append the environment variable options into [args...].
  *
  * @param {Array} xs
  * @return {function(*=): (*|Array)}
@@ -275,30 +275,20 @@ export function appender(xs: any[]): Function {
  * and interface (http, format, rpc, xor events).
  *
  * @param {Object} microserviceJson The given microservice json
- * @return {Object} Returns {issueWithAction: false, text: null} if no
- *                  issues, otherwiesr return object with issueWithAction
- *                  true and text holding the error message
+ * @throws {Object} Throws error if more, or less than one interface
+ *                  is given for an action
  */
-export function checkActionInterface(microserviceJson: any): any {
-  const noIssues = {
-    issueWithAction: false,
-    text: null,
-  };
-
-  if (!microserviceJson.actions) {
-    return noIssues;
-  }
-
-  const actionMap = microserviceJson.actions;
-  for (const actionName of Object.keys(actionMap)) {
-    const action = actionMap[actionName];
-    if (!action.http && !action.format && !action.rpc && !action.events) {
-      return {
-        issueWithAction: true,
-        text: 'TODO change this message',
-      };
+export function checkActionInterface(microserviceJson: any): void {
+  if (microserviceJson.actions) {
+    const actionMap = microserviceJson.actions;
+    for (const actionName of Object.keys(actionMap)) {
+      const action = actionMap[actionName];
+      const bools = [!!action.http, !!action.format, !!action.rpc, !!action.events].filter((b) => b);
+      if (bools.length !== 1) {
+        throw {
+          text: `actions.${actionName} should have one of required property: 'http' 'format' 'rpc' or 'events'`,
+        };
+      }
     }
   }
-
-  return noIssues;
 }

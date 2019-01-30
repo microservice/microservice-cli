@@ -94,12 +94,8 @@ export default class Cli {
    */
   static validate(options: any): void {
     const json = Cli.readYAML(path.join(process.cwd(), 'microservice.yml'));
-    const preCheck = utils.checkActionInterface(json);
-    if (preCheck.issueWithAction) {
-      utils.error(preCheck.text);
-      process.exit(1);
-    }
     try {
+      utils.checkActionInterface(json);
       const m = new Microservice(json);
       utils.log(Cli.processValidateOutput(m.rawData, options));
       process.exit(0);
