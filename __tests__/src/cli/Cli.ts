@@ -27,6 +27,10 @@ describe('Cli.ts', () => {
     sinon.stub(fs, 'existsSync').callsFake(() => true);
     sinon.stub(fs, 'readFileSync').callsFake(() => {
       return 'omg: 1\n' +
+        'info:\n' +
+        '  version: 1.0.0\n' +
+        '  title: test\n' +
+        '  description: for tests\n' +
         'actions:\n' +
         '  action:\n' +
         '    format:\n' +
@@ -93,7 +97,7 @@ describe('Cli.ts', () => {
       const cli = new Cli();
       cli.buildMicroservice();
 
-      expect(errorStub.calledWith('root should NOT have additional properties, root should have required property \'omg\'')).toBeTruthy();
+      expect(errorStub.calledWith('3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property \'omg\'\n  3. root should have required property \'info\'')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
     });
   });
@@ -124,6 +128,11 @@ describe('Cli.ts', () => {
           '  "valid": true,\n' +
           '  "yaml": {\n' +
           '    "omg": 1,\n' +
+          '    "info": {\n' +
+          '      "version": "1.0.0",\n' +
+          '      "title": "test",\n' +
+          '      "description": "for tests"\n' +
+          '    },\n' +
           '    "actions": {\n' +
           '      "action": {\n' +
           '        "format": {\n' +
@@ -210,9 +219,18 @@ describe('Cli.ts', () => {
           '        "missingProperty": "omg"\n' +
           '      },\n' +
           '      "message": "should have required property \'omg\'"\n' +
+          '    },\n' +
+          '    {\n' +
+          '      "keyword": "required",\n' +
+          '      "dataPath": "",\n' +
+          '      "schemaPath": "#/required",\n' +
+          '      "params": {\n' +
+          '        "missingProperty": "info"\n' +
+          '      },\n' +
+          '      "message": "should have required property \'info\'"\n' +
           '    }\n' +
           '  ],\n' +
-          '  "text": "root should NOT have additional properties, root should have required property \'omg\'"\n' +
+          '  "text": "root should NOT have additional properties, root should have required property \'omg\', root should have required property \'info\'"\n' +
           '}')).toBeTruthy();
         expect(processExitStub.calledWith(1)).toBeTruthy();
       });
@@ -220,7 +238,7 @@ describe('Cli.ts', () => {
       test('no options', () => {
         Cli.validate({});
 
-        expect(errorStub.calledWith('root should NOT have additional properties, root should have required property \'omg\'')).toBeTruthy();
+        expect(errorStub.calledWith('3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property \'omg\'\n  3. root should have required property \'info\'')).toBeTruthy();
         expect(processExitStub.calledWith(1)).toBeTruthy();
       });
     });

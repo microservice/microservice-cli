@@ -15,6 +15,11 @@ describe('RunFactory.ts', () => {
       };
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           foo: rawFormatAction,
         },
@@ -35,6 +40,11 @@ describe('RunFactory.ts', () => {
       };
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           foo: rawHttpAction,
         },
@@ -71,6 +81,11 @@ describe('RunFactory.ts', () => {
       };
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           foo: rawEventAction,
         },

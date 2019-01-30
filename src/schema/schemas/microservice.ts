@@ -185,5 +185,6 @@ module.exports = {
   additionalProperties: false,
   required: [
     'omg',
+    'info',
   ],
 };

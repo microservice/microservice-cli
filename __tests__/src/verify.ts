@@ -124,6 +124,11 @@ describe('verify.ts', () => {
       try {
         verify.verifyEnvironmentVariableTypes(new Microservice({
           omg: 1,
+          info: {
+            version: '1.0.0',
+            title: 'test',
+            description: 'for tests',
+          },
           environment: {
             foo: {
               type: 'int',
@@ -143,6 +148,11 @@ describe('verify.ts', () => {
       try {
         verify.verifyEnvironmentVariablePattern(new Microservice({
           omg: 1,
+          info: {
+            version: '1.0.0',
+            title: 'test',
+            description: 'for tests',
+          },
           environment: {
             foo: {
               type: 'string',

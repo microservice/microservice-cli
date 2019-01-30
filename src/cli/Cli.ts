@@ -68,11 +68,22 @@ export default class Cli {
     } else if (options.silent) {
       return '';
     } else {
+      let errorString;
       if (!data.text) {
-        return `${data.context} has an issue. ${data.message}`;
+        errorString = `${data.context} has an issue. ${data.message}`;
       } else {
-        return data.text;
+        errorString = data.text;
       }
+      if (errorString === 'No errors') {
+        return errorString;
+      }
+      const errors = errorString.split(', ');
+      const errorCount = errors.length;
+      const formattedError = [`${errorCount} error${((errorCount === 1) ? '' : 's')} found:`];
+      for (let i = 0; i < errors.length; i += 1) {
+        formattedError.push(`\n  ${i + 1}. ${errors[i]}`);
+      }
+      return formattedError.join('');
     }
   }
 
@@ -84,6 +95,7 @@ export default class Cli {
   static validate(options: any): void {
     const json = Cli.readYAML(path.join(process.cwd(), 'microservice.yml'));
     try {
+      utils.checkActionInterface(json);
       const m = new Microservice(json);
       utils.log(Cli.processValidateOutput(m.rawData, options));
       process.exit(0);
