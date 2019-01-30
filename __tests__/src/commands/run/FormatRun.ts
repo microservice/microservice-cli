@@ -33,6 +33,11 @@ describe('FormatRun.ts', () => {
     test('starts service with dev null default', async () => {
       const containerID = await new FormatRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           test: {
             format: {
@@ -54,6 +59,11 @@ describe('FormatRun.ts', () => {
     test('starts service with lifecycle', async () => {
       const containerID = await new FormatRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           test: {
             format: {
@@ -102,6 +112,11 @@ describe('FormatRun.ts', () => {
     test('not running', async () => {
       expect(await new FormatRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           test: {
             format: {
@@ -134,6 +149,11 @@ describe('FormatRun.ts', () => {
 
       expect(await new FormatRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           test: {
             format: {
@@ -156,6 +176,11 @@ describe('FormatRun.ts', () => {
       try {
         await new FormatRun('fake_docker_id', new Microservice({
           omg: 1,
+          info: {
+            version: '1.0.0',
+            title: 'test',
+            description: 'for tests',
+          },
           actions: {
             tom: {
               format: {
@@ -179,6 +204,11 @@ describe('FormatRun.ts', () => {
       try {
         await new FormatRun('fake_docker_id', new Microservice({
           omg: 1,
+          info: {
+            version: '1.0.0',
+            title: 'test',
+            description: 'for tests',
+          },
           actions: {
             tom: {
               format: {

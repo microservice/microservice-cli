@@ -10,6 +10,11 @@ describe('Microservice.ts', () => {
       try {
         new Microservice({
           omg: 1,
+          info: {
+            version: '1.0.0',
+            title: 'test',
+            description: 'for tests',
+          },
         });
       } catch (e) {
         expect(e).toEqual({
@@ -28,6 +33,11 @@ describe('Microservice.ts', () => {
       try {
         new Microservice({
           omg: 1,
+          info: {
+            version: '1.0.0',
+            title: 'test',
+            description: 'for tests',
+          },
           actions: {
             foo: {
               output: {type: 'map'},
@@ -52,6 +62,11 @@ describe('Microservice.ts', () => {
     test('gets the raw data after validation', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           foo: {
             format: {
@@ -68,7 +83,7 @@ describe('Microservice.ts', () => {
         errors: null,
         text: 'No errors',
         valid: true,
-        yaml: {actions: {foo: {format: {command: 'foo.sh'}, output: {type: 'boolean'}}}, omg: 1},
+        yaml: {actions: {foo: {format: {command: 'foo.sh'}, output: {type: 'boolean'}}}, omg: 1, info: {description: 'for tests', title: 'test', version: '1.0.0'}},
       });
     });
   });
@@ -77,6 +92,11 @@ describe('Microservice.ts', () => {
     test('gets the empty command list', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
       });
 
       expect(m.actions).toEqual([]);
@@ -85,6 +105,11 @@ describe('Microservice.ts', () => {
     test('gets the command list', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           foo: {
             format: {
@@ -108,6 +133,11 @@ describe('Microservice.ts', () => {
   describe('.getCommand(command)', () => {
     const m = new Microservice({
       omg: 1,
+      info: {
+        version: '1.0.0',
+        title: 'test',
+        description: 'for tests',
+      },
       actions: {
         foo: {
           format: {
@@ -134,6 +164,11 @@ describe('Microservice.ts', () => {
     test('gets the empty environment variable list', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
       });
 
       expect(m.environmentVariables).toEqual([]);
@@ -142,6 +177,11 @@ describe('Microservice.ts', () => {
     test('gets the environment variable list', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         environment: {
           foo: {
             type: 'boolean',
@@ -159,6 +199,11 @@ describe('Microservice.ts', () => {
   describe('.areRequiredEnvironmentVariablesSupplied(environmentVariableMapping)', () => {
     const m = new Microservice({
       omg: 1,
+      info: {
+        version: '1.0.0',
+        title: 'test',
+        description: 'for tests',
+      },
       environment: {
         foo: {
           type: 'boolean',
@@ -184,6 +229,11 @@ describe('Microservice.ts', () => {
     test('gets the list of required environment variables', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         environment: {
           foo: {
             type: 'boolean',
@@ -203,6 +253,11 @@ describe('Microservice.ts', () => {
     test('gets the empty volume list', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
       });
 
       expect(m.volumes).toEqual([]);
@@ -211,6 +266,11 @@ describe('Microservice.ts', () => {
     test('gets the volume list', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         volumes: {
           foo: {
             target: '/foo',
@@ -232,6 +292,11 @@ describe('Microservice.ts', () => {
   describe('.getVolume(volume)', () => {
     const m = new Microservice({
       omg: 1,
+      info: {
+        version: '1.0.0',
+        title: 'test',
+        description: 'for tests',
+      },
       volumes: {
         foo: {
           target: '/foo',
@@ -255,6 +320,11 @@ describe('Microservice.ts', () => {
     test('gets the lifecycle', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         lifecycle: {
           startup: {
             command: ['node', 'app.js', 'foo'],

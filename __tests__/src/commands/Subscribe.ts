@@ -40,6 +40,11 @@ describe('Subscribe.ts', () => {
   describe('.go(event)', () => {
     const m = new Microservice({
       omg: 1,
+      info: {
+        version: '1.0.0',
+        title: 'test',
+        description: 'for tests',
+      },
       actions: {
         foo: {
           events: {

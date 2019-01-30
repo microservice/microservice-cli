@@ -16,6 +16,11 @@ describe('utils.ts', () => {
     test('returns an empty list because there are no actions that interface via http', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
       });
 
       expect(utils.getNeededPorts(m)).toEqual([]);
@@ -24,6 +29,11 @@ describe('utils.ts', () => {
     test('returns a list consisting of the port 5050 and 6060 because it is used by a http interfacing action', () => {
       const m = new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         lifecycle: {
           startup: {
             command: 'server.sh',

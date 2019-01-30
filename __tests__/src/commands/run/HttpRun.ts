@@ -40,6 +40,11 @@ describe('HttpRun.js', () => {
     test('starts service with lifecycle', async () => {
       const containerID = await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           get: {
             output: {type: 'string'},
@@ -105,6 +110,11 @@ describe('HttpRun.js', () => {
     test('not running', async () => {
       expect(await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           get: {
             output: {type: 'string'},
@@ -139,6 +149,11 @@ describe('HttpRun.js', () => {
 
       expect(await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           get: {
             output: {type: 'string'},
@@ -162,6 +177,11 @@ describe('HttpRun.js', () => {
     test('action that gets', async () => {
       const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           get: {
             output: {type: 'string'},
@@ -188,6 +208,11 @@ describe('HttpRun.js', () => {
     test('action that posts', async () => {
       const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           post: {
             output: {type: 'string'},
@@ -240,6 +265,11 @@ describe('HttpRun.js', () => {
     test('action that puts', async () => {
       const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           put: {
             output: {type: 'string'},
@@ -271,6 +301,11 @@ describe('HttpRun.js', () => {
     test('action that deletes', async () => {
       const httpRun = new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests',
+        },
         actions: {
           delete: {
             output: {type: 'string'},
