@@ -65,10 +65,10 @@ export default class FormatRun extends Run {
     const container = utils.docker.getContainer(this.containerID);
     const cmd = this.action.format.command;
     cmd.push(this.formatExec());
-    const exec = await container.exec({Cmd: cmd, AttachStdin: true, AttachStdout: true});
+    const exec = await container.exec({Cmd: cmd, AttachStdin: true, AttachStdout: true, Tty: true});
 
     const data = await new Promise((resolve, reject) => {
-      exec.start({stdin: true}, (err, stream) => {
+      exec.start({stdin: true, stdout: true}, (err, stream) => {
         const data = [];
         if (err) {
           throw err;
@@ -82,6 +82,10 @@ export default class FormatRun extends Run {
         }
       });
     });
+
+    if ((await exec.inspect()).ExitCode !== 0) {
+      throw data;
+    }
 
     return (data as string);
   }
