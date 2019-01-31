@@ -17,9 +17,12 @@ export default class Build {
 
   /**
    * Builds a Docker image with this {@link Build}'s name prefaced with `omg/` and tagged with `local`.
+   *
+   * @param {Boolean} [silent=false] The given boolean if output should be logged or not
+   * @return {String} The name of the docker container that was build
    */
-  async go(): Promise<string> {
-    await utils.exec(`docker build -t ${this.name} .`, false); // This needs to be changed to use dockerode
+  async go(silent=false): Promise<string> {
+    await utils.exec(`docker build -t ${this.name} .`, silent); // This needs to be changed to use dockerode
     return this.name;
   }
 }

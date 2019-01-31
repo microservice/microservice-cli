@@ -112,13 +112,21 @@ export default class Cli {
    */
   static async build(options: any): Promise<string> {
     await Cli.checkDocker();
-    ora.start().info('Building Docker image');
+    if (!options.raw) {
+      ora.start().info('Building Docker image');
+    }
     try {
-      const name = await new Build(options.tag || await utils.createImageName()).go();
-      ora.start().succeed(`Built Docker image with name: ${name}`);
+      const name = await new Build(options.tag || await utils.createImageName()).go(!!options.raw);
+      if (!options.raw) {
+        ora.start().succeed(`Built Docker image with name: ${name}`);
+      }
       return name;
     } catch (e) {
-      ora.start().fail(`Failed to build: ${e}`);
+      if (options.raw) {
+        utils.error(e);
+      } else {
+        ora.start().fail(`Failed to build: ${e}`);
+      }
       process.exit(1);
     }
   }
@@ -145,7 +153,7 @@ export default class Cli {
         return;
       }
     } else {
-      options.image = await Cli.build({});
+      options.image = await Cli.build({raw: options.raw});
     }
 
     let _action;
@@ -165,33 +173,59 @@ export default class Cli {
       utils.error(`Action \`${action}\` is and event. Use \`omg subscribe\``);
       process.exit(1);
     }
-    let spinner = ora.start(`Starting Docker container`);
+    let spinner;
+    if (!options.raw) {
+      spinner = ora.start(`Starting Docker container`);
+    }
     this.startedID = await this._run.startService(); // 1. start service
-    spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`);
-    spinner = ora.start(`Health check`);
+    if (!options.raw) {
+      spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`);
+      spinner = ora.start(`Health check`);
+    }
     await new Promise( (res) => setTimeout(res, 1000)); // wait for the container to start
     if (!await this._run.isRunning()) { // 2. health check
-      spinner.fail('Health check failed');
+      if (options.raw) {
+        utils.error('Health check failed');
+      } else {
+        spinner.fail('Health check failed');
+      }
       utils.error(`  Docker logs:\n${await this._run.getStderr()}`);
       process.exit(1);
     }
-    spinner.succeed(`Health check passed`);
-    spinner = ora.start(`Running action: \`${action}\``);
+    if (!options.raw) {
+      spinner.succeed(`Health check passed`);
+      spinner = ora.start(`Running action: \`${action}\``);
+    }
+    let output;
     try {
-      const output = await this._run.exec(action); // 3. run service
-      spinner.succeed(`Ran action: \`${action}\` with output: ${output}`);
+      output = await this._run.exec(action); // 3. run service
+      if (!options.raw) {
+        spinner.succeed(`Ran action: \`${action}\` with output: ${output}`);
+      }
     } catch (e) {
       if (await this._run.isRunning()) {
         await this._run.stopService();
       }
-      spinner.fail(`Failed action: \`${action}\`: ${e}`);
+      if (options.raw) {
+        utils.error(`Failed action: \`${action}\`: ${e}`);
+      } else {
+        spinner.fail(`Failed action: \`${action}\`: ${e}`);
+      }
       process.exit(1);
     }
 
     if (this._run.constructor.name !== 'EventRun') {
-      spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`);
+      if (!options.raw) {
+        spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`);
+      }
       const stoppedID = await this._run.stopService();
-      spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);
+      if (!options.raw) {
+        spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);
+      }
+    }
+
+    if (options.raw) {
+      utils.log(output);
     }
   }
 
