@@ -51,6 +51,7 @@ npm install -g omg
     -i --image <i>  The name of the image to spin up the microservice, if not provided a fresh image will be build based of the `Dockerfile`
     -a --args <a>   Arguments to be passed to the command, must be of the form `key="val"` (default: )
     -e --envs <e>   Environment variables to be passed to run environment, must be of the form `key="val"` (default: )
+    -r --raw        All logging is suppressed expect for the output of the action.
     -h, --help      output usage information
 ```
 
