@@ -8,6 +8,8 @@ import Build from '../commands/Build';
 import Subscribe from '../commands/Subscribe';
 import Run from '../commands/run/Run';
 import RunFactory from '../commands/run/RunFactory';
+import Action from '../models/Action';
+import Argument from '../models/Argument';
 const homedir = require('os').homedir();
 
 /**
@@ -55,7 +57,15 @@ export default class Cli {
     }
   }
 
-  helpForAction(): void {
+  helpForAction(actionName): void {
+    console.log(`Help for: ${actionName}`)
+    const action: Action = this.microservice.getAction(actionName);
+    const stringBuffer = ['  Arguments: (use in the form of `-a \'foo=bar\' -a \'veggie=carrot\'`\n'];
+    for (let argument of action.arguments) {
+      console.log(argument)
+      stringBuffer.push(`    - ${argument.name}        ${argument.type}\n`)
+    }
+    utils.log(stringBuffer.join(''))
     process.exit();
   }
 

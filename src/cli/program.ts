@@ -9,15 +9,16 @@ const appender = require('../utils').appender;
 const cli = new Cli();
 
 
-const args = process.argv;
+const args = JSON.parse(JSON.stringify(process.argv));
+const theArgs = args.splice(args.indexOf('run'))
 
-if (args.includes('run') && args.includes('--help') && (args.splice(args.indexOf('run'))[1] !== '--help')) {
+if (theArgs.includes('run') && theArgs.includes('--help') && (theArgs[1] !== '--help')) {
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile')))) {
     utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
   cli.buildMicroservice();
-  cli.helpForAction();
+  cli.helpForAction(theArgs[1]);
 }
 
 
