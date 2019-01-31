@@ -55,6 +55,10 @@ export default class Cli {
     }
   }
 
+  helpForAction(): void {
+    process.exit();
+  }
+
   /**
    * Formats the output based on the data and options.
    *

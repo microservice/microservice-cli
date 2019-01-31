@@ -1,9 +1,24 @@
 #!/usr/bin/env node
 
 import * as program from 'commander';
+import * as utils from '../utils';
+import * as fs from 'fs';
+import * as path from 'path';
 import Cli from './Cli';
 const appender = require('../utils').appender;
 const cli = new Cli();
+
+
+const args = process.argv;
+
+if (args.includes('run') && args.includes('--help') && (args.splice(args.indexOf('run'))[1] !== '--help')) {
+  if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile')))) {
+    utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+    process.exit(1);
+  }
+  cli.buildMicroservice();
+  cli.helpForAction();
+}
 
 
 program
