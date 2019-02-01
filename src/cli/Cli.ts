@@ -59,6 +59,10 @@ export default class Cli {
 
   helpForAction(actionName): void {
     const action: Action = this.microservice.getAction(actionName);
+    if (action.events) {
+      utils.error(`The action \`${action.name}\` is an event action and must be called using \`omg subscribe\`. Try running \`omg subscribe ${action.name} --help\``)
+      process.exit(1);
+    }
     const stringBuffer = [`  Action \`${action.name}\` details: \n\n    Arguments: (use in the form of \`-a 'foo=bar' -a 'veggie=carrot'\`\n`];
     if (action.help) {
       stringBuffer.push(`\n    Help: ${action.help}\n`);
