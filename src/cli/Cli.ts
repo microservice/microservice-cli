@@ -58,13 +58,19 @@ export default class Cli {
   }
 
   helpForAction(actionName): void {
-    console.log(`Help for: ${actionName}`)
     const action: Action = this.microservice.getAction(actionName);
-    const stringBuffer = ['  Arguments: (use in the form of `-a \'foo=bar\' -a \'veggie=carrot\'`\n'];
-    for (let argument of action.arguments) {
-      console.log(argument)
-      stringBuffer.push(`    - ${argument.name}        ${argument.type}\n`)
+    const stringBuffer = [`  Action \`${action.name}\` details: \n\n    Arguments: (use in the form of \`-a 'foo=bar' -a 'veggie=carrot'\`\n`];
+    if (action.help) {
+      stringBuffer.push(`\n    Help: ${action.help}\n`);
     }
+    for (let argument of action.arguments) {
+      stringBuffer.push(`      - ${argument.name}        ${argument.type}${((argument.help) ? `, ${argument.help}` : '')}\n`)
+    }
+
+    if (action.output && action.output.type) {
+      stringBuffer.push(`    Output:\n      type: ${action.output.type}`)
+    }
+
     utils.log(stringBuffer.join(''))
     process.exit();
   }
