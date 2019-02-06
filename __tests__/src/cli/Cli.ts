@@ -12,6 +12,7 @@ describe('Cli.ts', () => {
   let processExitStub;
   let errorStub;
   let successList = [];
+  let logStub;
 
   beforeEach(() => {
     sinon.stub(ora, 'start').callsFake(() => {
@@ -24,6 +25,7 @@ describe('Cli.ts', () => {
     });
     processExitStub = sinon.stub(process, 'exit');
     errorStub = sinon.stub(utils, 'error');
+    logStub = sinon.stub(utils, 'log');
     sinon.stub(fs, 'existsSync').callsFake(() => true);
     sinon.stub(fs, 'readFileSync').callsFake(() => {
       return 'omg: 1\n' +
@@ -56,6 +58,7 @@ describe('Cli.ts', () => {
     (ora.start as any).restore();
     (process.exit as any).restore();
     (utils.error as any).restore();
+    (utils.log as any).restore();
     (fs.existsSync as any).restore();
     (fs.readFileSync as any).restore();
     (utils.createImageName as any).restore();
@@ -102,17 +105,50 @@ describe('Cli.ts', () => {
     });
   });
 
+  describe('.actionHelp(actionName)', () => {
+    test('builds the microservice', () => {
+      (fs.readFileSync as any).restore();
+      sinon.stub(fs, 'readFileSync').callsFake(() => {
+        return 'omg: 1\n' +
+          'info:\n' +
+          '  version: 1.0.0\n' +
+          '  title: test\n' +
+          '  description: for tests\n' +
+          'actions:\n' +
+          '  action:\n' +
+          '    format:\n' +
+          '      command: ["action.sh"]';
+      });
+      // sinon.stub(fs, 'readFileSync').callsFake(() => {
+      //   return 'omg: 1\n' +
+      //     'info:\n' +
+      //     '  version: 1.0.0\n' +
+      //     '  title: test\n' +
+      //     '  description: for tests\n' +
+      //     'actions:\n' +
+      //     '  action:\n' +
+      //     '    format:\n' +
+      //     '      command: ["action.sh"]\n' +
+      //     '    arguments:\n' +
+      //     '      x:\n' +
+      //     '        type: int\n' +
+      //     '        help: the x value\n' +
+      //     '        required: true' + 
+      //     '      y:\n' +
+      //     '        type: int\n' +
+      //     '        default: 0' +
+      //     '      z:\n' +
+      //     '        type: int\n'
+      // });
+      const cli = new Cli();
+      cli.buildMicroservice();
+      cli.actionHelp('action')
+
+      expect(logStub.args[0]).toBe([])
+    });
+  });
+
   describe('Cli.validate(options)', () => {
-    let logStub;
-
-    beforeEach(() => {
-      logStub = sinon.stub(utils, 'log');
-    });
-
-    afterEach(() => {
-      (utils.log as any).restore();
-    });
-
     describe('valid `microservice.yml`', () => {
       test('silent option', () => {
         Cli.validate({silent: true});
