@@ -60,7 +60,7 @@ export default class Cli {
   helpForAction(actionName): void {
     const action: Action = this.microservice.getAction(actionName);
     if (action.events) {
-      utils.error(`The action \`${action.name}\` is an event action and must be called using \`omg subscribe\`. Try running \`omg subscribe ${action.name} --help\``)
+      utils.error(`The action \`${action.name}\` is an event action and must be called using \`omg subscribe\`. Try running \`omg subscribe ${action.name} --help\``);
       process.exit(1);
     }
     const stringBuffer = [`  Action \`${action.name}\` details: \n`];
@@ -71,15 +71,15 @@ export default class Cli {
       stringBuffer.push('\n    Arguments: (use in the form of `-a \'foo=bar\' -a \'veggie=carrot\'`\n');
     }
 
-    for (let argument of action.arguments) {
-      stringBuffer.push(`      - ${argument.name}        ${argument.type}${((argument.help) ? `, ${argument.help}` : '')}\n`)
+    for (const argument of action.arguments) {
+      stringBuffer.push(`      - ${argument.name}        ${argument.type}${((argument.help) ? `, ${argument.help}` : '')}\n`);
     }
 
     if (action.output && action.output.type) {
-      stringBuffer.push(`    Output:\n      type: ${action.output.type}`)
+      stringBuffer.push(`    Output:\n      type: ${action.output.type}`);
     }
 
-    utils.log(stringBuffer.join(''))
+    utils.log(stringBuffer.join(''));
     process.exit();
   }
 
@@ -90,18 +90,18 @@ export default class Cli {
     if (action.help) {
       stringBuffer.push(`\n    Help: ${action.help}\n`);
     }
-    stringBuffer.push(`\n    Events: (run in the form of \`omg subscribe ${action.name} \`event\`\`)\n`)
+    stringBuffer.push(`\n    Events: (run in the form of \`omg subscribe ${action.name} \`event\`\`)\n`);
 
-    for (let event of action.events) {
+    for (const event of action.events) {
       stringBuffer.push(`      - ${action.name}`);
       if (event.arguments.length !== 0) {
-        stringBuffer.push('\n          Arguments: (use in the form of `-a \'foo=bar\' -a \'veggie=carrot\'\n')
+        stringBuffer.push('\n          Arguments: (use in the form of `-a \'foo=bar\' -a \'veggie=carrot\'\n');
       }
-      for (let argument of event.arguments) {
-        stringBuffer.push(`            - ${argument.name}        ${argument.type}${((argument.help) ? `, ${argument.help}` : '')}\n`)
+      for (const argument of event.arguments) {
+        stringBuffer.push(`            - ${argument.name}        ${argument.type}${((argument.help) ? `, ${argument.help}` : '')}\n`);
       }
       if (event.output && event.output.type) {
-        stringBuffer.push(`          Output:\n            type: ${event.output.type}`)
+        stringBuffer.push(`          Output:\n            type: ${event.output.type}`);
       }
     }
 

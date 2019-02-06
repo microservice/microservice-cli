@@ -53,7 +53,7 @@ if ((process.argv.length < 3) || (!['validate', 'build', 'run', 'subscribe', 'sh
 }
 
 let args = JSON.parse(JSON.stringify(process.argv));
-let theArgs = args.splice(args.indexOf('run'))
+let theArgs = args.splice(args.indexOf('run'));
 
 if (theArgs.includes('run') && theArgs.includes('--help') && (theArgs[1] !== '--help')) {
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile')))) {
@@ -65,7 +65,7 @@ if (theArgs.includes('run') && theArgs.includes('--help') && (theArgs[1] !== '--
 }
 
 args = JSON.parse(JSON.stringify(process.argv));
-theArgs = args.splice(args.indexOf('subscribe'))
+theArgs = args.splice(args.indexOf('subscribe'));
 if (theArgs.includes('subscribe') && theArgs.includes('--help') && (theArgs[1] !== '--help')) {
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile')))) {
     utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
