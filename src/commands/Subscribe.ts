@@ -71,6 +71,7 @@ export default class Subscribe {
       body: {
         id: this.id,
         endpoint: `http://host.docker.internal:${port}`,
+        event: this.event.name,
         data: this._arguments,
       },
       json: true,
