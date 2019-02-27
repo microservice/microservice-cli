@@ -89,7 +89,7 @@ export default class HttpRun extends Run {
           }
           break;
         case 'path':
-          url = url.replace(`{{${argument.name}}}`, this._arguments[argument.name]);
+          url = url.replace(`{${argument.name}}`, this._arguments[argument.name]);
           break;
         case 'requestBody':
           jsonData[argument.name] = this._arguments[argument.name];

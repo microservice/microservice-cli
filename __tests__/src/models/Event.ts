@@ -74,7 +74,7 @@ describe('Event.ts', () => {
       } catch (e) {
         expect(e).toEqual({
           context: 'Argument: `foo` for event: `name`',
-          message: 'Path parameters must be defined in the http path, of the form `{{argument}}`',
+          message: 'Path parameters must be defined in the http path, of the form `{argument}`',
         });
       }
     });
@@ -86,12 +86,12 @@ describe('Event.ts', () => {
             subscribe: {
               method: 'post',
               port: 5000,
-              path: '/sub/{{foo}}',
+              path: '/sub/{foo}',
             },
             unsubscribe: {
               method: 'post',
               port: 5000,
-              path: '/unsub/{{foo}}',
+              path: '/unsub/{foo}',
             },
           },
           arguments: {
@@ -116,12 +116,12 @@ describe('Event.ts', () => {
             subscribe: {
               method: 'post',
               port: 5000,
-              path: '/sub/{{foo}}/{{bar}}',
+              path: '/sub/{foo}/{bar}',
             },
             unsubscribe: {
               method: 'post',
               port: 5000,
-              path: '/unsub/{{foo}}',
+              path: '/unsub/{foo}',
             },
           },
           arguments: {
@@ -134,8 +134,8 @@ describe('Event.ts', () => {
         });
       } catch (e) {
         expect(e).toEqual({
-          context: 'Path parameter(s): `{{bar}}` for event: `name`',
-          message: 'If a url specifies a path parameter i.e. `{{argument}}`, the argument must be defined in the event',
+          context: 'Path parameter(s): `{bar}` for event: `name`',
+          message: 'If a url specifies a path parameter i.e. `{argument}`, the argument must be defined in the event',
         });
       }
     });
