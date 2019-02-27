@@ -119,32 +119,11 @@ describe('Cli.ts', () => {
           '    format:\n' +
           '      command: ["action.sh"]';
       });
-      // sinon.stub(fs, 'readFileSync').callsFake(() => {
-      //   return 'omg: 1\n' +
-      //     'info:\n' +
-      //     '  version: 1.0.0\n' +
-      //     '  title: test\n' +
-      //     '  description: for tests\n' +
-      //     'actions:\n' +
-      //     '  action:\n' +
-      //     '    format:\n' +
-      //     '      command: ["action.sh"]\n' +
-      //     '    arguments:\n' +
-      //     '      x:\n' +
-      //     '        type: int\n' +
-      //     '        help: the x value\n' +
-      //     '        required: true' + 
-      //     '      y:\n' +
-      //     '        type: int\n' +
-      //     '        default: 0' +
-      //     '      z:\n' +
-      //     '        type: int\n'
-      // });
       const cli = new Cli();
       cli.buildMicroservice();
-      cli.actionHelp('action')
+      cli.actionHelp('action');
 
-      expect(logStub.args[0]).toBe([])
+      expect(logStub.args[0][0].startsWith('  Action `action` details:')).toBeTruthy();
     });
   });
 
