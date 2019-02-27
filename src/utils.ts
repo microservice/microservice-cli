@@ -2,6 +2,7 @@ import * as _ from 'underscore';
 import * as $ from 'shelljs';
 import * as net from 'http';
 import Microservice from './models/Microservice';
+import EnvironmentVariable from './models/EnvironmentVariable';
 const Docker = require('dockerode-promise');
 export const docker = new Docker();
 
@@ -81,6 +82,26 @@ export function parse(list: string[], errorMessage: string): any {
     dictionary[split[0]] = split[1];
   }
   return dictionary;
+}
+
+/**
+ * Matches the case of given cli environment arguments to the case defined in
+ * the microservice.yml.
+ *
+ * @param {Object} env The given environment variable mapping
+ * @param {Array<EnvironmentVariable>} environmentVariables The given {@link EnvironmentVariable}s
+ * @return {Object} The environment mapping with correct cases
+ */
+export function matchEnvironmentCases(env: any, environmentVariables: EnvironmentVariable[]): any {
+  const result = {};
+  for (const key of Object.keys(env)) {
+    for (const cap of environmentVariables) {
+      if (cap.name.toLowerCase() === key.toLowerCase()) {
+        result[cap.name] = env[key];
+      }
+    }
+  }
+  return result;
 }
 
 /**
