@@ -252,6 +252,7 @@ export default class Cli {
       _action = this.microservice.getAction(action);
       argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
       envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
+      envObj = utils.matchEnvironmentCases(envObj, this.microservice.environmentVariables);
     } catch (e) {
       utils.error(e);
       process.exit(1);
@@ -271,7 +272,7 @@ export default class Cli {
       spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`);
       spinner = ora.start(`Health check`);
     }
-    await new Promise( (res) => setTimeout(res, 1000)); // wait for the container to start
+    await new Promise((res) => setTimeout(res, 1000)); // wait for the container to start
     if (!await this._run.isRunning()) { // 2. health check
       if (options.raw) {
         utils.error('Health check failed');

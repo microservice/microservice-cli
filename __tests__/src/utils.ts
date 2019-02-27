@@ -1,5 +1,6 @@
 import * as utils from '../../src/utils';
 import Microservice from '../../src/models/Microservice';
+import EnvironmentVariable from '../../src/models/EnvironmentVariable';
 
 describe('utils.ts', () => {
   describe('setVal(val, _else)', () => {
@@ -94,6 +95,23 @@ describe('utils.ts', () => {
       } catch (e) {
         expect(e).toEqual({message: 'Error message.'});
       }
+    });
+  });
+
+  describe('matchEnvironmentCases(env, environmentVariables)', () => {
+    test('fixes the cases', () => {
+      const environmentVariables = [new EnvironmentVariable('nAme', {type: 'string'}), new EnvironmentVariable('name2', {type: 'string'}), new EnvironmentVariable('NAME3', {type: 'string'})];
+      const env = {
+        name: 1,
+        name2: 2,
+        name3: 3,
+      };
+
+      expect(utils.matchEnvironmentCases(env, environmentVariables)).toEqual({
+        nAme: 1,
+        name2: 2,
+        NAME3: 3,
+      });
     });
   });
 
