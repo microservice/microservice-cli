@@ -61,7 +61,12 @@ if (theArgs.includes('run') && theArgs.includes('--help') && (theArgs[1] !== '--
     process.exit(1);
   }
   cli.buildMicroservice();
-  cli.actionHelp(theArgs[1]);
+  try {
+    cli.actionHelp(theArgs[1]);
+  } catch (e) {
+    utils.log(e);
+    process.exit(1);
+  }
 }
 
 args = JSON.parse(JSON.stringify(process.argv));
@@ -72,7 +77,12 @@ if (theArgs.includes('subscribe') && theArgs.includes('--help') && (theArgs[1] !
     process.exit(1);
   }
   cli.buildMicroservice();
-  cli.eventActionHelp(theArgs[1]);
+  try {
+    cli.eventActionHelp(theArgs[1]);
+  } catch (e) {
+    utils.log(e);
+    process.exit(1);
+  }
 }
 
 process.on('SIGINT', async function() {
