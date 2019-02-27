@@ -236,7 +236,7 @@ describe('HttpRun.js', () => {
             http: {
               method: 'post',
               port: 5555,
-              path: '/person/{{person_id}}',
+              path: '/person/{person_id}',
             },
           },
         },
@@ -319,7 +319,7 @@ describe('HttpRun.js', () => {
             http: {
               method: 'delete',
               port: 5555,
-              path: '/user/{{id}}',
+              path: '/user/{id}',
             },
           },
         },

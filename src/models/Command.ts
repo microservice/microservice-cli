@@ -50,13 +50,13 @@ export default abstract class Command {
         };
       }
       if (argument.in === 'path') {
-        if (!http.path.includes(`{{${argument.name}}}`)) {
+        if (!http.path.includes(`{${argument.name}}`)) {
           throw {
             context: `Argument: \`${argument.name}\` for ${commandType}: \`${this.name}\``,
-            message: 'Path parameters must be defined in the http path, of the form `{{argument}}`',
+            message: 'Path parameters must be defined in the http path, of the form `{argument}`',
           };
         } else {
-          _path = _path.replace(`{{${argument.name}}}`, argument.name);
+          _path = _path.replace(`{${argument.name}}`, argument.name);
         }
         if (!argument.isRequired() && (argument.default === null)) {
           throw {
@@ -66,11 +66,11 @@ export default abstract class Command {
         }
       }
     }
-    const extraPathParams = _path.match(/({{[a-zA-Z]+}})/g);
+    const extraPathParams = _path.match(/({[a-zA-Z]+})/g);
     if (extraPathParams !== null) {
       throw {
         context: `Path parameter(s): \`${extraPathParams.toString()}\` for ${commandType}: \`${this.name}\``,
-        message: `If a url specifies a path parameter i.e. \`{{argument}}\`, the argument must be defined in the ${commandType}`,
+        message: `If a url specifies a path parameter i.e. \`{argument}\`, the argument must be defined in the ${commandType}`,
       };
     }
   }
