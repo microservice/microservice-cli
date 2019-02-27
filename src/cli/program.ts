@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
 import * as program from 'commander';
+import * as utils from '../utils';
+import * as fs from 'fs';
+import * as path from 'path';
 import Cli from './Cli';
 const appender = require('../utils').appender;
 const cli = new Cli();
-
 
 program
   .description('For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`')
@@ -48,6 +50,39 @@ program
 // needed because there is no default catch all command with commander.js
 if ((process.argv.length < 3) || (!['validate', 'build', 'run', 'subscribe', 'shutdown', '--version'].includes(process.argv[2]))) {
   program.help();
+}
+
+let args = JSON.parse(JSON.stringify(process.argv));
+let theArgs = args.splice(args.indexOf('run'));
+
+if (theArgs.includes('run') && theArgs.includes('--help') && (theArgs[1] !== '--help')) {
+  if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile')))) {
+    utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+    process.exit(1);
+  }
+  cli.buildMicroservice();
+  try {
+    cli.actionHelp(theArgs[1]);
+  } catch (e) {
+    utils.log(e);
+    process.exit(1);
+  }
+}
+
+args = JSON.parse(JSON.stringify(process.argv));
+theArgs = args.splice(args.indexOf('subscribe'));
+if (theArgs.includes('subscribe') && theArgs.includes('--help') && (theArgs[1] !== '--help')) {
+  if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile')))) {
+    utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+    process.exit(1);
+  }
+  cli.buildMicroservice();
+  try {
+    cli.eventActionHelp(theArgs[1]);
+  } catch (e) {
+    utils.log(e);
+    process.exit(1);
+  }
 }
 
 process.on('SIGINT', async function() {

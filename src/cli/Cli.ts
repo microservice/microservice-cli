@@ -8,6 +8,9 @@ import Build from '../commands/Build';
 import Subscribe from '../commands/Subscribe';
 import Run from '../commands/run/Run';
 import RunFactory from '../commands/run/RunFactory';
+import Action from '../models/Action';
+import Argument from '../models/Argument';
+import Command from '../models/Command';
 const homedir = require('os').homedir();
 
 /**
@@ -52,6 +55,92 @@ export default class Cli {
       this.microservice = new Microservice(json);
     } catch (e) {
       Cli.validate({});
+    }
+  }
+
+  /**
+   * Prints helpful information for a action.
+   *
+   * @param {String} actionName The given action name
+   */
+  public actionHelp(actionName: string): void {
+    const action: Action = this.microservice.getAction(actionName);
+    if (action.events) {
+      utils.error(`The action \`${action.name}\` is an event action and must be called using \`omg subscribe\`. Try running \`omg subscribe ${action.name} --help\``);
+      process.exit(1);
+    }
+    const stringBuffer = [];
+    const padding = '    ';
+
+    this.helpForActionHeader(action, stringBuffer);
+    this.helpForArguments(action.arguments, stringBuffer, padding);
+    this.helpForActionFooter(action, stringBuffer, padding);
+
+    utils.log(stringBuffer.join(''));
+    process.exit();
+  }
+
+  /**
+   * Prtin helpful information for an event action.
+   *
+   * @param {String} actionName The given event action name
+   */
+  public eventActionHelp(actionName: string): void {
+    const action: Action = this.microservice.getAction(actionName);
+    const stringBuffer = [];
+
+    this.helpForActionHeader(action, stringBuffer);
+    stringBuffer.push(`\n    Events: (run in the form of \`omg subscribe ${action.name} \`event\`\`)\n`);
+    const padding = '          ';
+    for (const event of action.events) {
+      stringBuffer.push(`      - ${action.name}`);
+      this.helpForArguments(event.arguments, stringBuffer, padding);
+      this.helpForActionFooter(event, stringBuffer, padding);
+    }
+
+    utils.error(stringBuffer.join(''));
+    process.exit();
+  }
+
+  /**
+   * Add the given action's header to the given string buffer.
+   *
+   * @param {Action} action The given {@link Action}
+   * @param {Array<String>} stringBuffer  The given string buffer
+   */
+  private helpForActionHeader(action: Action, stringBuffer: string[]) {
+    stringBuffer.push(`  Action \`${action.name}\` details: \n`);
+    if (action.help) {
+      stringBuffer.push(`\n    Help: ${action.help}\n`);
+    }
+  }
+
+  /**
+   * Add the given action's footer to the given string buffer.
+   *
+   * @param {Command} command The given {@link Command}, {@link Action} or {@link Event}
+   * @param {Array<String>} stringBuffer The givens string buffer
+   * @param {String} padding The given padding
+   */
+  private helpForActionFooter(command: Command, stringBuffer: string[], padding: string) {
+    if (command.output && command.output.type) {
+      stringBuffer.push(`${padding}Output:\n${padding}  type: ${command.output.type}`);
+    }
+  }
+
+  /**
+   * Add the help for given arguments to the given string buffer.
+   *
+   * @param {Array<Argument>} _arguments The given list of {@link Argument}s
+   * @param {Array<String>} stringBuffer The given string buffer
+   * @param {String} padding The given padding
+   */
+  private helpForArguments(_arguments: Argument[], stringBuffer: string[], padding: string) {
+    if (_arguments.length !== 0) {
+      stringBuffer.push(`\n${padding}Arguments: (use in the form of \`-a 'foo=bar' -a 'veggie=carrot'\`)\n`);
+    }
+    for (const argument of _arguments) {
+      stringBuffer.push(`${padding}  - ${argument.name}        ${argument.type}${((argument.help) ? `, ${argument.help}` : '')}\n`);
     }
   }
 

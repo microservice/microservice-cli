@@ -4,12 +4,12 @@ import {setVal} from '../utils';
  * Represents a data for an {@link Argument} or an {@link EnvironmentVariable}.
  */
 export default abstract class Item {
-  private readonly _name;
-  private readonly _type;
-  private readonly _pattern;
-  private readonly required;
-  private readonly _default;
-  private readonly _help;
+  private readonly _name: string;
+  private readonly _type: string;
+  private readonly _pattern: string;
+  private readonly required: boolean;
+  private readonly _default: any;
+  private readonly _help: string;
 
   /**
    * Builds a {@link Item}.
