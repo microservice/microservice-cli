@@ -29,12 +29,6 @@ export default abstract class Command {
         this.argumentsMap[_arguments[i]] = new Argument(_arguments[i], argumentPath, rawCommand.arguments[_arguments[i]]);
       }
     }
-    if (this._output && this._output.properties) {
-      if ((this._output.type !== 'map') && (this._output.type !== 'object')) {
-        throw 'ERROR'
-      }
-      // for
-    }
   }
 
   /**
