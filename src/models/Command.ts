@@ -29,6 +29,12 @@ export default abstract class Command {
         this.argumentsMap[_arguments[i]] = new Argument(_arguments[i], argumentPath, rawCommand.arguments[_arguments[i]]);
       }
     }
+    if (this._output && this._output.properties) {
+      if ((this._output.type !== 'map') && (this._output.type !== 'object')) {
+        throw 'ERROR'
+      }
+      // for
+    }
   }
 
   /**
@@ -53,7 +59,7 @@ export default abstract class Command {
         if (!http.path.includes(`{${argument.name}}`)) {
           throw {
             context: `Argument: \`${argument.name}\` for ${commandType}: \`${this.name}\``,
-            message: 'Path parameters must be defined in the http path, of the form `{argument}`',
+            message: 'Path parameters must be defined in the http path of the form `{argument}`',
           };
         } else {
           _path = _path.replace(`{${argument.name}}`, argument.name);
@@ -70,7 +76,7 @@ export default abstract class Command {
     if (extraPathParams !== null) {
       throw {
         context: `Path parameter(s): \`${extraPathParams.toString()}\` for ${commandType}: \`${this.name}\``,
-        message: `If a url specifies a path parameter i.e. \`{argument}\`, the argument must be defined in the ${commandType}`,
+        message: `If a url specifies a path parameter i.e. \`{argument}\` the argument must be defined in the ${commandType}`,
       };
     }
   }
