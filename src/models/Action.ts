@@ -42,7 +42,7 @@ export default class Action extends Command {
       if ((this._output.type !== 'map') && (this._output.type !== 'object')) {
         throw {
           context: `Action: \`${name}\``,
-          message: 'The output properties can only be defined if the output type is a map or an object'
+          message: 'The output properties can only be defined if the output type is a map or an object',
         };
       }
     }

@@ -90,7 +90,7 @@ describe('Action.ts', () => {
       } catch (e) {
         expect(e).toEqual({
           context: 'Argument: `foo` for action: `name`',
-          message: 'Path parameters must be defined in the http path, of the form `{argument}`',
+          message: 'Path parameters must be defined in the http path of the form `{argument}`',
         });
       }
     });

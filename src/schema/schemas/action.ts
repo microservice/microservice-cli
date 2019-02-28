@@ -48,7 +48,7 @@ module.exports = {
               properties: {
                 type: {
                   type: 'string',
-                    enum: [
+                  enum: [
                     'int',
                     'number',
                     'float',
@@ -64,11 +64,11 @@ module.exports = {
                   ],
                 },
               },
-              required: ['type']
+              required: ['type'],
             },
           },
           additionalProperties: false,
-        }
+        },
       },
       additionalProperties: false,
     },
