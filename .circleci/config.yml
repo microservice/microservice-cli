@@ -2,18 +2,18 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:10.13.0
+      - image: circleci/node:latest
     steps:
       - checkout
       - run:
           name: yarn-install
-          command: yarn install
+          command: yarn
       - run:
           name: eslint
-          command: yarn eslint
+          command: yarn workspace omg eslint
       - run:
           name: test-with-coverage
-          command: yarn coverage
+          command: yarn workspace omg coverage
       - run:
           name: upload-to-codecov
           command: bash <(curl -s https://codecov.io/bash)

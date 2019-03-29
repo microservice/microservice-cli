@@ -1,50 +1,10 @@
 {
-  "name": "omg",
-  "description": "A CLI to interact with microservices built with the OMG standard.",
-  "keywords": [
+  "private": true,
+  "workspaces": [
     "omg",
-    "cli",
-    "microservice",
-    "microservices"
+    "omg-ui"
   ],
-  "version": "0.8.8",
-  "main": "omg",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "eslint": "eslint . --ext .ts,.js --quiet",
-    "test": "jest",
-    "coverage": "jest --coverage"
-  },
-  "bin": {
-    "omg": "./omg"
-  },
-  "repository": "git@github.com:microservice-guide/cli.git",
-  "license": "MIT",
-  "dependencies": {
-    "ajv": "^6.5.0",
-    "commander": "^2.15.1",
-    "dockerode": "^2.5.8",
-    "dockerode-promise": "^0.1.0",
-    "log-symbols": "^2.2.0",
-    "ora": "^3.0.0",
-    "request": "^2.87.0",
-    "request-promise": "^4.2.2",
-    "shelljs": "^0.8.2",
-    "underscore": "^1.9.1",
-    "uuid": "^3.3.2",
-    "yamljs": "^0.3.0"
-  },
-  "devDependencies": {
-    "@types/jest": "^23.3.9",
-    "@types/node": "^10.12.5",
-    "eslint": "^5.9.0",
-    "eslint-config-google": "^0.11.0",
-    "eslint-plugin-typescript": "^0.13.0",
-    "jest": "^23.0.1",
-    "sinon": "^6.0.0",
-    "ts-jest": "^23.10.4",
-    "typescript": "^3.1.6",
-    "typescript-eslint-parser": "^20.1.1"
+    "build": "yarn workspace omg-ui build --prod && yarn workspace omg build"
   }
 }

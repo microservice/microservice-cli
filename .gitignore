@@ -85,3 +85,4 @@ package-lock.json
 .idea/
 .DS_Store
 dist/
+.vscode/
