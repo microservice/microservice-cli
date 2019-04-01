@@ -6,6 +6,12 @@ import Run from '../run/Run'
 import Subscribe from '../Subscribe'
 import Microservice from '../../models/Microservice'
 
+interface ISocketNotif {
+  notif: any
+  status: boolean
+  log?: string
+}
+
 export default class UIServer {
   private port: number
   private app: any
@@ -32,7 +38,7 @@ export default class UIServer {
     this.io.on('connection', socket => {
       socket.removeAllListeners()
       this.socket = socket
-      // this.validate()
+      this.validate()
       // this.initListeners()
       // setInterval(() => {
       //   this.usage()
@@ -49,7 +55,31 @@ export default class UIServer {
   }
 
   reloadUI(microservice: any) {
-    // this.microserviceStr = microservice
-    // this.socket.emit('browserReload', 'true')
+    this.microserviceStr = microservice
+    this.socket.emit('browserReload', 'true')
+  }
+
+  private emit(room: string, msg: ISocketNotif) {
+    this.socket.emit(room, msg)
+  }
+
+  private async validate() {
+    try {
+      utils.checkActionInterface(this.microserviceStr)
+      this.microservice = new Microservice(this.microserviceStr)
+      this.emit('validate', {
+        notif: JSON.stringify(this.microservice.rawData, null, 2),
+        status: true
+      })
+    } catch (e) {
+      this.emit('validate', {
+        notif: JSON.stringify(e, null, 2),
+        status: false
+      })
+    }
+    this.emit('owner', {
+      notif: await utils.createImageName(true),
+      status: true
+    })
   }
 }
