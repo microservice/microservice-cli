@@ -4,7 +4,7 @@
     <div class="left-bar">
       <owner />
       <navigation />
-      <!-- <docker-commands /> -->
+      <docker-commands />
       <!-- <grade /> -->
       <!-- <perf-graph /> -->
     </div>
@@ -15,13 +15,15 @@
 import Navigation from '@/components/Layout/Navigation'
 import TopBar from '@/components/Layout/TopBar'
 import Owner from '@/components/Layout/Owner'
+import DockerCommands from '@/components/Layout/DockerCommands'
 
 export default {
   name: 'layout',
   components: {
     Navigation,
     TopBar,
-    Owner
+    Owner,
+    DockerCommands
   }
 }
 </script>
