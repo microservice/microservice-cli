@@ -5,7 +5,7 @@
       <div class="mt88">
         <router-view />
       </div>
-      <!-- <docker-logs /> -->
+      <docker-logs />
     </div>
     <div v-else>
       <h2>We found error in your microservice.yml</h2>
@@ -17,11 +17,13 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import Layout from '@/views/Layout'
+import DockerLogs from '@/components/DockerLogs'
 
 export default {
   name: 'omg',
   components: {
-    Layout
+    Layout,
+    DockerLogs
   },
   data: () => ({
     socket: null
