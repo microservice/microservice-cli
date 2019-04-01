@@ -3,7 +3,7 @@
     <div class="menu-wrapper">
       <ul class="menu-list">
         <router-link :to="{name: 'actions'}" tag="li" class="menu-item">Actions</router-link>
-        <li class="menu-item">History</li>
+        <router-link :to="{name: 'history'}" tag="li" class="menu-item">History</router-link>
         <router-link :to="{name: 'environment'}" tag="li" class="menu-item">Environment</router-link>
         <li class="menu-item">Documentation</li>
         <li class="menu-item">Inspection</li>
