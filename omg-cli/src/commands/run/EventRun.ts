@@ -54,4 +54,6 @@ export default class EventRun extends Run {
   public isDockerProcessRunning(): boolean {
     return this.containerID !== null;
   }
+
+  public setArgs(args: any) {}
 }

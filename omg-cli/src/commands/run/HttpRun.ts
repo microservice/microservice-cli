@@ -107,4 +107,6 @@ export default class HttpRun extends Run {
       jsonData,
     };
   }
+
+  public setArgs(args: any) {}
 }

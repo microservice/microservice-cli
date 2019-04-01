@@ -105,4 +105,6 @@ export default class FormatRun extends Run {
     }
     return '';
   }
+
+  public setArgs(args: any) {}
 }

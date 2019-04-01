@@ -141,6 +141,8 @@ export default abstract class Run {
    */
   public abstract async exec(action: string): Promise<string>;
 
+  public abstract setArgs(args: any): void
+
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
    *
@@ -197,6 +199,11 @@ export default abstract class Run {
   public async isRunning(): Promise<boolean> {
     const container = utils.docker.getContainer(this.containerID);
     return (await container.inspect()).State.Running;
+  }
+
+  public async getInspect(): Promise<any> {
+    const container = utils.docker.getContainer(this.containerID)
+    return await container.inspect()
   }
 
   /**

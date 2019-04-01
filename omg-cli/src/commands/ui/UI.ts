@@ -24,6 +24,14 @@ interface IStartContainer {
   envs: any
 }
 
+interface IDataAction {
+  image: string
+  action: string
+  args: {}
+  envs: {}
+  event?: string
+}
+
 export default class UIServer {
   private port: number
   private app: any
@@ -79,18 +87,18 @@ export default class UIServer {
     this.socket.on('build', (data: any) => {
       this.buildImage(data)
     })
-    // this.socket.on('run', (data: any) => {
-    //   this.runAction(data)
-    // })
-    // this.socket.on('healthCheck', () => {
-    //   this.healthCheck()
-    // })
-    // this.socket.on('inspect', () => {
-    //   this.dockerInspect()
-    // })
-    // this.socket.on('subscribe', (data: any) => {
-    //   this.subscribeEvent(data)
-    // })
+    this.socket.on('run', (data: any) => {
+      this.runAction(data)
+    })
+    this.socket.on('healthCheck', () => {
+      this.healthCheck()
+    })
+    this.socket.on('inspect', () => {
+      this.dockerInspect()
+    })
+    this.socket.on('subscribe', (data: any) => {
+      this.subscribeEvent(data)
+    })
     this.socket.on('dockerLogs', () => {
       this.dockerLogs()
     })
@@ -141,6 +149,19 @@ export default class UIServer {
         status: false,
         notif: `Failed to build: ${e}`
       })
+    }
+  }
+
+  private async dockerInspect() {
+    if (this.dockerContainer) {
+      const output = await this.dockerContainer.getInspect()
+      this.emit('inspect', {
+        notif: 'Docker inspected',
+        status: true,
+        log: output
+      })
+    } else {
+      this.emit('inspect', { status: false, notif: 'Container not running' })
     }
   }
 
@@ -205,6 +226,107 @@ export default class UIServer {
     this.emit('stop', {
       status: true,
       notif: `Stoppped Docker container: ${output}`
+    })
+  }
+
+  private async runAction(data: any) {
+    await this.healthCheck()
+
+    // Run action
+    this.socket.emit('run', {
+      notif: `Running action: \`${data.action}\``,
+      status: true
+    })
+    let output
+    try {
+      this.dockerContainer.setArgs(data.args)
+      output = await this.dockerContainer.exec(data.action)
+      this.socket.emit('run', {
+        notif: `Ran action: \`${data.action}\` with output: ${output}`,
+        status: true
+      })
+    } catch (e) {
+      if (await this.dockerContainer.isRunning()) {
+        await this.dockerContainer.stopService()
+      }
+      this.socket.emit('run', {
+        notif: `Failed action: \`${data.action}\`: ${e}`,
+        status: false
+      })
+      return
+    }
+    this.socket.emit('run', {
+      notif: output,
+      status: true
+    })
+  }
+
+  private async subscribeEvent(data: IDataAction) {
+    await Cli.checkDocker()
+    await this.runAction({
+      action: data.action,
+      args: [],
+      envs: data.envs,
+      image: data.image
+    })
+
+    this.socket.emit('subscribe', {
+      notif: `Subscribing to event: \`${data.event}\``,
+      status: true
+    })
+
+    this.subscribe = new Subscribe(
+      this.microservice,
+      data.args,
+      this.dockerContainer
+    )
+    try {
+      await this.subscribe.go(data.action, data.event)
+      this.socket.emit('subscribe', {
+        notif: `Subscribed to event: \`${
+          data.event
+        }\` data will be posted to this terminal window when appropriate`,
+        status: true
+      })
+      setInterval(async () => {
+        if (!(await this.dockerContainer.isRunning())) {
+          this.socket.emit('subscribe', {
+            notif: 'Container unexpectedly stopped',
+            status: false,
+            logs: `${await this.dockerContainer.getStderr()}`
+          })
+          return
+        }
+      }, 1500)
+    } catch (e) {
+      if (await this.dockerContainer.isRunning()) {
+        await this.dockerContainer.stopService()
+      }
+      this.socket.emit('subscribe', {
+        notif: `Failed subscribing to event ${data.event}: ${e}`,
+        status: false,
+        logs: `${await this.dockerContainer.getStderr()}`
+      })
+      return
+    }
+  }
+
+  private async healthCheck() {
+    this.socket.emit('healthCheck', {
+      notif: 'Health check',
+      status: true
+    })
+    if (!(await this.dockerContainer.isRunning())) {
+      this.socket.emit('healthCheck', {
+        notif: 'Health check failed',
+        status: false,
+        log: `${await this.dockerContainer.getStderr()}`
+      })
+      return
+    }
+    this.socket.emit('healthCheck', {
+      notif: 'Health check passed',
+      status: true
     })
   }
 }
