@@ -45,7 +45,7 @@ export default class Cli {
   /**
    * Checks if Docker is running by running `docker ps`.
    */
-  private static async checkDocker() {
+  static async checkDocker() {
     try {
       await utils.docker.ping()
     } catch (e) {

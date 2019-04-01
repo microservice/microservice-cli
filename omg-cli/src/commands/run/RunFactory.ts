@@ -4,6 +4,7 @@ import FormatRun from './FormatRun';
 import HttpRun from './HttpRun';
 import EventRun from './EventRun';
 import Action from '../../models/Action';
+import UIRun from './UIRun';
 
 /**
  * Represents a factory to build an {@link Run}.
@@ -35,8 +36,14 @@ export default class RunFactory {
    * @param {Action} action The given {@link Action}
    * @return {Run} The {@link FormatRun}, {@link HttpRun}, or {@link EventRun}
    */
-  getRun(action: Action): Run {
-    if (action.format !== null) {
+  getRun(action: Action, ui: boolean = false): Run {
+    if (ui === true) {
+      return new UIRun(
+        this.dockerImage,
+        this.microservice,
+        this.environmentVariables
+      )
+    } else if (action.format !== null) {
       return new FormatRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);
     } else if (action.http !== null) {
       return new HttpRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables);

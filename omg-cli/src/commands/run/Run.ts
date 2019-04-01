@@ -208,4 +208,11 @@ export default abstract class Run {
     const container = utils.docker.getContainer(this.containerID);
     return (await container.logs({stderr: true})).toString().trim();
   }
+
+  public async getLogs(): Promise<string> {
+    const container = utils.docker.getContainer(this.containerID)
+    return (await container.logs({ stderr: true, stdout: true }))
+      .toString()
+      .trim()
+  }
 }

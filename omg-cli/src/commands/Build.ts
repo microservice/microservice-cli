@@ -21,8 +21,15 @@ export default class Build {
    * @param {Boolean} [silent=false] The given boolean if output should be logged or not
    * @return {String} The name of the docker container that was build
    */
-  async go(silent=false): Promise<string> {
-    await utils.exec(`docker build -t ${this.name} .`, silent); // This needs to be changed to use dockerode
-    return this.name;
+  async go(silent=false, ui: boolean = false): Promise<any> {
+    if (ui) {
+      return {
+        name: this.name,
+        log: await utils.exec(`docker build -t ${this.name} .`, false),
+      };
+    } else {
+      await utils.exec(`docker build -t ${this.name} .`, silent); // This needs to be changed to use dockerode
+      return this.name;
+    }
   }
 }
