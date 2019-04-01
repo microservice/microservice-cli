@@ -53,6 +53,9 @@ program
     '-r --raw',
     'All logging is suppressed expect for the output of the action.'
   )
+  .description(
+    'Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`'
+  )
   .action(async (action, options) => {
     cli.buildMicroservice()
     await cli.run(action, options)
@@ -73,19 +76,30 @@ program
     []
   )
   .description(
-    'Subscribe to an event defined in your `microservice.yml`. Must be run in a directory with a `Dockerfile` and a `microservice.yml`'
+    'Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`'
   )
   .action(async (action, event, options) => {
     cli.buildMicroservice()
     await cli.subscribe(action, event, options)
   })
+program
+  .command('ui')
+  .option('-p --port, <p>', 'The port to bind')
+  .description('Starts to omg-app which monitors your microservice.')
+  .action(async options => Cli.ui(options))
 
 // needed because there is no default catch all command with commander.js
 if (
   process.argv.length < 3 ||
-  !['validate', 'build', 'run', 'subscribe', 'shutdown', '--version'].includes(
-    process.argv[2]
-  )
+  ![
+    'validate',
+    'build',
+    'run',
+    'subscribe',
+    'ui',
+    'shutdown',
+    '--version'
+  ].includes(process.argv[2])
 ) {
   program.help()
 }
@@ -103,7 +117,7 @@ if (
     !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))
   ) {
     utils.error(
-      'Must be run in a directory with a `Dockerfile` and a `microservice.yml`'
+      'Must be ran in a directory with a `Dockerfile` and a `microservice.yml`'
     )
     process.exit(1)
   }
@@ -128,7 +142,7 @@ if (
     !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))
   ) {
     utils.error(
-      'Must be run in a directory with a `Dockerfile` and a `microservice.yml`'
+      'Must be ran in a directory with a `Dockerfile` and a `microservice.yml`'
     )
     process.exit(1)
   }

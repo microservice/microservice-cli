@@ -1,7 +1,7 @@
 {
   "private": true,
   "workspaces": [
-    "omg",
+    "omg-cli",
     "omg-ui"
   ],
   "scripts": {

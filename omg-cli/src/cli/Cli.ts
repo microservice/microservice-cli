@@ -1,34 +1,44 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as YAML from 'yamljs';
-import * as utils from '../utils';
-import ora from '../ora';
-import Microservice from '../models/Microservice';
-import Build from '../commands/Build';
-import Subscribe from '../commands/Subscribe';
-import Run from '../commands/run/Run';
-import RunFactory from '../commands/run/RunFactory';
-import Action from '../models/Action';
-import Argument from '../models/Argument';
-import Command from '../models/Command';
-const homedir = require('os').homedir();
+import * as fs from 'fs'
+import * as path from 'path'
+import * as YAML from 'yamljs'
+import * as utils from '../utils'
+import ora from '../ora'
+import Microservice from '../models/Microservice'
+import Build from '../commands/Build'
+import Subscribe from '../commands/Subscribe'
+import Run from '../commands/run/Run'
+import RunFactory from '../commands/run/RunFactory'
+import Action from '../models/Action'
+import Argument from '../models/Argument'
+import Command from '../models/Command'
+import UIServer from '../commands/ui/UI'
+import * as chokidar from 'chokidar'
+
+const homedir = require('os').homedir()
 
 /**
  * Describes the cli.
  */
 export default class Cli {
-  private microservice: Microservice = null;
-  private _run: Run = null;
-  private _subscribe: Subscribe = null;
-  private startedID: string;
+  private microservice: Microservice = null
+  private _run: Run = null
+  private _subscribe: Subscribe = null
+  private startedID: string
 
   /**
    * Build an {@link Cli}.
    */
   constructor() {
-    if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile')))
-    && (!process.argv.includes('--help')) && (process.argv.length > 2)) {
-      process.exit(1);
+    if (
+      (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) ||
+        !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) &&
+      !process.argv.includes('--help') &&
+      process.argv.length > 2
+    ) {
+      utils.error(
+        'Must be ran in a directory with a `Dockerfile` and a `microservice.yml`'
+      )
+      process.exit(1)
     }
   }
 
@@ -37,10 +47,10 @@ export default class Cli {
    */
   private static async checkDocker() {
     try {
-      await utils.docker.ping();
+      await utils.docker.ping()
     } catch (e) {
-      utils.error('Docker must be running to use the cli');
-      process.exit(1);
+      utils.error('Docker must be running to use the cli')
+      process.exit(1)
     }
   }
 
@@ -50,10 +60,12 @@ export default class Cli {
    */
   buildMicroservice(): void {
     try {
-      const json = YAML.parse(fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString());
-      this.microservice = new Microservice(json);
+      const json = YAML.parse(
+        fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString()
+      )
+      this.microservice = new Microservice(json)
     } catch (e) {
-      Cli.validate({});
+      Cli.validate({})
     }
   }
 
@@ -63,20 +75,26 @@ export default class Cli {
    * @param {String} actionName The given action name
    */
   public actionHelp(actionName: string): void {
-    const action: Action = this.microservice.getAction(actionName);
+    const action: Action = this.microservice.getAction(actionName)
     if (action.events) {
-      utils.error(`The action \`${action.name}\` is an event action and must be called using \`omg subscribe\`. Try running \`omg subscribe ${action.name} --help\``);
-      process.exit(1);
+      utils.error(
+        `The action \`${
+          action.name
+        }\` is an event action and must be called using \`omg subscribe\`. Try running \`omg subscribe ${
+          action.name
+        } --help\``
+      )
+      process.exit(1)
     }
-    const stringBuffer = [];
-    const padding = '    ';
+    const stringBuffer = []
+    const padding = '    '
 
-    this.helpForActionHeader(action, stringBuffer);
-    this.helpForArguments(action.arguments, stringBuffer, padding);
-    this.helpForActionFooter(action, stringBuffer, padding);
+    this.helpForActionHeader(action, stringBuffer)
+    this.helpForArguments(action.arguments, stringBuffer, padding)
+    this.helpForActionFooter(action, stringBuffer, padding)
 
-    utils.log(stringBuffer.join(''));
-    process.exit();
+    utils.log(stringBuffer.join(''))
+    process.exit()
   }
 
   /**
@@ -85,20 +103,24 @@ export default class Cli {
    * @param {String} actionName The given event action name
    */
   public eventActionHelp(actionName: string): void {
-    const action: Action = this.microservice.getAction(actionName);
-    const stringBuffer = [];
+    const action: Action = this.microservice.getAction(actionName)
+    const stringBuffer = []
 
-    this.helpForActionHeader(action, stringBuffer);
-    stringBuffer.push(`\n    Events: (run in the form of \`omg subscribe ${action.name} \`event\`\`)\n`);
-    const padding = '          ';
+    this.helpForActionHeader(action, stringBuffer)
+    stringBuffer.push(
+      `\n    Events: (run in the form of \`omg subscribe ${
+        action.name
+      } \`event\`\`)\n`
+    )
+    const padding = '          '
     for (const event of action.events) {
-      stringBuffer.push(`      - ${action.name}`);
-      this.helpForArguments(event.arguments, stringBuffer, padding);
-      this.helpForActionFooter(event, stringBuffer, padding);
+      stringBuffer.push(`      - ${action.name}`)
+      this.helpForArguments(event.arguments, stringBuffer, padding)
+      this.helpForActionFooter(event, stringBuffer, padding)
     }
 
-    utils.error(stringBuffer.join(''));
-    process.exit();
+    utils.error(stringBuffer.join(''))
+    process.exit()
   }
 
   /**
@@ -108,9 +130,9 @@ export default class Cli {
    * @param {Array<String>} stringBuffer  The given string buffer
    */
   private helpForActionHeader(action: Action, stringBuffer: string[]) {
-    stringBuffer.push(`  Action \`${action.name}\` details: \n`);
+    stringBuffer.push(`  Action \`${action.name}\` details: \n`)
     if (action.help) {
-      stringBuffer.push(`\n    Help: ${action.help}\n`);
+      stringBuffer.push(`\n    Help: ${action.help}\n`)
     }
   }
 
@@ -121,9 +143,15 @@ export default class Cli {
    * @param {Array<String>} stringBuffer The givens string buffer
    * @param {String} padding The given padding
    */
-  private helpForActionFooter(command: Command, stringBuffer: string[], padding: string) {
+  private helpForActionFooter(
+    command: Command,
+    stringBuffer: string[],
+    padding: string
+  ) {
     if (command.output && command.output.type) {
-      stringBuffer.push(`${padding}Output:\n${padding}  type: ${command.output.type}`);
+      stringBuffer.push(
+        `${padding}Output:\n${padding}  type: ${command.output.type}`
+      )
     }
   }
 
@@ -134,12 +162,22 @@ export default class Cli {
    * @param {Array<String>} stringBuffer The given string buffer
    * @param {String} padding The given padding
    */
-  private helpForArguments(_arguments: Argument[], stringBuffer: string[], padding: string) {
+  private helpForArguments(
+    _arguments: Argument[],
+    stringBuffer: string[],
+    padding: string
+  ) {
     if (_arguments.length !== 0) {
-      stringBuffer.push(`\n${padding}Arguments: (use in the form of \`-a 'foo=bar' -a 'veggie=carrot'\`)\n`);
+      stringBuffer.push(
+        `\n${padding}Arguments: (use in the form of \`-a 'foo=bar' -a 'veggie=carrot'\`)\n`
+      )
     }
     for (const argument of _arguments) {
-      stringBuffer.push(`${padding}  - ${argument.name}        ${argument.type}${((argument.help) ? `, ${argument.help}` : '')}\n`);
+      stringBuffer.push(
+        `${padding}  - ${argument.name}        ${argument.type}${
+          argument.help ? `, ${argument.help}` : ''
+        }\n`
+      )
     }
   }
 
@@ -152,26 +190,28 @@ export default class Cli {
    */
   private static processValidateOutput(data: any, options: any): string {
     if (options.json) {
-      return JSON.stringify(data, null, 2);
+      return JSON.stringify(data, null, 2)
     } else if (options.silent) {
-      return '';
+      return ''
     } else {
-      let errorString;
+      let errorString
       if (!data.text) {
-        errorString = `${data.context} has an issue. ${data.message}`;
+        errorString = `${data.context} has an issue. ${data.message}`
       } else {
-        errorString = data.text;
+        errorString = data.text
       }
       if (errorString === 'No errors') {
-        return errorString;
+        return errorString
       }
-      const errors = errorString.split(', ');
-      const errorCount = errors.length;
-      const formattedError = [`${errorCount} error${((errorCount === 1) ? '' : 's')} found:`];
+      const errors = errorString.split(', ')
+      const errorCount = errors.length
+      const formattedError = [
+        `${errorCount} error${errorCount === 1 ? '' : 's'} found:`
+      ]
       for (let i = 0; i < errors.length; i += 1) {
-        formattedError.push(`\n  ${i + 1}. ${errors[i]}`);
+        formattedError.push(`\n  ${i + 1}. ${errors[i]}`)
       }
-      return formattedError.join('');
+      return formattedError.join('')
     }
   }
 
@@ -181,15 +221,15 @@ export default class Cli {
    * @param {Object} options The given options (json, silent, or text)
    */
   static validate(options: any): void {
-    const json = Cli.readYAML(path.join(process.cwd(), 'microservice.yml'));
+    const json = Cli.readYAML(path.join(process.cwd(), 'microservice.yml'))
     try {
-      utils.checkActionInterface(json);
-      const m = new Microservice(json);
-      utils.log(Cli.processValidateOutput(m.rawData, options));
-      process.exit(0);
+      utils.checkActionInterface(json)
+      const m = new Microservice(json)
+      utils.log(Cli.processValidateOutput(m.rawData, options))
+      process.exit(0)
     } catch (e) {
-      utils.error(Cli.processValidateOutput(e, options));
-      process.exit(1);
+      utils.error(Cli.processValidateOutput(e, options))
+      process.exit(1)
     }
   }
 
@@ -199,23 +239,25 @@ export default class Cli {
    * @param {Object} options The given name
    */
   static async build(options: any): Promise<string> {
-    await Cli.checkDocker();
+    await Cli.checkDocker()
     if (!options.raw) {
-      ora.start().info('Building Docker image');
+      ora.start().info('Building Docker image')
     }
     try {
-      const name = await new Build(options.tag || await utils.createImageName()).go(!!options.raw);
+      const name = await new Build(
+        options.tag || (await utils.createImageName())
+      ).go(!!options.raw)
       if (!options.raw) {
-        ora.start().succeed(`Built Docker image with name: ${name}`);
+        ora.start().succeed(`Built Docker image with name: ${name}`)
       }
-      return name;
+      return name
     } catch (e) {
       if (options.raw) {
-        utils.error(e);
+        utils.error(e)
       } else {
-        ora.start().fail(`Failed to build: ${e}`);
+        ora.start().fail(`Failed to build: ${e}`)
       }
-      process.exit(1);
+      process.exit(1)
     }
   }
 
@@ -226,95 +268,128 @@ export default class Cli {
    * @param {Object} options The given object holding the command, arguments, and environment variables
    */
   async run(action: string, options: any): Promise<void> {
-    await Cli.checkDocker();
-    const image = options.image;
-    if (!(options.args) || !(options.envs)) {
-      utils.error('Failed to parse command, run `omg run --help` for more information.');
-      process.exit(1);
-      return;
+    await Cli.checkDocker()
+    const image = options.image
+    if (!options.args || !options.envs) {
+      utils.error(
+        'Failed to parse command, run `omg run --help` for more information.'
+      )
+      process.exit(1)
+      return
     }
 
     if (options.image) {
-      if (!utils.doesContainerExist(options.image, (await utils.docker.listImages()))) {
-        utils.error(`Image for microservice is not built. Run \`omg build\` to build the image.`);
-        process.exit(1);
-        return;
+      if (
+        !utils.doesContainerExist(
+          options.image,
+          await utils.docker.listImages()
+        )
+      ) {
+        utils.error(
+          `Image for microservice is not built. Run \`omg build\` to build the image.`
+        )
+        process.exit(1)
+        return
       }
     } else {
-      options.image = await Cli.build({raw: options.raw});
+      options.image = await Cli.build({ raw: options.raw })
     }
 
-    let _action;
-    let argsObj;
-    let envObj;
+    let _action
+    let argsObj
+    let envObj
     try {
-      _action = this.microservice.getAction(action);
-      argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
-      envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`');
-      envObj = utils.matchEnvironmentCases(envObj, this.microservice.environmentVariables);
+      _action = this.microservice.getAction(action)
+      argsObj = utils.parse(
+        options.args,
+        'Unable to parse arguments. Must be of form: `-a key="val"`'
+      )
+      envObj = utils.parse(
+        options.envs,
+        'Unable to parse environment variables. Must be of form: `-e key="val"`'
+      )
+      envObj = utils.matchEnvironmentCases(
+        envObj,
+        this.microservice.environmentVariables
+      )
     } catch (e) {
-      utils.error(e);
-      process.exit(1);
+      utils.error(e)
+      process.exit(1)
     }
 
-    this._run = new RunFactory(options.image, this.microservice, argsObj, envObj).getRun(_action);
-    if ((process.argv[2] === 'run') && (this._run.constructor.name === 'EventRun')) {
-      utils.error(`Action \`${action}\` is and event. Use \`omg subscribe\``);
-      process.exit(1);
+    this._run = new RunFactory(
+      options.image,
+      this.microservice,
+      argsObj,
+      envObj
+    ).getRun(_action)
+    if (
+      process.argv[2] === 'run' &&
+      this._run.constructor.name === 'EventRun'
+    ) {
+      utils.error(`Action \`${action}\` is and event. Use \`omg subscribe\``)
+      process.exit(1)
     }
-    let spinner;
+    let spinner
     if (!options.raw) {
-      spinner = ora.start(`Starting Docker container`);
+      spinner = ora.start(`Starting Docker container`)
     }
-    this.startedID = await this._run.startService(); // 1. start service
+    this.startedID = await this._run.startService() // 1. start service
     if (!options.raw) {
-      spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`);
-      spinner = ora.start(`Health check`);
+      spinner.succeed(
+        `Started Docker container: ${this.startedID.substring(0, 12)}`
+      )
+      spinner = ora.start(`Health check`)
     }
-    await new Promise((res) => setTimeout(res, 1000)); // wait for the container to start
-    if (!await this._run.isRunning()) { // 2. health check
+    await new Promise(res => setTimeout(res, 1000)) // wait for the container to start
+    if (!(await this._run.isRunning())) {
+      // 2. health check
       if (options.raw) {
-        utils.error('Health check failed');
+        utils.error('Health check failed')
       } else {
-        spinner.fail('Health check failed');
+        spinner.fail('Health check failed')
       }
-      utils.error(`  Docker logs:\n${await this._run.getStderr()}`);
-      process.exit(1);
+      utils.error(`  Docker logs:\n${await this._run.getStderr()}`)
+      process.exit(1)
     }
     if (!options.raw) {
-      spinner.succeed(`Health check passed`);
-      spinner = ora.start(`Running action: \`${action}\``);
+      spinner.succeed(`Health check passed`)
+      spinner = ora.start(`Running action: \`${action}\``)
     }
-    let output;
+    let output
     try {
-      output = await this._run.exec(action); // 3. run service
+      output = await this._run.exec(action) // 3. run service
       if (!options.raw) {
-        spinner.succeed(`Ran action: \`${action}\` with output: ${output}`);
+        spinner.succeed(`Ran action: \`${action}\` with output: ${output}`)
       }
     } catch (e) {
       if (await this._run.isRunning()) {
-        await this._run.stopService();
+        await this._run.stopService()
       }
       if (options.raw) {
-        utils.error(`Failed action: \`${action}\`: ${e}`);
+        utils.error(`Failed action: \`${action}\`: ${e}`)
       } else {
-        spinner.fail(`Failed action: \`${action}\`: ${e}`);
+        spinner.fail(`Failed action: \`${action}\`: ${e}`)
       }
-      process.exit(1);
+      process.exit(1)
     }
 
     if (this._run.constructor.name !== 'EventRun') {
       if (!options.raw) {
-        spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`);
+        spinner = ora.start(
+          `Stopping Docker container: ${this.startedID.substring(0, 12)}`
+        )
       }
-      const stoppedID = await this._run.stopService();
+      const stoppedID = await this._run.stopService()
       if (!options.raw) {
-        spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`);
+        spinner.succeed(
+          `Stopped Docker container: ${stoppedID.substring(0, 12)}`
+        )
       }
     }
 
     if (options.raw) {
-      utils.log(output);
+      utils.log(output)
     }
   }
 
@@ -326,37 +401,83 @@ export default class Cli {
    * @param {Object} options The given object holding the arguments
    */
   async subscribe(action: string, event: string, options: any) {
-    await Cli.checkDocker();
-    await this.run(action, {args: [], envs: options.envs});
-    const spinner = ora.start(`Subscribing to event: \`${event}\``);
-    let argsObj;
+    await Cli.checkDocker()
+    await this.run(action, { args: [], envs: options.envs })
+    const spinner = ora.start(`Subscribing to event: \`${event}\``)
+    let argsObj
     try {
-      argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`');
+      argsObj = utils.parse(
+        options.args,
+        'Unable to parse arguments. Must be of form: `-a key="val"`'
+      )
     } catch (e) {
-      spinner.fail(`Failed action: \`${action}\`: ${e}`);
-      process.exit(1);
+      spinner.fail(`Failed action: \`${action}\`: ${e}`)
+      process.exit(1)
     }
-    this._subscribe = new Subscribe(this.microservice, argsObj, this._run);
+    this._subscribe = new Subscribe(this.microservice, argsObj, this._run)
     try {
-      await this._subscribe.go(action, event);
-      spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
-      const that = this;
+      await this._subscribe.go(action, event)
+      spinner.succeed(
+        `Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`
+      )
+      const that = this
       setInterval(async () => {
-        if (!await that._run.isRunning()) {
-          utils.error(`\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._run.getStderr()}`);
-          process.exit(1);
+        if (!(await that._run.isRunning())) {
+          utils.error(
+            `\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._run.getStderr()}`
+          )
+          process.exit(1)
         }
-      }, 1500);
+      }, 1500)
     } catch (e) {
       if (await this._run.isRunning()) {
-        await this._run.stopService();
+        await this._run.stopService()
       }
-      const logs = await this._run.getStderr();
-      spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`);
+      const logs = await this._run.getStderr()
+      spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`)
       if (logs) {
-        utils.error(`  Docker logs:\n${await this._run.getStderr()}`);
+        utils.error(`  Docker logs:\n${await this._run.getStderr()}`)
       }
-      process.exit(1);
+      process.exit(1)
+    }
+  }
+
+  /**
+   * Builds a microservice based off of the Dockerfile in the current directory.
+   *
+   * @param {Object} options The options to start the UI, such as port mapping
+   */
+  static async ui(options: any): Promise<any> {
+    if (options.port) {
+      try {
+        const ui = new UIServer(
+          options.port,
+          Cli.readYAML(path.join(process.cwd(), 'microservice.yml'))
+        )
+        ui.startUI()
+
+        chokidar
+          .watch(process.cwd(), { ignored: /(^|[/\\])\../ })
+          .on('all', (event, appPath) => {
+            switch (event) {
+              case 'change':
+                utils.log(
+                  `${appPath.substr(
+                    appPath.lastIndexOf('/') + 1
+                  )} changed. Reloading to app.`
+                )
+                ui.reloadUI(
+                  Cli.readYAML(path.join(process.cwd(), 'microservice.yml'))
+                )
+                break
+              default:
+                break
+            }
+          })
+      } catch (e) {
+        utils.error(e)
+        process.exit(1)
+      }
     }
   }
 
@@ -364,15 +485,19 @@ export default class Cli {
    * Catch the `CtrlC` command to stop running containers.
    */
   async controlC() {
-    const spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`);
+    const spinner = ora.start(
+      `Stopping Docker container: ${this.startedID.substring(0, 12)}`
+    )
     if (this._subscribe) {
-      await this._subscribe.unsubscribe();
+      await this._subscribe.unsubscribe()
     }
     if (this._run && this._run.isDockerProcessRunning()) {
-      await this._run.stopService();
+      await this._run.stopService()
     }
-    spinner.succeed(`Stopped Docker container: ${this.startedID.substring(0, 12)}`);
-    process.exit();
+    spinner.succeed(
+      `Stopped Docker container: ${this.startedID.substring(0, 12)}`
+    )
+    process.exit()
   }
 
   /**
@@ -383,10 +508,10 @@ export default class Cli {
    */
   private static readYAML(path: string): string {
     try {
-      return YAML.parse(fs.readFileSync(path).toString());
+      return YAML.parse(fs.readFileSync(path).toString())
     } catch (e) {
-      utils.error(`Issue with microservice.yml: ${e.message}`);
-      process.exit(1);
+      utils.error(`Issue with microservice.yml: ${e.message}`)
+      process.exit(1)
     }
   }
 }
