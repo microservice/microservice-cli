@@ -30,6 +30,7 @@ export default {
 
 <style lang="scss" scoped>
 .layout-container {
+  padding-left: 49px;
   display: flex;
   flex-flow: column nowrap;
   height: 100vh;
