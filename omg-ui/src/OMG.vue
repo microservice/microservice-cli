@@ -57,7 +57,14 @@ export default {
   font-family: "GilroyBold";
   font-style: normal;
   font-weight: normal;
-  src: local("GilroyBold ☞"), url("assets/GilroyBold.woff") format("woff");
+  src: local("GilroyBold"), url("assets/GilroyBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "GilroySemiBold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("GilroySemiBold"), url("assets/GilroySemiBold.woff") format("woff");
 }
 
 .text-danger {

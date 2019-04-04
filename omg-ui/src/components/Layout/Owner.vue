@@ -4,11 +4,10 @@
       src="https://github.com/favicon.ico"
       alt="Github logo"
       class="gh-logo"
-    >
-    <a
-      class="owner-name"
-      :href="`https://github.com/${getOwner}`"
-    >{{ getOwner }}</a>
+    />
+    <a class="owner-name" :href="`https://github.com/${getOwner}`">{{
+      getOwner
+    }}</a>
   </div>
 </template>
 
@@ -31,10 +30,20 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 10px;
 
   .gh-logo {
-    margin-right: 20px;
+    margin-right: 8px;
+    width: 17px;
+    height: 17px;
+  }
+
+  a {
+    height: 21px;
+    color: #565872;
+    font-family: GilroySemiBold;
+    font-size: 14px;
+    line-height: 21px;
+    text-decoration: none;
   }
 }
 </style>

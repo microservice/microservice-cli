@@ -5,7 +5,7 @@
         src="https://avatars2.githubusercontent.com/u/39149433?s=200&v=4"
         alt="OMG app logo"
         class="logo"
-      >
+      />
     </div>
     <div class="topbar-right">
       <div class="title-container">
@@ -35,9 +35,9 @@ export default {
     align-items: center;
 
     img {
-      width: 20%;
-      border-radius: 10px;
-      margin-left: 10px;
+      width: 45px;
+      border-radius: 9.5px;
+      background-color: #150d44;
     }
   }
 

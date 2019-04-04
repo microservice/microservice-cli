@@ -31,7 +31,7 @@ export default {
   border-bottom: 1px solid lightslategray;
 
   ul.menu-list {
-    padding: 20px;
+    padding: 0;
     margin: 0;
     text-align: left;
     list-style: none;
