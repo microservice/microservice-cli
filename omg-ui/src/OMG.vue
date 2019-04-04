@@ -53,6 +53,13 @@ export default {
 </script>
 
 <style lang="scss">
+@font-face {
+  font-family: "GilroyBold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("GilroyBold ☞"), url("assets/GilroyBold.woff") format("woff");
+}
+
 .text-danger {
   color: tomato;
 }
