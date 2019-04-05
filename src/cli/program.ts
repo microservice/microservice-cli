@@ -31,7 +31,6 @@ program
   .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', appender(), [])
   .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender(), [])
   .option('-r --raw', 'All logging is suppressed expect for the output of the action.')
-  .description('Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
   .action(async (action, options) => {
     cli.buildMicroservice();
     await cli.run(action, options);
@@ -41,7 +40,7 @@ program
   .command('subscribe <action> <event>')
   .option('-a --args <a>', 'Arguments to be passed to the event, must be of the form `key="val"`', appender(), [])
   .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', appender(), [])
-  .description('Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')
+  .description('Subscribe to an event defined in your `microservice.yml`. Must be run in a directory with a `Dockerfile` and a `microservice.yml`')
   .action(async (action, event, options) => {
     cli.buildMicroservice();
     await cli.subscribe(action, event, options);
@@ -57,7 +56,7 @@ let theArgs = args.splice(args.indexOf('run'));
 
 if (theArgs.includes('run') && theArgs.includes('--help') && (theArgs[1] !== '--help')) {
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile')))) {
-    utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+    utils.error('Must be run in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
   cli.buildMicroservice();
@@ -73,7 +72,7 @@ args = JSON.parse(JSON.stringify(process.argv));
 theArgs = args.splice(args.indexOf('subscribe'));
 if (theArgs.includes('subscribe') && theArgs.includes('--help') && (theArgs[1] !== '--help')) {
   if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile')))) {
-    utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
+    utils.error('Must be run in a directory with a `Dockerfile` and a `microservice.yml`');
     process.exit(1);
   }
   cli.buildMicroservice();
