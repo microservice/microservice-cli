@@ -5,6 +5,6 @@
     "omg-ui"
   ],
   "scripts": {
-    "build": "yarn workspace omg-ui build --prod && yarn workspace omg build"
+    "build": "yarn workspace omg-ui build --prod && yarn workspace omg-cli build"
   }
 }

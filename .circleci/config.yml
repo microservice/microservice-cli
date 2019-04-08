@@ -10,10 +10,10 @@ jobs:
           command: yarn
       - run:
           name: eslint
-          command: yarn workspace omg eslint
+          command: yarn workspace omg-cli eslint
       - run:
           name: test-with-coverage
-          command: yarn workspace omg coverage
+          command: yarn workspace omg-cli coverage
       - run:
           name: upload-to-codecov
           command: bash <(curl -s https://codecov.io/bash)
