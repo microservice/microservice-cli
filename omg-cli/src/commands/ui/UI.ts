@@ -5,9 +5,9 @@ import { app } from 'omg-ui'
 import Run from '../run/Run'
 import Subscribe from '../Subscribe'
 import Microservice from '../../models/Microservice'
-import Build from '../Build';
-import Cli from '../../cli/Cli';
-import RunFactory from '../run/RunFactory';
+import Build from '../Build'
+import Cli from '../../cli/Cli'
+import RunFactory from '../run/RunFactory'
 
 interface ISocketNotif {
   notif: any
@@ -32,6 +32,9 @@ interface IDataAction {
   event?: string
 }
 
+/**
+ * UIServer definition
+ */
 export default class UIServer {
   private port: number
   private app: any
@@ -45,15 +48,23 @@ export default class UIServer {
   private containerID: string
   private subscribe: Subscribe
 
+  /**
+   * Constructor
+   *
+   * @param  {number} port
+   * @param  {any} microservice
+   */
   constructor(port: number, microservice: any) {
     this.port = port
     this.app = app()
-    this.http = http.Server(this.app)
+    this.http = new http.Server(this.app)
     this.io = io.listen(this.http)
     this.microserviceStr = microservice
     this.socket = null
   }
-
+  /**
+   * Starts the UI server
+   */
   startUI() {
     this.io.on('connection', socket => {
       socket.removeAllListeners()
@@ -73,16 +84,27 @@ export default class UIServer {
       utils.log(`OMG UI started on http://localhost:${this.port}`)
     })
   }
-
+  /**
+   * Reloads the UI with the updated microservice.yml
+   *
+   * @param  {any} microservice
+   */
   reloadUI(microservice: any) {
     this.microserviceStr = microservice
     this.socket.emit('browserReload', 'true')
   }
-
+  /**
+   * socket.emit serializer
+   *
+   * @param  {string} room
+   * @param  {ISocketNotif} msg
+   */
   private emit(room: string, msg: ISocketNotif) {
     this.socket.emit(room, msg)
   }
-
+  /**
+   * Inits all socket listeners
+   */
   private initListeners() {
     this.socket.on('build', (data: any) => {
       this.buildImage(data)
@@ -109,7 +131,9 @@ export default class UIServer {
       this.stopContainer()
     })
   }
-
+  /**
+   * Wraps omg-cli validate command
+   */
   private async validate() {
     try {
       utils.checkActionInterface(this.microserviceStr)
@@ -129,7 +153,11 @@ export default class UIServer {
       status: true
     })
   }
-
+  /**
+   * Wraps omg-cli build command
+   *
+   * @param  {IDataBuild} data image name
+   */
   private async buildImage(data: IDataBuild) {
     await Cli.checkDocker()
 
@@ -151,7 +179,9 @@ export default class UIServer {
       })
     }
   }
-
+  /**
+   * Inspects docker container then the sends result through socket
+   */
   private async dockerInspect() {
     if (this.dockerContainer) {
       const output = await this.dockerContainer.getInspect()
@@ -165,10 +195,19 @@ export default class UIServer {
     }
   }
 
+  /**
+   * Gets docker container logs then sends the result through socket
+   */
   private async dockerLogs() {
     this.socket.emit('dockerLogs', await this.dockerContainer.getLogs())
   }
 
+  /**
+   * Starts the container with the povided data
+   *
+   * @param  {IStartContainer} data Image name and envs
+   * @return {Promise}
+   */
   private async startContainer(data: IStartContainer): Promise<string> {
     await Cli.checkDocker()
 
@@ -220,7 +259,11 @@ export default class UIServer {
     })
     await new Promise(res => setTimeout(res, 1000))
   }
-
+  /**
+   * Stops the currently running container
+   *
+   * @return {Promise}
+   */
   private async stopContainer(): Promise<any> {
     const output = await this.dockerContainer.stopService()
     this.emit('stop', {
@@ -228,7 +271,11 @@ export default class UIServer {
       notif: `Stoppped Docker container: ${output}`
     })
   }
-
+  /**
+   * Run the asked action with params
+   *
+   * @param  {any} data actions and its params
+   */
   private async runAction(data: any) {
     await this.healthCheck()
 
@@ -260,7 +307,11 @@ export default class UIServer {
       status: true
     })
   }
-
+  /**
+   * Subscribes to the asked event eith provided params
+   *
+   * @param  {IDataAction} data
+   */
   private async subscribeEvent(data: IDataAction) {
     await Cli.checkDocker()
     await this.runAction({
@@ -311,6 +362,9 @@ export default class UIServer {
     }
   }
 
+  /**
+   * Gets docker container health status then sends the result through socket
+   */
   private async healthCheck() {
     this.socket.emit('healthCheck', {
       notif: 'Health check',

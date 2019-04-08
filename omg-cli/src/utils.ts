@@ -55,6 +55,7 @@ export function getNeededPorts(microservice: Microservice): number[] {
 /**
  * Creates a name for the Docker images based of the git remote -v.
  *
+ * @param {boolean} ui Defines if UI mode is enabled or not
  * @return {Promise<String>} The image name
  */
 export async function createImageName(ui: boolean = false): Promise<string> {

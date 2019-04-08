@@ -1,7 +1,7 @@
-import * as utils from '../../utils';
-import * as verify from '../../verify';
-import Action from '../../models/Action';
-import Microservice from '../../models/Microservice';
+import * as utils from '../../utils'
+import * as verify from '../../verify'
+import Action from '../../models/Action'
+import Microservice from '../../models/Microservice'
 
 /**
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
@@ -9,14 +9,14 @@ import Microservice from '../../models/Microservice';
 export default abstract class Run {
   protected portMap: any = {}
   protected exposedPorts: any = {}
-  protected portBindings: any = {};
-  protected dockerImage: string;
-  protected microservice: Microservice;
-  protected _arguments: any;
-  protected environmentVariables: any;
-  protected dockerServiceId: string;
-  protected action: Action;
-  protected containerID: string = null;
+  protected portBindings: any = {}
+  protected dockerImage: string
+  protected microservice: Microservice
+  protected _arguments: any
+  protected environmentVariables: any
+  protected dockerServiceId: string
+  protected action: Action
+  protected containerID: string = null
 
   /**
    * Use to help build a {@link FormatRun}, {@link HttpRun}, or an {@link EventRun}.
@@ -26,25 +26,34 @@ export default abstract class Run {
    * @param {Object} _arguments The argument map
    * @param {Object} environmentVariables The environment map
    */
-  protected constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
-    this.dockerImage = dockerImage;
-    this.microservice = microservice;
-    this._arguments = _arguments;
-    this.environmentVariables = environmentVariables;
-    this.dockerServiceId = null;
-    this.action = null;
+  protected constructor(
+    dockerImage: string,
+    microservice: Microservice,
+    _arguments: any,
+    environmentVariables: any
+  ) {
+    this.dockerImage = dockerImage
+    this.microservice = microservice
+    this._arguments = _arguments
+    this.environmentVariables = environmentVariables
+    this.dockerServiceId = null
+    this.action = null
   }
 
   /**
    * Checks if required arguments and environment variables are given and will also set their default values.
    */
   protected preChecks() {
-    this.setDefaultArguments();
+    this.setDefaultArguments()
     if (!this.action.areRequiredArgumentsSupplied(this._arguments)) {
-      throw `Need to supply required arguments: \`${this.action.requiredArguments.toString()}\``;
+      throw `Need to supply required arguments: \`${this.action.requiredArguments.toString()}\``
     }
-    if (!this.microservice.areRequiredEnvironmentVariablesSupplied(this.environmentVariables)) {
-      throw `Need to supply required environment variables: \`${this.microservice.requiredEnvironmentVariables.toString()}\``;
+    if (
+      !this.microservice.areRequiredEnvironmentVariablesSupplied(
+        this.environmentVariables
+      )
+    ) {
+      throw `Need to supply required environment variables: \`${this.microservice.requiredEnvironmentVariables.toString()}\``
     }
   }
 
@@ -52,12 +61,18 @@ export default abstract class Run {
    * Runs verification on arguments and environment variables.
    */
   protected verification() {
-    verify.verifyArgumentTypes(this.action, this._arguments);
-    this.castTypes();
-    verify.verifyArgumentConstrains(this.action, this._arguments);
+    verify.verifyArgumentTypes(this.action, this._arguments)
+    this.castTypes()
+    verify.verifyArgumentConstrains(this.action, this._arguments)
 
-    verify.verifyEnvironmentVariableTypes(this.microservice, this.environmentVariables);
-    verify.verifyEnvironmentVariablePattern(this.microservice, this.environmentVariables);
+    verify.verifyEnvironmentVariableTypes(
+      this.microservice,
+      this.environmentVariables
+    )
+    verify.verifyEnvironmentVariablePattern(
+      this.microservice,
+      this.environmentVariables
+    )
   }
 
   /**
@@ -65,13 +80,13 @@ export default abstract class Run {
    */
   private setDefaultArguments(): void {
     for (let i = 0; i < this.action.arguments.length; i += 1) {
-      const argument = this.action.arguments[i];
+      const argument = this.action.arguments[i]
       if (!this._arguments[argument.name]) {
         if (argument.default !== null) {
           if (typeof argument.default === 'object') {
-            this._arguments[argument.name] = JSON.stringify(argument.default);
+            this._arguments[argument.name] = JSON.stringify(argument.default)
           } else {
-            this._arguments[argument.name] = argument.default + '';
+            this._arguments[argument.name] = argument.default + ''
           }
         }
       }
@@ -83,18 +98,20 @@ export default abstract class Run {
    */
   protected setDefaultEnvironmentVariables(): void {
     for (let i = 0; i < this.microservice.environmentVariables.length; i += 1) {
-      const environmentVariable = this.microservice.environmentVariables[i];
+      const environmentVariable = this.microservice.environmentVariables[i]
       if (!this.environmentVariables[environmentVariable.name]) {
         if (environmentVariable.default !== null) {
-          this.environmentVariables[environmentVariable.name] = environmentVariable.default;
+          this.environmentVariables[environmentVariable.name] =
+            environmentVariable.default
         }
       }
     }
 
     for (let i = 0; i < this.microservice.environmentVariables.length; i += 1) {
-      const environmentVariable = this.microservice.environmentVariables[i];
+      const environmentVariable = this.microservice.environmentVariables[i]
       if (process.env[environmentVariable.name]) {
-        this.environmentVariables[environmentVariable.name] = process.env[environmentVariable.name];
+        this.environmentVariables[environmentVariable.name] =
+          process.env[environmentVariable.name]
       }
     }
   }
@@ -103,10 +120,12 @@ export default abstract class Run {
    * Cast the types of the arguments. Everything comes in as a string so it's important to convert to given type.
    */
   protected castTypes(): void {
-    const argumentList = Object.keys(this._arguments);
+    const argumentList = Object.keys(this._arguments)
     for (let i = 0; i < argumentList.length; i += 1) {
-      const argument = this.action.getArgument(argumentList[i]);
-      this._arguments[argument.name] = utils.typeCast[argument.type](this._arguments[argument.name]);
+      const argument = this.action.getArgument(argumentList[i])
+      this._arguments[argument.name] = utils.typeCast[argument.type](
+        this._arguments[argument.name]
+      )
     }
   }
 
@@ -116,12 +135,12 @@ export default abstract class Run {
    * @return {String} The formatted string
    */
   protected formatEnvironmentVariables(): string[] {
-    const result = [];
-    const keys = Object.keys(this.environmentVariables);
+    const result = []
+    const keys = Object.keys(this.environmentVariables)
     for (let i = 0; i < keys.length; i += 1) {
-      result.push(`${keys[i]}=${this.environmentVariables[keys[i]]}`);
+      result.push(`${keys[i]}=${this.environmentVariables[keys[i]]}`)
     }
-    return result;
+    return result
   }
 
   /**
@@ -130,7 +149,7 @@ export default abstract class Run {
    * @return {Boolean} True if a Docker process is running, otherwise false
    */
   public isDockerProcessRunning(): boolean {
-    return false;
+    return false
   }
 
   /**
@@ -139,8 +158,14 @@ export default abstract class Run {
    * @param {String} action The given action
    * @return {String} The output
    */
-  public abstract async exec(action: string): Promise<string>;
+  public abstract async exec(action: string): Promise<string>
 
+  /**
+   * Sets provided arguments
+   *
+   * @param  {any} args
+   * @returns void
+   */
   public abstract setArgs(args: any): void
 
   /**
@@ -149,20 +174,22 @@ export default abstract class Run {
    * @return {String} The id of the container
    */
   public async startService(): Promise<string> {
-    this.setDefaultEnvironmentVariables();
-    const neededPorts = utils.getNeededPorts(this.microservice);
-    const openPorts = [];
+    this.setDefaultEnvironmentVariables()
+    const neededPorts = utils.getNeededPorts(this.microservice)
+    const openPorts = []
     while (neededPorts.length !== openPorts.length) {
-      const possiblePort = await utils.getOpenPort();
+      const possiblePort = await utils.getOpenPort()
       if (!openPorts.includes(possiblePort)) {
-        openPorts.push(possiblePort);
+        openPorts.push(possiblePort)
       }
     }
 
     for (let i = 0; i < neededPorts.length; i += 1) {
-      this.portMap[neededPorts[i]] = openPorts[i];
-      this.exposedPorts[`${neededPorts[i]}/tcp`] = {};
-      this.portBindings[`${neededPorts[i]}/tcp`] = [{HostPort: openPorts[i].toString()}];
+      this.portMap[neededPorts[i]] = openPorts[i]
+      this.exposedPorts[`${neededPorts[i]}/tcp`] = {}
+      this.portBindings[`${neededPorts[i]}/tcp`] = [
+        { HostPort: openPorts[i].toString() }
+      ]
     }
 
     const container = await utils.docker.createContainer({
@@ -171,13 +198,13 @@ export default abstract class Run {
       Env: this.formatEnvironmentVariables(),
       ExposedPorts: this.exposedPorts,
       HostConfig: {
-        PortBindings: this.portBindings,
-      },
-    });
-    await container.start();
+        PortBindings: this.portBindings
+      }
+    })
+    await container.start()
 
-    this.containerID = container.$subject.id;
-    return this.containerID;
+    this.containerID = container.$subject.id
+    return this.containerID
   }
 
   /**
@@ -186,9 +213,9 @@ export default abstract class Run {
    * @return {String} The containerID that has been stopped
    */
   public async stopService(): Promise<string> {
-    const container = utils.docker.getContainer(this.containerID);
-    await container.kill();
-    return this.containerID;
+    const container = utils.docker.getContainer(this.containerID)
+    await container.kill()
+    return this.containerID
   }
 
   /**
@@ -197,10 +224,15 @@ export default abstract class Run {
    * @return {Boolean} True if running, otherwise false
    */
   public async isRunning(): Promise<boolean> {
-    const container = utils.docker.getContainer(this.containerID);
-    return (await container.inspect()).State.Running;
+    const container = utils.docker.getContainer(this.containerID)
+    return (await container.inspect()).State.Running
   }
 
+  /**
+   * Returns docker inspect result as a Promise
+   *
+   * @return {Promise}
+   */
   public async getInspect(): Promise<any> {
     const container = utils.docker.getContainer(this.containerID)
     return await container.inspect()
@@ -209,13 +241,18 @@ export default abstract class Run {
   /**
    * Gets the Docker logs.
    *
-   * return {String} The Docker logs
+   * @return {String} The Docker logs
    */
   public async getStderr(): Promise<string> {
-    const container = utils.docker.getContainer(this.containerID);
-    return (await container.logs({stderr: true})).toString().trim();
+    const container = utils.docker.getContainer(this.containerID)
+    return (await container.logs({ stderr: true })).toString().trim()
   }
 
+  /**
+   * Returns docker logs result as a Promise
+   *
+   * @return {Promise}
+   */
   public async getLogs(): Promise<string> {
     const container = utils.docker.getContainer(this.containerID)
     return (await container.logs({ stderr: true, stdout: true }))
