@@ -90,7 +90,7 @@ describe('Action.ts', () => {
       } catch (e) {
         expect(e).toEqual({
           context: 'Argument: `foo` for action: `name`',
-          message: 'Path parameters must be defined in the http path, of the form `{argument}`',
+          message: 'Path parameters must be defined in the http path of the form `{argument}`',
         });
       }
     });
@@ -139,7 +139,7 @@ describe('Action.ts', () => {
       } catch (e) {
         expect(e).toEqual({
           context: 'Path parameter(s): `{bar}` for action: `name`',
-          message: 'If a url specifies a path parameter i.e. `{argument}`, the argument must be defined in the action',
+          message: 'If a url specifies a path parameter i.e. `{argument}` the argument must be defined in the action',
         });
       }
     });

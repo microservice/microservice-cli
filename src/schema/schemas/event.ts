@@ -48,7 +48,32 @@ module.exports = {
           type: 'string',
         },
         properties: {
-          type: 'object',
+          patternProperties: {
+            '^[A-Za-z|_]+$': {
+              type: 'object',
+              properties: {
+                type: {
+                  type: 'string',
+                  enum: [
+                    'int',
+                    'number',
+                    'float',
+                    'string',
+                    'uuid',
+                    'list',
+                    'map',
+                    'object',
+                    'boolean',
+                    'path',
+                    'any',
+                    'null',
+                  ],
+                },
+              },
+              required: ['type'],
+            },
+          },
+          additionalProperties: false,
         },
       },
       additionalProperties: false,
