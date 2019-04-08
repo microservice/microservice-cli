@@ -90,6 +90,9 @@ export default class Subscribe {
           try {
             verify.verifyOutputType(this.event, data.toString());
             if ((this.event.output) && (this.event.output.type) && ((this.event.output.type === 'map') || this.event.output.type === 'object')) {
+              if (this.event.output.properties) {
+                verify.verifyProperties(this.event, data);
+              }
               utils.log(JSON.stringify(JSON.parse(data), null, 2));
             } else {
               utils.log(data);

@@ -29,6 +29,9 @@ export default class HttpRun extends Run {
     const output = await this.httpCommand(this.portMap[this.action.http.port]);
     verify.verifyOutputType(this.action, output.trim());
     if ((this.action.output) && (this.action.output.type) && ((this.action.output.type === 'map') || this.action.output.type === 'object')) {
+      if (this.action.output.properties) {
+        verify.verifyProperties(this.action, output);
+      }
       return JSON.stringify(JSON.parse(output.trim()), null, 2);
     }
     return output.trim();
