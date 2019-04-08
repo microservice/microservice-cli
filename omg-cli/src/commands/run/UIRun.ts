@@ -8,11 +8,27 @@ import * as fs from 'fs'
 
 const homedir = require('os').homedir()
 
+/**
+ * Used to represent a way to execute an {@link Action} in the UI.
+ */
 export default class UIRun extends Run {
+  /**
+   * Constructor
+   *
+   * @param  {string} dockerImage
+   * @param  {Microservice} microservice
+   * @param  {any} envs
+   */
   constructor(dockerImage: string, microservice: Microservice, envs: any) {
     super(dockerImage, microservice, null, envs)
   }
 
+  /**
+   * Execs the given action
+   *
+   * @param  {string} action
+   * @return {Promise}
+   */
   public async exec(action: string): Promise<string> {
     this.action = this.microservice.getAction(action)
     this.preChecks()
@@ -135,7 +151,11 @@ export default class UIRun extends Run {
       jsonData
     }
   }
-
+  /**
+   * Sets the given args in to the container
+   *
+   * @param  {any} args
+   */
   public setArgs(args: any) {
     if (!args) {
       return
