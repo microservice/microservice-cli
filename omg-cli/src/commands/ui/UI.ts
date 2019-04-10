@@ -8,6 +8,8 @@ import Microservice from '../../models/Microservice'
 import Build from '../Build'
 import Cli from '../../cli/Cli'
 import RunFactory from '../run/RunFactory'
+import * as fs from 'fs'
+import * as path from 'path'
 
 interface ISocketNotif {
   notif: any
@@ -59,8 +61,8 @@ export default class UIServer {
     this.app = app()
     this.http = new http.Server(this.app)
     this.io = io.listen(this.http)
-    this.microserviceStr = microservice
     this.socket = null
+    this.microserviceStr = microservice
   }
   /**
    * Starts the UI server
@@ -69,7 +71,7 @@ export default class UIServer {
     this.io.on('connection', socket => {
       socket.removeAllListeners()
       this.socket = socket
-      this.validate()
+      this.sendFile(path.join(process.cwd(), 'microservice.yml'))
       this.initListeners()
       // setInterval(() => {
       //   this.usage()
@@ -92,6 +94,19 @@ export default class UIServer {
   reloadUI(microservice: any) {
     this.microserviceStr = microservice
     this.socket.emit('browserReload', 'true')
+  }
+
+  /**
+   * Sends provided file raw content
+   *
+   * @param  {string} file
+   */
+  sendFile(file: string) {
+    fs.readFile(file, 'utf8', (err: any, data: any) => {
+      if (err) throw err
+      this.socket.emit('microservice.yml', data)
+      this.validate()
+    })
   }
   /**
    * socket.emit serializer
@@ -130,18 +145,37 @@ export default class UIServer {
     this.socket.on('stop', () => {
       this.stopContainer()
     })
+    this.socket.on('microservice.yml', (data: any) => {
+      const content = new Uint8Array(Buffer.from(data))
+      fs.writeFile(
+        path.join(process.cwd(), 'microservice.yml'),
+        content,
+        err => {
+          if (err) throw err
+          this.validate()
+          utils.log('microservice.yml file has been saved!')
+        }
+      )
+    })
   }
   /**
    * Wraps omg-cli validate command
    */
   private async validate() {
     try {
-      utils.checkActionInterface(this.microserviceStr)
-      this.microservice = new Microservice(this.microserviceStr)
-      this.emit('validate', {
-        notif: JSON.stringify(this.microservice.rawData, null, 2),
-        status: true
-      })
+      if (this.microserviceStr === 'ERROR_PARSING') {
+        this.emit('validate', {
+          notif: this.microserviceStr,
+          status: false
+        })
+      } else {
+        utils.checkActionInterface(this.microserviceStr)
+        this.microservice = new Microservice(this.microserviceStr)
+        this.emit('validate', {
+          notif: JSON.stringify(this.microservice.rawData, null, 2),
+          status: true
+        })
+      }
     } catch (e) {
       this.emit('validate', {
         notif: JSON.stringify(e, null, 2),

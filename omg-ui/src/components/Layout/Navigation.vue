@@ -44,6 +44,13 @@
           </div>
           <arrow-forward />
         </li>
+        <router-link :to="{ name: 'editor' }" tag="li" class="menu-item">
+          <div class="left">
+            <div class="menu-item-icon"></div>
+            <span class="menu-item-title">Microservice.yml</span>
+          </div>
+          <arrow-forward />
+        </router-link>
       </ul>
     </div>
   </section>
@@ -65,7 +72,6 @@ export default {
 
   ul.menu-list {
     padding: 0;
-    margin: 0;
     text-align: left;
     list-style: none;
 
@@ -101,7 +107,7 @@ export default {
         }
       }
 
-      &.router-link-active {
+      &.router-link-exact-active {
         border-radius: 5px;
         background-color: #f5f6f9;
       }

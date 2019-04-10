@@ -1,16 +1,16 @@
 <template>
   <div id="omg">
-    <div class="omg-container" v-if="getMicroserviceStatus">
+    <div class="omg-container">
       <layout />
       <div class="mt88">
         <router-view />
       </div>
       <docker-logs />
     </div>
-    <div v-else>
+    <!-- <div v-else>
       <h2>We found error in your microservice.yml</h2>
       <span class="text-danger">{{ getMicroserviceNotif }}</span>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -29,25 +29,26 @@ export default {
     socket: null
   }),
   computed: mapGetters([
-    'getSocket',
-    'getMicroserviceStatus',
-    'getMicroserviceNotif'
+    'getSocket'
   ]),
   created () {
     this.initSocket()
     this.socket = this.getSocket
-    this.socket.on('browserReload', function () {
-      window.location.reload()
-    })
+    // this.socket.on('browserReload', function () {
+    //   window.location.reload()
+    // })
     this.socket.on('validate', res => {
       this.setValidation(res)
     })
     this.socket.on('owner', res => {
       this.setOwner(res.notif)
     })
+    this.socket.on('microservice.yml', res => {
+      this.setMicroserviceRaw(res)
+    })
   },
   methods: {
-    ...mapMutations(['initSocket', 'setValidation', 'setOwner'])
+    ...mapMutations(['initSocket', 'setValidation', 'setOwner', 'setMicroserviceRaw'])
   }
 }
 </script>
@@ -69,6 +70,10 @@ export default {
 
 .text-danger {
   color: tomato;
+}
+
+.ml-49 {
+  margin-left: 49px;
 }
 
 body {
