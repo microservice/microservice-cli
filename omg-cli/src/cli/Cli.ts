@@ -452,12 +452,14 @@ export default class Cli {
       try {
         const ui = new UIServer(
           options.port,
-          Cli.readYAML(path.join(process.cwd(), 'microservice.yml'))
+          Cli.readYAML(path.join(process.cwd(), 'microservice.yml'), true)
         )
         ui.startUI()
 
         chokidar
-          .watch(process.cwd(), { ignored: /(^|[/\\])\../ })
+          .watch(path.join(process.cwd(), 'microservice.yml'), {
+            ignored: /(^|[/\\])\../
+          })
           .on('all', (event, appPath) => {
             switch (event) {
               case 'change':
@@ -467,8 +469,12 @@ export default class Cli {
                   )} changed. Reloading to app.`
                 )
                 ui.reloadUI(
-                  Cli.readYAML(path.join(process.cwd(), 'microservice.yml'))
+                  Cli.readYAML(
+                    path.join(process.cwd(), 'microservice.yml'),
+                    true
+                  )
                 )
+                ui.sendFile(path.join(process.cwd(), 'microservice.yml'))
                 break
               default:
                 break
@@ -504,14 +510,19 @@ export default class Cli {
    * Read's a `microservice.yml` file to a string.
    *
    * @param {String} path The given path
+   * @param  {boolean} [ui=false] The given boolean if ui mode is enabled or not
    * @return {String} Returns file in string form
    */
-  private static readYAML(path: string): string {
+  private static readYAML(path: string, ui = false): string {
     try {
       return YAML.parse(fs.readFileSync(path).toString())
     } catch (e) {
-      utils.error(`Issue with microservice.yml: ${e.message}`)
-      process.exit(1)
+      if (ui) {
+        return 'ERROR_PARSING'
+      } else {
+        utils.error(`Issue with microservice.yml: ${e.message}`)
+        process.exit(1)
+      }
     }
   }
 }
