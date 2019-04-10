@@ -12,7 +12,20 @@
       >
       </Monaco>
     </div>
-    <div class="validation">{{ getMicroserviceNotif }}</div>
+    <div class="validation">
+      <div class="refresh-wrapper">
+        <button
+          class="refresh-btn"
+          @click="refresh()"
+          :disabled="disabled || !getMicroserviceStatus"
+        >
+          Refresh App
+        </button>
+      </div>
+      <div class="validation-wrapper">
+        {{ getMicroserviceNotif }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -25,13 +38,14 @@ export default {
   data: () => ({
     code: ' ',
     socket: null,
+    disabled: true,
     options: {
       minimap: {
         enabled: false
       }
     }
   }),
-  computed: {...mapGetters(['getMicroserviceRaw', 'getSocket', 'getMicroserviceNotif'])},
+  computed: {...mapGetters(['getMicroserviceRaw', 'getSocket', 'getMicroserviceNotif', 'getMicroserviceStatus'])},
   components: {
     Monaco
   },
@@ -44,7 +58,12 @@ export default {
       this.editor = editor;
     },
     onCodeChange(editor) {
+      this.disabled = false
       this.socket.emit('microservice.yml', this.editor.getValue())
+    },
+    refresh() {
+      this.disabled = true
+      window.location.reload()
     }
   }
 }
