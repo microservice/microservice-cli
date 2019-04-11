@@ -4,6 +4,7 @@ import Environment from '@/views/Environment'
 import Actions from '@/views/Actions'
 import History from '@/views/History'
 import Editor from '@/views/Editor'
+import Documentation from '@/views/Documentation'
 
 Vue.use(Router)
 
@@ -19,7 +20,8 @@ export default new Router({
     {
       path: '/actions',
       name: 'actions',
-      component: Actions
+      component: Actions,
+      props: route => ({ query: route.query })
     },
     {
       path: '/history',
@@ -30,6 +32,11 @@ export default new Router({
       path: '/editor',
       name: 'editor',
       component: Editor
+    },
+    {
+      path: '/documentation',
+      name: 'documentation',
+      component: Documentation
     }
   ]
 })

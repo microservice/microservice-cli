@@ -23,13 +23,13 @@
           </div>
           <arrow-forward />
         </router-link>
-        <li class="menu-item">
+        <router-link :to="{ name: 'documentation' }" tag="li" class="menu-item">
           <div class="left">
             <div class="menu-item-icon"></div>
             <span class="menu-item-title">Documentation</span>
           </div>
           <arrow-forward />
-        </li>
+        </router-link>
         <li class="menu-item">
           <div class="left">
             <div class="menu-item-icon"></div>

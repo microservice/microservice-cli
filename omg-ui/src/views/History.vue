@@ -6,7 +6,12 @@
       :key="`entry-${entryName}`"
     >
       <h2 class="action">{{ entry.action }}</h2>
-      <span class="arg"> {{ entry.args }} </span>
+      <router-link
+        tag="span"
+        class="arg"
+        :to="{ name: 'actions', query: { ...entry } }"
+        >{{ entry.args }}</router-link
+      >
     </div>
   </div>
 </template>

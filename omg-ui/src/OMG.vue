@@ -47,6 +47,11 @@ export default {
       this.setMicroserviceRaw(res)
     })
   },
+  beforeDestroy() {
+    this.socket.removeListener('validate')
+    this.socket.removeListener('owner')
+    this.socket.removeListener('microservice.yml')
+  },
   methods: {
     ...mapMutations(['initSocket', 'setValidation', 'setOwner', 'setMicroserviceRaw'])
   }
@@ -92,7 +97,9 @@ body {
       .mt88 {
         margin-top: 88px;
         width: 100%;
-        height: calc(100vh - 88px);
+        height: calc(100vh - 349px);
+        overflow: hidden;
+        border-bottom: 1px solid lightslategray;
       }
     }
   }

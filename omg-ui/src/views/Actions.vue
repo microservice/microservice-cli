@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="actions-container"
-    v-if="microservice.actions"
-  >
+  <div class="actions-container" v-if="microservice.actions">
     <div class="action-list">
       <div
         class="action"
@@ -12,19 +9,26 @@
         <action-form
           :actionName="actionName"
           @argsEdited="processArgs"
+          v-if="!query || !query.action"
         >
+        </action-form>
+        <action-form
+          v-else
+          @argsEdited="processArgs"
+          :actionName="query.action"
+          :query="query"
+        >
+        </action-form>
       </div>
     </div>
     <div class="action-output">
       <div class="button-container">
-        <button
-          class="run"
-          @click="runHandler"
-          :disabled="!getDockerRunning"
-        >
+        <button class="run" @click="runHandler" :disabled="!getDockerRunning">
           RUN
         </button>
-        <span v-if="!getDockerRunning">Your need to start your container first.</span>
+        <span v-if="!getDockerRunning"
+          >Your need to start your container first.</span
+        >
       </div>
       <pre class="output">
         {{ getDockerRunStat }}
@@ -46,8 +50,16 @@ export default {
     microservice: '',
     args: {},
     socket: null,
-    ouput: ''
+    ouput: '',
+    edited: false
   }),
+  props: {
+    query: {
+      type: Object,
+      default: {},
+      required: false
+    }
+  },
   computed: mapGetters([
     'getAction',
     'getArgs',
@@ -67,26 +79,35 @@ export default {
     // this.socket.on('stop', res => console.log(res))
     // this.socket.on('subscribe', res => console.log(res))
     this.socket.on('run', res => {
-      this.setDockerRunStat(`${this.getDockerRunStat}\n${res.notif}`)
+      this.addLineDockerRunStat(res.notif)
     })
+  },
+  beforeDestroy() {
+    this.socket.removeListener('run')
   },
   methods: {
     ...mapMutations([
       'setAction',
       'addArg',
+      'addLineDockerRunStat',
       'setDockerRunStat',
       'addHistoryEntry'
     ]),
     runHandler () {
-      if (this.args.subscribe) {
-        delete this.args.subscribe
-        // this.subscribe(this.args);
+      if (this.query && this.query.args && this.edited === false) {
+        this.run(this.query)
       } else {
-        delete this.args.subscribe
-        this.run(this.args)
+        if (this.args.subscribe) {
+          delete this.args.subscribe
+          // this.subscribe(this.args);
+        } else {
+          delete this.args.subscribe
+          this.run(this.args)
+        }
       }
     },
     processArgs (data) {
+      this.edited = true
       this.args = data
     },
     run (e) {

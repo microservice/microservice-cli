@@ -1,65 +1,61 @@
 <template>
   <div class="action-form-container">
-    <form
-      class="action"
-      @keyup="processData"
-    >
+    <form class="action" @keyup="processData">
       <h2
         class="clickable"
-        @click="open === actionName ? open = '' : open = actionName"
+        @click="open === actionName ? (open = '') : (open = actionName)"
       >
         {{ actionName }}
       </h2>
       <div
         class="inputs"
-        :class="{'open': open === actionName}"
+        :class="{ open: open === actionName }"
         v-if="getMicroservice.actions[actionName].arguments"
       >
         <label
           :key="`arg-${argName}`"
-          v-for="(arg, argName) of getMicroservice.actions[actionName].arguments"
+          v-for="(arg, argName) of getMicroservice.actions[actionName]
+            .arguments"
         >
-          {{ argName }} {{ arg.required ? '*' : '' }}
+          {{ argName }} {{ arg.required ? "*" : "" }}
           <input
             :name="`arg-${argName}`"
-            :required="arg.hasOwnProperty('required') && arg.required ? true : false"
-          >
+            :required="
+              arg.hasOwnProperty('required') && arg.required ? true : false
+            "
+            :value="query && query.args ? query.args[argName] : ''"
+          />
         </label>
       </div>
-      <div
-        v-else
-        :class="{'open': open === actionName}"
-        class="inputs"
-      >
-        <input
-          type="hidden"
-          name="type"
-          value="event"
-        >
+      <div v-else :class="{ open: open === actionName }" class="inputs">
+        <input type="hidden" name="type" value="event" />
         <label>
           Event *
-          <select
-            id="event"
-            required
-            v-model="event"
-          >
+          <select id="event" required v-model="event">
             <option
               :key="`event-${evtName}`"
               :name="`${evtName}`"
-              v-for="(event, evtName) of getMicroservice.actions[actionName].events"
-            >{{ evtName }}</option>
+              v-for="(event, evtName) of getMicroservice.actions[actionName]
+                .events"
+              >{{ evtName }}</option
+            >
           </select>
         </label>
         <div v-if="event && event.length > 0">
           <label
             :key="`arg-${argName}`"
-            v-for="(arg, argName) of getMicroservice.actions[actionName].events[event].arguments"
+            v-for="(arg, argName) of getMicroservice.actions[actionName].events[
+              event
+            ].arguments"
           >
-            {{ argName }} {{ arg.required ? '*' : '' }}
+            {{ argName }} {{ arg.required ? "*" : "" }}
             <input
               :name="`arg-${argName}`"
-              :required="arg.hasOwnProperty('required') && arg.required ? true : false"
-            >
+              :required="
+                arg.hasOwnProperty('required') && arg.required ? true : false
+              "
+              :value="query && query.args ? query.args[argName] : ''"
+            />
           </label>
         </div>
       </div>
@@ -82,10 +78,19 @@ export default {
       type: String,
       default: '',
       required: true
+    },
+    query: {
+      type: Object,
+      default: null,
+      required: false
     }
   },
   computed: mapGetters(['getMicroservice']),
-  mounted () {},
+  mounted () {
+    if (this.query && this.query.action) {
+      this.open = this.query.action
+    }
+  },
   methods: {
     processData (data) {
       const key = data.srcElement.name.substr(4)
