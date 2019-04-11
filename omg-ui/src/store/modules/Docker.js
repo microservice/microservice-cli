@@ -25,6 +25,7 @@ const mutations = {
   setDockerRunning: (state, value) => (state.running = value),
   setDockerLogs: (state, value) => (state.logs = value),
   setDockerRunStat: (state, value) => (state.runStat = value),
+  addLineDockerRunStat: (state, line) => (state.runStat += `\n${line}`),
   setDockerInspect: (state, value) => (state.inspect = value)
 }
 

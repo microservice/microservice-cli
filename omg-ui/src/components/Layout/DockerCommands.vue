@@ -1,19 +1,12 @@
 <template>
   <section class="docker-commands-container">
-    <button
-      v-if="!getDockerRunning"
-      class="docker-button"
-      @click="start()"
-    >{{ getDockerStarting ? 'STARTING' : 'START' }}</button>
-    <button
-      v-else
-      class="docker-button"
-      @click="stop()"
-    >STOP</button>
-    <button
-      class="docker-button"
-      @click="build()"
-    >{{ getDockerBuilt ? 'REBUILD' : 'BUILD'}}</button>
+    <button v-if="!getDockerRunning" class="docker-button" @click="start()">
+      {{ getDockerStarting ? "STARTING" : "START" }}
+    </button>
+    <button v-else class="docker-button" @click="stop()">STOP</button>
+    <button class="docker-button" @click="build()">
+      {{ getDockerBuilt ? "REBUILD" : "BUILD" }}
+    </button>
   </section>
 </template>
 
@@ -51,6 +44,11 @@ export default {
     this.socket.on('stop', res => {
       this.setDockerLogs(`${this.getDockerLogs}\n${res.notif}`)
     })
+  },
+  beforeDestroy() {
+    this.socket.removeListener('build')
+    this.socket.removeListener('start')
+    this.socket.removeListener('stop')
   },
   methods: {
     ...mapMutations([
