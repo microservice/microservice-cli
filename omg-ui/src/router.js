@@ -5,6 +5,7 @@ import Actions from '@/views/Actions'
 import History from '@/views/History'
 import Editor from '@/views/Editor'
 import Documentation from '@/views/Documentation'
+import Inspect from '@/views/Inspect'
 
 Vue.use(Router)
 
@@ -37,6 +38,11 @@ export default new Router({
       path: '/documentation',
       name: 'documentation',
       component: Documentation
+    },
+    {
+      path: '/inspect',
+      name: 'inspect',
+      component: Inspect
     }
   ]
 })

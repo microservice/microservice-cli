@@ -35,9 +35,6 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'documentation',
   computed: { ...mapGetters(['getMicroservice']) },
-  mounted() {
-    console.log(this.getMicroservice)
-  }
 }
 </script>
 
