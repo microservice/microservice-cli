@@ -6,6 +6,7 @@ import History from '@/views/History'
 import Editor from '@/views/Editor'
 import Documentation from '@/views/Documentation'
 import Inspect from '@/views/Inspect'
+import Home from '@/views/Home'
 
 Vue.use(Router)
 
@@ -14,12 +15,12 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'environment',
+      path: '/environments',
+      name: 'environments',
       component: Environment
     },
     {
-      path: '/actions',
+      path: '/actions/:action',
       name: 'actions',
       component: Actions,
       props: route => ({ query: route.query })
@@ -43,6 +44,11 @@ export default new Router({
       path: '/inspect',
       name: 'inspect',
       component: Inspect
+    },
+    {
+      path: '/',
+      name: 'home',
+      component: Home
     }
   ]
 })

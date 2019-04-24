@@ -6,12 +6,61 @@
         alt="OMG app logo"
         class="logo"
       />
+      <owner class="owner" />
     </div>
     <div class="topbar-right">
       <div class="title-container">
-        <h1 class="title">{{ $route.name }}</h1>
+        {{ $route.name === "actions" ? $route.params.action : $route.name }}
       </div>
-      <div class="search-container">
+      <div
+        class="method-container"
+        v-if="getMicroservice && $route.name === 'actions'"
+      >
+        <div class="vert-divider"></div>
+        <span class="text">
+          {{
+            getMicroservice.actions[$route.params.action].hasOwnProperty("http")
+              ? "http"
+              : getMicroservice.actions[$route.params.action].hasOwnProperty(
+                  "rpc"
+                )
+              ? "rpc"
+              : "format"
+          }}
+        </span>
+        <div class="vert-divider"></div>
+      </div>
+      <div
+        class="http-method-container"
+        v-if="
+          getMicroservice &&
+            $route.name === 'actions' &&
+            getMicroservice.actions[$route.params.action].hasOwnProperty('http')
+        "
+      >
+        {{ getMicroservice.actions[$route.params.action].http.method }}
+      </div>
+      <div
+        class="path-container"
+        v-if="
+          getMicroservice &&
+            $route.name === 'actions' &&
+            getMicroservice.actions[$route.params.action].hasOwnProperty(
+              'http' || 'rpc'
+            )
+        "
+      >
+        <div class="path">
+          {{
+            getMicroservice.actions[$route.params.action].hasOwnProperty("http")
+              ? getMicroservice.actions[$route.params.action].http.path
+              : "rpc path comming soon"
+          }}
+        </div>
+        <div class="copy-btn">Copy</div>
+      </div>
+
+      <!-- <div class="search-container">
         <input placeholder="SEARCH DOCS" name="search" class="search-input" />
         <svg
           enable-background="new 0 0 32 32"
@@ -50,22 +99,37 @@
             y2="20.366"
           />
         </svg>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
+import { mapgetters, mapGetters } from 'vuex'
+import Owner from '@/components/layout/Owner'
+
+
 export default {
-  name: 'topbar'
+  name: 'topbar',
+  components: {
+    Owner
+  },
+  computed: {
+    ...mapGetters(['getMicroservice'])
+  }
 }
 </script>
 
 <style lang="scss" scoped>
+.vert-divider {
+  border-left: 1px solid #d8dcee;
+  height: 100%;
+}
+
 .topbar-container {
-  width: 100vw;
+  width: 100%;
   display: flex;
-  height: 88px;
+  height: 69px;
 
   .topbar-left {
     width: 300px;
@@ -73,37 +137,101 @@ export default {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    border-bottom: 1px solid rgb(244, 245, 250);
+    border-right: 1px solid rgb(244, 245, 250);
 
     img {
-      width: 45px;
-      border-radius: 9.5px;
+      height: 69px;
+      width: 75px;
       background-color: #150d44;
+    }
+
+    .owner {
+      margin-left: 29px;
     }
   }
 
   .topbar-right {
-    width: 100%;
-    border-bottom: 1px solid lightslategray;
+    min-width: calc(100vw - 400px);
+    width: auto;
     height: inherit;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 0 28px 0 57px;
 
     .title-container {
-      margin-left: 121px;
+      margin: 0;
+      text-transform: lowercase;
+      height: 35px;
+      color: #1f2933;
+      font-family: Graphik;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 30px;
+    }
 
-      .title {
-        margin: 0;
-        height: 30px;
-        color: #151734;
-        font-family: GilroyBold;
-        font-size: 20px;
-        letter-spacing: 1px;
-        line-height: 30px;
-        text-transform: uppercase;
+    .method-container {
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      height: 31px;
+      color: #1f2933;
+      font-family: Graphik;
+      font-size: 16px;
+      line-height: 21px;
+
+      span.text {
+        padding: 0 32px;
       }
     }
 
+    .http-method-container {
+      height: 18px;
+      color: #1f2933;
+      font-family: Graphik;
+      font-size: 18px;
+      line-height: 20px;
+      text-transform: uppercase;
+    }
+
+    .path-container {
+      height: 40px;
+      width: 434px;
+      border: 1px solid #e4e7eb;
+      border-radius: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .path {
+        height: 26px;
+        color: #1f2933;
+        font-family: Graphik;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 21px;
+        margin-left: 12px;
+        display: flex;
+        align-items: center;
+      }
+
+      .copy-btn {
+        width: 43px;
+        color: #616e7c;
+        font-family: Graphik;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        line-height: 21px;
+        text-align: center;
+        border-left: 1px solid #e4e7eb;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+      }
+    }
     .search-container {
       height: 40px;
       width: 400px;
@@ -122,7 +250,7 @@ export default {
         height: 26px;
         width: 116px;
         color: #7b7b8f;
-        font-family: GilroySemiBold;
+        font-family: "Graphik";
         font-size: 12px;
         letter-spacing: 0.38px;
         line-height: 28px;

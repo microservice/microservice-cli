@@ -2,15 +2,12 @@
   <div id="omg">
     <div class="omg-container">
       <layout />
-      <div class="mt88">
+      <div class="topbar-margin">
         <router-view />
+        <docker-logs />
       </div>
-      <docker-logs />
+      <output-action class="main-output" />
     </div>
-    <!-- <div v-else>
-      <h2>We found error in your microservice.yml</h2>
-      <span class="text-danger">{{ getMicroserviceNotif }}</span>
-    </div> -->
   </div>
 </template>
 
@@ -18,74 +15,129 @@
 import { mapGetters, mapMutations } from 'vuex'
 import Layout from '@/views/Layout'
 import DockerLogs from '@/components/DockerLogs'
+import OutputAction from '@/components/layout/OutputAction'
 
 export default {
   name: 'omg',
   components: {
     Layout,
-    DockerLogs
+    DockerLogs,
+    OutputAction
   },
   data: () => ({
-    socket: null
+    logsInterval: null,
+    statsInterval: null
   }),
   computed: mapGetters([
-    'getSocket'
+    'getSocket', 'getOwner'
   ]),
   created () {
     this.initSocket()
-    this.socket = this.getSocket
-    // this.socket.on('browserReload', function () {
-    //   window.location.reload()
-    // })
-    this.socket.on('validate', res => {
+    this.getSocket.on('validate', res => {
       this.setValidation(res)
     })
-    this.socket.on('owner', res => {
+    this.getSocket.on('owner', res => {
       this.setOwner(res.notif)
     })
-    this.socket.on('microservice.yml', res => {
+    this.getSocket.on('microservice.yml', res => {
       this.setMicroserviceRaw(res)
     })
+    this.getSocket.on('build', res => {
+      this.build(res)
+    })
+    this.getSocket.on('start', res => {
+      this.start(res)
+    })
+    this.getSocket.on('stop', res => {
+      this.stop(res)
+    })
+    this.getSocket.emit('build', {})
   },
   beforeDestroy() {
-    this.socket.removeListener('validate')
-    this.socket.removeListener('owner')
-    this.socket.removeListener('microservice.yml')
+    this.getSocket.removeListener('validate')
+    this.getSocket.removeListener('owner')
+    this.getSocket.removeListener('microservice.yml')
+    this.getSocket.removeListener('build')
+    this.getSocket.removeListener('start')
+    this.getSocket.removeListener('stop')
   },
-  methods: {
-    ...mapMutations(['initSocket', 'setValidation', 'setOwner', 'setMicroserviceRaw'])
+  methods: {...mapMutations(['initSocket', 'setValidation', 'setOwner', 'setMicroserviceRaw', 'appendDockerLogs', 'setDockerState']),
+    build(data) {
+      this.setDockerState('building')
+      this.appendDockerLogs(data.log || data.notif.trim())
+      if (data.status && data.built) {
+        this.setDockerState('starting')
+        this.getSocket.emit('start', {
+          image: `omg/${this.getOwner}`,
+          envs: { ...this.getEnvs }
+        })
+      }
+    },
+    start(data) {
+      this.appendDockerLogs(data.logs || data.notif.trim())
+      if (data.started) {
+        this.setDockerState('started')
+        this.logsInterval = setInterval(() => this.getSocket.emit('dockerLogs'), 1000)
+        this.statsInterval = setInterval(() => {
+          this.getSocket.emit('container-stats')
+        }, 1000)
+      }
+    },
+    stop(data) {
+      this.appendDockerLogs(data.notif.trim())
+      this.setDockerState('stopped')
+      clearInterval(this.logsInterval)
+      clearInterval(this.statsInterval)
+    }
   }
 }
 </script>
 
 <style lang="scss">
-@font-face {
-  font-family: "GilroyBold";
-  font-style: normal;
-  font-weight: normal;
-  src: local("GilroyBold"), url("assets/GilroyBold.woff") format("woff");
-}
+$fonts: (
+  // Thin: 100,
+    // Extralight: 200,
+    // Light: 300,
+    Regular: 400,
+  Medium: 500,
+  Semibold: 600,
+  Bold: 700,
+  // Black: 800,
+    // Super: 900,
+);
 
-@font-face {
-  font-family: "GilroySemiBold";
-  font-style: normal;
-  font-weight: normal;
-  src: local("GilroySemiBold"), url("assets/GilroySemiBold.woff") format("woff");
+@each $style, $weight in $fonts {
+  @font-face {
+    font-family: "Graphik";
+    src: url("assets/fonts/Graphik-#{$style}.eot");
+    src: url("assets/fonts/Graphik-#{$style}.eot?#iefix")
+        format("embedded-opentype"),
+      url("assets/fonts/Graphik-#{$style}.woff2") format("woff2"),
+      url("assets/fonts/Graphik-#{$style}.woff") format("woff"),
+      url("assets/fonts/Graphik-#{$style}.ttf") format("truetype"),
+      url("assets/fonts/Graphik-#{$style}.svg#Graphik-#{$style}") format("svg");
+    font-weight: $weight;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: "SF Mono";
+    src: url("assets/fonts/SF-Pro-Display-Regular.otf");
+    font-weight: $weight;
+    font-style: normal;
+  }
 }
 
 .text-danger {
   color: tomato;
 }
 
-.ml-49 {
-  margin-left: 49px;
-}
-
 body {
   margin: 0;
+  overflow: hidden;
 
   #omg {
-    font-family: "Avenir", Helvetica, Arial, sans-serif;
+    font-family: "Graphik", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
@@ -94,12 +146,20 @@ body {
     .omg-container {
       display: flex;
 
-      .mt88 {
-        margin-top: 88px;
+      .main-output {
+        margin-top: 69px;
+      }
+
+      .topbar-margin {
+        margin-top: 69px;
         width: 100%;
-        height: calc(100vh - 349px);
+        height: calc(100vh - 69px);
         overflow: hidden;
-        border-bottom: 1px solid lightslategray;
+        background-color: #f5f7fa;
+        border-left: 1px solid #d8dcee;
+        border-top: 1px solid #d8dcee;
+        display: flex;
+        flex-direction: column;
       }
     }
   }

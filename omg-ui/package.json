@@ -19,6 +19,7 @@
     "connect-history-api-fallback": "^1.6.0",
     "css-loader": "^2.1.1",
     "eslint-plugin-vue": "^5.2.2",
+    "js-yaml": "^3.13.1",
     "monaco-editor-forvue": "^1.0.3",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",

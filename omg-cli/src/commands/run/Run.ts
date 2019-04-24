@@ -239,6 +239,16 @@ export default abstract class Run {
   }
 
   /**
+   * Returns docker stats result as a Promise
+   *
+   * @return {Promise}
+   */
+  public async getStats(): Promise<any> {
+    const container = utils.docker.getContainer(this.containerID)
+    return await container.stats({ stream: false })
+  }
+
+  /**
    * Gets the Docker logs.
    *
    * @return {String} The Docker logs

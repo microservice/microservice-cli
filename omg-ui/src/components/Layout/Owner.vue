@@ -1,10 +1,6 @@
 <template>
   <div class="owner-container">
-    <img
-      src="https://github.com/favicon.ico"
-      alt="Github logo"
-      class="gh-logo"
-    />
+    <img src="../../assets/ic-git.svg" alt="Github logo" class="gh-logo" />
     <a class="owner-name" :href="`https://github.com/${getOwner}`">{{
       getOwner
     }}</a>
@@ -40,8 +36,9 @@ export default {
   a {
     height: 21px;
     color: #565872;
-    font-family: GilroySemiBold;
+    font-family: Graphik;
     font-size: 14px;
+    font-weight: 500;
     line-height: 21px;
     text-decoration: none;
   }
