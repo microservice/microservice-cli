@@ -14,8 +14,6 @@ import Command from '../models/Command'
 import UIServer from '../commands/ui/UI'
 import * as chokidar from 'chokidar'
 
-const homedir = require('os').homedir()
-
 /**
  * Describes the cli.
  */
@@ -24,6 +22,7 @@ export default class Cli {
   private _run: Run = null
   private _subscribe: Subscribe = null
   private startedID: string
+  private uiServer: UIServer = null
 
   /**
    * Build an {@link Cli}.
@@ -447,37 +446,34 @@ export default class Cli {
    *
    * @param {Object} options The options to start the UI, such as port mapping
    */
-  static async ui(options: any): Promise<any> {
+  async ui(options: any): Promise<any> {
     if (options.port) {
       try {
-        const ui = new UIServer(
+        this.uiServer = new UIServer(
           options.port,
           Cli.readYAML(path.join(process.cwd(), 'microservice.yml'), true)
         )
-        ui.startUI()
+        this.uiServer.startUI(options.open ? true : false)
 
         chokidar
-          .watch(path.join(process.cwd(), 'microservice.yml'), {
+          .watch(process.cwd(), {
             ignored: /(^|[/\\])\../
           })
           .on('all', (event, appPath) => {
-            switch (event) {
-              case 'change':
-                utils.log(
-                  `${appPath.substr(
-                    appPath.lastIndexOf('/') + 1
-                  )} changed. Reloading to app.`
-                )
-                ui.reloadUI(
-                  Cli.readYAML(
-                    path.join(process.cwd(), 'microservice.yml'),
-                    true
-                  )
-                )
-                ui.sendFile(path.join(process.cwd(), 'microservice.yml'))
-                break
-              default:
-                break
+            if (event === 'change') {
+              utils.log(
+                `${appPath.substr(
+                  appPath.lastIndexOf('/') + 1
+                )} changed. Rebuilding.`
+              )
+              this.uiServer.rebuild(
+                {},
+                Cli.readYAML(
+                  path.join(process.cwd(), 'microservice.yml'),
+                  true
+                ),
+                true
+              )
             }
           })
       } catch (e) {
@@ -491,6 +487,12 @@ export default class Cli {
    * Catch the `CtrlC` command to stop running containers.
    */
   async controlC() {
+    if (this.uiServer !== null) {
+      await this.uiServer.stopContainer()
+      setTimeout(() => {
+        process.exit(0)
+      }, 1000) // Lil timeout to serve the last statics before shutting down
+    }
     const spinner = ora.start(
       `Stopping Docker container: ${this.startedID.substring(0, 12)}`
     )

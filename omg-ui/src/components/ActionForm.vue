@@ -1,21 +1,12 @@
 <template>
   <div class="action-form-container">
-    <form class="action" @keyup="processData">
-      <h2
-        class="clickable"
-        @click="open === actionName ? (open = '') : (open = actionName)"
-      >
-        {{ actionName }}
-      </h2>
-      <div
-        class="inputs"
-        :class="{ open: open === actionName }"
-        v-if="getMicroservice.actions[actionName].arguments"
-      >
+    <form class="action" @submit.prevent="processData">
+      <div class="inputs" v-if="getMicroservice.actions[actionName].arguments">
         <label
           :key="`arg-${argName}`"
           v-for="(arg, argName) of getMicroservice.actions[actionName]
             .arguments"
+          class="form-row"
         >
           {{ argName }} {{ arg.required ? "*" : "" }}
           <input
@@ -24,10 +15,12 @@
               arg.hasOwnProperty('required') && arg.required ? true : false
             "
             :value="query && query.args ? query.args[argName] : ''"
+            :placeholder="arg.type"
+            :type="arg.type === 'number' ? 'number' : 'string'"
           />
         </label>
       </div>
-      <div v-else :class="{ open: open === actionName }" class="inputs">
+      <div v-else class="inputs">
         <input type="hidden" name="type" value="event" />
         <label>
           Event *
@@ -58,6 +51,10 @@
             />
           </label>
         </div>
+      </div>
+      <div class="btn-container form-row">
+        <div class="spacer"></div>
+        <button class="run-btn">Execute</button>
       </div>
     </form>
   </div>
@@ -93,35 +90,89 @@ export default {
   },
   methods: {
     processData (data) {
-      const key = data.srcElement.name.substr(4)
-      const value = data.srcElement.value
+      for (let i = 0; i < data.srcElement.length - 1; i++) {
+        const key = data.srcElement[i].name.substr(4)
+        const value = data.srcElement[i].value
 
-      this.obj['action'] = this.actionName
-      this.obj['args'] = {}
-      this.obj.args[key] = value
-      if (this.event && this.event.length > 0) {
-        this.obj['subscribe'] = true
+        this.obj['action'] = this.actionName
+        this.obj['args'] = {}
+        this.obj.args[key] = value
+        if (this.event && this.event.length > 0) {
+          this.obj['subscribe'] = true
+        }
+        this.$emit('argsEdited', this.obj)
       }
-      this.$emit('argsEdited', this.obj)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.action {
+form.action {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-evenly;
   align-items: center;
 
-  .inputs {
-    display: none;
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
   }
 
-  .inputs.open {
+  .inputs {
     display: flex;
     flex-flow: column;
+
+    label {
+      color: #616e7c;
+      font-family: Graphik;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      line-height: 21px;
+      text-align: right;
+      margin-bottom: 20px;
+      text-transform: capitalize;
+    }
+
+    input {
+      height: 40px;
+      width: 420px;
+      border: 1px solid #dfe0e8;
+      border-radius: 2px;
+      background-color: #ffffff;
+      margin-left: 24px;
+      color: #1f2933;
+      font-family: Graphik;
+      font-size: 14px;
+      line-height: 21px;
+      padding-left: 12px;
+
+      &::placeholder {
+        height: 18px;
+        color: #1f2933;
+        font-family: Graphik;
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
+  }
+
+  .btn-container {
+    button.run-btn {
+      height: 35px;
+      width: 434px;
+      border-radius: 2px;
+      color: #ffffff;
+      font-family: Graphik;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 21px;
+      text-align: center;
+      background-color: #17b897;
+    }
   }
 }
 </style>

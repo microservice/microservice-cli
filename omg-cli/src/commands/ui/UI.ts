@@ -10,6 +10,7 @@ import Cli from '../../cli/Cli'
 import RunFactory from '../run/RunFactory'
 import * as fs from 'fs'
 import * as path from 'path'
+import open from './wrappers/open'
 
 interface ISocketNotif {
   notif: any
@@ -50,6 +51,8 @@ export default class UIServer {
   private containerID: string
   private subscribe: Subscribe
 
+  private rebuildBak: { build: any; start: any }
+
   /**
    * Constructor
    *
@@ -67,7 +70,7 @@ export default class UIServer {
   /**
    * Starts the UI server
    */
-  startUI() {
+  startUI(doOpen = false) {
     this.io.on('connection', socket => {
       socket.removeAllListeners()
       this.socket = socket
@@ -82,18 +85,31 @@ export default class UIServer {
       })
     })
 
-    this.http.listen(this.port, () => {
+    this.http.listen(this.port, async () => {
       utils.log(`OMG UI started on http://localhost:${this.port}`)
+      if (doOpen) {
+        await open(`http://localhost:${this.port}`)
+      }
     })
   }
   /**
-   * Reloads the UI with the updated microservice.yml
+   * Rebuild image and restarts container
    *
-   * @param  {any} microservice
+   * @param  {any} data Data used to build image
+   * @param  {Boolean} [ui=false]
    */
-  reloadUI(microservice: any) {
-    this.microserviceStr = microservice
-    this.socket.emit('browserReload', 'true')
+  async rebuild(data?: any, microservice?: string, bak = false) {
+    if (microservice) {
+      this.microserviceStr = microservice
+    }
+    this.sendFile(path.join(process.cwd(), 'microservice.yml'))
+    await this.stopContainer()
+    if (bak) {
+      await this.buildImage(this.rebuildBak.build)
+    } else {
+      await this.buildImage(data.build)
+      this.rebuildBak = { build: data.build, start: data.start }
+    }
   }
 
   /**
@@ -145,6 +161,12 @@ export default class UIServer {
     this.socket.on('stop', () => {
       this.stopContainer()
     })
+    this.socket.on('container-stats', () => {
+      this.dockerStats()
+    })
+    this.socket.on('rebuild', data => {
+      this.rebuild(data)
+    })
     this.socket.on('microservice.yml', (data: any) => {
       const content = new Uint8Array(Buffer.from(data))
       fs.writeFile(
@@ -192,7 +214,7 @@ export default class UIServer {
    *
    * @param  {IDataBuild} data image name
    */
-  private async buildImage(data: IDataBuild) {
+  async buildImage(data: IDataBuild) {
     await Cli.checkDocker()
 
     this.emit('build', { notif: 'Building Docker image', status: true })
@@ -200,10 +222,11 @@ export default class UIServer {
       const res = await new Build(
         data.name || (await utils.createImageName())
       ).go(false, true)
-      this.emit('build', {
+      this.socket.emit('build', {
         status: true,
         notif: `Built Docker image with name: ${res.name}`,
-        log: res.log
+        log: res.log,
+        built: true
       })
       return res.name
     } catch (e) {
@@ -228,12 +251,29 @@ export default class UIServer {
       this.emit('inspect', { status: false, notif: 'Container not running' })
     }
   }
+  private async dockerStats() {
+    if (this.dockerContainer) {
+      const output = await this.dockerContainer.getStats()
+      this.emit('container-stats', {
+        notif: 'Container stats',
+        status: true,
+        log: output
+      })
+    } else {
+      this.emit('container-stats', {
+        status: false,
+        notif: 'Container not running'
+      })
+    }
+  }
 
   /**
    * Gets docker container logs then sends the result through socket
    */
   private async dockerLogs() {
-    this.socket.emit('dockerLogs', await this.dockerContainer.getLogs())
+    if (this.dockerContainer) {
+      this.socket.emit('dockerLogs', await this.dockerContainer.getLogs())
+    }
   }
 
   /**
@@ -274,6 +314,9 @@ export default class UIServer {
       return
     }
 
+    if (this.rebuildBak === undefined) {
+      this.rebuildBak = { start: data, build: {} }
+    }
     this.dockerContainer = new RunFactory(
       data.image,
       this.microservice,
@@ -289,7 +332,8 @@ export default class UIServer {
     this.containerID = await this.dockerContainer.startService()
     this.socket.emit('start', {
       notif: `Started Docker container: ${this.containerID.substring(0, 12)}`,
-      status: true
+      status: true,
+      started: true
     })
     await new Promise(res => setTimeout(res, 1000))
   }
@@ -298,11 +342,17 @@ export default class UIServer {
    *
    * @return {Promise}
    */
-  private async stopContainer(): Promise<any> {
-    const output = await this.dockerContainer.stopService()
-    this.emit('stop', {
-      status: true,
-      notif: `Stoppped Docker container: ${output}`
+  stopContainer(): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      let output
+      if (this.dockerContainer && (await this.dockerContainer.isRunning())) {
+        output = await this.dockerContainer.stopService()
+        this.emit('stop', {
+          status: true,
+          notif: `Stoppped Docker container: ${output}`
+        })
+      }
+      resolve()
     })
   }
   /**
@@ -337,6 +387,7 @@ export default class UIServer {
       return
     }
     this.socket.emit('run', {
+      output: output,
       notif: output,
       status: true
     })

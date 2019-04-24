@@ -1,41 +1,21 @@
 <template>
   <div class="tile-grade-container">
-    <div class="rectangle" :class="{ bad: !good }">
+    <div
+      class="rectangle"
+      :class="state === 'good' ? 'good' : state === 'warn' ? 'warn' : 'error'"
+    >
       <span class="title">{{ title }}</span>
       <span class="icon">
-        <svg
-          height="15px"
-          version="1.1"
-          viewBox="0 0 22 20"
-          width="19px"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-        >
-          <title />
-          <desc />
-          <defs />
-          <g
-            fill="none"
-            fill-rule="evenodd"
-            id="Page-1"
-            stroke="none"
-            stroke-width="1"
-          >
-            <g
-              fill="#000000"
-              id="Core"
-              transform="translate(-295.000000, -464.000000)"
-            >
-              <g id="thumb-up" transform="translate(295.000000, 464.000000)">
-                <path
-                  d="M0,20 L4,20 L4,8 L0,8 L0,20 L0,20 Z M22,9 C22,7.9 21.1,7 20,7 L13.7,7 L14.7,2.4 L14.7,2.1 C14.7,1.7 14.5,1.3 14.3,1 L13.2,0 L6.6,6.6 C6.2,6.9 6,7.4 6,8 L6,18 C6,19.1 6.9,20 8,20 L17,20 C17.8,20 18.5,19.5 18.8,18.8 L21.8,11.7 C21.9,11.5 21.9,11.2 21.9,11 L21.9,9 L22,9 C22,9.1 22,9 22,9 L22,9 Z"
-                  id="thumb"
-                />
-              </g>
-            </g>
-          </g>
-        </svg>
+        <img
+          src="../assets/ic-tick.svg"
+          alt="icon-good"
+          v-if="state === 'good'"
+        />
+        <img
+          src="../assets/ic-cross.svg"
+          alt="icon-bad"
+          v-if="state === 'bad'"
+        />
       </span>
     </div>
   </div>
@@ -50,8 +30,8 @@ export default {
       type: String,
       required: true
     },
-    good: {
-      type: Boolean,
+    state: {
+      type: String,
       default: true
     }
   }
@@ -59,45 +39,48 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.rectangle {
-  height: 32px;
-  display: flex;
-  background-color: rgb(230, 249, 245);
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  padding: 0 8px;
-  align-items: center;
+.tile-grade-container {
+  width: 100%;
 
-  span.title {
-    height: 21px;
-    color: #039f82;
-    font-family: GilroyBold;
-    letter-spacing: 0.5px;
-    line-height: 21px;
-    font-size: 12px;
-    text-transform: uppercase;
-  }
+  .rectangle {
+    height: 32px;
+    border: 1px solid #c6f7e9;
+    border-radius: 2px;
+    background-color: #f0fcf9;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 0 12px 0 8px;
+    align-items: center;
 
-  span.icon {
-    svg {
-      #thumb {
-        fill: #039f82;
-      }
-    }
-  }
-
-  &.bad {
-    background-color: rgb(255, 244, 229);
     span.title {
       height: 21px;
-      color: #da902e;
+      color: #079a82;
+      font-family: Graphik;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 21px;
+      letter-spacing: 0.5px;
     }
+
     span.icon {
-      transform: rotateX(180deg);
-      svg {
-        #thumb {
-          fill: #da902e;
-        }
+      width: 16px;
+      height: 16px;
+    }
+
+    &.error {
+      border: 1px solid #facdcd;
+      background-color: #ffeeee;
+      span.title {
+        color: #a61b1b;
+      }
+    }
+
+    &.warn {
+      border: 1px solid #facdcd;
+      background-color: rgb(255, 244, 229);
+      span.title {
+        color: #da902e;
       }
     }
   }

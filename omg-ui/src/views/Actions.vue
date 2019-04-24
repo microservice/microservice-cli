@@ -1,39 +1,17 @@
 <template>
-  <div class="actions-container" v-if="microservice.actions">
-    <div class="action-list">
-      <div
-        class="action"
-        v-for="(action, actionName) of microservice.actions"
-        :key="`arg-${actionName}`"
-      >
-        <action-form
-          :actionName="actionName"
-          @argsEdited="processArgs"
-          v-if="!query || !query.action"
-        >
-        </action-form>
-        <action-form
-          v-else
-          @argsEdited="processArgs"
-          :actionName="query.action"
-          :query="query"
-        >
-        </action-form>
+  <div class="action-container">
+    <div class="left">
+      <div class="title">Arguments</div>
+      <div class="desc" v-if="getMicroservice">
+        {{ getMicroservice.actions[$route.params.action].help }}
       </div>
+      <action-form
+        :actionName="$route.params.action"
+        @argsEdited="processArgs"
+        v-if="getMicroservice"
+      />
     </div>
-    <div class="action-output">
-      <div class="button-container">
-        <button class="run" @click="runHandler" :disabled="!getDockerRunning">
-          RUN
-        </button>
-        <span v-if="!getDockerRunning"
-          >Your need to start your container first.</span
-        >
-      </div>
-      <pre class="output">
-        {{ getDockerRunStat }}
-      </pre>
-    </div>
+    <div class="right"></div>
   </div>
 </template>
 
@@ -49,7 +27,6 @@ export default {
   data: () => ({
     microservice: '',
     args: {},
-    socket: null,
     ouput: '',
     edited: false
   }),
@@ -72,18 +49,18 @@ export default {
   mounted () {
     this.microservice = this.getMicroservice
     this.args = this.getArgs
-    this.socket = this.getSocket
-
-    // this.socket.on('start', res => console.log(res))
-    // this.socket.on('healthcheck', res => console.log(res))
-    // this.socket.on('stop', res => console.log(res))
-    // this.socket.on('subscribe', res => console.log(res))
-    this.socket.on('run', res => {
-      this.addLineDockerRunStat(res.notif)
+    this.getSocket.on('run', res => {
+      if (res.output) {
+        try {
+          this.setActionOutput(JSON.parse(res.output))
+        } catch(e) {
+          this.setActionOutput(res.output.trim())
+        }
+      }
     })
   },
   beforeDestroy() {
-    this.socket.removeListener('run')
+    this.getSocket.removeListener('run')
   },
   methods: {
     ...mapMutations([
@@ -91,7 +68,9 @@ export default {
       'addArg',
       'addLineDockerRunStat',
       'setDockerRunStat',
-      'addHistoryEntry'
+      'addHistoryEntry',
+      'setActionOutput',
+      'appendContainerLogs'
     ]),
     runHandler () {
       if (this.query && this.query.args && this.edited === false) {
@@ -109,6 +88,7 @@ export default {
     processArgs (data) {
       this.edited = true
       this.args = data
+      this.runHandler()
     },
     run (e) {
       let run = {
@@ -116,38 +96,45 @@ export default {
         action: e.action,
         args: { ...e.args }
       }
-      this.setDockerRunStat('')
-      this.socket.emit('run', run)
+      this.setActionOutput('')
+      this.getSocket.emit('run', run)
       this.addHistoryEntry(run)
     }
   }
 }
 </script>
+
 <style lang="scss" scoped>
-.clickable {
-  cursor: pointer;
-}
-
-.actions-container {
-  width: 100%;
+.action-container {
   display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 100%;
 
-  .action-list {
-    width: 50%;
-  }
+  .left {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    margin: 24px 0 0 24px;
+    width: 100%;
 
-  .action-output {
-    width: 50%;
-    border-left: 1px solid lightslategray;
-    height: calc(100vh - 88px);
+    .title {
+      height: 27px;
+      color: #1f2933;
+      font-family: Graphik;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 27px;
+    }
 
-    .button-container {
-      display: flex;
-      flex-flow: column;
-      justify-content: center;
-      align-items: center;
-      padding: 15px 0;
-      border-bottom: 1px solid lightslategray;
+    .desc {
+      margin-top: 8px;
+      height: 51px;
+      color: #616e7c;
+      font-family: Graphik;
+      font-size: 14px;
+      line-height: 22px;
     }
   }
 }

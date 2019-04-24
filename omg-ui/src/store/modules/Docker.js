@@ -5,7 +5,13 @@ const state = {
   built: false,
   logs: '',
   runStat: '',
-  inspect: ''
+  inspect: '',
+
+  rebuild: true,
+  containerLogs: '',
+  dockerLogs: '',
+  state: 'stopped',
+  stats: []
 }
 
 const getters = {
@@ -13,9 +19,15 @@ const getters = {
   getDockerBuilding: state => state.building,
   getDockerBuilt: state => state.built,
   getDockerRunning: state => state.running,
-  getDockerLogs: state => state.logs,
+  // getDockerLogs: state => state.logs,
   getDockerRunStat: state => state.runStat,
-  getDockerInspect: state => state.inspect
+  getDockerInspect: state => state.inspect,
+
+  getDockerRebuild: state => state.rebuild,
+  getContainerLogs: state => state.containerLogs,
+  getDockerLogs: state => state.dockerLogs,
+  getDockerState: state => state.state,
+  getDockerStats: state => state.stats
 }
 
 const mutations = {
@@ -26,7 +38,14 @@ const mutations = {
   setDockerLogs: (state, value) => (state.logs = value),
   setDockerRunStat: (state, value) => (state.runStat = value),
   addLineDockerRunStat: (state, line) => (state.runStat += `\n${line}`),
-  setDockerInspect: (state, value) => (state.inspect = value)
+  setDockerInspect: (state, value) => (state.inspect = value),
+  setDockerRebuild: (state, value) => (state.rebuild = value),
+
+  toggleDockerRebuild: state => (state.rebuild = !state.rebuild),
+  setContainerLogs: (state, log) => (state.containerLogs = log),
+  appendDockerLogs: (state, line) => (state.dockerLogs += `${line}\n`),
+  setDockerState: (state, value) => (state.state = value),
+  addDockerStatsEntry: (state, entry) => state.stats.push(entry)
 }
 
 const actions = {}

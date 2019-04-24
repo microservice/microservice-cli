@@ -86,8 +86,9 @@ program
 program
   .command('ui')
   .option('-p --port, <p>', 'The port to bind')
+  .option('-o --open', 'Open in browser')
   .description('Starts to omg-app which monitors your microservice.')
-  .action(async options => Cli.ui(options))
+  .action(async options => cli.ui(options))
 
 // needed because there is no default catch all command with commander.js
 if (

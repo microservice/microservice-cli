@@ -1,23 +1,22 @@
 const state = {
   action: '',
-  args: {}
+  args: {},
+  output: ''
 }
 
 const getters = {
   getAction: state => state.action,
-  getArgs: state => state.args
+  getActionArgs: state => state.args,
+  getActionOutput: state => state.output
 }
 
 const mutations = {
-  setAction: (state, action) => {
-    state.action = action
-  },
-  addArg: (state, arg) => {
-    state.args[arg.key] = arg.value
-  },
-  deleteArg: (state, key) => {
+  setAction: (state, action) => (state.action = action),
+  addActionArg: (state, arg) => (state.args[arg.key] = arg.value),
+  deleteActionArg: (state, key) => {
     delete state.args[key]
-  }
+  },
+  setActionOutput: (state, output) => (state.output = output)
 }
 
 const actions = {}
