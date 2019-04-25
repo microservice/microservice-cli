@@ -15,10 +15,15 @@ import { mapGetters, mapMutations } from 'vuex';
 export default {
   name: 'rebuild',
   computed: {
-    ...mapGetters(['getDockerRebuild'])
+    ...mapGetters(['getDockerRebuild', 'getSocket'])
   },
   methods: {
     ...mapMutations(['toggleDockerRebuild'])
+  },
+  watch: {
+    getDockerRebuild: function() {
+      this.getSocket.emit('rebuild-toggle', this.getDockerRebuild)
+    }
   }
 }
 </script>

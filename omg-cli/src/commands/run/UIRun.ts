@@ -85,7 +85,7 @@ export default class UIRun extends Run {
    * @return {Promise<String>} The response of the Http request
    */
   private async httpCommand(port: number): Promise<string> {
-    let data
+    let data: string
     const httpData = this.formatHttp(port)
     switch (this.action.http.method) {
       case 'get':

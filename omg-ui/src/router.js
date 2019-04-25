@@ -8,6 +8,8 @@ import Documentation from '@/views/Documentation'
 import Inspect from '@/views/Inspect'
 import Home from '@/views/Home'
 
+import store from './store'
+
 Vue.use(Router)
 
 export default new Router({
@@ -23,7 +25,16 @@ export default new Router({
       path: '/actions/:action',
       name: 'actions',
       component: Actions,
-      props: route => ({ query: route.query })
+      props: route => ({ query: route.query }),
+      beforeEnter: (to, from, next) => {
+        setTimeout(() => {
+          next(
+            store.getters.getMicroserviceActionList.includes(to.params.action)
+              ? true
+              : { name: 'home' }
+          )
+        }, 500)
+      }
     },
     {
       path: '/history',

@@ -1,12 +1,34 @@
 <template>
   <div class="action-nav-container">
     <div class="actions">
-    <form class="search-container" @submit.prevent="search">
-      <input type="text" class="search" placeholder="Search" name="search">
-      <button type="submit">
-        <img src="../../../assets/ic-search.svg" alt="magnifyer icon" class="magnifyer">
-      </button>
-    </form>
+      <form class="search-container" @submit.prevent="search">
+        <input
+          type="text"
+          class="search"
+          placeholder="Search"
+          name="search"
+          v-model="search"
+        />
+        <button type="submit">
+          <img
+            src="../../../assets/ic-search.svg"
+            alt="magnifyer icon"
+            class="magnifyer"
+          />
+        </button>
+      </form>
+      <div
+        class="search-results"
+        v-if="search.length > 0">
+        <div
+          class="result"
+          :key="action"
+          v-for="action of filteredActions"
+          @click="$router.push({ name: 'actions', params: { action: action } }); search = ''"
+        >
+        {{ action }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -16,9 +38,20 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'action-nav',
   data: () => ({
+    search: ''
   }),
   computed: {
-    ...mapGetters(['getMicroservice'])
+    ...mapGetters(['getMicroservice', 'getMicroserviceActionList']),
+    filteredActions: function() {
+      if (this.getMicroserviceActionList) {
+        return this.getMicroserviceActionList.filter(action => {
+          return action.toLowerCase().includes(this.search.toLowerCase())
+        })
+      }
+      return null
+    }
+  },
+  mounted() {
   },
   methods: {
     search(data) {
@@ -78,6 +111,22 @@ export default {
       width: 16px;
       height: 16px;
     }
+  }
+}
+.search-results {
+  position: absolute;
+  background: lightgray;
+  width: 230px;
+  padding: 0 12px;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .result {
+    margin: 10px 0;
+    cursor: pointer;
+    width: 100%;
   }
 }
 </style>
