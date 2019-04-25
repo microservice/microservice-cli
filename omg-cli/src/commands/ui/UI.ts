@@ -52,6 +52,7 @@ export default class UIServer {
   private subscribe: Subscribe
 
   private rebuildBak: { build: any; start: any }
+  private rebuildToggle: boolean
 
   /**
    * Constructor
@@ -66,6 +67,7 @@ export default class UIServer {
     this.io = io.listen(this.http)
     this.socket = null
     this.microserviceStr = microservice
+    this.rebuildToggle = true
   }
   /**
    * Starts the UI server
@@ -98,17 +100,28 @@ export default class UIServer {
    * @param  {any} data Data used to build image
    * @param  {Boolean} [ui=false]
    */
-  async rebuild(data?: any, microservice?: string, bak = false) {
-    if (microservice) {
-      this.microserviceStr = microservice
-    }
-    this.sendFile(path.join(process.cwd(), 'microservice.yml'))
-    await this.stopContainer()
-    if (bak) {
-      await this.buildImage(this.rebuildBak.build)
-    } else {
-      await this.buildImage(data.build)
-      this.rebuildBak = { build: data.build, start: data.start }
+  async rebuild(
+    data?: any,
+    microservice?: string,
+    bak = false,
+    appPath?: string
+  ) {
+    if (this.rebuildToggle) {
+      utils.log(
+        `${appPath.substr(appPath.lastIndexOf('/') + 1)} changed. Rebuilding.`
+      )
+
+      if (microservice) {
+        this.microserviceStr = microservice
+      }
+      this.sendFile(path.join(process.cwd(), 'microservice.yml'))
+      await this.stopContainer()
+      if (bak) {
+        await this.buildImage(this.rebuildBak.build)
+      } else {
+        await this.buildImage(data.build)
+        this.rebuildBak = { build: data.build, start: data.start }
+      }
     }
   }
 
@@ -166,6 +179,9 @@ export default class UIServer {
     })
     this.socket.on('rebuild', data => {
       this.rebuild(data)
+    })
+    this.socket.on('rebuild-toggle', data => {
+      this.rebuildToggle = data
     })
     this.socket.on('microservice.yml', (data: any) => {
       const content = new Uint8Array(Buffer.from(data))
@@ -377,9 +393,9 @@ export default class UIServer {
         status: true
       })
     } catch (e) {
-      if (await this.dockerContainer.isRunning()) {
-        await this.dockerContainer.stopService()
-      }
+      // if (await this.dockerContainer.isRunning()) {
+      //   await this.dockerContainer.stopService()
+      // }
       this.socket.emit('run', {
         notif: `Failed action: \`${data.action}\`: ${e}`,
         status: false

@@ -1,6 +1,8 @@
 <template>
   <div class="env-container">
-    <div class="title">Environment Variable</div>
+    <div class="title" v-if="!getMicroservice.environment">
+      Environment Variable
+    </div>
     <form @submit.prevent="saveHandler" v-if="getMicroservice.environment">
       <div class="inputs">
         <label
@@ -12,7 +14,7 @@
           <input
             :name="`env-${name}`"
             :required="`${env.required}`"
-            :value="`${envs[name] || ''}`"
+            :value="`${getEnvs[name] || ''}`"
             :placeholder="env.type"
             :type="env.type === 'number' ? 'number' : 'string'"
           />
@@ -37,13 +39,9 @@ import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'environment',
-  data: () => ({
-    envs: {}
-  }),
-  computed: mapGetters(['getMicroservice', 'getEnvs', 'getOwner', 'getSocket']),
-  mounted () {
-    this.envs = this.getEnvs
-  },
+  data: () => ({}),
+  computed: mapGetters(['getMicroservice', 'getEnvs', 'getOwner', 'getSocket', 'getDockerRebuild']),
+  mounted () {},
   methods: {
     ...mapMutations(['addEnv']),
     saveHandler (data) {
@@ -53,13 +51,15 @@ export default {
           this.addEnv({ key: e[i].name.substr(4), value: e[i].value })
         }
       }
-      this.getSocket.emit('rebuild', {
-        build: {}, 
-        start: {
-          image: `omg/${this.getOwner}`,
-          envs: { ...this.getEnvs }
-        }
-      })
+      if (this.getDockerRebuild) {
+        this.getSocket.emit('rebuild', {
+          build: {}, 
+          start: {
+            image: `omg/${this.getOwner}`,
+            envs: { ...this.getEnvs }
+          }
+        })
+      }
     }
   }
 }

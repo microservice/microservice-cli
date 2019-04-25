@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'action-form',
@@ -89,7 +89,8 @@ export default {
     }
   },
   methods: {
-    processData (data) {
+    ...mapMutations(['updateActionContinuousArgs']),
+    processData(data) {
       for (let i = 0; i < data.srcElement.length - 1; i++) {
         const key = data.srcElement[i].name.substr(4)
         const value = data.srcElement[i].value

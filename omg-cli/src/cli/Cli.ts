@@ -461,18 +461,14 @@ export default class Cli {
           })
           .on('all', (event, appPath) => {
             if (event === 'change') {
-              utils.log(
-                `${appPath.substr(
-                  appPath.lastIndexOf('/') + 1
-                )} changed. Rebuilding.`
-              )
               this.uiServer.rebuild(
                 {},
                 Cli.readYAML(
                   path.join(process.cwd(), 'microservice.yml'),
                   true
                 ),
-                true
+                true,
+                appPath
               )
             }
           })

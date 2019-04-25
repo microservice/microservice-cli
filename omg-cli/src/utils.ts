@@ -62,9 +62,9 @@ export async function createImageName(ui: boolean = false): Promise<string> {
   try {
     const data = await exec('git remote -v')
     return ui
-      ? `${data.match(/git@github\.com:(\w+\/[\w|-]+).git/)[1].toLowerCase()}`
+      ? `${data.match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1].toLowerCase()}`
       : `omg/${data
-          .match(/git@github\.com:(\w+\/[\w|-]+).git/)[1]
+          .match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1]
           .toLowerCase()}`
   } catch (e) {
     return ui

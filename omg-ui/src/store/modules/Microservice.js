@@ -11,6 +11,12 @@ const getters = {
   getMicroserviceRaw: state => state.rawMicroservice,
   getMicroserviceStatus: state => state.status,
   getMicroserviceNotif: state => state.notif,
+  getMicroserviceActionList: state => {
+    if (state.microservice) {
+      return Object.keys(state.microservice.actions)
+    }
+    return null
+  },
   getOwner: state => state.owner
 }
 
