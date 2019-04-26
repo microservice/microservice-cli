@@ -1,6 +1,6 @@
 <template>
   <div class="action-form-container">
-    <form class="action" @submit.prevent="processData">
+    <form class="action" @submit.prevent="processData" @change="changeHandler">
       <div class="inputs" v-if="getMicroservice.actions[actionName].arguments">
         <label
           :key="`arg-${argName}`"
@@ -82,14 +82,16 @@ export default {
       required: false
     }
   },
-  computed: mapGetters(['getMicroservice']),
+  computed: {
+    ...mapGetters(['getMicroservice'])
+  },
   mounted () {
     if (this.query && this.query.action) {
       this.open = this.query.action
     }
   },
   methods: {
-    ...mapMutations(['updateActionContinuousArgs']),
+    ...mapMutations(['updateActionContinuousArgs', 'addActionCurlArgs']),
     processData(data) {
       for (let i = 0; i < data.srcElement.length - 1; i++) {
         const key = data.srcElement[i].name.substr(4)
@@ -103,6 +105,12 @@ export default {
         }
         this.$emit('argsEdited', this.obj)
       }
+    },
+    changeHandler(data) {
+      const key = data.srcElement.name.substr(4)
+      const value = data.srcElement.value
+      
+      this.addActionCurlArgs({key, value})
     }
   }
 }
@@ -173,6 +181,14 @@ form.action {
       line-height: 21px;
       text-align: center;
       background-color: #17b897;
+
+      &:hover {
+        background-color: #2dcca7;
+      }
+
+      &:focus {
+        background-color: #079a82;
+      }
     }
   }
 }

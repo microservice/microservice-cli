@@ -349,7 +349,8 @@ export default class UIServer {
     this.socket.emit('start', {
       notif: `Started Docker container: ${this.containerID.substring(0, 12)}`,
       status: true,
-      started: true
+      started: true,
+      ports: this.dockerContainer.getPortbindings()
     })
     await new Promise(res => setTimeout(res, 1000))
   }

@@ -46,6 +46,9 @@ export default {
       this.build(res)
     })
     this.getSocket.on('start', res => {
+      if (res.ports) {
+        this.setDockerPort(res.ports[Object.keys(res.ports)[0]][0].HostPort)
+      }
       this.start(res)
     })
     this.getSocket.on('stop', res => {
@@ -61,7 +64,9 @@ export default {
     this.getSocket.removeListener('start')
     this.getSocket.removeListener('stop')
   },
-  methods: {...mapMutations(['initSocket', 'setValidation', 'setOwner', 'setMicroserviceRaw', 'appendDockerLogs', 'setDockerState']),
+  methods: {
+    ...mapMutations(['initSocket', 'setValidation', 'setOwner', 
+  'setMicroserviceRaw', 'appendDockerLogs', 'setDockerState', 'setDockerPort']),
     build(data) {
       this.setDockerState('building')
       this.appendDockerLogs(data.log || data.notif.trim())

@@ -57,65 +57,79 @@
               : "rpc path comming soon"
           }}
         </div>
-        <div class="copy-btn">Copy</div>
-      </div>
-
-      <!-- <div class="search-container">
-        <input placeholder="SEARCH DOCS" name="search" class="search-input" />
-        <svg
-          enable-background="new 0 0 32 32"
-          id="magnifying-glass"
-          version="1.1"
-          viewBox="0 0 32 32"
-          xml:space="preserve"
-          height="12px"
-          width="12px"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
+        <div
+          class="copy-btn"
+          @click="cURLHandler"
+          v-if="getDockerState === 'started' && getMicroservice"
         >
-          <circle
-            cx="14"
-            cy="14"
-            fill="none"
-            id="XMLID_42_"
-            r="9"
-            stroke="#000000"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-miterlimit="10"
-            stroke-width="2"
-          />
-          <line
-            fill="none"
-            id="XMLID_44_"
-            stroke="#000000"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-miterlimit="10"
-            stroke-width="2"
-            x1="27"
-            x2="20.366"
-            y1="27"
-            y2="20.366"
-          />
-        </svg>
-      </div> -->
+          Copy
+        </div>
+        <input id="curl" type="hidden" :value="cURL" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapgetters, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import Owner from '@/components/layout/Owner'
 
 
 export default {
   name: 'topbar',
+  data: () => ({
+    cURL: '',
+    cURLInput: null
+  }),
   components: {
     Owner
   },
   computed: {
-    ...mapGetters(['getMicroservice'])
+    ...mapGetters(['getMicroservice', 'getActionCurlArgs', 'getDockerPort', 'getDockerState'])
+  },
+  methods: {
+    copy() {
+      this.cURLInput.setAttribute('type', 'text')
+      this.cURLInput.select()
+      try {
+        document.execCommand('copy')
+      }
+      catch (e) {
+        console.error(e)
+      } 
+      this.cURLInput.setAttribute('type', 'hidden')
+      window.getSelection().removeAllRanges()
+
+    },
+    cURLHandler() {
+      const action = this.$route.params.action
+      let param = false
+      let body = {}
+
+      this.cURLInput = this.$el.querySelector('#curl')
+      this.cURL = `curl --request ${this.getMicroservice.actions[action].http.method.toUpperCase()} `
+      this.cURL += `--url http://localhost:${this.getDockerPort}/${action}`
+      for (const arg in this.getMicroservice.actions[action].arguments) {
+        if (this.getMicroservice.actions[action].arguments[arg].in === 'query') {
+          if (!param) {
+            this.cURL += '?'
+            param = true
+            this.cURL += `${arg}=${this.getActionCurlArgs[arg]}`
+          } else {
+            this.cURL += `&${arg}=${this.getActionCurlArgs[arg]}`
+          }
+        } else if (this.getMicroservice.actions[action].arguments[arg].in === 'requestBody') {
+          body[arg] = ''
+        }
+        this.cURL += ' '
+      }
+
+      if (body && Object.keys(body).length > 0) {
+        this.cURL += `--data ${JSON.stringify(body)} `
+      }
+
+      this.copy()
+    }
   }
 }
 </script>
@@ -230,6 +244,7 @@ export default {
         display: flex;
         align-items: center;
         padding: 0 12px;
+        cursor: pointer;
       }
     }
     .search-container {
