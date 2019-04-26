@@ -11,7 +11,8 @@ const state = {
   containerLogs: '',
   dockerLogs: '',
   state: 'stopped',
-  stats: []
+  stats: [],
+  port: 0
 }
 
 const getters = {
@@ -27,7 +28,8 @@ const getters = {
   getContainerLogs: state => state.containerLogs,
   getDockerLogs: state => state.dockerLogs,
   getDockerState: state => state.state,
-  getDockerStats: state => state.stats
+  getDockerStats: state => state.stats,
+  getDockerPort: state => state.port
 }
 
 const mutations = {
@@ -45,7 +47,8 @@ const mutations = {
   setContainerLogs: (state, log) => (state.containerLogs = log),
   appendDockerLogs: (state, line) => (state.dockerLogs += `${line}\n`),
   setDockerState: (state, value) => (state.state = value),
-  addDockerStatsEntry: (state, entry) => state.stats.push(entry)
+  addDockerStatsEntry: (state, entry) => state.stats.push(entry),
+  setDockerPort: (state, port) => (state.port = port)
 }
 
 const actions = {}

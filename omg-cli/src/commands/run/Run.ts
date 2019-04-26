@@ -269,4 +269,8 @@ export default abstract class Run {
       .toString()
       .trim()
   }
+
+  public getPortbindings(): any {
+    return this.portBindings
+  }
 }
