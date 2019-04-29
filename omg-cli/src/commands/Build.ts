@@ -1,4 +1,5 @@
 import * as utils from '../utils'
+const Dockerode = require('dockerode')
 
 /**
  * Describes a way to build a microservice.
@@ -24,12 +25,31 @@ export default class Build {
    */
   async go(silent = false, ui = false): Promise<any> {
     if (ui) {
-      return {
-        name: this.name,
-        log: await utils.exec(`docker build -t ${this.name} .`, false)
-      }
+      let stream = await utils.docker.buildImage(
+        {
+          context: process.cwd()
+        },
+        { t: this.name }
+      )
+      return stream
     } else {
-      await utils.exec(`docker build -t ${this.name} .`, silent) // This needs to be changed to use dockerode
+      let stream = await utils.docker.buildImage(
+        {
+          context: process.cwd()
+        },
+        { t: this.name }
+      )
+      const dockerode = new Dockerode()
+      const log = await new Promise((resolve, reject) => {
+        dockerode.modem.followProgress(stream, (err, res) =>
+          err ? reject(err) : resolve(res)
+        )
+      })
+      for (const line in log) {
+        if (log[line].stream && log[line].stream.length > 1) {
+          utils.log(log[line].stream.trim())
+        }
+      }
       return this.name
     }
   }

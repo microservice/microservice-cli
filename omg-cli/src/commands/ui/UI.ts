@@ -11,6 +11,7 @@ import RunFactory from '../run/RunFactory'
 import * as fs from 'fs'
 import * as path from 'path'
 import open from './wrappers/open'
+import Dockerode from './wrappers/dockerode'
 
 interface ISocketNotif {
   notif: any
@@ -235,16 +236,27 @@ export default class UIServer {
 
     this.emit('build', { notif: 'Building Docker image', status: true })
     try {
-      const res = await new Build(
+      const stream = await new Build(
         data.name || (await utils.createImageName())
       ).go(false, true)
+      const dockerode = new Dockerode()
+      const log = await new Promise((resolve, reject) => {
+        dockerode.modem.followProgress(stream, (err, res) =>
+          err ? reject(err) : resolve(res)
+        )
+      })
+      for (const line in log) {
+        this.socket.emit('build', {
+          status: true,
+          notif: log[line].stream ? log[line].stream.trim() : '',
+          build: true
+        })
+      }
       this.socket.emit('build', {
         status: true,
-        notif: `Built Docker image with name: ${res.name}`,
-        log: res.log,
         built: true
       })
-      return res.name
+      return data.name
     } catch (e) {
       this.emit('build', {
         status: false,
@@ -252,6 +264,7 @@ export default class UIServer {
       })
     }
   }
+
   /**
    * Inspects docker container then the sends result through socket
    */
@@ -312,7 +325,7 @@ export default class UIServer {
         return
       }
     } else {
-      data.image = await this.buildImage({})
+      await this.buildImage({})
     }
 
     let envObj: any
