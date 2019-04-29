@@ -1,10 +1,8 @@
 {
+  "name": "omg",
   "private": true,
-  "workspaces": [
-    "omg-cli",
-    "omg-ui"
-  ],
-  "scripts": {
-    "build": "yarn workspace omg-ui build --prod && yarn workspace omg-cli build"
-  }
+  "devDependencies": {
+    "lerna": "^3.13.4"
+  },
+  "bin": "omg"
 }
