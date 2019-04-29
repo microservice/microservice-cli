@@ -69,7 +69,9 @@ export default {
   'setMicroserviceRaw', 'appendDockerLogs', 'setDockerState', 'setDockerPort']),
     build(data) {
       this.setDockerState('building')
-      this.appendDockerLogs(data.log || data.notif.trim())
+      if (data.notif) {
+        this.appendDockerLogs(data.notif.trim())
+      }
       if (data.status && data.built) {
         this.setDockerState('starting')
         this.getSocket.emit('start', {
@@ -79,7 +81,7 @@ export default {
       }
     },
     start(data) {
-      this.appendDockerLogs(data.logs || data.notif.trim())
+      this.appendDockerLogs(data.notif.trim())
       if (data.started) {
         this.setDockerState('started')
         this.logsInterval = setInterval(() => this.getSocket.emit('dockerLogs'), 1000)
