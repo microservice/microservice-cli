@@ -340,7 +340,9 @@ export default class Cli {
       )
       spinner = ora.start(`Health check`)
     }
-    await new Promise(res => setTimeout(res, 1000)) // wait for the container to start
+
+    await this._run.getStats() // waits for the container to starts, but avoids using a basic setTimeout
+
     if (!(await this._run.isRunning())) {
       // 2. health check
       if (options.raw) {
