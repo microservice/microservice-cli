@@ -23,6 +23,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/project
+      - run: ls -lah
       - restore_cache:
           keys:
             - v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/package-lock.json" }}
