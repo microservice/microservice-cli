@@ -5,7 +5,12 @@
     "lerna": "^3.13.4"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap"
+    "bootstrap": "lerna bootstrap",
+    "lint": "lerna run lint",
+    "test": "lerna run test",
+    "coverage": "lerna run coverage",
+    "build": "lerna run build",
+    "publish": "lerna run publish"
   },
   "bin": "omg"
 }
