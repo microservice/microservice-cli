@@ -79,7 +79,7 @@ typings/
 .dynamodb/
 
 # yarn.lock is preferred
-package-lock.json
+# package-lock.json
 
 # Custom
 .idea/
