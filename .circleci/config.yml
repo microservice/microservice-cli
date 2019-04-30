@@ -25,22 +25,22 @@ jobs:
           at: ~/project
       - restore_cache:
           keys:
-            - v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/package-lock.lock" }}
+            - v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/package-lock.json" }}
             - v1-dependencies-omg-cli
       - restore_cache:
           keys:
-            - v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/package-lock.lock" }}
+            - v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/package-lock.json" }}
             - v1-dependencies-omg-ui
       - run:
           name: Install local dependencies
           command: lerna bootstrap
       - save_cache:
-          key: v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/package-lock.lock" }}
+          key: v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/package-lock.json" }}
           paths:
             - ~/.cache/yarn
             - packages/omg-cli/node_modules
       - save_cache:
-          key: v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/package-lock.lock" }}
+          key: v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/package-lock.json" }}
           paths:
             - ~/.cache/yarn
             - packages/omg-ui/node_modules
