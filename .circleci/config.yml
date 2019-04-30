@@ -10,8 +10,6 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/project
       - restore_cache:
           keys:
             - v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/package-lock.json" }}
@@ -90,10 +88,6 @@ jobs:
           root: ~/project
           paths:
             - omg
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - omg
 
   publish_latest:
     <<: *defaults
@@ -132,6 +126,12 @@ workflows:
           filters:
             branches:
               only: dev
+          requires:
+            - install
+      - test:
+          filters:
+            branches:
+              only: master
           requires:
             - install
       - build:
@@ -180,6 +180,4 @@ workflows:
             branches:
               ignore: /.*/
           requires:
-            - lint
-            - test
             - build
