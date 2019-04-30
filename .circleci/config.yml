@@ -48,7 +48,7 @@ jobs:
           at: ~/project
       - run:
           name: Linting
-          command: lerna run lint
+          command: npm run lint
 
   test:
     <<: *defaults
@@ -57,7 +57,7 @@ jobs:
           at: ~/project
       - run:
           name: Testing with coverage
-          command: lerna run coverage
+          command: npm run coverage
       - run:
           name: Uploading to Codecov
           command: bash <(curl -s https://codecov.io/bash)
@@ -77,7 +77,7 @@ jobs:
             - v1-dist-omg-ui-
       - run:
           name: Building
-          command: lerna run build
+          command: npm run build
       - save_cache:
           key: v1-dist-omg-cli-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
@@ -105,7 +105,7 @@ jobs:
         command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
         name: Publishing to npmjs using lerna
-        command: lerna publish --from-git
+        command: npm run publish --from-git
 
   publish_prerelease:
     <<: *defaults
@@ -117,7 +117,7 @@ jobs:
         command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
         name: Publishing to npmjs using lerna
-        command: lerna publish --from-git --dist-tag beta
+        command: npm run publish --from-git --dist-tag beta
 
 workflows:
   version: 2
