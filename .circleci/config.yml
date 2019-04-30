@@ -10,8 +10,8 @@ jobs:
     <<: *defaults
     steps:
       - run:
-        name: Installing Lerna globally
-        command: npm i -g lerna
+          name: Installing Lerna globally
+          command: npm i -g lerna
       - persist_to_workspace:
         root: ~/project
         paths:
