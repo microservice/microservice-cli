@@ -130,10 +130,16 @@ workflows:
 
   beta:
     jobs:
+      - lerna:
+          filters:
+            branches:
+              only: dev
       - install:
           filters:
             branches:
               only: dev
+          requires:
+            - lerna
       - lint:
           filters:
             branches:
@@ -158,10 +164,16 @@ workflows:
 
   release:
     jobs:
+      - lerna:
+          filters:
+            branches:
+              only: master
       - install:
           filters:
             branches:
               only: master
+          requires:
+            - lerna
       - lint:
           filters:
             branches:
