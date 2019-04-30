@@ -6,24 +6,12 @@ defaults: &defaults
     - image: circleci/node:latest
 
 jobs:
-  lerna:
-    <<: *defaults
-    steps:
-      - run:
-          name: Installing Lerna
-          command: npm i
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - omg
-
   install:
     <<: *defaults
     steps:
       - checkout
       - attach_workspace:
           at: ~/project
-      - run: ls -lah
       - restore_cache:
           keys:
             - v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/package-lock.json" }}
@@ -32,6 +20,9 @@ jobs:
           keys:
             - v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/package-lock.json" }}
             - v1-dependencies-omg-ui
+      - run:
+          name: Installing Lerna
+          command: npm i
       - run:
           name: Install local dependencies
           command: lerna bootstrap
@@ -133,16 +124,10 @@ workflows:
 
   beta:
     jobs:
-      - lerna:
-          filters:
-            branches:
-              only: dev
       - install:
           filters:
             branches:
               only: dev
-          requires:
-            - lerna
       - lint:
           filters:
             branches:
@@ -167,16 +152,10 @@ workflows:
 
   release:
     jobs:
-      - lerna:
-          filters:
-            branches:
-              only: master
       - install:
           filters:
             branches:
               only: master
-          requires:
-            - lerna
       - lint:
           filters:
             branches:
