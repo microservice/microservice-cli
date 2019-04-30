@@ -6,9 +6,20 @@ defaults: &defaults
     - image: circleci/node:latest
 
 jobs:
+  lerna:
+    <<: *defaults
+    steps:
+      - npm i -g lerna
+      - persist_to_workspace:
+        root: ~/project
+        paths:
+          - omg
+
   install:
     <<: *defaults
     steps:
+      - attach_workspace:
+          at: ~/project
       - checkout
       - restore_cache:
           keys:
@@ -177,4 +188,6 @@ workflows:
               only: master
           requires:
             - install
+            - lint
+            - test
             - build
