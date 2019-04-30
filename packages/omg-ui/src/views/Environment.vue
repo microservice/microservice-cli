@@ -53,7 +53,7 @@ export default {
       }
       if (this.getDockerRebuild) {
         this.getSocket.emit('rebuild', {
-          build: {}, 
+          build: {},
           start: {
             image: `omg/${this.getOwner}`,
             envs: { ...this.getEnvs }

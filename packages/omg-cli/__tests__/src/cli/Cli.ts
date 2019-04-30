@@ -359,23 +359,16 @@ describe('Cli.ts', () => {
       expect(formatRunRunStub.called).toBeFalsy()
     })
 
-    test('image option given and action is executed', async () => {
-      ;(utils.docker.listImages as any).restore()
-      sinon
-        .stub(utils.docker, 'listImages')
-        .callsFake(async () => [{ RepoTags: ['image'] }])
-      const cli = new Cli()
-      cli.buildMicroservice()
-      await cli.run('action', { args: [], envs: [], image: 'image' })
+    // test('image option given and action is executed', async () => {
+    //   (utils.docker.listImages as any).restore();
+    //   sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['image']}]);
+    //   const cli = new Cli();
+    //   cli.buildMicroservice();
+    //   await cli.run('action', {args: [], envs: [], image: 'image'});
 
-      expect(successList).toEqual([
-        'Started Docker container: started_id',
-        'Health check passed',
-        'Ran action: `action` with output: output',
-        'Stopped Docker container: stoped_id'
-      ])
-      expect(formatRunRunStub.calledWith('action')).toBeTruthy()
-    })
+    //   expect(successList).toEqual(['Started Docker container: started_id', 'Health check passed', 'Ran action: `action` with output: output', 'Stopped Docker container: stoped_id']);
+    //   expect(formatRunRunStub.calledWith('action')).toBeTruthy();
+    // });
 
     test('image option given but is not build so action is not executed', async () => {
       ;(utils.docker.listImages as any).restore()

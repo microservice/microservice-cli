@@ -63,7 +63,6 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { setInterval } from 'timers';
 
 export default {
   name: 'docker-logs',
@@ -83,7 +82,7 @@ export default {
   },
   watch: {
     getDockerLogs: function () {
-      const els = this.$el.querySelectorAll("code")
+      const els = this.$el.querySelectorAll('code')
       for (const el of els) {
         el.scrollTop = el.scrollHeight
       }
@@ -91,13 +90,13 @@ export default {
   },
   methods: {
     ...mapMutations(['setContainerLogs']),
-    openHandler() {
+    openHandler () {
       this.open = !this.open
       if (this.state === 'close') {
         this.state = 'half'
       }
     },
-    switchHandler(side) {
+    switchHandler (side) {
       switch (this.state) {
         case 'half':
           switch (side) {
@@ -113,7 +112,9 @@ export default {
           switch (side) {
             case 'dlog':
               this.open = false
-              setTimeout(() => this.state = 'close', 250)
+              setTimeout(() => {
+                this.state = 'close'
+              }, 250)
               break
             case 'clog':
               this.state = 'half'
@@ -127,7 +128,9 @@ export default {
               break
             case 'clog':
               this.open = false
-              setTimeout(() => this.state = 'close', 250)
+              setTimeout(() => {
+                this.state = 'close'
+              }, 250)
               break
           }
           break

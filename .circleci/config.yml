@@ -1,19 +1,171 @@
 version: 2
+
+defaults: &defaults
+  working_directory: ~/project/omg
+  docker:
+    - image: circleci/node:latest
+
 jobs:
-  build:
-    docker:
-      - image: circleci/node:latest
+  install:
+    <<: *defaults
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}
+            - v1-dependencies-
       - run:
-          name: yarn-install
+          name: Install local dependencies
           command: yarn
+      - save_cache:
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+            - node_modules
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - omg
+
+  lint:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
       - run:
-          name: eslint
-          command: yarn workspace omg-cli eslint
+          name: Linting
+          command: lerna run lint
+
+  test:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
       - run:
-          name: test-with-coverage
-          command: yarn workspace omg-cli coverage
+          name: Testing with coverage
+          command: lerna run coverage
       - run:
-          name: upload-to-codecov
+          name: Uploading to Codecov
           command: bash <(curl -s https://codecov.io/bash)
+
+  build:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - restore_cache:
+          keys:
+            - v1-dist-omg-cli-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-omg-cli-
+      - restore_cache:
+          keys:
+            - v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-omg-ui-
+      - run:
+          name: Building
+          command: lerna run build
+      - save_cache:
+          key: v1-dist-omg-cli-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - packages/omg-cli/dist
+      - save_cache:
+          key: v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - packages/omg-ui/dist
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - omg
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - omg
+
+  publish_latest:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+        name: Setup npm publish token
+        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+        name: Publishing to npmjs using lerna
+        command: lerna publish --from-git
+
+  publish_prerelease:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+        name: Setup npm publish token
+        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+        name: Publishing to npmjs using lerna
+        command: lerna publish --from-git --dist-tag beta
+
+workflows:
+  version: 2
+
+  beta:
+    jobs:
+      - install:
+          filters:
+            branches:
+              only: dev
+      - lint:
+          filters:
+            branches:
+              only: dev
+          requires:
+            - install
+      - build:
+          filters:
+            branches:
+              only: dev
+          requires:
+            - install
+      - publish_prerelease:
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*-beta(\.[0-9]+)?/
+            branches:
+              only: dev
+          requires:
+            - install
+            - build
+
+  release:
+    jobs:
+      - install:
+          filters:
+            branches:
+              only: master
+      - lint:
+          filters:
+            branches:
+              only: master
+          requires:
+            - install
+      - test:
+          filters:
+            branches:
+              only: master
+          requires:
+            - install
+      - build:
+          filters:
+            branches:
+              only: master
+          requires:
+            - install
+      - publish_latest:
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
+            branches:
+              only: master
+          requires:
+            - install
+            - build

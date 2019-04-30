@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex'
 import ArrowForward from '@/components/ArrowForward'
 import Graph from '@/components/Graph'
 
@@ -95,27 +95,25 @@ export default {
   }),
   computed: {
     ...mapGetters(['getDockerStats', 'getSocket']),
-    cpuPercentage: function() {
+    cpuPercentage: function () {
       const stats = this.getDockerStats
       if (stats && stats.length > 2) {
         const previousCPU = stats[stats.length - 2].cpu_stats.cpu_usage.total_usage
         const previousSystem = stats[stats.length - 2].cpu_stats.system_cpu_usage
-        this.cpuArr.push(this.calculateCPUPercentUnix(previousCPU, previousSystem, stats[stats.length - 1]))
         return this.calculateCPUPercentUnix(previousCPU, previousSystem, stats[stats.length - 1])
       }
       return NaN
     },
-    memPercentage: function() {
+    memPercentage: function () {
       const stats = this.getDockerStats
       if (stats && stats.length > 0) {
         return parseFloat(stats[stats.length - 1].memory_stats.usage) / parseFloat(stats[stats.length - 1].memory_stats.limit) * 100.0
       }
       return NaN
     },
-    memRawValue: function() {
+    memRawValue: function () {
       const stats = this.getDockerStats
       if (stats && stats.length > 0) {
-        this.memArr.push(parseFloat(stats[stats.length - 1].memory_stats.usage) / 1024 / 1024)
         return {
           mem: parseFloat(stats[stats.length - 1].memory_stats.usage) / 1024 / 1024,
           limit: parseFloat(stats[stats.length - 1].memory_stats.limit) / 1024 / 1024
@@ -123,56 +121,73 @@ export default {
       }
       return NaN
     },
-    ioRawValue: function() {
+    ioRawValue: function () {
       const stats = this.getDockerStats
       if (stats && stats.length > 0) {
-        this.diskArr.push({ 
-          up: this.calculateBlockIO(stats[stats.length - 1].blkio_stats).read, 
-          down: this.calculateBlockIO(stats[stats.length - 1].blkio_stats).write
-        })
         return this.calculateBlockIO(stats[stats.length - 1].blkio_stats)
       }
       return NaN
     },
-    networkRawValue: function() {
+    networkRawValue: function () {
       const stats = this.getDockerStats
       if (stats && stats.length > 2) {
         const previous = stats[stats.length - 2].networks
         const net = this.calculateNetwork(previous, stats[stats.length - 1].networks)
         net.rx /= 1024
         net.tx /= 1024
-        this.netArr.push({
-          down: net.rx,
-          up: net.tx
-        })
-        // console.log(net)
         return net
       }
       return NaN
     }
   },
-  mounted() {
+  watch: {
+    getDockerStats: function () {
+      const stats = this.getDockerStats
+      if (stats && stats.length > 0) {
+        this.memArr.push(parseFloat(stats[stats.length - 1].memory_stats.usage) / 1024 / 1024)
+        this.diskArr.push({
+          up: this.calculateBlockIO(stats[stats.length - 1].blkio_stats).read,
+          down: this.calculateBlockIO(stats[stats.length - 1].blkio_stats).write
+        })
+      }
+      if (stats && stats.length > 2) {
+        const previousCPU = stats[stats.length - 2].cpu_stats.cpu_usage.total_usage
+        const previousSystem = stats[stats.length - 2].cpu_stats.system_cpu_usage
+        const previousNet = stats[stats.length - 2].networks
+        const net = this.calculateNetwork(previousNet, stats[stats.length - 1].networks)
+
+        this.cpuArr.push(this.calculateCPUPercentUnix(previousCPU, previousSystem, stats[stats.length - 1]))
+        net.rx /= 1024
+        net.tx /= 1024
+        this.netArr.push({
+          down: net.rx,
+          up: net.tx
+        })
+      }
+    }
+  },
+  mounted () {
     this.getSocket.on('container-stats', res => {
       this.addDockerStatsEntry(res.log)
     })
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.getSocket.removeListener('container-stats')
   },
   methods: {
     ...mapMutations(['addDockerStatsEntry']),
     // https://github.com/moby/moby/blob/eb131c5383db8cac633919f82abad86c99bffbe5/cli/command/container/stats_helpers.go#L175-L188
-    calculateCPUPercentUnix(previousCPU, previousSystem, v) {
+    calculateCPUPercentUnix (previousCPU, previousSystem, v) {
       let cpuPercent = 0.0
-		  const cpuDelta = parseFloat(v.cpu_stats.cpu_usage.total_usage) - parseFloat(previousCPU)
-		  const systemDelta = parseFloat(v.cpu_stats.system_cpu_usage) - parseFloat(previousSystem)
+      const cpuDelta = parseFloat(v.cpu_stats.cpu_usage.total_usage) - parseFloat(previousCPU)
+      const systemDelta = parseFloat(v.cpu_stats.system_cpu_usage) - parseFloat(previousSystem)
 
       if (systemDelta > 0.0 && cpuDelta > 0.0) {
         cpuPercent = (cpuDelta / systemDelta) * parseFloat(v.cpu_stats.cpu_usage.percpu_usage.length) * 100.0
       }
-	    return cpuPercent
+      return cpuPercent
     },
-    calculateBlockIO(blkio) {
+    calculateBlockIO (blkio) {
       if (blkio.length > 0) {
         for (const entry of blkio.io_service_bytes_recursive) {
           return {
@@ -183,11 +198,11 @@ export default {
       }
       return NaN
     },
-    calculateNetwork(previous, networks) {
+    calculateNetwork (previous, networks) {
       let rx = 0
       let tx = 0
-      let prevRx = 0;
-      let prevTx = 0;
+      let prevRx = 0
+      let prevTx = 0
 
       for (const iface in networks) {
         rx += networks[iface].rx_bytes
@@ -197,7 +212,7 @@ export default {
         prevRx += previous[iface].rx_bytes
         prevTx += previous[iface].tx_bytes
       }
-      return {rx: rx - prevRx, tx: tx - prevTx}
+      return { rx: rx - prevRx, tx: tx - prevTx }
     }
   }
 }

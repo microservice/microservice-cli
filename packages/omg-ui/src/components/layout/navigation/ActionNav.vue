@@ -42,7 +42,7 @@ export default {
   }),
   computed: {
     ...mapGetters(['getMicroservice', 'getMicroserviceActionList']),
-    filteredActions: function() {
+    filteredActions: function () {
       if (this.getMicroserviceActionList) {
         return this.getMicroserviceActionList.filter(action => {
           return action.toLowerCase().includes(this.search.toLowerCase())
@@ -51,14 +51,15 @@ export default {
       return null
     }
   },
-  mounted() {
+  mounted () {
   },
   methods: {
-    search(data) {
+    search (data) {
       if (Object.keys(this.getMicroservice.actions).includes(data.srcElement[0].value)) {
-        this.$router.push({name: 'actions', params: {
-          action: data.srcElement[0].value
-        }})
+        this.$router.push({ name: 'actions',
+          params: {
+            action: data.srcElement[0].value
+          } })
       }
     }
   }

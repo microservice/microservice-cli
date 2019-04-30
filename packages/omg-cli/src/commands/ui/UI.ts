@@ -72,6 +72,7 @@ export default class UIServer {
   }
   /**
    * Starts the UI server
+   * @param {Boolean} [doOpen=false]
    */
   startUI(doOpen = false) {
     this.io.on('connection', socket => {
@@ -79,9 +80,6 @@ export default class UIServer {
       this.socket = socket
       this.sendFile(path.join(process.cwd(), 'microservice.yml'))
       this.initListeners()
-      // setInterval(() => {
-      //   this.usage()
-      // }, 1000)
       utils.log('Web client connected to socket.')
       this.socket.on('disconnect', () => {
         utils.log('Web client disconnected from socket.')
@@ -99,7 +97,9 @@ export default class UIServer {
    * Rebuild image and restarts container
    *
    * @param  {any} data Data used to build image
-   * @param  {Boolean} [ui=false]
+   * @param  {string} microservice
+   * @param  {Boolean} [bak=false]
+   * @param  {string} appPath
    */
   async rebuild(
     data?: any,
@@ -246,11 +246,13 @@ export default class UIServer {
         )
       })
       for (const line in log) {
-        this.socket.emit('build', {
-          status: true,
-          notif: log[line].stream ? log[line].stream.trim() : '',
-          build: true
-        })
+        if (log[line].stream) {
+          this.socket.emit('build', {
+            status: true,
+            notif: log[line].stream.trim(),
+            build: true
+          })
+        }
       }
       this.socket.emit('build', {
         status: true,
@@ -280,6 +282,10 @@ export default class UIServer {
       this.emit('inspect', { status: false, notif: 'Container not running' })
     }
   }
+
+  /**
+   * Gets and returns docker container stats
+   */
   private async dockerStats() {
     if (this.dockerContainer) {
       const output = await this.dockerContainer.getStats()

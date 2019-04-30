@@ -56,7 +56,7 @@ export default {
     })
     this.getSocket.emit('build', {})
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.getSocket.removeListener('validate')
     this.getSocket.removeListener('owner')
     this.getSocket.removeListener('microservice.yml')
@@ -65,9 +65,9 @@ export default {
     this.getSocket.removeListener('stop')
   },
   methods: {
-    ...mapMutations(['initSocket', 'setValidation', 'setOwner', 
-  'setMicroserviceRaw', 'appendDockerLogs', 'setDockerState', 'setDockerPort']),
-    build(data) {
+    ...mapMutations(['initSocket', 'setValidation', 'setOwner',
+      'setMicroserviceRaw', 'appendDockerLogs', 'setDockerState', 'setDockerPort']),
+    build (data) {
       this.setDockerState('building')
       if (data.notif) {
         this.appendDockerLogs(data.notif.trim())
@@ -80,7 +80,7 @@ export default {
         })
       }
     },
-    start(data) {
+    start (data) {
       this.appendDockerLogs(data.notif.trim())
       if (data.started) {
         this.setDockerState('started')
@@ -90,7 +90,7 @@ export default {
         }, 1000)
       }
     },
-    stop(data) {
+    stop (data) {
       this.appendDockerLogs(data.notif.trim())
       this.setDockerState('stopped')
       clearInterval(this.logsInterval)

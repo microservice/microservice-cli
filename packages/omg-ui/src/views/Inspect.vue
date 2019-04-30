@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex'
 
 export default {
   name: 'inspect',
@@ -14,14 +14,14 @@ export default {
     socket: null,
     isContainerUp: false
   }),
-  computed: {...mapGetters(['getDockerInspect', 'getSocket'])},
+  computed: { ...mapGetters(['getDockerInspect', 'getSocket']) },
   methods: {
     ...mapMutations(['setDockerInspect']),
-    refresh() {
+    refresh () {
       this.socket.emit('inspect')
     }
   },
-  mounted() {
+  mounted () {
     this.socket = this.getSocket
     this.socket.emit('inspect')
     this.socket.on('inspect', res => {
@@ -29,7 +29,7 @@ export default {
       res.status ? this.setDockerInspect(res.log) : this.setDockerInspect(res.notif)
     })
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.socket.removeListener('inspect')
   }
 }
