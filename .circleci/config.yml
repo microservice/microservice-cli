@@ -101,11 +101,11 @@ jobs:
       - attach_workspace:
           at: ~/project
       - run:
-        name: Setup npm publish token
-        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+          name: Setup npm publish token
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
-        name: Publishing to npmjs using lerna
-        command: npm run publish --from-git
+          name: Publishing to npmjs using lerna
+          command: npm run publish --from-git
 
   publish_prerelease:
     <<: *defaults
@@ -113,11 +113,11 @@ jobs:
       - attach_workspace:
           at: ~/project
       - run:
-        name: Setup npm publish token
-        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+          name: Setup npm publish token
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
-        name: Publishing to npmjs using lerna
-        command: npm run publish --from-git --dist-tag beta
+          name: Publishing to npmjs using lerna
+          command: npm run publish --from-git --dist-tag beta
 
 workflows:
   version: 2
