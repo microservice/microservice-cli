@@ -6,7 +6,9 @@
         class="bar"
         v-for="(v, index) of values"
         :key="`${index}`"
-        :style="{ height: `${v / (max / 25) < 1 ? 1 : v / (max / 25)}px` }"
+        :style="{
+          height: `${v / (lastMax / 25) < 1 ? 1 : v / (lastMax / 25)}px`
+        }"
       ></div>
     </div>
     <div
@@ -23,13 +25,15 @@
         <div
           class="bar up"
           :style="{
-            height: `${v.up / (max / 25) < 1 ? 1 : v.up / (max / 25)}px`
+            height: `${v.up / (lastMax / 25) < 1 ? 1 : v.up / (lastMax / 25)}px`
           }"
         ></div>
         <div
           class="bar down"
           :style="{
-            height: `${v.down / (max / 25) < 1 ? 1 : v.down / (max / 25)}px`
+            height: `${
+              v.down / (lastMax / 25) < 1 ? 1 : v.down / (lastMax / 25)
+            }px`
           }"
         ></div>
       </div>
@@ -47,7 +51,6 @@ export default {
   props: {
     values: {
       type: Array,
-      default: [0],
       required: true
     },
     biDataMode: {
@@ -56,26 +59,20 @@ export default {
       required: false
     }
   },
-  computed: {
-    max: function() {
+  watch: {
+    values: function () {
       if (this.biDataMode) {
-        const max = this.values[this.values.length - 1].up > this.values[this.values.length - 1].down 
-        ? this.values[this.values.length - 1].up 
-        : this.values[this.values.length - 1].down
+        const max = this.values[this.values.length - 1].up > this.values[this.values.length - 1].down
+          ? this.values[this.values.length - 1].up
+          : this.values[this.values.length - 1].down
         if (parseFloat(this.lastMax) < parseFloat(max)) {
           this.lastMax = max * 2.0
         }
-        return this.lastMax
       } else {
         if (this.lastMax < this.values[this.values.length - 1]) {
           this.lastMax = this.values[this.values.length - 1]
         }
-        return this.lastMax
       }
-    }
-  },
-  watch: {
-    values: function() {
       if (this.values.length > 63) {
         this.$el.querySelector(`#bar-${this.toDelete}`).remove()
         ++this.toDelete

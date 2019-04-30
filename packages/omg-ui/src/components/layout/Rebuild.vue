@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'rebuild',
@@ -21,7 +21,7 @@ export default {
     ...mapMutations(['toggleDockerRebuild'])
   },
   watch: {
-    getDockerRebuild: function() {
+    getDockerRebuild: function () {
       this.getSocket.emit('rebuild-toggle', this.getDockerRebuild)
     }
   }

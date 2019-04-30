@@ -92,7 +92,7 @@ export default {
   },
   methods: {
     ...mapMutations(['updateActionContinuousArgs', 'addActionCurlArgs']),
-    processData(data) {
+    processData (data) {
       for (let i = 0; i < data.srcElement.length - 1; i++) {
         const key = data.srcElement[i].name.substr(4)
         const value = data.srcElement[i].value
@@ -106,11 +106,11 @@ export default {
         this.$emit('argsEdited', this.obj)
       }
     },
-    changeHandler(data) {
+    changeHandler (data) {
       const key = data.srcElement.name.substr(4)
       const value = data.srcElement.value
-      
-      this.addActionCurlArgs({key, value})
+
+      this.addActionCurlArgs({ key, value })
     }
   }
 }

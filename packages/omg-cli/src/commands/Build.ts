@@ -25,7 +25,7 @@ export default class Build {
    */
   async go(silent = false, ui = false): Promise<any> {
     if (ui) {
-      let stream = await utils.docker.buildImage(
+      const stream = await utils.docker.buildImage(
         {
           context: process.cwd()
         },
@@ -33,7 +33,7 @@ export default class Build {
       )
       return stream
     } else {
-      let stream = await utils.docker.buildImage(
+      const stream = await utils.docker.buildImage(
         {
           context: process.cwd()
         },

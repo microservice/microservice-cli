@@ -32,7 +32,7 @@ export default {
     },
     state: {
       type: String,
-      default: true
+      default: 'good'
     }
   }
 }

@@ -49,28 +49,28 @@ export default {
     lines: {},
     len: -1
   }),
-  computed: {...mapGetters(['getMicroserviceRaw', 'getSocket', 'getMicroserviceNotif', 'getMicroserviceStatus'])},
+  computed: { ...mapGetters(['getMicroserviceRaw', 'getSocket', 'getMicroserviceNotif', 'getMicroserviceStatus']) },
   components: {
     Monaco
   },
-  mounted() {
+  mounted () {
     this.code = this.getMicroserviceRaw
     this.socket = this.getSocket
   },
   methods: {
-    onMounted(editor) {
+    onMounted (editor) {
       this.editor = editor
       // console.log(yaml.load(this.editor.getValue()))
       // this.lines = this.fetchAllLines(this.editor.getValue())
       // console.log(this.lines)
       // console.log(this.mapMicroserviceToLines())
     },
-    onCodeChange(editor) {
+    onCodeChange (editor) {
       this.disabled = false
       this.lines = this.fetchAllLines(this.editor.getValue())
       this.socket.emit('microservice.yml', this.editor.getValue())
     },
-    fetchAllLines(content) {
+    fetchAllLines (content) {
       const lines = {}
       let file = content
       for (let i = 0; i < (content.match(/\n/g) || []).length; i++) {
@@ -80,7 +80,7 @@ export default {
       }
       return lines
     },
-    getLineFromObj(obj, depth) {
+    getLineFromObj (obj, depth) {
       for (let i = 1; i < this.len; i++) {
         if (`${obj.key}: ${obj.value}`.trim() === this.lines[i].trim()) {
           console.log(`${depth * ''}${obj.key}: ${obj.value}`.trim(), this.lines[i].trim(), `${obj.key}: ${obj.value}`.trim() === this.lines[i].trim(), i)
@@ -88,34 +88,34 @@ export default {
         }
       }
     },
-    mapMicroserviceToLines(map = yaml.load(this.editor.getValue()), parent = '', depth = 0) {
+    mapMicroserviceToLines (map = yaml.load(this.editor.getValue()), parent = '', depth = 0) {
       Object.keys(map).map(key => {
         if (typeof map[key] === 'object') {
-          map['line'] = this.getLineFromObj({key: key, value: ''}, depth)
+          map['line'] = this.getLineFromObj({ key: key, value: '' }, depth)
           this.mapMicroserviceToLines(map[key], key, depth++)
         } else {
           map[key] = {
             value: map[key],
-            line: this.getLineFromObj({key: key, value: map[key]}, depth)
+            line: this.getLineFromObj({ key: key, value: map[key] }, depth)
           }
         }
       })
       return map
     },
-    refresh() {
+    refresh () {
       this.disabled = true
       window.location.reload()
-    },
-    addInsight(line, col, endL, endC, msg, state = error) {
-      monaco.editor.setModelMarkers(this.editor.getModel(), 'omg-app', [{
-        startLineNumber: line,
-        startColumn: col,
-        endLineNumber: endL,
-        endColumn: endC,
-        message: msg,
-        severity: state
-      }])
     }
+    // addInsight (line, col, endL, endC, msg, state = error) {
+    //   monaco.editor.setModelMarkers(this.editor.getModel(), 'omg-app', [{
+    //     startLineNumber: line,
+    //     startColumn: col,
+    //     endLineNumber: endL,
+    //     endColumn: endC,
+    //     message: msg,
+    //     severity: state
+    //   }])
+    // }
   }
 }
 </script>

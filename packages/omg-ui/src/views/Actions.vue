@@ -33,7 +33,7 @@ export default {
   props: {
     query: {
       type: Object,
-      default: {},
+      default: () => {},
       required: false
     }
   },
@@ -53,13 +53,13 @@ export default {
       if (res.output) {
         try {
           this.setActionOutput(JSON.parse(res.output))
-        } catch(e) {
+        } catch (e) {
           this.setActionOutput(res.output.trim())
         }
       }
     })
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.getSocket.removeListener('run')
   },
   methods: {

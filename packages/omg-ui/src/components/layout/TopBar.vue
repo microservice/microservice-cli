@@ -74,7 +74,6 @@
 import { mapGetters } from 'vuex'
 import Owner from '@/components/layout/Owner'
 
-
 export default {
   name: 'topbar',
   data: () => ({
@@ -88,20 +87,18 @@ export default {
     ...mapGetters(['getMicroservice', 'getActionCurlArgs', 'getDockerPort', 'getDockerState'])
   },
   methods: {
-    copy() {
+    copy () {
       this.cURLInput.setAttribute('type', 'text')
       this.cURLInput.select()
       try {
         document.execCommand('copy')
-      }
-      catch (e) {
+      } catch (e) {
         console.error(e)
-      } 
+      }
       this.cURLInput.setAttribute('type', 'hidden')
       window.getSelection().removeAllRanges()
-
     },
-    cURLHandler() {
+    cURLHandler () {
       const action = this.$route.params.action
       let param = false
       let body = {}

@@ -270,6 +270,11 @@ export default abstract class Run {
       .trim()
   }
 
+  /**
+   * Gets and return bond port
+   *
+   * @return {any} Bond ports
+   */
   public getPortbindings(): any {
     return this.portBindings
   }

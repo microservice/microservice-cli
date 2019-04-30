@@ -34,7 +34,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'documentation',
-  computed: { ...mapGetters(['getMicroservice']) },
+  computed: { ...mapGetters(['getMicroservice']) }
 }
 </script>
 
