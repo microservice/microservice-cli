@@ -20,9 +20,9 @@ jobs:
           keys:
             - v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/package-lock.json" }}
             - v1-dependencies-omg-ui
-      # - run:
-      #     name: Installing Lerna
-      #     command: npm i
+      - run:
+          name: Installing Lerna
+          command: npm i
       - run:
           name: Install local dependencies
           command: npm run bootstrap
