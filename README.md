@@ -1,5 +1,7 @@
 # OMG APP
 
+[![CircleCI](https://img.shields.io/circleci/project/github/Arinono/omg-cli/master.svg?style=for-the-badge)](https://circleci.com/gh/Arinono/omg-cli/tree/master)
+
 ## Project setup
 
 ```
