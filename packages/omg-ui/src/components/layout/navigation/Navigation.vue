@@ -6,11 +6,15 @@
           <div class="title">Actions</div>
           <action-nav />
         </li>
-        <router-link :to="{ name: 'expose' }" tag="li" class="menu-item">
-          <div class="title">Expose/Forward</div>
+        <router-link :to="{ name: 'Forward' }" tag="li" class="menu-item">
+          <div class="title">Forward</div>
           <arrow-forward />
         </router-link>
-        <router-link :to="{ name: 'environments' }" tag="li" class="menu-item">
+        <router-link
+          :to="{ name: 'Environment Variables' }"
+          tag="li"
+          class="menu-item"
+        >
           <div class="title">Environment Variables</div>
           <arrow-forward />
         </router-link>

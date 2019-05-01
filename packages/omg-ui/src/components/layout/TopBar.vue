@@ -5,12 +5,15 @@
         src="https://avatars2.githubusercontent.com/u/39149433?s=200&v=4"
         alt="OMG app logo"
         class="logo"
-        @click="$router.push({ name: 'home' })"
+        @click="$router.push({ name: 'Home' })"
       />
       <owner class="owner" />
     </div>
     <div class="topbar-right">
-      <div class="title-container">
+      <div
+        class="title-container"
+        :class="{ lowercase: $route.name === 'actions' }"
+      >
         {{ $route.name === "actions" ? $route.params.action : $route.name }}
       </div>
       <!-- <div
@@ -166,6 +169,7 @@ export default {
 
   .topbar-right {
     width: auto;
+    min-width: 300px;
     height: inherit;
     display: flex;
     align-items: center;
@@ -174,13 +178,16 @@ export default {
 
     .title-container {
       margin: 0;
-      text-transform: lowercase;
       height: 35px;
       color: #1f2933;
       font-family: Graphik;
       font-size: 20px;
       font-weight: 500;
       line-height: 30px;
+
+      &.lowercase {
+        text-transform: lowercase;
+      }
     }
 
     .method-container {
