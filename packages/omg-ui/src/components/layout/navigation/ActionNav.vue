@@ -118,7 +118,7 @@ export default {
 }
 
 .action-list {
-  max-height: 120px;
+  max-height: 170px;
   overflow: auto;
   margin-top: 12px;
   margin-bottom: 12px;

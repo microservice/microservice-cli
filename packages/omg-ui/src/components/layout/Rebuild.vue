@@ -33,12 +33,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 69px;
-  border-top: 1px solid #f2f3f9;
-  border-bottom: 1px solid #f2f3f9;
+  margin-top: 16px;
+  margin-right: 24px;
 
   .title {
-    margin-left: 32px;
     text-transform: uppercase;
     height: 21px;
     color: #1f2933;
@@ -47,10 +45,10 @@ export default {
     font-weight: 600;
     letter-spacing: 2px;
     line-height: 21px;
+    margin-right: 8px;
   }
 
   .switch {
-    margin-right: 32px;
     cursor: pointer;
 
     .rectangle {
