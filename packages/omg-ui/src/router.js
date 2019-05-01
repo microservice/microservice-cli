@@ -18,7 +18,7 @@ export default new Router({
   routes: [
     {
       path: '/environments',
-      name: 'environments',
+      name: 'Environment Variables',
       component: Environment
     },
     {
@@ -58,7 +58,7 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: Home
     }
   ]
