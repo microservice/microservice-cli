@@ -17,16 +17,18 @@
           />
         </button>
       </form>
-      <div
-        class="search-results"
-        v-if="search.length > 0">
+      <div class="action-list">
         <div
-          class="result"
+          class="action"
           :key="action"
           v-for="action of filteredActions"
-          @click="$router.push({ name: 'actions', params: { action: action } }); search = ''"
+          @click="
+            $router.push({ name: 'actions', params: { action: action } });
+            search = '';
+          "
         >
-        {{ action }}
+          {{ action }}
+        </div>
       </div>
     </div>
   </div>
@@ -114,20 +116,25 @@ export default {
     }
   }
 }
-.search-results {
-  position: absolute;
-  background: lightgray;
-  width: 230px;
-  padding: 0 12px;
-  border-radius: 2px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 
-  .result {
-    margin: 10px 0;
+.action-list {
+  max-height: 120px;
+  overflow: auto;
+  margin-top: 12px;
+  margin-bottom: 12px;
+
+  .action {
+    height: 21px;
+    color: #616e7c;
+    font-family: Graphik;
+    font-size: 16px;
+    line-height: 21px;
     cursor: pointer;
-    width: 100%;
+    margin-left: 8px;
+
+    &:not(:first-child) {
+      margin-top: 12px;
+    }
   }
 }
 </style>

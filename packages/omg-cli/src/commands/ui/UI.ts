@@ -321,9 +321,9 @@ export default class UIServer {
     await Cli.checkDocker()
 
     if (data && data.image.length > 0) {
-      if (
+      try {
         !utils.doesContainerExist(data.image, await utils.docker.listImages())
-      ) {
+      } catch (e) {
         this.emit('start', {
           notif: `Image for microservice is not built. Run \`omg build\` to build the image.`,
           status: false
