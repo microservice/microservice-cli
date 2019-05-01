@@ -2,23 +2,30 @@
   <div class="action-form-container">
     <form class="action" @submit.prevent="processData" @change="changeHandler">
       <div class="inputs" v-if="getMicroservice.actions[actionName].arguments">
-        <label
+        <div
+          class="input"
           :key="`arg-${argName}`"
           v-for="(arg, argName) of getMicroservice.actions[actionName]
             .arguments"
-          class="form-row"
         >
-          {{ argName }} {{ arg.required ? "*" : "" }}
-          <input
-            :name="`arg-${argName}`"
-            :required="
-              arg.hasOwnProperty('required') && arg.required ? true : false
-            "
-            :value="query && query.args ? query.args[argName] : ''"
-            :placeholder="arg.type"
-            :type="arg.type === 'number' ? 'number' : 'string'"
-          />
-        </label>
+          <label class="form-row">
+            {{ argName }} {{ arg.required ? "*" : "" }}
+            <input
+              :name="`arg-${argName}`"
+              :required="
+                arg.hasOwnProperty('required') && arg.required ? true : false
+              "
+              :value="query && query.args ? query.args[argName] : ''"
+              :placeholder="arg.type"
+              :type="arg.type === 'number' ? 'number' : 'string'"
+            />
+          </label>
+          <span
+            :class="{ help: arg.help && arg.help.length > 0 }"
+            class="hint"
+            >{{ arg.help ? arg.help : "No help provided" }}</span
+          >
+        </div>
       </div>
       <div v-else class="inputs">
         <input type="hidden" name="type" value="event" />
@@ -134,37 +141,54 @@ form.action {
     display: flex;
     flex-flow: column;
 
-    label {
-      color: #616e7c;
-      font-family: Graphik;
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      line-height: 21px;
-      text-align: right;
+    .input {
       margin-bottom: 20px;
-      text-transform: capitalize;
-    }
 
-    input {
-      height: 40px;
-      width: 420px;
-      border: 1px solid #dfe0e8;
-      border-radius: 2px;
-      background-color: #ffffff;
-      margin-left: 24px;
-      color: #1f2933;
-      font-family: Graphik;
-      font-size: 14px;
-      line-height: 21px;
-      padding-left: 12px;
+      label {
+        color: #616e7c;
+        font-family: Graphik;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        line-height: 21px;
+        text-align: right;
+        margin-bottom: 8px;
+        text-transform: capitalize;
+      }
 
-      &::placeholder {
-        height: 18px;
+      input {
+        height: 40px;
+        width: 420px;
+        border: 1px solid #dfe0e8;
+        border-radius: 2px;
+        background-color: #ffffff;
+        margin-left: 24px;
         color: #1f2933;
         font-family: Graphik;
         font-size: 14px;
         line-height: 21px;
+        padding-left: 12px;
+
+        &::placeholder {
+          height: 18px;
+          color: #1f2933;
+          font-family: Graphik;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+
+      span.hint {
+        height: 51px;
+        color: #616e7c;
+        font-family: Graphik;
+        font-size: 14px;
+        line-height: 22px;
+        font-style: italic;
+
+        &.help {
+          font-style: inherit;
+        }
       }
     }
   }
