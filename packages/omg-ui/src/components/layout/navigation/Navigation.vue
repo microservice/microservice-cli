@@ -41,7 +41,6 @@ export default {
     li.menu-item {
       display: flex;
       justify-content: space-between;
-      margin-left: 8px;
       margin-top: 24px;
       width: 228px;
       cursor: pointer;

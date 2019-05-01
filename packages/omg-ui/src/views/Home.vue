@@ -71,7 +71,7 @@ export default {
 
 <style lang="scss" scoped>
 .home-container {
-  height: calc(100% - 435px);
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
