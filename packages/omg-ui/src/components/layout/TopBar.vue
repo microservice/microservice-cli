@@ -13,7 +13,7 @@
       <div class="title-container">
         {{ $route.name === "actions" ? $route.params.action : $route.name }}
       </div>
-      <div
+      <!-- <div
         class="method-container"
         v-if="getMicroservice && $route.name === 'actions'"
       >
@@ -66,7 +66,7 @@
           Copy
         </div>
         <input id="curl" type="hidden" :value="cURL" />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -165,7 +165,6 @@ export default {
   }
 
   .topbar-right {
-    min-width: calc(100vw - 400px);
     width: auto;
     height: inherit;
     display: flex;

@@ -153,10 +153,6 @@ body {
     .omg-container {
       display: flex;
 
-      .main-output {
-        margin-top: 69px;
-      }
-
       .topbar-margin {
         margin-top: 69px;
         width: 100%;
