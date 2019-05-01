@@ -1,7 +1,7 @@
 const state = {
   action: '',
   args: {},
-  output: '',
+  output: 'No output available.\nExecute an action to view its output.',
   curlArgs: {}
 }
 
