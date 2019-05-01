@@ -12,7 +12,7 @@
       <div class="right">
         <div
           class="docker-logs"
-          :class="{ lit: state === 'dlog' || state === 'half' }"
+          :class="{ off: state !== 'dlog' && state !== 'half' }"
           @click="switchHandler('dlog')"
         >
           <div class="rectangle">
@@ -21,7 +21,7 @@
         </div>
         <div
           class="container-logs"
-          :class="{ lit: state === 'clog' || state === 'half' }"
+          :class="{ off: state !== 'clog' && state !== 'half' }"
           @click="switchHandler('clog')"
         >
           <div class="rectangle">
@@ -205,9 +205,9 @@ export default {
 
       .docker-logs,
       .container-logs {
-        &.lit {
+        &.off {
           .rectangle {
-            background: rgba(66, 143, 247, 0.22);
+            background: rgba(123, 135, 148, 0.19);
           }
         }
       }
