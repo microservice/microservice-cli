@@ -165,7 +165,6 @@ export function doesContainerExist(name: string, containers: any[]): boolean {
       }
     }
   }
-
   return false
 }
 

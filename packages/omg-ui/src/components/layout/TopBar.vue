@@ -5,6 +5,7 @@
         src="https://avatars2.githubusercontent.com/u/39149433?s=200&v=4"
         alt="OMG app logo"
         class="logo"
+        @click="$router.push({ name: 'home' })"
       />
       <owner class="owner" />
     </div>
@@ -155,6 +156,7 @@ export default {
       height: 69px;
       width: 75px;
       background-color: #150d44;
+      cursor: pointer;
     }
 
     .owner {
@@ -244,6 +246,7 @@ export default {
         cursor: pointer;
       }
     }
+
     .search-container {
       height: 40px;
       width: 400px;

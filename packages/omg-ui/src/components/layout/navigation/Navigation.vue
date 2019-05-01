@@ -2,7 +2,7 @@
   <section class="menu-container">
     <div class="menu-wrapper">
       <ul class="menu-list">
-        <li class="menu-item-action">
+        <li class="menu-item actions">
           <div class="title">Actions</div>
           <action-nav />
         </li>
@@ -38,23 +38,6 @@ export default {
     margin-left: 24px;
     margin-top: 24px;
 
-    li.menu-item-action {
-      display: flex;
-      align-items: flex-start;
-      flex-direction: column;
-
-      .title {
-        height: 21px;
-        color: #616e7c;
-        font-family: Graphik;
-        font-size: 16px;
-        line-height: 21px;
-        cursor: pointer;
-        margin-left: 8px;
-        margin-bottom: 12px;
-      }
-    }
-
     li.menu-item {
       display: flex;
       justify-content: space-between;
@@ -62,6 +45,17 @@ export default {
       margin-top: 24px;
       width: 228px;
       cursor: pointer;
+
+      &.actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .title {
+          margin-left: 8px;
+          margin-bottom: 12px;
+        }
+      }
 
       .title {
         height: 21px;

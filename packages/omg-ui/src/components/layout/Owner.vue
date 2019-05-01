@@ -41,6 +41,10 @@ export default {
     font-weight: 500;
     line-height: 21px;
     text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 </style>
