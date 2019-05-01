@@ -39,7 +39,10 @@
           max: state === 'dlog'
         }"
       >
-        <span class="title">Docker Logs</span>
+        <div class="header">
+          <span class="title">Docker Logs</span>
+          <rebuild />
+        </div>
         <div class="logs-output">
           <pre><code>{{ getDockerLogs }}</code></pre>
         </div>
@@ -63,9 +66,13 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
+import Rebuild from '@/components/layout/Rebuild'
 
 export default {
   name: 'docker-logs',
+  components: {
+    Rebuild
+  },
   data: () => ({
     open: true,
     state: 'half'
@@ -308,6 +315,13 @@ export default {
 
     .left {
       border-right: 1px solid #d8dcee;
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
+      }
     }
   }
 }

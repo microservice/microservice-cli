@@ -44,7 +44,7 @@
       </div>
       <div class="divider"></div>
       <navigation class="nav" />
-      <rebuild />
+      <div class="divider"></div>
       <container-metrics />
     </div>
   </div>
@@ -56,7 +56,6 @@ import { mapGetters } from 'vuex'
 import Navigation from '@/components/layout/navigation/Navigation'
 import TopBar from '@/components/layout/TopBar'
 import TileGrade from '@/components/TileGrade'
-import Rebuild from '@/components/layout/Rebuild'
 import ContainerMetrics from '@/components/layout/ContainerMetrics'
 
 export default {
@@ -65,7 +64,6 @@ export default {
     Navigation,
     TopBar,
     TileGrade,
-    Rebuild,
     ContainerMetrics
   },
   computed: {
