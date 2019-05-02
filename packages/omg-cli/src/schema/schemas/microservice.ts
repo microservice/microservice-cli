@@ -1,104 +1,97 @@
 module.exports = {
   properties: {
     omg: {
-      type: 'integer',
+      type: 'integer'
     },
     info: {
       type: 'object',
       properties: {
         version: {
           type: 'string',
-          pattern: '^\\d+\\.\\d+\\.\\d+$',
+          pattern: '^\\d+\\.\\d+\\.\\d+$'
         },
         title: {
-          type: 'string',
+          type: 'string'
         },
         description: {
-          type: 'string',
+          type: 'string'
         },
         contact: {
           type: 'object',
           properties: {
             name: {
-              type: 'string',
+              type: 'string'
             },
             url: {
-              type: 'string',
+              type: 'string'
             },
             email: {
-              type: 'string',
-            },
+              type: 'string'
+            }
           },
-          additionalProperties: false,
+          additionalProperties: false
         },
         license: {
           type: 'object',
           properties: {
             name: {
-              type: 'string',
+              type: 'string'
             },
             url: {
-              type: 'string',
-            },
+              type: 'string'
+            }
           },
-          required: [
-            'name',
-            'url',
-          ],
-          additionalProperties: false,
-        },
+          required: ['name', 'url'],
+          additionalProperties: false
+        }
       },
-      required: [
-        'version',
-        'title',
-        'description',
-      ],
-      additionalProperties: false,
+      required: ['version', 'title', 'description'],
+      additionalProperties: false
     },
     actions: {
       type: 'object',
       patternProperties: {
         '^[A-Za-z|_]+$': {
-          type: 'object',
-        },
+          type: 'object'
+        }
       },
-      additionalProperties: false,
+      additionalProperties: false
     },
     environment: {
       type: 'object',
       patternProperties: {
         '^[A-Za-z|_]+$': {
-          type: 'object',
-        },
+          type: 'object'
+        }
       },
-      additionalProperties: false,
+      additionalProperties: false
     },
     volumes: {
       type: 'object',
       patternProperties: {
         '^[A-Za-z]+$': {
-          type: 'object',
-        },
+          type: 'object'
+        }
       },
-      additionalProperties: false,
+      additionalProperties: false
     },
     metrics: {
       type: 'object',
       properties: {
         ssl: {
-          type: 'boolean',
+          type: 'boolean'
         },
         port: {
           type: 'integer',
           minimum: 5000,
-          maximum: 9000,
+          maximum: 9000
         },
         uri: {
-          type: 'string',
-        },
+          type: 'string'
+        }
       },
       required: ['port', 'uri'],
-      additionalProperties: false,
+      additionalProperties: false
     },
     system: {
       type: 'object',
@@ -107,84 +100,91 @@ module.exports = {
           type: 'object',
           properties: {
             cpu: {
-              type: 'integer',
+              type: 'integer'
             },
             gpu: {
-              type: 'integer',
+              type: 'integer'
             },
             memory: {
               type: 'string',
-              pattern: '[0-9]+[MB|GB].',
-            },
+              pattern: '[0-9]+[MB|GB].'
+            }
           },
-          additionalProperties: false,
+          additionalProperties: false
         },
         limits: {
           type: 'object',
           properties: {
             cpu: {
-              type: 'integer',
+              type: 'integer'
             },
             gpu: {
-              type: 'integer',
+              type: 'integer'
             },
             memory: {
               type: 'string',
-              pattern: '[0-9]+[MB|GB].',
-            },
+              pattern: '[0-9]+[MB|GB].'
+            }
           },
-          additionalProperties: false,
-        },
+          additionalProperties: false
+        }
       },
-      additionalProperties: false,
+      additionalProperties: false
     },
     scale: {
       type: 'object',
       properties: {
         metric_type: {
           type: 'string',
-          enum: ['cpu', 'mem'],
+          enum: ['cpu', 'mem']
         },
         metric_agg: {
           type: 'string',
-          enum: ['avg', 'min', 'max', 'mean', 'mode'],
+          enum: ['avg', 'min', 'max', 'mean', 'mode']
         },
         metric_interval: {
           type: 'integer',
           minimum: 1,
-          maximum: 600000,
+          maximum: 600000
         },
         metric_target: {
           type: 'integer',
-          minimum: 1,
+          minimum: 1
         },
         min: {
           type: 'integer',
-          minimum: 1,
+          minimum: 1
         },
         max: {
           type: 'integer',
-          minimum: 1,
+          minimum: 1
         },
         desired: {
           type: 'integer',
-          minimum: 1,
+          minimum: 1
         },
         cooldown: {
           type: 'integer',
-          minimum: 1,
-        },
+          minimum: 1
+        }
       },
-      additionalProperties: false,
+      additionalProperties: false
     },
     lifecycle: {
-      type: 'object',
+      type: 'object'
     },
+    forward: {
+      type: 'object',
+      patternProperties: {
+        '^[A-Za-z|_]+$': {
+          type: 'object'
+        }
+      },
+      additionalProperties: false
+    }
   },
-  _comment: 'arguments, commands, environment, lifecycle, and volumes checks are done in their respective constructors. The metrics, system, and scale checks are still done here as there was no need to create a class for those attributes yet.',
+  _comment:
+    'arguments, commands, environment, lifecycle, and volumes checks are done in their respective constructors. The metrics, system, and scale checks are still done here as there was no need to create a class for those attributes yet.',
   additionalProperties: false,
-  required: [
-    'omg',
-    'info',
-  ],
-};
+  required: ['omg', 'info']
+}
