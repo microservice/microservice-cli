@@ -4,25 +4,32 @@
       Environment Variable
     </div>
     <form @submit.prevent="saveHandler" v-if="getMicroservice.environment">
-      <div class="inputs">
-        <label
-          :key="`env-${name}`"
-          v-for="(env, name) of getMicroservice.environment"
-          class="form-row"
-        >
-          {{ name }} {{ env.required ? "*" : "" }}
-          <input
-            :name="`env-${name}`"
-            :required="`${env.required}`"
-            :value="`${getEnvs[name] || ''}`"
-            :placeholder="env.type"
-            :type="env.type === 'number' ? 'number' : 'string'"
-          />
-        </label>
-      </div>
-      <div class="btn-container">
-        <div class="spacer"></div>
-        <button type="submit" class="run-btn">Save</button>
+      <div
+        class="inputs"
+        :key="`env-${name}`"
+        v-for="(env, name) of getMicroservice.environment"
+      >
+        <div class="input">
+          <label class="form-row">
+            {{ name }} {{ env.required ? "*" : "" }}
+            <input
+              :name="`env-${name}`"
+              :required="`${env.required}`"
+              :value="`${getEnvs[name] || ''}`"
+              :placeholder="env.type"
+              :type="env.type === 'number' ? 'number' : 'string'"
+            />
+          </label>
+          <span
+            :class="{ help: env.help && env.help.length > 0 }"
+            class="hint"
+            >{{ env.help ? env.help : "No help provided" }}</span
+          >
+        </div>
+        <div class="btn-container">
+          <div class="spacer"></div>
+          <button type="submit" class="run-btn">Save</button>
+        </div>
       </div>
     </form>
     <div v-else>
@@ -67,7 +74,6 @@ export default {
 
 <style lang="scss" scoped>
 .env-container {
-  width: 90%;
   height: 100%;
   margin: 24px 0 0 24px;
   text-align: left;
@@ -94,56 +100,74 @@ export default {
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-evenly;
-    align-items: flex-end;
-
-    .form-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
+    align-items: flex-start;
 
     .inputs {
       display: flex;
       flex-flow: column;
 
-      label {
-        color: #616e7c;
-        font-family: Graphik;
-        font-size: 14px;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        line-height: 21px;
-        text-align: right;
+      .input {
         margin-bottom: 20px;
-        text-transform: uppercase;
-        align-items: center;
-      }
+        display: flex;
+        flex-direction: column;
 
-      input {
-        height: 40px;
-        width: 420px;
-        border: 1px solid #dfe0e8;
-        border-radius: 2px;
-        background-color: #ffffff;
-        margin-left: 24px;
-        color: #1f2933;
-        font-family: Graphik;
-        font-size: 14px;
-        line-height: 21px;
-        padding-left: 12px;
-
-        &::placeholder {
-          height: 18px;
-          color: #1f2933;
+        .form-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          color: #616e7c;
           font-family: Graphik;
           font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.5px;
           line-height: 21px;
+          text-align: right;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+
+          input {
+            height: 40px;
+            width: 420px;
+            border: 1px solid #dfe0e8;
+            border-radius: 2px;
+            background-color: #ffffff;
+            margin-left: 24px;
+            color: #1f2933;
+            font-family: Graphik;
+            font-size: 14px;
+            line-height: 21px;
+            padding-left: 12px;
+
+            &::placeholder {
+              height: 18px;
+              color: #1f2933;
+              font-family: Graphik;
+              font-size: 14px;
+              line-height: 21px;
+            }
+          }
+        }
+
+        span.hint {
+          color: #616e7c;
+          font-family: Graphik;
+          font-size: 14px;
+          line-height: 22px;
+          font-style: italic;
+          text-align: center;
+
+          &.help {
+            font-style: inherit;
+          }
         }
       }
     }
 
     .btn-container {
+      display: flex;
+      justify-content: space-between;
+
       button.run-btn {
         height: 35px;
         width: 434px;
