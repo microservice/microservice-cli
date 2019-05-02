@@ -7,6 +7,7 @@ import Editor from '@/views/Editor'
 import Documentation from '@/views/Documentation'
 import Inspect from '@/views/Inspect'
 import Home from '@/views/Home'
+import Forward from '@/views/Forward'
 
 import store from './store'
 
@@ -55,6 +56,11 @@ export default new Router({
       path: '/inspect',
       name: 'inspect',
       component: Inspect
+    },
+    {
+      path: '/forward',
+      name: 'Forward',
+      component: Forward
     },
     {
       path: '/',
