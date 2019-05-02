@@ -116,30 +116,21 @@ jobs:
 workflows:
   version: 2
 
-  beta:
+  code_quality:
     jobs:
       - install:
-          filters:
-            branches:
-              only: dev
       - lint:
-          filters:
-            branches:
-              only: dev
           requires:
             - install
       - test:
-          filters:
-            branches:
-              only: master
           requires:
             - install
       - build:
-          filters:
-            branches:
-              only: dev
           requires:
             - install
+
+  beta:
+    jobs:
       - publish_prerelease:
           filters:
             tags:
@@ -151,28 +142,6 @@ workflows:
 
   release:
     jobs:
-      - install:
-          filters:
-            branches:
-              only: master
-      - lint:
-          filters:
-            branches:
-              only: master
-          requires:
-            - install
-      - test:
-          filters:
-            branches:
-              only: master
-          requires:
-            - install
-      - build:
-          filters:
-            branches:
-              only: master
-          requires:
-            - install
       - publish_latest:
           filters:
             tags:
