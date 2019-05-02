@@ -1,12 +1,22 @@
 <template>
   <div class="action-container">
     <div class="left">
+      <event-selector
+        class="event-selector"
+        :actionName="$route.params.action"
+        @eventSelected="processEvent"
+        v-if="
+          getMicroservice &&
+            getMicroservice.actions[$route.params.action].events
+        "
+      ></event-selector>
       <div class="title">Arguments</div>
       <div class="desc" v-if="getMicroservice">
         {{ getMicroservice.actions[$route.params.action].help }}
       </div>
       <action-form
         :actionName="$route.params.action"
+        :eventName="event"
         @argsEdited="processArgs"
         v-if="getMicroservice"
       />
@@ -18,17 +28,20 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import ActionForm from '@/components/ActionForm'
+import EventSelector from '@/components/EventSelector'
 
 export default {
   name: 'actions',
   components: {
-    ActionForm
+    ActionForm,
+    EventSelector
   },
   data: () => ({
     microservice: '',
     args: {},
     ouput: '',
-    edited: false
+    edited: false,
+    event: ''
   }),
   props: {
     query: {
@@ -37,15 +50,17 @@ export default {
       required: false
     }
   },
-  computed: mapGetters([
-    'getAction',
-    'getArgs',
-    'getMicroservice',
-    'getOwner',
-    'getSocket',
-    'getDockerRunning',
-    'getDockerRunStat'
-  ]),
+  computed: {
+    ...mapGetters([
+      'getAction',
+      'getArgs',
+      'getMicroservice',
+      'getOwner',
+      'getSocket',
+      'getDockerRunning',
+      'getDockerRunStat'
+    ])
+  },
   mounted () {
     this.microservice = this.getMicroservice
     this.args = this.getArgs
@@ -90,6 +105,9 @@ export default {
       this.args = data
       this.runHandler()
     },
+    processEvent (data) {
+      this.event = data
+    },
     run (e) {
       let run = {
         image: `omg/${this.getOwner}`,
@@ -120,6 +138,10 @@ export default {
     align-items: flex-start;
     margin: 24px 0 0 24px;
     width: 100%;
+
+    .event-selector {
+      margin-bottom: 24px;
+    }
 
     .title {
       height: 27px;

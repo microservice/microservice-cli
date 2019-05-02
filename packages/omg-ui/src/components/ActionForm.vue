@@ -27,27 +27,19 @@
           >
         </div>
       </div>
-      <div v-else class="inputs">
+      <div
+        v-else-if="getMicroservice.actions[actionName].events[eventName]"
+        class="inputs"
+      >
         <input type="hidden" name="type" value="event" />
-        <label>
-          Event *
-          <select id="event" required v-model="event">
-            <option
-              :key="`event-${evtName}`"
-              :name="`${evtName}`"
-              v-for="(event, evtName) of getMicroservice.actions[actionName]
-                .events"
-              >{{ evtName }}</option
-            >
-          </select>
-        </label>
-        <div v-if="event && event.length > 0">
-          <label
-            :key="`arg-${argName}`"
-            v-for="(arg, argName) of getMicroservice.actions[actionName].events[
-              event
-            ].arguments"
-          >
+        <div
+          class="input"
+          :key="`arg-${argName}`"
+          v-for="(arg, argName) of getMicroservice.actions[actionName].events[
+            eventName
+          ].arguments"
+        >
+          <label class="form-row">
             {{ argName }} {{ arg.required ? "*" : "" }}
             <input
               :name="`arg-${argName}`"
@@ -55,8 +47,15 @@
                 arg.hasOwnProperty('required') && arg.required ? true : false
               "
               :value="query && query.args ? query.args[argName] : ''"
+              :placeholder="arg.type"
+              :type="arg.type === 'number' ? 'number' : 'string'"
             />
           </label>
+          <span
+            :class="{ help: arg.help && arg.help.length > 0 }"
+            class="hint"
+            >{{ arg.help ? arg.help : "No help provided" }}</span
+          >
         </div>
       </div>
       <div class="btn-container form-row">
@@ -74,14 +73,18 @@ export default {
   name: 'action-form',
   data: () => ({
     open: '',
-    obj: {},
-    event: ''
+    obj: {}
   }),
   props: {
     actionName: {
       type: String,
       default: '',
       required: true
+    },
+    eventName: {
+      type: String,
+      default: '',
+      required: false
     },
     query: {
       type: Object,
