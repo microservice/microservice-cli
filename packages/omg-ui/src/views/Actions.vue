@@ -111,6 +111,8 @@ export default {
   justify-content: space-between;
   align-items: flex-start;
   height: 100%;
+  overflow: auto;
+  margin-bottom: 24px;
 
   .left {
     display: flex;
