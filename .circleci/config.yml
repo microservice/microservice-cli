@@ -116,7 +116,7 @@ jobs:
 workflows:
   version: 2
 
-  code_quality:
+  beta:
     jobs:
       - install
       - lint:
@@ -128,9 +128,6 @@ workflows:
       - build:
           requires:
             - install
-
-  beta:
-    jobs:
       - publish_prerelease:
           filters:
             tags:
@@ -142,6 +139,16 @@ workflows:
 
   release:
     jobs:
+      - install
+      - lint:
+          requires:
+            - install
+      - test:
+          requires:
+            - install
+      - build:
+          requires:
+            - install
       - publish_latest:
           filters:
             tags:
