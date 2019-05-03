@@ -1,6 +1,6 @@
 {
   "name": "omg-ui",
-  "version": "0.8.8",
+  "version": "0.0.1",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -60,5 +60,15 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-  "gitHead": "fcbefab45c0c4991a98ca3eccde9b196e41863e7"
+  "description": "> TODO: description",
+  "bugs": {
+    "url": "https://github.com/microservices/omg-cli/issues"
+  },
+  "homepage": "https://github.com/microservices/omg-cli#readme",
+  "author": "Aurelien ARINO <aurelien.arino@gmail.com>",
+  "license": "ISC",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  }
 }

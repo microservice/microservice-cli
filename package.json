@@ -11,7 +11,8 @@
     "test": "lerna run test",
     "coverage": "lerna run coverage",
     "build": "lerna run build",
-    "publish": "lerna run publish"
+    "publish": "lerna run publish",
+    "bump": "lerna version --conventional-commits"
   },
   "bin": "omg"
 }
