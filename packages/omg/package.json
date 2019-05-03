@@ -1,5 +1,5 @@
 {
-  "name": "omg-cli",
+  "name": "omg",
   "description": "A CLI to interact with microservices built with the OMG standard.",
   "keywords": [
     "omg",
