@@ -8,7 +8,7 @@
 $> npm i
 ```
 
-### Compiles and minifies for production
+### Compiles and minifies for production 
 
 ```
 $> npm run build
