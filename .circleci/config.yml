@@ -116,27 +116,6 @@ jobs:
 workflows:
   version: 2
 
-  beta:
-    jobs:
-      - install
-      - lint:
-          requires:
-            - install
-      - test:
-          requires:
-            - install
-      - build:
-          requires:
-            - install
-      - publish_prerelease:
-          filters:
-            tags:
-              only: /[0-9]+(\.[0-9]+)*-beta(\.[0-9]+)?/
-            branches:
-              ignore: /.*/
-          requires:
-            - build
-
   release:
     jobs:
       - install
@@ -153,6 +132,14 @@ workflows:
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
+          requires:
+            - build
+      - publish_prerelease:
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*-beta(\.[0-9]+)?/
             branches:
               ignore: /.*/
           requires:
