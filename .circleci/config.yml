@@ -99,7 +99,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publishing to npmjs using lerna
-          command: npm run publish --from-git
+          command: npm run publish
 
   publish_prerelease:
     <<: *defaults
@@ -111,7 +111,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publishing to npmjs using lerna
-          command: npm run publish --from-git --dist-tag beta
+          command: npm run publish --dist-tag beta
 
 workflows:
   version: 2
