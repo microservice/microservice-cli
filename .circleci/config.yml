@@ -114,7 +114,7 @@ jobs:
           command: npm run publish --from-git --dist-tag beta
 
 workflows:
-  version: 2
+  version: 2 
 
   code_quality:
     jobs:
