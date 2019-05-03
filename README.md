@@ -5,13 +5,13 @@
 ## Project setup
 
 ```
-$> yarn
+$> npm i
 ```
 
 ### Compiles and minifies for production
 
 ```
-$> yarn build
+$> npm run build
 ```
 
 ### Make an alias
