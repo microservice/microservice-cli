@@ -118,28 +118,40 @@ workflows:
 
   release:
     jobs:
-      - install
+      - install:
+          filters:
+            tags:
+              only: /.*/
       - lint:
+          filters:
+            tags:
+              only: /.*/
           requires:
             - install
       - test:
+          filters:
+            tags:
+              only: /.*/
           requires:
             - install
       - build:
-          requires:
-            - install
-      - publish_latest:
           filters:
             tags:
-              only: /[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
+              only: /.*/
           requires:
-            - build
+            - install
       - publish_prerelease:
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*-beta(\.[0-9]+)?/
+            branches:
+              ignore: /.*/
+          requires:
+            - build
+      - publish_latest:
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
             branches:
               ignore: /.*/
           requires:
