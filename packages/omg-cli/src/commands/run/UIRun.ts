@@ -5,6 +5,7 @@ import * as rp from 'request-promise'
 import * as _ from 'underscore'
 import * as querystring from 'querystring'
 import * as fs from 'fs'
+import * as utils from '../../utils'
 
 const homedir = require('os').homedir()
 
@@ -34,7 +35,9 @@ export default class UIRun extends Run {
     this.preChecks()
     try {
       this.verification()
-    } catch (e) {}
+    } catch (e) {
+      utils.error(e)
+    }
 
     if (this.action.http === null) {
       this.omgJsonFileHandler()
