@@ -98,9 +98,6 @@ jobs:
           name: Setup npm publish token
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
-          name: Version bump
-          command: npm run bump
-      - run:
           name: Publishing to npmjs using lerna
           command: npm run publish
 
@@ -112,9 +109,6 @@ jobs:
       - run:
           name: Setup npm publish token
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      - run:
-          name: Version bump
-          command: npm run bump
       - run:
           name: Publishing to npmjs using lerna
           command: npm run publish --dist-tag beta
