@@ -73,9 +73,19 @@ export default {
         }
       }
     })
+    this.getSocket.on('subscribe', res => {
+      if (res.output) {
+        try {
+          this.setActionOutput(JSON.parse(res.output))
+        } catch (e) {
+          this.setActionOutput(res.output.trim())
+        }
+      }
+    })
   },
   beforeDestroy () {
     this.getSocket.removeListener('run')
+    this.getSocket.removeListener('subscribe')
   },
   methods: {
     ...mapMutations([
@@ -93,7 +103,7 @@ export default {
       } else {
         if (this.args.subscribe) {
           delete this.args.subscribe
-          // this.subscribe(this.args);
+          this.subscribe(this.args)
         } else {
           delete this.args.subscribe
           this.run(this.args)
@@ -103,19 +113,35 @@ export default {
     processArgs (data) {
       this.edited = true
       this.args = data
+      if (this.event && this.event.length > 0) {
+        this.args['subscribe'] = true
+      } else {
+        this.args['subscribe'] = false
+      }
       this.runHandler()
     },
     processEvent (data) {
       this.event = data
     },
     run (e) {
-      let run = {
+      const run = {
         image: `omg/${this.getOwner}`,
         action: e.action,
         args: { ...e.args }
       }
       this.setActionOutput('')
       this.getSocket.emit('run', run)
+      this.addHistoryEntry(run)
+    },
+    subscribe (e) {
+      const run = {
+        image: `omg/${this.getOwner}`,
+        action: e.action,
+        args: { ...e.args },
+        event: this.event
+      }
+      this.setActionOutput('')
+      this.getSocket.emit('subscribe', run)
       this.addHistoryEntry(run)
     }
   }

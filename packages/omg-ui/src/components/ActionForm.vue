@@ -113,8 +113,8 @@ export default {
         if (this.event && this.event.length > 0) {
           this.obj['subscribe'] = true
         }
-        this.$emit('argsEdited', this.obj)
       }
+      this.$emit('argsEdited', this.obj)
     },
     changeHandler (data) {
       const key = data.srcElement.name.substr(4)
