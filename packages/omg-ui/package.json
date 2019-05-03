@@ -1,6 +1,6 @@
 {
   "name": "omg-ui",
-  "version": "1.0.0",
+  "version": "0.8.8",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
