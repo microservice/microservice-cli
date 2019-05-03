@@ -108,13 +108,15 @@ export default class UIServer {
     appPath?: string
   ) {
     if (this.rebuildToggle) {
-      utils.log(
-        `${appPath.substr(appPath.lastIndexOf('/') + 1)} changed. Rebuilding.`
-      )
-
+      if (appPath) {
+        utils.log(
+          `${appPath.substr(appPath.lastIndexOf('/') + 1)} changed. Rebuilding.`
+        )
+      }
       if (microservice) {
         this.microserviceStr = microservice
       }
+
       this.sendFile(path.join(process.cwd(), 'microservice.yml'))
       await this.stopContainer()
       if (bak) {
@@ -373,6 +375,7 @@ export default class UIServer {
     })
     await new Promise(res => setTimeout(res, 1000))
   }
+
   /**
    * Stops the currently running container
    *
@@ -391,6 +394,7 @@ export default class UIServer {
       resolve()
     })
   }
+
   /**
    * Run the asked action with params
    *
@@ -413,9 +417,6 @@ export default class UIServer {
         status: true
       })
     } catch (e) {
-      // if (await this.dockerContainer.isRunning()) {
-      //   await this.dockerContainer.stopService()
-      // }
       this.socket.emit('run', {
         notif: `Failed action: \`${data.action}\`: ${e}`,
         status: false
@@ -428,17 +429,17 @@ export default class UIServer {
       status: true
     })
   }
+
   /**
    * Subscribes to the asked event eith provided params
    *
    * @param  {IDataAction} data
    */
-  private async subscribeEvent(data: IDataAction) {
+  private async subscribeEvent(data: any) {
     await Cli.checkDocker()
     await this.runAction({
       action: data.action,
-      args: [],
-      envs: data.envs,
+      args: data.args,
       image: data.image
     })
 
@@ -471,9 +472,6 @@ export default class UIServer {
         }
       }, 1500)
     } catch (e) {
-      if (await this.dockerContainer.isRunning()) {
-        await this.dockerContainer.stopService()
-      }
       this.socket.emit('subscribe', {
         notif: `Failed subscribing to event ${data.event}: ${e}`,
         status: false,

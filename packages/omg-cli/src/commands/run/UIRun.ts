@@ -32,9 +32,11 @@ export default class UIRun extends Run {
   public async exec(action: string): Promise<string> {
     this.action = this.microservice.getAction(action)
     this.preChecks()
-    this.verification()
+    try {
+      this.verification()
+    } catch (e) {}
 
-    if (!this.action.http) {
+    if (this.action.http === null) {
       this.omgJsonFileHandler()
       return ''
     } else {
