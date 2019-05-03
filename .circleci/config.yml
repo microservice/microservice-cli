@@ -133,7 +133,7 @@ workflows:
     - publish_prerelease:
         filters:
           tags:
-            only: /[0-9]+(\.[0-9]+)*-beta(\.[0-9]+)?/
+            only: /[0-9]+(\.[0-9]+)*-beta(\.[0-9]+)?/ 
           branches:
             ignore: /.*/
         requires:
