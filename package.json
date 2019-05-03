@@ -12,7 +12,7 @@
     "coverage": "lerna run coverage",
     "build": "lerna run build",
     "publish": "lerna run publish",
-    "bump": "lerna version --conventional-commits"
+    "bump": "lerna version --conventional-commits --yes"
   },
   "bin": "omg"
 }
