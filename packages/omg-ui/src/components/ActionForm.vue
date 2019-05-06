@@ -28,7 +28,10 @@
         </div>
       </div>
       <div
-        v-else-if="getMicroservice.actions[actionName].events[eventName]"
+        v-else-if="
+          getMicroservice.actions[actionName].events &&
+            getMicroservice.actions[actionName].events[eventName]
+        "
         class="inputs"
       >
         <input type="hidden" name="type" value="event" />
@@ -103,11 +106,11 @@ export default {
   methods: {
     ...mapMutations(['updateActionContinuousArgs', 'addActionCurlArgs']),
     processData (data) {
+      this.obj['action'] = this.actionName
       for (let i = 0; i < data.srcElement.length - 1; i++) {
         const key = data.srcElement[i].name.substr(4)
         const value = data.srcElement[i].value
 
-        this.obj['action'] = this.actionName
         this.obj['args'] = {}
         this.obj.args[key] = value
         if (this.event && this.event.length > 0) {
