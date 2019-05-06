@@ -136,9 +136,13 @@ export default class UIServer {
       }
     }
   }
-
-  async getAvailablePort(startingAt) {
-    const getNextAvailablePort = (currentPort, cb) => {
+  /**
+   * Gets the first available port starting at provided value
+   *
+   * @param  {Number} startingAt Starting port to check
+   */
+  async getAvailablePort(startingAt: number) {
+    const getNextAvailablePort = (currentPort: number, cb: any) => {
       const server = http.createServer()
       server.listen(currentPort, _ => {
         server.once('close', _ => {
