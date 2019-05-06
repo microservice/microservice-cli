@@ -12,7 +12,11 @@ program
   .description(
     'For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`'
   )
+<<<<<<< HEAD
   .version(require('../../package.json').version)
+=======
+  .version('0.10.0')
+>>>>>>> chore: bump version
 
 program
   .command('validate')
