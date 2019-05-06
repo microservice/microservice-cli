@@ -1,7 +1,5 @@
 .idea/
 node_modules/
-__tests__/
-.circleci/
 coverage/
 .npmignore
 .gitignore
@@ -13,3 +11,5 @@ src/
 jest.config.js
 tsconfig.js
 package-lock.json
+__tests__/
+public/
