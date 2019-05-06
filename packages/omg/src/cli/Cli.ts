@@ -32,6 +32,7 @@ export default class Cli {
       (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) ||
         !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) &&
       !process.argv.includes('--help') &&
+      !process.argv.includes('--version') &&
       process.argv.length > 2
     ) {
       utils.error(
@@ -449,35 +450,30 @@ export default class Cli {
    * @param {Object} options The options to start the UI, such as port mapping
    */
   async ui(options: any): Promise<any> {
-    if (options.port) {
-      try {
-        this.uiServer = new UIServer(
-          options.port,
-          Cli.readYAML(path.join(process.cwd(), 'microservice.yml'), true)
-        )
-        this.uiServer.startUI(options.open ? true : false)
+    try {
+      this.uiServer = new UIServer(
+        options.port,
+        Cli.readYAML(path.join(process.cwd(), 'microservice.yml'), true)
+      )
+      this.uiServer.startUI(options.open ? true : false)
 
-        chokidar
-          .watch(process.cwd(), {
-            ignored: /(^|[/\\])\../
-          })
-          .on('all', (event, appPath) => {
-            if (event === 'change') {
-              this.uiServer.rebuild(
-                {},
-                Cli.readYAML(
-                  path.join(process.cwd(), 'microservice.yml'),
-                  true
-                ),
-                true,
-                appPath
-              )
-            }
-          })
-      } catch (e) {
-        utils.error(e)
-        process.exit(1)
-      }
+      chokidar
+        .watch(process.cwd(), {
+          ignored: /(^|[/\\])\../
+        })
+        .on('all', (event, appPath) => {
+          if (event === 'change') {
+            this.uiServer.rebuild(
+              {},
+              Cli.readYAML(path.join(process.cwd(), 'microservice.yml'), true),
+              true,
+              appPath
+            )
+          }
+        })
+    } catch (e) {
+      utils.error(e)
+      process.exit(1)
     }
   }
 

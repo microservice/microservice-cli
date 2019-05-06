@@ -12,7 +12,7 @@ program
   .description(
     'For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`'
   )
-  .version('0.10.0')
+  .version(require('../../package.json').version)
 
 program
   .command('validate')
@@ -86,7 +86,7 @@ program
 program
   .command('ui')
   .option('-p --port, <p>', 'The port to bind')
-  .option('-o --open', 'Open in browser')
+  .option('--no-open', 'Do not open in browser')
   .description('Starts to omg-app which monitors your microservice.')
   .action(async options => cli.ui(options))
 

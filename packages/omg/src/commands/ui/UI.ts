@@ -54,6 +54,7 @@ export default class UIServer {
 
   private rebuildBak: { build: any; start: any }
   private rebuildToggle: boolean
+  private isClientConnected: boolean
 
   /**
    * Constructor
@@ -69,23 +70,31 @@ export default class UIServer {
     this.socket = null
     this.microserviceStr = microservice
     this.rebuildToggle = true
+    this.isClientConnected = false
   }
   /**
    * Starts the UI server
    * @param {Boolean} [doOpen=false]
    */
-  startUI(doOpen = false) {
+  async startUI(doOpen = false) {
     this.io.on('connection', socket => {
-      socket.removeAllListeners()
-      this.socket = socket
-      this.sendFile(path.join(process.cwd(), 'microservice.yml'))
-      this.initListeners()
-      utils.log('Web client connected to socket.')
+      if (!this.isClientConnected) {
+        this.isClientConnected = true
+        socket.removeAllListeners()
+        this.socket = socket
+        this.sendFile(path.join(process.cwd(), 'microservice.yml'))
+        this.initListeners()
+        utils.log('Web client connected to socket.')
+      }
       this.socket.on('disconnect', () => {
+        this.isClientConnected = false
         utils.log('Web client disconnected from socket.')
       })
     })
 
+    if (!this.port) {
+      this.port = (await this.getAvailablePort(3000)) as number
+    }
     this.http.listen(this.port, async () => {
       utils.log(`OMG UI started on http://localhost:${this.port}`)
       if (doOpen) {
@@ -126,6 +135,25 @@ export default class UIServer {
         this.rebuildBak = { build: data.build, start: data.start }
       }
     }
+  }
+
+  async getAvailablePort(startingAt) {
+    const getNextAvailablePort = (currentPort, cb) => {
+      const server = http.createServer()
+      server.listen(currentPort, _ => {
+        server.once('close', _ => {
+          cb(currentPort)
+        })
+        server.close()
+      })
+      server.on('error', _ => {
+        getNextAvailablePort(++currentPort, cb)
+      })
+    }
+
+    return new Promise(resolve => {
+      getNextAvailablePort(startingAt, resolve)
+    })
   }
 
   /**
