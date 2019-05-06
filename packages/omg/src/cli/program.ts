@@ -12,7 +12,7 @@ program
   .description(
     'For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`'
   )
-  .version('0.9.1')
+  .version('0.10.0')
 
 program
   .command('validate')
