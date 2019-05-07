@@ -1,6 +1,6 @@
 # OMG APP
 
-[![CircleCI](https://img.shields.io/circleci/project/github/Arinono/omg-cli/master.svg?style=for-the-badge)](https://circleci.com/gh/Arinono/omg-cli/tree/master)
+[![CircleCI](https://img.shields.io/circleci/project/github/microservices/omg-cli/master.svg?style=for-the-badge)](https://circleci.com/gh/microservices/omg-cli/tree/master)
 
 ## Project setup
 
@@ -8,7 +8,7 @@
 $> npm i
 ```
 
-### Compiles and minifies for production 
+### Compiles and minifies for production
 
 ```
 $> npm run build
