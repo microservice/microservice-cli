@@ -6,6 +6,7 @@ defaults: &defaults
     - image: circleci/node:latest
 
 jobs:
+  # Install dependencies, restore/save them to cache, add them to the current workspace
   install:
     <<: *defaults
     steps:
@@ -39,6 +40,7 @@ jobs:
           paths:
             - omg
 
+  # Lint all packages
   lint:
     <<: *defaults
     steps:
@@ -48,6 +50,7 @@ jobs:
           name: Linting
           command: npm run lint
 
+  # Run tests on all packages
   test:
     <<: *defaults
     steps:
@@ -60,6 +63,7 @@ jobs:
           name: Uploading to Codecov
           command: bash <(curl -s https://codecov.io/bash)
 
+  # Build all packages in production mode
   build:
     <<: *defaults
     steps:
@@ -89,6 +93,7 @@ jobs:
           paths:
             - omg
 
+  # Publish to npm using the 'latest' tag
   publish_latest:
     <<: *defaults
     steps:
@@ -101,6 +106,7 @@ jobs:
           name: Publishing to npmjs using lerna
           command: npm run publish
 
+  # Publish to npm using the 'beta' tag
   publish_prerelease:
     <<: *defaults
     steps:
@@ -140,18 +146,18 @@ workflows:
               only: /.*/
           requires:
             - install
-      - publish_prerelease:
+      - publish_prerelease: # Publish as 'beta' when the git tag matches the RegExp
           filters:
             tags:
-              only: /[0-9]+(\.[0-9]+)*-beta(\.[0-9]+)?/
+              only: /[0-9]+(\.[0-9]+)*-beta(\.[0-9]+)?/ # https://regex101.com/r/bAxl2k/1
             branches:
               ignore: /.*/
           requires:
             - build
-      - publish_latest:
+      - publish_latest: # Publish as 'latest' when the git tag matches the RegExp
           filters:
             tags:
-              only: /[0-9]+(\.[0-9]+)*/
+              only: /[0-9]+(\.[0-9]+)*/ # https://regex101.com/r/ZaIbap/1
             branches:
               ignore: /.*/
           requires:
