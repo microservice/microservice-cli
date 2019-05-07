@@ -1,7 +1,7 @@
 # Open Microservice CLI
 
 [![CircleCI](https://circleci.com/gh/microservices/omg.svg?style=svg)](https://circleci.com/gh/microservices/omg)
-[![codecov](https://codecov.io/gh/microservices/omg-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/microservices/omg-cli)
+[![codecov](https://codecov.io/gh/microservices/omg/branch/master/graph/badge.svg)](https://codecov.io/gh/microservices/omg)
 
 [![omg](https://user-images.githubusercontent.com/11602092/47048623-f3aff880-d168-11e8-98df-41baa301b242.png)](https://microservice.guide/)
 
@@ -86,6 +86,20 @@ npm install -g omg
   Options:
 
     -h, --help  output usage information
+```
+
+## `omg ui`
+
+```
+  Usage: ui [options]
+
+  Starts the OMG app using the omg-ui
+
+  Options:
+
+    --no-open does not open the UI in another tab, you will need to open it yourself
+
+    -p --port Manually choose on which port you want to start the UI
 ```
 
 More information can be found in the [docs](/docs).
