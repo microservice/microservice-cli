@@ -1,4 +1,5 @@
 # Open Microservice CLI
+
 [![CircleCI](https://circleci.com/gh/microservices/omg-cli.svg?style=svg)](https://circleci.com/gh/microservices/omg-cli)
 [![codecov](https://codecov.io/gh/microservices/omg-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/microservices/omg-cli)
 
@@ -7,15 +8,19 @@
 Verify, test, and execute microservices built with the [OMG](https://microservice.guide/) standard.
 
 ## Overview
+
 The goals of this project is to provide a utility for developers to test/execute their microservices before being used in a production environment.
 
 ## Installation
+
 ```
 npm install -g omg
 ```
 
 ## Commands
+
 ### `omg validate`
+
 ```
   Usage: validate [options]
 
@@ -29,6 +34,7 @@ npm install -g omg
 ```
 
 ## `omg build`
+
 ```
   Usage: build [options]
 
@@ -41,6 +47,7 @@ npm install -g omg
 ```
 
 ## `omg run`
+
 ```
   Usage: run [options] <action>
 
@@ -56,6 +63,7 @@ npm install -g omg
 ```
 
 ## `omg subscribe`
+
 ```
   Usage: subscribe [options] <action> <event>
 
@@ -69,6 +77,7 @@ npm install -g omg
 ```
 
 ## `omg shutdown`
+
 ```
   Usage: shutdown [options]
 
@@ -77,6 +86,20 @@ npm install -g omg
   Options:
 
     -h, --help  output usage information
+```
+
+## `omg ui`
+
+```
+  Usage: ui [options]
+
+  Starts the OMG app using the omg-ui
+
+  Options:
+
+    --no-open does not open the UI in another tab, you will need to open it yourself
+
+    -p --port Manually choose on which port you want to start the UI
 ```
 
 More information can be found in the [docs](/docs).
