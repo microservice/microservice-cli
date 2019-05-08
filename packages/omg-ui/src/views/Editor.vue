@@ -103,8 +103,8 @@ export default {
       return map
     },
     refresh () {
-      this.disabled = true
-      window.location.reload()
+      // this.disabled = true
+      // window.location.reload()
     }
     // addInsight (line, col, endL, endC, msg, state = error) {
     //   monaco.editor.setModelMarkers(this.editor.getModel(), 'omg-app', [{
