@@ -5,7 +5,7 @@ const history = require('connect-history-api-fallback')
 const distPath = path.resolve(__dirname, './dist')
 const publicPath = path.resolve(__dirname, './public')
 
-const app = function () {
+const app = function() {
   const self = express()
   self.use(
     express.static(distPath, {
@@ -38,4 +38,4 @@ const app = function () {
   return self
 }
 
-module.exports = { app }
+module.exports = { app, distPath }
