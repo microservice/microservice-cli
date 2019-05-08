@@ -1,18 +1,15 @@
-# Change Log
-
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
-
-# [0.10.0](https://github.com/microservices/omg-cli/compare/0.7.5...0.10.0) (2019-05-06)
+## [0.10.2](https://github.com/microservices/omg-cli/compare/0.7.5...0.10.2) (2019-05-08)
 
 
 ### Bug Fixes
 
-* fix dependencies vs devDepencies ([4c4d3d6](https://github.com/microservices/omg-cli/commit/4c4d3d6))
 * **lerna:** fix actual packages version ([0945051](https://github.com/microservices/omg-cli/commit/0945051))
+* **omg-cli:** block incomming clients to socker server + add some startup options ([501887e](https://github.com/microservices/omg-cli/commit/501887e))
+* **omg-cli:** fix issue on subscribe ([dcd1561](https://github.com/microservices/omg-cli/commit/dcd1561))
+* **omg-ui:** fix ActionForm when there's no argument needed for the action ([c62cf49](https://github.com/microservices/omg-cli/commit/c62cf49))
+* fix dependencies vs devDepencies ([4c4d3d6](https://github.com/microservices/omg-cli/commit/4c4d3d6))
 * **omg-cli:** change build from bash exec to dockerode.buildImage() ([e42f17b](https://github.com/microservices/omg-cli/commit/e42f17b))
 * **omg-cli:** change container startup wainting in omg run ([276e12c](https://github.com/microservices/omg-cli/commit/276e12c))
-* **omg-cli:** fix issue on subscribe ([dcd1561](https://github.com/microservices/omg-cli/commit/dcd1561))
 * **omg-ui:** add info msg in Output section when empty ([c1fb8d8](https://github.com/microservices/omg-cli/commit/c1fb8d8))
 * **omg-ui:** fix actions navigation display ([e0ef080](https://github.com/microservices/omg-cli/commit/e0ef080))
 * **omg-ui:** fix docker-logs toggle when on home page ([6fbf22d](https://github.com/microservices/omg-cli/commit/6fbf22d))
@@ -44,15 +41,3 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-
-# [0.9.0](https://github.com/microservices/omg-cli/compare/0.9.0-beta...0.9.0) (2019-05-06)
-
-**Note:** Version bump only for package omg
-
-
-
-
-
-# [0.9.0](https://github.com/microservices/omg-cli/compare/0.9.0-beta.1...0.9.0) (2019-05-03)
-
-**Note:** Version bump only for package omg
