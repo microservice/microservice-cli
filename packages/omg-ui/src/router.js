@@ -44,7 +44,7 @@ export default new Router({
     },
     {
       path: '/editor',
-      name: 'editor',
+      name: 'Microservice Live Editor',
       component: Editor
     },
     {

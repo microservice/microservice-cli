@@ -2,7 +2,12 @@
   <div class="tile-grade-container">
     <div
       class="rectangle"
-      :class="state === 'good' ? 'good' : state === 'warn' ? 'warn' : 'error'"
+      :class="{
+        good: state === 'good',
+        warn: state === 'warn',
+        error: state !== 'good' && state !== 'warn',
+        clickable: clickable
+      }"
     >
       <span class="title">{{ title }}</span>
       <span class="icon">
@@ -33,6 +38,10 @@ export default {
     state: {
       type: String,
       default: 'good'
+    },
+    clickable: {
+      type: Boolean,
+      default: false
     }
   }
 }
@@ -52,6 +61,14 @@ export default {
     justify-content: space-between;
     padding: 0 12px 0 8px;
     align-items: center;
+
+    &.clickable {
+      cursor: pointer;
+
+      &:hover {
+        background-color: #c6f7e9;
+      }
+    }
 
     span.title {
       height: 21px;
