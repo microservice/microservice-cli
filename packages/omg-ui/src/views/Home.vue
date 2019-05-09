@@ -1,6 +1,6 @@
 <template>
   <div class="home-container">
-    <div class="row">
+    <!-- <div class="row">
       <div class="i-tiles info">
         <arrow-forward class="arrow-wrapper" />
         <div class="wrapper">
@@ -54,17 +54,17 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import ArrowForward from '@/components/ArrowForward'
+// import ArrowForward from '@/components/ArrowForward'
 
 export default {
   name: 'home',
   components: {
-    ArrowForward
+    // ArrowForward
   }
 }
 </script>
