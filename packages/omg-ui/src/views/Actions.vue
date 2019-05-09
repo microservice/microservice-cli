@@ -156,7 +156,7 @@ export default {
   align-items: flex-start;
   height: 100%;
   overflow: auto;
-  margin-bottom: 24px;
+  padding-bottom: 24px;
 
   .left {
     display: flex;
