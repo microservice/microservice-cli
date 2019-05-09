@@ -155,16 +155,21 @@ form.action {
 
     .input {
       margin-bottom: 20px;
-      align-items: flex-start;
-      display: flex;
-      flex-direction: column;
 
       .label-line {
+        align-items: flex-start;
         display: flex;
-        align-items: center;
 
         .required-hint {
           width: 100px;
+          height: 44px;
+          align-items: center;
+          display: flex;
+          color: #ba2525;
+          font-family: Graphik;
+          font-size: 14px;
+          line-height: 22px;
+          font-style: italic;
         }
 
         label {
@@ -229,7 +234,7 @@ form.action {
       line-height: 21px;
       text-align: center;
       background-color: #17b897;
-      margin-left: -20px;
+      margin-left: 20px;
 
       &:hover {
         background-color: #2dcca7;
