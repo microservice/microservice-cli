@@ -1,6 +1,6 @@
 <template>
   <div class="container-metrics-container">
-    <div class="heading">Container Metrics</div>
+    <!-- <div class="heading">Container Metrics</div> -->
     <div class="metrics">
       <div class="cpu metrics-item">
         <div class="header">
@@ -235,7 +235,8 @@ export default {
   }
 
   .metrics {
-    margin: 24px 24px 32px 24px;
+    margin: 24px;
+    // margin: 24px 24px 32px 24px;
 
     .metrics-item {
       height: 52px;
