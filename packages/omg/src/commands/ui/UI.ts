@@ -428,6 +428,25 @@ export default class UIServer {
   }
 
   /**
+   * Removes the current container
+   *
+   * @return {Promise}
+   */
+  removeContainer(): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      let output
+      if (this.dockerContainer && !(await this.dockerContainer.isRunning())) {
+        output = await this.dockerContainer.removeContainer()
+        this.emit('stop', {
+          status: true,
+          notif: `Removed Docker container: ${output}`
+        })
+      }
+      resolve()
+    })
+  }
+
+  /**
    * Run the asked action with params
    *
    * @param  {any} data actions and its params

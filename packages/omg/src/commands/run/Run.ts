@@ -219,6 +219,17 @@ export default abstract class Run {
   }
 
   /**
+   * Removes a stopped Docker service
+   *
+   * @return {String} The containerID that has been stopped
+   */
+  public async removeContainer(): Promise<string> {
+    const container = utils.docker.getContainer(this.containerID)
+    await container.remove()
+    return this.containerID
+  }
+
+  /**
    * Checks if there is a Docker process running.
    *
    * @return {Boolean} True if running, otherwise false

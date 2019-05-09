@@ -483,6 +483,7 @@ export default class Cli {
   async controlC() {
     if (this.uiServer !== null) {
       await this.uiServer.stopContainer()
+      await this.uiServer.removeContainer()
       setTimeout(() => {
         process.exit(0)
       }, 1000) // Lil timeout to serve the last statics before shutting down
