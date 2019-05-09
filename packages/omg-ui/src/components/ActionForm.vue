@@ -8,18 +8,23 @@
           v-for="(arg, argName) of getMicroservice.actions[actionName]
             .arguments"
         >
-          <label class="form-row">
-            {{ argName }} {{ arg.required ? "*" : "" }}
-            <input
-              :name="`arg-${argName}`"
-              :required="
-                arg.hasOwnProperty('required') && arg.required ? true : false
-              "
-              :value="query && query.args ? query.args[argName] : ''"
-              :placeholder="arg.type"
-              :type="arg.type === 'number' ? 'number' : 'string'"
-            />
-          </label>
+          <div class="label-line">
+            <label class="form-row">
+              {{ argName }}
+              <input
+                :name="`arg-${argName}`"
+                :required="
+                  arg.hasOwnProperty('required') && arg.required ? true : false
+                "
+                :value="query && query.args ? query.args[argName] : ''"
+                :placeholder="arg.type"
+                :type="arg.type === 'number' ? 'number' : 'string'"
+              />
+            </label>
+            <span class="required-hint">
+              {{ arg.required ? "* Required" : "" }}
+            </span>
+          </div>
           <span
             :class="{ help: arg.help && arg.help.length > 0 }"
             class="hint"
@@ -63,7 +68,8 @@
       </div>
       <div class="btn-container form-row">
         <div class="spacer"></div>
-        <button class="run-btn">Execute</button>
+        <button class="run-btn">Run Action</button>
+        <div class="spacer"></div>
       </div>
     </form>
   </div>
@@ -149,38 +155,50 @@ form.action {
 
     .input {
       margin-bottom: 20px;
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
 
-      label {
-        color: #616e7c;
-        font-family: Graphik;
-        font-size: 14px;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        line-height: 21px;
-        text-align: right;
-        margin-bottom: 8px;
-        text-transform: capitalize;
-      }
+      .label-line {
+        display: flex;
+        align-items: center;
 
-      input {
-        height: 40px;
-        width: 420px;
-        border: 1px solid #dfe0e8;
-        border-radius: 2px;
-        background-color: #ffffff;
-        margin-left: 24px;
-        color: #1f2933;
-        font-family: Graphik;
-        font-size: 14px;
-        line-height: 21px;
-        padding-left: 12px;
+        .required-hint {
+          width: 100px;
+        }
 
-        &::placeholder {
-          height: 18px;
+        label {
+          color: #616e7c;
+          font-family: Graphik;
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+          line-height: 21px;
+          text-align: right;
+          margin-bottom: 8px;
+          text-transform: capitalize;
+        }
+
+        input {
+          height: 40px;
+          width: 420px;
+          border: 1px solid #dfe0e8;
+          border-radius: 2px;
+          background-color: #ffffff;
+          margin: 0 24px;
           color: #1f2933;
           font-family: Graphik;
           font-size: 14px;
           line-height: 21px;
+          padding-left: 12px;
+
+          &::placeholder {
+            height: 18px;
+            color: #1f2933ad;
+            font-family: Graphik;
+            font-size: 14px;
+            line-height: 21px;
+          }
         }
       }
 
@@ -211,6 +229,7 @@ form.action {
       line-height: 21px;
       text-align: center;
       background-color: #17b897;
+      margin-left: -20px;
 
       &:hover {
         background-color: #2dcca7;

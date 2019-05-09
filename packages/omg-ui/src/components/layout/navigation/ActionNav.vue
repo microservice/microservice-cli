@@ -2,11 +2,12 @@
   <div class="action-nav-container">
     <div class="actions">
       <form class="search-container" @submit.prevent="search">
+        <!-- Try naming the input 'omg-search' to avoid Chrome to autocomplete with random stuff -->
         <input
           type="text"
           class="search"
           placeholder="Search"
-          name="search"
+          name="omg-search"
           v-model="search"
         />
         <button type="submit">
