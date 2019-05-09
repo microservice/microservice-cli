@@ -10,10 +10,10 @@
             getMicroservice.actions[$route.params.action].events
         "
       ></event-selector>
-      <div class="title">Arguments</div>
       <div class="desc" v-if="getMicroservice">
         {{ getMicroservice.actions[$route.params.action].help }}
       </div>
+      <div class="title">Arguments</div>
       <action-form
         :actionName="$route.params.action"
         :eventName="event"
@@ -170,7 +170,8 @@ export default {
     }
 
     .title {
-      height: 27px;
+      // height: 27px;
+      height: 57px;
       color: #1f2933;
       font-family: Graphik;
       font-size: 18px;
@@ -179,8 +180,9 @@ export default {
     }
 
     .desc {
-      margin-top: 8px;
-      height: 51px;
+      // margin-top: 8px;
+      // height: 51px;
+      height: 31px;
       color: #616e7c;
       font-family: Graphik;
       font-size: 14px;
