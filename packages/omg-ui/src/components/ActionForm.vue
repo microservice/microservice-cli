@@ -214,6 +214,7 @@ form.action {
         font-size: 14px;
         line-height: 22px;
         font-style: italic;
+        display: flex;
 
         &.help {
           font-style: inherit;
