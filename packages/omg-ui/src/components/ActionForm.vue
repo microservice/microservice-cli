@@ -199,7 +199,7 @@ form.action {
 
           &::placeholder {
             height: 18px;
-            color: #1f2933ad;
+            color: #9aa5b1;
             font-family: Graphik;
             font-size: 14px;
             line-height: 21px;

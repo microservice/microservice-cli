@@ -28,7 +28,17 @@
         </div>
         <div class="btn-container">
           <div class="spacer"></div>
-          <button type="submit" class="run-btn">Save</button>
+          <button type="submit" class="run-btn">
+            <clip-loader
+              :color="'white'"
+              :size="'20px'"
+              class="loader"
+              v-if="
+                getDockerState === 'building' || getDockerState === 'starting'
+              "
+            ></clip-loader>
+            <span v-else>Save and Rebuild</span>
+          </button>
         </div>
       </div>
     </form>
@@ -43,11 +53,16 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
+import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 
 export default {
   name: 'environment',
+  components: {
+    ClipLoader
+  },
   data: () => ({}),
-  computed: mapGetters(['getMicroservice', 'getEnvs', 'getOwner', 'getSocket', 'getDockerRebuild']),
+  computed: mapGetters(['getMicroservice', 'getEnvs', 'getOwner', 'getSocket',
+    'getDockerRebuild', 'getDockerState']),
   mounted () {},
   methods: {
     ...mapMutations(['addEnv']),
@@ -141,7 +156,7 @@ export default {
 
             &::placeholder {
               height: 18px;
-              color: #1f2933;
+              color: #9aa5b1;
               font-family: Graphik;
               font-size: 14px;
               line-height: 21px;
@@ -156,6 +171,7 @@ export default {
           line-height: 22px;
           font-style: italic;
           text-align: center;
+          display: flex;
 
           &.help {
             font-style: inherit;
@@ -172,13 +188,23 @@ export default {
         height: 35px;
         width: 434px;
         border-radius: 2px;
-        color: #ffffff;
-        font-family: Graphik;
-        font-size: 16px;
-        font-weight: 500;
-        line-height: 21px;
-        text-align: center;
         background-color: #17b897;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        span {
+          color: #ffffff;
+          font-family: Graphik;
+          font-size: 16px;
+          font-weight: 500;
+          line-height: 21px;
+          text-align: center;
+        }
+
+        .loader {
+          height: 22px;
+        }
       }
     }
   }
