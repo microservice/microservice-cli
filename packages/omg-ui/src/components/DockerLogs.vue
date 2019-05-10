@@ -43,7 +43,7 @@
           <span class="title">Docker Logs</span>
           <rebuild />
         </div>
-        <div class="logs-output">
+        <div class="logs-output" id="dlog">
           <pre><code>{{ getDockerLogs }}</code></pre>
         </div>
       </div>
@@ -56,7 +56,7 @@
         }"
       >
         <span class="title">Container Logs</span>
-        <div class="logs-output">
+        <div class="logs-output" id="clog">
           <pre><code>{{ getContainerLogs }}</code></pre>
         </div>
       </div>
@@ -89,10 +89,12 @@ export default {
   },
   watch: {
     getDockerLogs: function () {
-      const els = this.$el.querySelectorAll('code')
-      for (const el of els) {
-        el.scrollTop = el.scrollHeight
-      }
+      const el = this.$el.querySelector('#dlog')
+      el.scrollTop = el.scrollHeight + 100
+    },
+    getContainerLogs: function () {
+      const el = this.$el.querySelector('#clog')
+      el.scrollTop = el.scrollHeight + 100
     }
   },
   methods: {
@@ -303,8 +305,9 @@ export default {
         margin-top: 16px;
         padding-right: 24px;
         text-align: left;
-        height: calc(100% - 82px);
+        height: calc(100% - 102px);
         overflow: auto;
+        padding-bottom: 20px;
 
         pre {
           white-space: pre-wrap;

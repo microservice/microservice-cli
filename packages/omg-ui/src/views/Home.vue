@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
-    <!-- <div class="row">
-      <div class="i-tiles info">
+    <div class="row">
+      <!-- <div class="i-tiles info">
         <arrow-forward class="arrow-wrapper" />
         <div class="wrapper">
           <div class="title">Tiles</div>
@@ -20,9 +20,9 @@
             Protocol, Method, Path, ...
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
-    <div class="row">
+    <!-- <div class="row">
       <div class="i-menu info">
         <arrow-forward class="arrow-wrapper" />
         <div class="wrapper">
