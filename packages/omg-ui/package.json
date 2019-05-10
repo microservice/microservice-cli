@@ -12,6 +12,7 @@
     "path": "^0.12.7",
     "vue": "^2.6.6",
     "vue-router": "^3.0.1",
+    "vue-spinner": "^1.0.3",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
