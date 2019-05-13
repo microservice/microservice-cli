@@ -4,12 +4,12 @@
       Environment Variable
     </div>
     <form @submit.prevent="saveHandler" v-if="getMicroservice.environment">
-      <div
-        class="inputs"
-        :key="`env-${name}`"
-        v-for="(env, name) of getMicroservice.environment"
-      >
-        <div class="input">
+      <div class="inputs">
+        <div
+          class="input"
+          :key="`env-${name}`"
+          v-for="(env, name) of getMicroservice.environment"
+        >
           <label class="form-row">
             {{ name }} {{ env.required ? "*" : "" }}
             <input
@@ -26,20 +26,20 @@
             >{{ env.help ? env.help : "No help provided" }}</span
           >
         </div>
-        <div class="btn-container">
-          <div class="spacer"></div>
-          <button type="submit" class="run-btn">
-            <clip-loader
-              :color="'white'"
-              :size="'20px'"
-              class="loader"
-              v-if="
-                getDockerState === 'building' || getDockerState === 'starting'
-              "
-            ></clip-loader>
-            <span v-else>Save and Rebuild</span>
-          </button>
-        </div>
+      </div>
+      <div class="btn-container">
+        <div class="spacer"></div>
+        <button type="submit" class="run-btn">
+          <clip-loader
+            :color="'white'"
+            :size="'20px'"
+            class="loader"
+            v-if="
+              getDockerState === 'building' || getDockerState === 'starting'
+            "
+          ></clip-loader>
+          <span v-else>Save and Rebuild</span>
+        </button>
       </div>
     </form>
     <div v-else>
@@ -116,6 +116,7 @@ export default {
     flex-flow: column nowrap;
     justify-content: space-evenly;
     align-items: flex-start;
+    width: fit-content;
 
     .inputs {
       display: flex;
@@ -183,6 +184,7 @@ export default {
     .btn-container {
       display: flex;
       justify-content: space-between;
+      width: 100%;
 
       button.run-btn {
         height: 35px;
