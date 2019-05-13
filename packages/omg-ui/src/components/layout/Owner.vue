@@ -2,7 +2,7 @@
   <div class="owner-container">
     <img src="../../assets/ic-git.svg" alt="Github logo" class="gh-logo" />
     <a class="owner-name" :href="`https://github.com/${getOwner}`">{{
-      getOwner
+      reduce(21, getOwner)
     }}</a>
   </div>
 </template>
@@ -17,7 +17,11 @@ export default {
   }),
   computed: mapGetters(['getOwner']),
   mounted () {},
-  methods: {}
+  methods: {
+    reduce (size, str) {
+      return `${str.substr(0, size)}...`
+    }
+  }
 }
 </script>
 
