@@ -92,6 +92,8 @@ export default {
   height: 100%;
   margin: 24px 0 0 24px;
   text-align: left;
+  overflow: auto;
+  padding-bottom: 24px;
 
   .title {
     height: 27px;
