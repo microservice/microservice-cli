@@ -194,7 +194,9 @@ export default abstract class Run {
 
     const container = await utils.docker.createContainer({
       Image: this.dockerImage,
-      Cmd: this.microservice.lifecycle.startup,
+      Cmd: this.microservice.lifecycle
+        ? this.microservice.lifecycle.startup
+        : null,
       Env: this.formatEnvironmentVariables(),
       ExposedPorts: this.exposedPorts,
       HostConfig: {
@@ -288,5 +290,17 @@ export default abstract class Run {
    */
   public getPortbindings(): any {
     return this.portBindings
+  }
+
+  public get forwardPortsBindings(): any {
+    const bindings = {}
+    const ports = utils.getForwardPorts(this.microservice)
+    for (const forward of this.microservice.forwards) {
+      bindings[forward.name] = {
+        host: this.portBindings[`${forward.port}/tcp`],
+        container: forward.port
+      }
+    }
+    return bindings
   }
 }
