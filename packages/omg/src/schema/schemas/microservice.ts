@@ -51,7 +51,7 @@ module.exports = {
     actions: {
       type: 'object',
       patternProperties: {
-        '^[A-Za-z|_]+$': {
+        '^[a-zA-Z_][a-zA-Z_0-9]*$': {
           type: 'object'
         }
       },
@@ -60,7 +60,7 @@ module.exports = {
     environment: {
       type: 'object',
       patternProperties: {
-        '^[A-Za-z|_]+$': {
+        '^[a-zA-Z_][a-zA-Z_0-9]*$': {
           type: 'object'
         }
       },
@@ -69,7 +69,7 @@ module.exports = {
     volumes: {
       type: 'object',
       patternProperties: {
-        '^[A-Za-z]+$': {
+        '^[a-zA-Z_][a-zA-Z_0-9]*$': {
           type: 'object'
         }
       },
@@ -176,7 +176,7 @@ module.exports = {
     forward: {
       type: 'object',
       patternProperties: {
-        '^[A-Za-z|_]+$': {
+        '^[a-zA-Z_][a-zA-Z_0-9]*$': {
           type: 'object'
         }
       },
