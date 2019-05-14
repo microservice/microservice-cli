@@ -91,6 +91,11 @@ export default class Action extends Command {
     return this._format
   }
 
+  /**
+   * Gets and return action name
+   *
+   * @return {string} name
+   */
   public get name(): string {
     return this._name
   }

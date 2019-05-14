@@ -59,6 +59,12 @@ export function getNeededPorts(microservice: Microservice): number[] {
   return ports
 }
 
+/**
+ * Gets the ports that need to be open defined by the given {@link Microservice}.
+ *
+ * @param  {Microservice} microservice
+ * @return {number[]} ports Bond ports
+ */
 export function getForwardPorts(microservice: Microservice): number[] {
   const ports = []
   for (let i = 0; i < microservice.forwards.length; i++) {

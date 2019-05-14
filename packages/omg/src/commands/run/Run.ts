@@ -95,6 +95,8 @@ export default abstract class Run {
 
   /**
    * Sets a {@link Microservice}'s default {@link EnvironmentVariable}s and variables from the system environment variables.
+   *
+   * @param {boolean} [inheritEnv=false] Boolean that allows to get env from host env or not
    */
   protected setDefaultEnvironmentVariables(inheritEnv?: boolean): void {
     for (let i = 0; i < this.microservice.environmentVariables.length; i += 1) {
@@ -173,6 +175,7 @@ export default abstract class Run {
   /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
    *
+   * @param {boolean} [inheritEnv=false] Boolean that allows to get env from host env or not
    * @return {String} The id of the container
    */
   public async startService(inheritEnv = false): Promise<string> {
@@ -294,6 +297,10 @@ export default abstract class Run {
     return this.portBindings
   }
 
+  /**
+   * Gets and return bond port only for forwards
+   * @return {any} Bond ports
+   */
   public get forwardPortsBindings(): any {
     const bindings = {}
     const ports = utils.getForwardPorts(this.microservice)
