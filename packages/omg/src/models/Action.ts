@@ -1,16 +1,17 @@
-import Http from './Http';
-import Format from './Format';
-import Event from './Event';
-import Command from './Command';
-const validateAction = require('../schema/schema').action;
+import Http from './Http'
+import Format from './Format'
+import Event from './Event'
+import Command from './Command'
+const validateAction = require('../schema/schema').action
 
 /**
  * Describes an action.
  */
 export default class Action extends Command {
-  private readonly eventMap: object;
-  private readonly _http: Http;
-  private readonly _format: Format;
+  private readonly eventMap: object
+  private readonly _http: Http
+  private readonly _format: Format
+  protected readonly _name: string
 
   /**
    * Build a {@link Action}.
@@ -19,24 +20,30 @@ export default class Action extends Command {
    * @param {Object} rawAction The raw data
    */
   constructor(name: string, rawAction: any) {
-    const isValid = validateAction(rawAction);
+    const isValid = validateAction(rawAction)
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace(/data/g, `actions.${name}`);
-      throw isValid;
+      isValid.text = isValid.text.replace(/data/g, `actions.${name}`)
+      throw isValid
     }
-    super(name, rawAction, name);
-    this.eventMap = null;
+    super(name, rawAction, name)
+    this.eventMap = null
     if (rawAction.events) {
-      this.eventMap = {};
-      const eventList = Object.keys(rawAction.events);
+      this.eventMap = {}
+      const eventList = Object.keys(rawAction.events)
       for (let i = 0; i < eventList.length; i += 1) {
-        this.eventMap[eventList[i]] = new Event(eventList[i], name, rawAction.events[eventList[i]]);
+        this.eventMap[eventList[i]] = new Event(
+          eventList[i],
+          name,
+          rawAction.events[eventList[i]]
+        )
       }
     }
-    this._http = ((rawAction.http) ? new Http(name, rawAction.http, `actions.${name}.http`, null) : null);
-    this._format = ((rawAction.format) ? new Format(name, rawAction.format) : null);
+    this._http = rawAction.http
+      ? new Http(name, rawAction.http, `actions.${name}.http`, null)
+      : null
+    this._format = rawAction.format ? new Format(name, rawAction.format) : null
     if (this._http !== null) {
-      this.checkHttpArguments(this._http, 'action', 'Action');
+      this.checkHttpArguments(this._http, 'action', 'Action')
     }
     if (this._output && this._output.properties) {
       if ((this._output.type !== 'map') && (this._output.type !== 'object')) {
@@ -55,9 +62,9 @@ export default class Action extends Command {
    */
   public get events(): Event[] {
     if (this.eventMap === null) {
-      return null;
+      return null
     }
-    return (<any>Object).values(this.eventMap);
+    return (<any>Object).values(this.eventMap)
   }
 
   /**
@@ -68,10 +75,10 @@ export default class Action extends Command {
    * @return {Event}
    */
   public getEvent(event): Event {
-    if ((this.eventMap === null) || (!this.eventMap[event])) {
-      throw `Event \`${event}\` does not exist`;
+    if (this.eventMap === null || !this.eventMap[event]) {
+      throw `Event \`${event}\` does not exist`
     }
-    return this.eventMap[event];
+    return this.eventMap[event]
   }
 
   /**
@@ -80,7 +87,7 @@ export default class Action extends Command {
    * @return {Http} The {@link Http} service
    */
   public get http(): Http {
-    return this._http;
+    return this._http
   }
 
   /**
@@ -89,6 +96,10 @@ export default class Action extends Command {
    * @return {Format} The {@link Action}'s format
    */
   public get format(): Format {
-    return this._format;
+    return this._format
+  }
+
+  public get name(): string {
+    return this._name
   }
 }

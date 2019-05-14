@@ -1,4 +1,5 @@
 module.exports = {
+  type: 'object',
   properties: {
     http: {
       type: 'object',
@@ -10,7 +11,11 @@ module.exports = {
         port: {
           type: 'integer'
         }
-      }
+      },
+      required: ['path', 'port'],
+      additionalProperties: false
     }
-  }
+  },
+  required: ['http'],
+  additionalProperties: false
 }

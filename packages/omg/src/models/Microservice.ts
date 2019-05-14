@@ -1,18 +1,20 @@
-import Action from './Action';
-import EnvironmentVariable from './EnvironmentVariable';
-import Volume from './Volume';
-import Lifecycle from './Lifecycle';
-const validateMicroservice = require('../schema/schema').microservice;
+import Action from './Action'
+import EnvironmentVariable from './EnvironmentVariable'
+import Volume from './Volume'
+import Lifecycle from './Lifecycle'
+import Forward from './Forward'
+const validateMicroservice = require('../schema/schema').microservice
 
 /**
  * Describes a microservice defined by a `microservice.yml`
  */
 export default class Microservice {
-  private readonly _rawData: object;
-  private readonly actionMap: object;
-  private readonly environmentMap: object;
-  private readonly volumeMap: object;
-  private readonly _lifecycle: Lifecycle;
+  private readonly _rawData: object
+  private readonly actionMap: object
+  private readonly environmentMap: object
+  private readonly volumeMap: object
+  private readonly _lifecycle: Lifecycle
+  private readonly forwardMap: object
 
   /**
    * Builds a {@link Microservice} defined by a `microservice.yml`.
@@ -20,45 +22,70 @@ export default class Microservice {
    * @param {Object} microserviceYamlJson The given raw JSON of the `microservice.yml`
    */
   constructor(microserviceYamlJson: any) {
-    const isValid = validateMicroservice(microserviceYamlJson);
+    const isValid = validateMicroservice(microserviceYamlJson)
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace(/data/g, `root`);
-      throw isValid;
+      isValid.text = isValid.text.replace(/data/g, `root`)
+      throw isValid
     }
-    this._rawData = isValid;
-    this.actionMap = null;
+    this._rawData = isValid
+    this.actionMap = null
     if (microserviceYamlJson.actions) {
-      this.actionMap = {};
-      const actionList = Object.keys(microserviceYamlJson.actions);
+      this.actionMap = {}
+      const actionList = Object.keys(microserviceYamlJson.actions)
       for (let i = 0; i < actionList.length; i += 1) {
-        this.actionMap[actionList[i]] = new Action(actionList[i], microserviceYamlJson.actions[actionList[i]]);
+        this.actionMap[actionList[i]] = new Action(
+          actionList[i],
+          microserviceYamlJson.actions[actionList[i]]
+        )
       }
     }
-    this.environmentMap = null;
+    this.environmentMap = null
     if (microserviceYamlJson.environment) {
-      this.environmentMap = {};
-      const environmentList = Object.keys(microserviceYamlJson.environment);
+      this.environmentMap = {}
+      const environmentList = Object.keys(microserviceYamlJson.environment)
       for (let i = 0; i < environmentList.length; i += 1) {
-        this.environmentMap[environmentList[i]] = new EnvironmentVariable(environmentList[i], microserviceYamlJson.environment[environmentList[i]]);
+        this.environmentMap[environmentList[i]] = new EnvironmentVariable(
+          environmentList[i],
+          microserviceYamlJson.environment[environmentList[i]]
+        )
       }
     }
-    this.volumeMap = null;
+    this.volumeMap = null
     if (microserviceYamlJson.volumes) {
-      this.volumeMap = {};
-      const volumeList = Object.keys(microserviceYamlJson.volumes);
+      this.volumeMap = {}
+      const volumeList = Object.keys(microserviceYamlJson.volumes)
       for (let i = 0; i < volumeList.length; i += 1) {
-        this.volumeMap[volumeList[i]] = new Volume(volumeList[i], microserviceYamlJson.volumes[volumeList[i]]);
+        this.volumeMap[volumeList[i]] = new Volume(
+          volumeList[i],
+          microserviceYamlJson.volumes[volumeList[i]]
+        )
       }
     }
-    this._lifecycle = ((microserviceYamlJson.lifecycle) ? new Lifecycle(microserviceYamlJson.lifecycle) : null);
-    for (let i = 0; i < this.actions.length; i += 1) {
-      if ((this.actions[i].http !== null) && (this.lifecycle === null)) {
-        throw {
-          context: `Action with name: \`${this.actions[i].name}\``,
-          message: 'If an action interfaces with http then a lifecycle must be provided',
-        };
+    this._lifecycle = microserviceYamlJson.lifecycle
+      ? new Lifecycle(microserviceYamlJson.lifecycle)
+      : null
+    this.forwardMap = null
+    if (microserviceYamlJson.forward) {
+      this.forwardMap = {}
+      const forwardList = Object.keys(microserviceYamlJson.forward)
+      for (let i = 0; i < forwardList.length; i++) {
+        this.forwardMap[forwardList[i]] = new Forward(
+          forwardList[i],
+          microserviceYamlJson.forward[forwardList[i]],
+          this.actionMap,
+          this.forwardMap
+        )
       }
     }
+    // Disabling lifecycle when actions.$.http
+    // for (let i = 0; i < this.actions.length; i += 1) {
+    //   if ((this.actions[i].http !== null) && (this.lifecycle === null)) {
+    //     throw {
+    //       context: `Action with name: \`${this.actions[i].name}\``,
+    //       message: 'If an action interfaces with http then a lifecycle must be provided',
+    //     };
+    //   }
+    // }
   }
 
   /**
@@ -67,7 +94,7 @@ export default class Microservice {
    * @return {{valid}|Object|*|{valid, yaml, errors}|{valid, issue, errors}}
    */
   public get rawData(): any {
-    return this._rawData;
+    return this._rawData
   }
 
   /**
@@ -77,9 +104,9 @@ export default class Microservice {
    */
   public get actions(): Action[] {
     if (this.actionMap === null) {
-      return [];
+      return []
     }
-    return (<any>Object).values(this.actionMap);
+    return (<any>Object).values(this.actionMap)
   }
 
   /**
@@ -90,10 +117,10 @@ export default class Microservice {
    * @return {Action} The {@link Action}
    */
   public getAction(action): Action {
-    if ((this.actionMap === null) || (!this.actionMap[action])) {
-      throw `Action: \`${action}\` does not exist`;
+    if (this.actionMap === null || !this.actionMap[action]) {
+      throw `Action: \`${action}\` does not exist`
     }
-    return this.actionMap[action];
+    return this.actionMap[action]
   }
 
   /**
@@ -103,9 +130,9 @@ export default class Microservice {
    */
   public get environmentVariables(): EnvironmentVariable[] {
     if (this.environmentMap === null) {
-      return [];
+      return []
     }
-    return (<any>Object).values(this.environmentMap);
+    return (<any>Object).values(this.environmentMap)
   }
 
   /**
@@ -114,14 +141,20 @@ export default class Microservice {
    * @param {Object} environmentVariableMapping The given mapping of environment variables
    * @return {Boolean} True if all required environment variables are given, otherwise false
    */
-  public areRequiredEnvironmentVariablesSupplied(environmentVariableMapping): boolean {
-    const requiredEnvironmentVariable = this.requiredEnvironmentVariables;
-    for (let i = 0; i< requiredEnvironmentVariable.length; i += 1) {
-      if (!Object.keys(environmentVariableMapping).includes(requiredEnvironmentVariable[i])) {
-        return false;
+  public areRequiredEnvironmentVariablesSupplied(
+    environmentVariableMapping
+  ): boolean {
+    const requiredEnvironmentVariable = this.requiredEnvironmentVariables
+    for (let i = 0; i < requiredEnvironmentVariable.length; i += 1) {
+      if (
+        !Object.keys(environmentVariableMapping).includes(
+          requiredEnvironmentVariable[i]
+        )
+      ) {
+        return false
       }
     }
-    return true;
+    return true
   }
 
   /**
@@ -130,7 +163,9 @@ export default class Microservice {
    * @return {Array<String>} The required {@link EnvironmentVariable}'s names
    */
   public get requiredEnvironmentVariables(): string[] {
-    return this.environmentVariables.filter((e) => e.isRequired()).map((e) => e.name);
+    return this.environmentVariables
+      .filter(e => e.isRequired())
+      .map(e => e.name)
   }
 
   /**
@@ -140,9 +175,9 @@ export default class Microservice {
    */
   public get volumes(): Volume[] {
     if (this.volumeMap === null) {
-      return [];
+      return []
     }
-    return (<any>Object).values(this.volumeMap);
+    return (<any>Object).values(this.volumeMap)
   }
 
   /**
@@ -153,10 +188,10 @@ export default class Microservice {
    * @return {Volume} The {@link Volume}
    */
   public getVolume(volume): Volume {
-    if ((this.volumeMap === null) || (!this.volumeMap[volume])) {
-      throw {message: `Volume: \`${volume}\` does not exist`};
+    if (this.volumeMap === null || !this.volumeMap[volume]) {
+      throw { message: `Volume: \`${volume}\` does not exist` }
     }
-    return this.volumeMap[volume];
+    return this.volumeMap[volume]
   }
 
   /**
@@ -165,6 +200,20 @@ export default class Microservice {
    * @return {Lifecycle} The {@link Lifecycle}
    */
   public get lifecycle(): Lifecycle {
-    return this._lifecycle;
+    return this._lifecycle
+  }
+
+  public get forwards(): Forward[] {
+    if (this.forwardMap === null) {
+      return []
+    }
+    return (<any>Object).values(this.forwardMap)
+  }
+
+  public getForward(forward: string): Forward {
+    if (this.forwardMap === null || !this.forwardMap[forward]) {
+      throw { message: `Forward: \`${forward}\` does not exist` }
+    }
+    return this.forwardMap[forward]
   }
 }

@@ -3,6 +3,7 @@ import * as $ from 'shelljs'
 import * as net from 'http'
 import Microservice from './models/Microservice'
 import EnvironmentVariable from './models/EnvironmentVariable'
+import Forward from './models/Forward'
 const Docker = require('dockerode-promise')
 export const docker = new Docker()
 
@@ -47,6 +48,23 @@ export function getNeededPorts(microservice: Microservice): number[] {
           ports.push(action.events[j].unsubscribe.port)
         }
       }
+    }
+  }
+  for (let i = 0; i < microservice.forwards.length; i++) {
+    const forward = microservice.forwards[i]
+    if (forward.http !== null) {
+      ports.push(forward.http.port)
+    }
+  }
+  return ports
+}
+
+export function getForwardPorts(microservice: Microservice): number[] {
+  const ports = []
+  for (let i = 0; i < microservice.forwards.length; i++) {
+    const forward = microservice.forwards[i]
+    if (forward.http !== null) {
+      ports.push(forward.http.port)
     }
   }
   return ports

@@ -93,7 +93,7 @@ export default class UIServer {
     })
 
     if (!this.port) {
-      this.port = (await this.getAvailablePort(3000)) as number
+      this.port = await utils.getOpenPort()
     }
     this.http.listen(this.port, async () => {
       utils.log(`OMG UI started on http://localhost:${this.port}`)
@@ -135,29 +135,6 @@ export default class UIServer {
         this.rebuildBak = { build: data.build, start: data.start }
       }
     }
-  }
-  /**
-   * Gets the first available port starting at provided value
-   *
-   * @param  {Number} startingAt Starting port to check
-   */
-  async getAvailablePort(startingAt: number) {
-    const getNextAvailablePort = (currentPort: number, cb: any) => {
-      const server = http.createServer()
-      server.listen(currentPort, _ => {
-        server.once('close', _ => {
-          cb(currentPort)
-        })
-        server.close()
-      })
-      server.on('error', _ => {
-        getNextAvailablePort(++currentPort, cb)
-      })
-    }
-
-    return new Promise(resolve => {
-      getNextAvailablePort(startingAt, resolve)
-    })
   }
 
   /**
@@ -403,7 +380,8 @@ export default class UIServer {
       notif: `Started Docker container: ${this.containerID.substring(0, 12)}`,
       status: true,
       started: true,
-      ports: this.dockerContainer.getPortbindings()
+      ports: this.dockerContainer.getPortbindings(),
+      forwards: this.dockerContainer.forwardPortsBindings
     })
     await new Promise(res => setTimeout(res, 1000))
   }
