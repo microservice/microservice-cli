@@ -96,7 +96,7 @@ export default abstract class Run {
   /**
    * Sets a {@link Microservice}'s default {@link EnvironmentVariable}s and variables from the system environment variables.
    */
-  protected setDefaultEnvironmentVariables(): void {
+  protected setDefaultEnvironmentVariables(inheritEnv?: boolean): void {
     for (let i = 0; i < this.microservice.environmentVariables.length; i += 1) {
       const environmentVariable = this.microservice.environmentVariables[i]
       if (!this.environmentVariables[environmentVariable.name]) {
@@ -107,11 +107,13 @@ export default abstract class Run {
       }
     }
 
-    for (let i = 0; i < this.microservice.environmentVariables.length; i += 1) {
-      const environmentVariable = this.microservice.environmentVariables[i]
-      if (process.env[environmentVariable.name]) {
-        this.environmentVariables[environmentVariable.name] =
-          process.env[environmentVariable.name]
+    if (inheritEnv) {
+      for (let i = 0; i < this.microservice.environmentVariables.length; i++) {
+        const environmentVariable = this.microservice.environmentVariables[i]
+        if (process.env[environmentVariable.name]) {
+          this.environmentVariables[environmentVariable.name] =
+            process.env[environmentVariable.name]
+        }
       }
     }
   }
@@ -173,8 +175,8 @@ export default abstract class Run {
    *
    * @return {String} The id of the container
    */
-  public async startService(): Promise<string> {
-    this.setDefaultEnvironmentVariables()
+  public async startService(inheritEnv = false): Promise<string> {
+    this.setDefaultEnvironmentVariables(inheritEnv)
     const neededPorts = utils.getNeededPorts(this.microservice)
     const openPorts = []
     while (neededPorts.length !== openPorts.length) {

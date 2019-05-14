@@ -87,6 +87,10 @@ program
   .command('ui')
   .option('-p --port, <p>', 'The port to bind')
   .option('--no-open', 'Do not open in browser')
+  .option(
+    '--inherit-env',
+    'Binds host env variable asked in the microservice.yml to the container env'
+  )
   .description('Starts to omg-app which monitors your microservice.')
   .action(async options => cli.ui(options))
 
