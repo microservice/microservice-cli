@@ -44,17 +44,16 @@ export default class UIServer {
   private app: any
   private http: any
   private io: any
-
   private microservice: Microservice
   private microserviceStr: any
   private socket: any
   private dockerContainer: Run
   private containerID: string
   private subscribe: Subscribe
-
   private rebuildBak: { build: any; start: any }
   private rebuildToggle: boolean
   private isClientConnected: boolean
+  private inheritEnv: boolean
 
   /**
    * Constructor
@@ -62,8 +61,8 @@ export default class UIServer {
    * @param  {number} port
    * @param  {any} microservice
    */
-  constructor(port: number, microservice: any) {
-    this.port = port
+  constructor(opts: any, microservice: any) {
+    this.port = opts.port
     this.app = app()
     this.http = new http.Server(this.app)
     this.io = io.listen(this.http)
@@ -71,6 +70,7 @@ export default class UIServer {
     this.microserviceStr = microservice
     this.rebuildToggle = true
     this.isClientConnected = false
+    this.inheritEnv = opts.inheritEnv ? opts.inheritEnv : false
   }
   /**
    * Starts the UI server
@@ -375,7 +375,7 @@ export default class UIServer {
       notif: 'Starting Docker container',
       status: true
     })
-    this.containerID = await this.dockerContainer.startService()
+    this.containerID = await this.dockerContainer.startService(this.inheritEnv)
     this.socket.emit('start', {
       notif: `Started Docker container: ${this.containerID.substring(0, 12)}`,
       status: true,

@@ -452,7 +452,7 @@ export default class Cli {
   async ui(options: any): Promise<any> {
     try {
       this.uiServer = new UIServer(
-        options.port,
+        options,
         Cli.readYAML(path.join(process.cwd(), 'microservice.yml'), true)
       )
       this.uiServer.startUI(options.open ? true : false)
