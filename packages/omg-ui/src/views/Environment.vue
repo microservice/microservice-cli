@@ -65,7 +65,7 @@ export default {
     'getDockerRebuild', 'getDockerState']),
   mounted () {},
   methods: {
-    ...mapMutations(['addEnv']),
+    ...mapMutations(['addEnv', 'setContainerLogs']),
     saveHandler (data) {
       const e = data.srcElement.elements
       for (let i = 0; i < e.length - 1; i++) {
@@ -74,6 +74,7 @@ export default {
         }
       }
       if (this.getDockerRebuild) {
+        this.setContainerLogs('')
         this.getSocket.emit('rebuild', {
           build: {},
           start: {

@@ -235,7 +235,6 @@ form.action {
       line-height: 21px;
       text-align: center;
       background-color: #17b897;
-      margin-left: 20px;
 
       &:hover {
         background-color: #2dcca7;
