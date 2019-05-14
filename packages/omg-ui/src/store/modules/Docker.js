@@ -12,7 +12,8 @@ const state = {
   dockerLogs: '',
   state: 'stopped',
   stats: [],
-  port: 0
+  portBindings: {},
+  fowardBindings: {}
 }
 
 const getters = {
@@ -29,7 +30,8 @@ const getters = {
   getDockerLogs: state => state.dockerLogs,
   getDockerState: state => state.state,
   getDockerStats: state => state.stats,
-  getDockerPort: state => state.port
+  getDockerPortBindings: state => state.portBindings,
+  getDockerForwardBindings: state => state.fowardBindings
 }
 
 const mutations = {
@@ -48,7 +50,9 @@ const mutations = {
   appendDockerLogs: (state, line) => (state.dockerLogs += `${line}\n`),
   setDockerState: (state, value) => (state.state = value),
   addDockerStatsEntry: (state, entry) => state.stats.push(entry),
-  setDockerPort: (state, port) => (state.port = port)
+  setDockerPortBindings: (state, bindings) => (state.portBindings = bindings),
+  setDockerForwardBindings: (state, bindings) =>
+    (state.fowardBindings = bindings)
 }
 
 const actions = {}
