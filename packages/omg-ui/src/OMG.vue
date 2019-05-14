@@ -47,7 +47,10 @@ export default {
     })
     this.getSocket.on('start', res => {
       if (res.ports) {
-        this.setDockerPort(res.ports[Object.keys(res.ports)[0]][0].HostPort)
+        this.setDockerPortBindings(res.ports)
+      }
+      if (res.forwards) {
+        this.setDockerForwardBindings(res.forwards)
       }
       this.start(res)
     })
@@ -66,7 +69,8 @@ export default {
   },
   methods: {
     ...mapMutations(['initSocket', 'setValidation', 'setOwner',
-      'setMicroserviceRaw', 'appendDockerLogs', 'setDockerState', 'setDockerPort']),
+      'setMicroserviceRaw', 'appendDockerLogs', 'setDockerState',
+      'setDockerPortBindings', 'setDockerForwardBindings']),
     build (data) {
       this.setDockerState('building')
       if (data.notif) {

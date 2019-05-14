@@ -15,17 +15,19 @@
         </div>
         <div
           class="values"
-          v-for="(value, valueName) of getMicroservice.forward"
+          v-for="(value, valueName) of getDockerForwardBindings"
           :key="`value-${valueName}`"
         >
           <div class="value-name">{{ valueName }}</div>
           <div class="value-params">
-            <div
-              class="param"
-              v-for="(param, paramName) of value.http"
-              :key="`param-${paramName}`"
-            >
-              {{ paramName }}: {{ param }}
+            <div class="param">
+              Port bound from {{ value.host[0].HostPort }} (host) to the port
+              {{ value.container }} (container).
+              <a
+                href="http://localhost:{{value.host[0].HostPort}}/"
+                target="_blank"
+                >Visit</a
+              >
             </div>
           </div>
         </div>
@@ -39,7 +41,9 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'forward',
   computed: {
-    ...mapGetters(['getMicroservice'])
+    ...mapGetters(['getDockerForwardBindings', 'getMicroservice'])
+  },
+  mounted () {
   }
 }
 </script>
@@ -76,12 +80,27 @@ export default {
     line-height: 22px;
 
     .value-params {
-      color: #616e7c;
-      font-family: Graphik;
-      font-size: 14px;
-      line-height: 22px;
       margin-left: 8px;
       margin-top: 8px;
+
+      .param {
+        color: #616e7c;
+        font-family: Graphik;
+        font-size: 14px;
+        line-height: 22px;
+
+        a {
+          color: #616e7c;
+          font-family: Graphik;
+          font-size: 14px;
+          line-height: 22px;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
     }
   }
 }
