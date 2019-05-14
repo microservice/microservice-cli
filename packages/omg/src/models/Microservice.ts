@@ -203,6 +203,11 @@ export default class Microservice {
     return this._lifecycle
   }
 
+  /**
+   * Gets and returns forwards from the forwardMap
+   *
+   * @return {Forward[]} Forwards
+   */
   public get forwards(): Forward[] {
     if (this.forwardMap === null) {
       return []
@@ -210,6 +215,12 @@ export default class Microservice {
     return (<any>Object).values(this.forwardMap)
   }
 
+  /**
+   * Gets and returns one forward based on the provided argument
+   *
+   * @param  {string} forward
+   * @return {Forward} forward
+   */
   public getForward(forward: string): Forward {
     if (this.forwardMap === null || !this.forwardMap[forward]) {
       throw { message: `Forward: \`${forward}\` does not exist` }

@@ -58,11 +58,11 @@ export default class UIServer {
   /**
    * Constructor
    *
-   * @param  {number} port
+   * @param  {any} options
    * @param  {any} microservice
    */
-  constructor(opts: any, microservice: any) {
-    this.port = opts.port
+  constructor(options: any, microservice: any) {
+    this.port = options.port
     this.app = app()
     this.http = new http.Server(this.app)
     this.io = io.listen(this.http)
@@ -70,7 +70,7 @@ export default class UIServer {
     this.microserviceStr = microservice
     this.rebuildToggle = true
     this.isClientConnected = false
-    this.inheritEnv = opts.inheritEnv ? opts.inheritEnv : false
+    this.inheritEnv = options.inheritEnv ? options.inheritEnv : false
   }
   /**
    * Starts the UI server

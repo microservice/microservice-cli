@@ -1,10 +1,19 @@
 const validateForward = require('../schema/schema').forward
 
+/**
+ * Describes a Forward
+ */
 export default class Forward {
   private readonly _path: string
   private readonly _port: number
   private readonly _name: string
 
+  /**
+   * @param  {string} name forward name
+   * @param  {any} rawForward raw forward from microservice
+   * @param  {any} actionMap actionMap to compares available ports
+   * @param  {any} forwardMap forwardMap to compares available ports
+   */
   constructor(name: string, rawForward: any, actionMap: any, forwardMap: any) {
     const isValid = validateForward(rawForward)
     if (!isValid.valid) {
@@ -34,18 +43,38 @@ export default class Forward {
     this._name = name
   }
 
+  /**
+   * Gets and returns forward path
+   *
+   * @return {string} path
+   */
   public get path(): string {
     return this._path
   }
 
+  /**
+   * Gets and returns forward port
+   *
+   * @return {number} port
+   */
   public get port(): number {
     return this._port
   }
 
+  /**
+   * Gets and returns forward name
+   *
+   * @return {string} name
+   */
   public get name(): string {
     return this._name
   }
 
+  /**
+   * Gets and returns forward http
+   *
+   * @return {any} http
+   */
   public get http(): { path: string; port: number } {
     return { path: this._path, port: this._port }
   }

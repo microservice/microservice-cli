@@ -507,7 +507,7 @@ export default class Cli {
    * Read's a `microservice.yml` file to a string.
    *
    * @param {String} path The given path
-   * @param  {boolean} [ui=false] The given boolean if ui mode is enabled or not
+   * @param {boolean} [ui=false] The given boolean if ui mode is enabled or not
    * @return {String} Returns file in string form
    */
   private static readYAML(path: string, ui = false): string {
