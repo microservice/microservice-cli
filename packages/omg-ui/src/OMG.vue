@@ -29,7 +29,7 @@ export default {
     statsInterval: null
   }),
   computed: mapGetters([
-    'getSocket', 'getOwner'
+    'getSocket', 'getOwner', 'getEnvs'
   ]),
   created () {
     this.initSocket()
@@ -78,6 +78,7 @@ export default {
       }
       if (data.status && data.built) {
         this.setDockerState('starting')
+        console.log(this.getEnvs)
         this.getSocket.emit('start', {
           image: `omg/${this.getOwner}`,
           envs: { ...this.getEnvs }

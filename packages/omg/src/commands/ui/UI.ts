@@ -102,6 +102,7 @@ export default class UIServer {
       }
     })
   }
+
   /**
    * Rebuild image and restarts container
    *

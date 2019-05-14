@@ -65,6 +65,9 @@ export default {
     this.microservice = this.getMicroservice
     this.args = this.getArgs
     this.getSocket.on('run', res => {
+      if (res && res.notif) {
+        this.appendDockerLogs(`[OMG]: ${res.notif}`)
+      }
       if (res.output) {
         try {
           this.setActionOutput(JSON.parse(res.output))
@@ -90,12 +93,9 @@ export default {
   methods: {
     ...mapMutations([
       'setAction',
-      'addArg',
-      'addLineDockerRunStat',
-      'setDockerRunStat',
       'addHistoryEntry',
       'setActionOutput',
-      'appendContainerLogs'
+      'appendDockerLogs'
     ]),
     runHandler () {
       if (this.query && this.query.args && this.edited === false) {
