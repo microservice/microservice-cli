@@ -169,7 +169,7 @@ export default class UIServer {
     this.socket.on('run', (data: any) => {
       this.runAction(data)
     })
-    this.socket.on('healthCheck', () => {
+    this.socket.on('health-check', () => {
       this.healthCheck()
     })
     this.socket.on('inspect', () => {
@@ -515,19 +515,19 @@ export default class UIServer {
    * Gets docker container health status then sends the result through socket
    */
   private async healthCheck() {
-    this.socket.emit('healthCheck', {
+    this.socket.emit('health-check', {
       notif: 'Health check',
       status: true
     })
     if (!(await this.dockerContainer.isRunning())) {
-      this.socket.emit('healthCheck', {
+      this.socket.emit('health-check', {
         notif: 'Health check failed',
         status: false,
         log: `${await this.dockerContainer.getStderr()}`
       })
       return
     }
-    this.socket.emit('healthCheck', {
+    this.socket.emit('health-check', {
       notif: 'Health check passed',
       status: true
     })

@@ -8,7 +8,8 @@ import Actions from '@/views/Actions'
 // import Inspect from '@/views/Inspect'
 import Home from '@/views/Home'
 import Forward from '@/views/Forward'
-import ValidationError from '@/views/ValidationError'
+import ValidationError from '@/views/Errors/ValidationError'
+import ContainerError from '@/views/Errors/ContainerError'
 
 import store from './store'
 
@@ -24,9 +25,11 @@ export default new Router({
       component: Environment,
       beforeEnter: (to, from, next) => {
         next(
-          store.getters.getMicroserviceStatus
-            ? true
-            : { path: '/validation-error' }
+          !store.getters.getMicroserviceStatus
+            ? false
+            : !store.getters.getDockerHealthCheck
+            ? false
+            : true
         )
       }
     },
@@ -37,7 +40,10 @@ export default new Router({
       props: route => ({ query: route.query }),
       beforeEnter: (to, from, next) => {
         if (!store.getters.getMicroserviceStatus) {
-          next({ path: '/validation-error' })
+          next(false)
+        }
+        if (!store.getters.getDockerHealthCheck) {
+          next(false)
         }
         setTimeout(() => {
           next(
@@ -74,9 +80,11 @@ export default new Router({
       component: Forward,
       beforeEnter: (to, from, next) => {
         next(
-          store.getters.getMicroserviceStatus
-            ? true
-            : { path: '/validation-error' }
+          !store.getters.getMicroserviceStatus
+            ? false
+            : !store.getters.getDockerHealthCheck
+            ? false
+            : true
         )
       }
     },
@@ -86,9 +94,11 @@ export default new Router({
       component: Home,
       beforeEnter: (to, from, next) => {
         next(
-          store.getters.getMicroserviceStatus
-            ? true
-            : { path: '/validation-error' }
+          !store.getters.getMicroserviceStatus
+            ? false
+            : !store.getters.getDockerHealthCheck
+            ? false
+            : true
         )
       }
     },
@@ -99,6 +109,11 @@ export default new Router({
       beforeEnter: (to, from, next) => {
         next(store.getters.getMicroserviceStatus ? { name: 'Home' } : true)
       }
+    },
+    {
+      path: '/container-error',
+      name: 'Unexpected container error',
+      component: ContainerError
     }
   ]
 })

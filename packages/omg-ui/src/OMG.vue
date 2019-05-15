@@ -57,6 +57,15 @@ export default {
     this.getSocket.on('stop', res => {
       this.stop(res)
     })
+    this.getSocket.on('health-check', res => {
+      if (!res.status) {
+        this.setDockerHealthCheck(res)
+        this.setDockerState('stopped')
+        this.$router.push({
+          path: '/container-error'
+        })
+      }
+    })
     this.getSocket.emit('build', {})
   },
   beforeDestroy () {
@@ -66,11 +75,12 @@ export default {
     this.getSocket.removeListener('build')
     this.getSocket.removeListener('start')
     this.getSocket.removeListener('stop')
+    this.getSocket.removeListener('health-check')
   },
   methods: {
     ...mapMutations(['initSocket', 'setValidation', 'setOwner',
       'setMicroserviceRaw', 'appendDockerLogs', 'setDockerState',
-      'setDockerPortBindings', 'setDockerForwardBindings']),
+      'setDockerPortBindings', 'setDockerForwardBindings', 'setDockerHealthCheck']),
     build (data) {
       this.setDockerState('building')
       if (data.notif) {
@@ -93,6 +103,7 @@ export default {
         this.logsInterval = setInterval(() => this.getSocket.emit('dockerLogs'), 1000)
         this.statsInterval = setInterval(() => {
           this.getSocket.emit('container-stats')
+          this.getSocket.emit('health-check')
         }, 1000)
       }
     },
