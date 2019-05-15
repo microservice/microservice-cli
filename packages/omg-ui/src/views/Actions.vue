@@ -55,11 +55,19 @@ export default {
       'getAction',
       'getArgs',
       'getMicroservice',
+      'getMicroserviceStatus',
       'getOwner',
       'getSocket',
       'getDockerRunning',
       'getDockerRunStat'
     ])
+  },
+  watch: {
+    getMicroserviceStatus: function () {
+      if (!this.getMicroserviceStatus) {
+        this.$router.push({ path: '/validation-error' })
+      }
+    }
   },
   mounted () {
     this.microservice = this.getMicroservice

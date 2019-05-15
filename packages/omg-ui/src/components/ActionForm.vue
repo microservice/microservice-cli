@@ -69,7 +69,6 @@
       <div class="btn-container form-row">
         <div class="spacer"></div>
         <button class="run-btn">Run Action</button>
-        <div class="spacer"></div>
       </div>
     </form>
   </div>
@@ -226,7 +225,7 @@ form.action {
   .btn-container {
     button.run-btn {
       height: 35px;
-      width: 434px;
+      width: 435px;
       border-radius: 2px;
       color: #ffffff;
       font-family: Graphik;
@@ -235,6 +234,7 @@ form.action {
       line-height: 21px;
       text-align: center;
       background-color: #17b897;
+      margin-right: 109px;
 
       &:hover {
         background-color: #2dcca7;

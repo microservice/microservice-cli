@@ -8,6 +8,7 @@ import Documentation from '@/views/Documentation'
 import Inspect from '@/views/Inspect'
 import Home from '@/views/Home'
 import Forward from '@/views/Forward'
+import ValidationError from '@/views/ValidationError'
 
 import store from './store'
 
@@ -20,7 +21,14 @@ export default new Router({
     {
       path: '/environments',
       name: 'Environment Variables',
-      component: Environment
+      component: Environment,
+      beforeEnter: (to, from, next) => {
+        next(
+          store.getters.getMicroserviceStatus
+            ? true
+            : { path: '/validation-error' }
+        )
+      }
     },
     {
       path: '/actions/:action',
@@ -28,44 +36,69 @@ export default new Router({
       component: Actions,
       props: route => ({ query: route.query }),
       beforeEnter: (to, from, next) => {
+        if (!store.getters.getMicroserviceStatus) {
+          next({ path: '/validation-error' })
+        }
         setTimeout(() => {
           next(
             store.getters.getMicroserviceActionList.includes(to.params.action)
               ? true
-              : { name: 'home' }
+              : { name: 'Home' }
           )
         }, 500)
       }
     },
-    {
-      path: '/history',
-      name: 'history',
-      component: History
-    },
-    {
-      path: '/editor',
-      name: 'Microservice Live Editor',
-      component: Editor
-    },
-    {
-      path: '/documentation',
-      name: 'documentation',
-      component: Documentation
-    },
-    {
-      path: '/inspect',
-      name: 'inspect',
-      component: Inspect
-    },
+    // {
+    //   path: '/history',
+    //   name: 'history',
+    //   component: History
+    // },
+    // {
+    //   path: '/editor',
+    //   name: 'microservice.yml Live Editor',
+    //   component: Editor
+    // },
+    // {
+    //   path: '/documentation',
+    //   name: 'documentation',
+    //   component: Documentation
+    // },
+    // {
+    //   path: '/inspect',
+    //   name: 'inspect',
+    //   component: Inspect
+    // },
     {
       path: '/forward',
       name: 'Forward',
-      component: Forward
+      component: Forward,
+      beforeEnter: (to, from, next) => {
+        next(
+          store.getters.getMicroserviceStatus
+            ? true
+            : { path: '/validation-error' }
+        )
+      }
     },
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Home,
+      beforeEnter: (to, from, next) => {
+        next(
+          store.getters.getMicroserviceStatus
+            ? true
+            : { path: '/validation-error' }
+        )
+      }
+    },
+    {
+      path: '/validation-error',
+      name: 'microservice.yml validation',
+      component: ValidationError,
+      beforeEnter: (to, from, next) => {
+        next(store.getters.getMicroserviceStatus ? { name: 'Home' } : true)
+      }
     }
   ]
 })

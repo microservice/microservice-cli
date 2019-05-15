@@ -66,7 +66,15 @@ export default {
       cursor: pointer;
 
       &:hover {
-        background-color: #c6f7e9;
+        &.good {
+          background-color: #c6f7e9;
+        }
+        &.warn {
+          background-color: #fff3c4;
+        }
+        &.error {
+          background-color: #facdcd;
+        }
       }
     }
 

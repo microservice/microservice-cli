@@ -41,9 +41,14 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'forward',
   computed: {
-    ...mapGetters(['getDockerForwardBindings', 'getMicroservice'])
+    ...mapGetters(['getDockerForwardBindings', 'getMicroservice', 'getMicroserviceStatus'])
   },
-  mounted () {
+  watch: {
+    getMicroserviceStatus: function () {
+      if (!this.getMicroserviceStatus) {
+        this.$router.push({ path: '/validation-error' })
+      }
+    }
   }
 }
 </script>

@@ -29,7 +29,7 @@ export default {
     statsInterval: null
   }),
   computed: mapGetters([
-    'getSocket', 'getOwner', 'getEnvs'
+    'getSocket', 'getOwner', 'getEnvs', 'getMicroserviceStatus'
   ]),
   created () {
     this.initSocket()
@@ -78,7 +78,6 @@ export default {
       }
       if (data.status && data.built) {
         this.setDockerState('starting')
-        console.log(this.getEnvs)
         this.getSocket.emit('start', {
           image: `omg/${this.getOwner}`,
           envs: { ...this.getEnvs }
@@ -86,7 +85,9 @@ export default {
       }
     },
     start (data) {
-      this.appendDockerLogs(data.notif.trim())
+      if (data.notif) {
+        this.appendDockerLogs(data.notif.trim())
+      }
       if (data.started) {
         this.setDockerState('started')
         this.logsInterval = setInterval(() => this.getSocket.emit('dockerLogs'), 1000)
