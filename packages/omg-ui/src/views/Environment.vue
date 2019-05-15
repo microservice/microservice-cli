@@ -62,8 +62,14 @@ export default {
   },
   data: () => ({}),
   computed: mapGetters(['getMicroservice', 'getEnvs', 'getOwner', 'getSocket',
-    'getDockerRebuild', 'getDockerState']),
-  mounted () {},
+    'getDockerRebuild', 'getDockerState', 'getMicroserviceStatus']),
+  watch: {
+    getMicroserviceStatus: function () {
+      if (!this.getMicroserviceStatus) {
+        this.$router.push({ path: '/validation-error' })
+      }
+    }
+  },
   methods: {
     ...mapMutations(['addEnv', 'setContainerLogs']),
     saveHandler (data) {

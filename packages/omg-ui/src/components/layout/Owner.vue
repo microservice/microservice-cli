@@ -19,7 +19,7 @@ export default {
   mounted () {},
   methods: {
     reduce (size, str) {
-      return `${str.substr(0, size)}...`
+      return str.length > 21 ? `${str.substr(0, size)}...` : str
     }
   }
 }
