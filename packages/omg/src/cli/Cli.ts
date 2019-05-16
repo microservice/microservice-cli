@@ -450,6 +450,7 @@ export default class Cli {
    * @param {Object} options The options to start the UI, such as port mapping
    */
   async ui(options: any): Promise<any> {
+    await Cli.checkDocker()
     try {
       this.uiServer = new UIServer(
         options,
