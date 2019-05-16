@@ -1,3 +1,7 @@
+## [0.10.2](https://github.com/microservices/omg-cli/compare/v0.11.0...v0.10.2) (2019-05-16)
+
+
+
 ## [0.10.2](https://github.com/microservices/omg-cli/compare/0.7.5...0.10.2) (2019-05-08)
 
 
