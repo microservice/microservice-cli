@@ -1,18 +1,18 @@
 <template>
   <div class="editor-container">
-    <div class="editor">
-      <Monaco
-        language="yaml"
-        theme="vs"
-        :code="getMicroserviceRaw"
-        :options="options"
-        :changeThrottle="100"
-        @mounted="onMounted"
-        @codeChange="onCodeChange"
-      >
-      </Monaco>
-    </div>
-    <div class="validation">
+    <!-- <div class="editor"> -->
+    <Monaco
+      language="yaml"
+      theme="vs"
+      :code="getMicroserviceRaw"
+      :options="options"
+      :changeThrottle="100"
+      @mounted="onMounted"
+      @codeChange="onCodeChange"
+    >
+    </Monaco>
+    <!-- </div> -->
+    <!-- <div class="validation">
       <div class="refresh-wrapper">
         <button
           class="refresh-btn"
@@ -25,7 +25,7 @@
       <div class="validation-wrapper">
         {{ getMicroserviceNotif }}
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -37,14 +37,14 @@ import * as yaml from 'js-yaml'
 export default {
   name: 'editor',
   data: () => ({
-    code: ' ',
     socket: null,
     disabled: true,
     editor: null,
     options: {
       minimap: {
         enabled: false
-      }
+      },
+      automaticLayout: true
     },
     lines: {},
     len: -1
@@ -54,16 +54,15 @@ export default {
     Monaco
   },
   mounted () {
-    this.code = this.getMicroserviceRaw
     this.socket = this.getSocket
   },
   methods: {
     onMounted (editor) {
       this.editor = editor
-      // console.log(yaml.load(this.editor.getValue()))
-      // this.lines = this.fetchAllLines(this.editor.getValue())
-      // console.log(this.lines)
-      // console.log(this.mapMicroserviceToLines())
+      console.log(yaml.load(this.editor.getValue()))
+      this.lines = this.fetchAllLines(this.editor.getValue())
+      console.log(this.lines)
+      console.log(this.mapMicroserviceToLines())
     },
     onCodeChange (editor) {
       this.disabled = false
@@ -125,16 +124,16 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
+  margin-top: 1px;
+  text-align: left;
 
-  .editor {
-    width: calc(100vw - 811px);
-    height: 97%;
-    margin-top: 1px;
-    text-align: left;
-  }
+  // .editor {
+  //   width: calc(100vw - 811px);
+  //   height: 97%;
+  // }
 
-  .validation {
-    text-align: center;
-  }
+  // .validation {
+  //   text-align: center;
+  // }
 }
 </style>
