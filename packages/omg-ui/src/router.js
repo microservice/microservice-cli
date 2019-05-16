@@ -27,9 +27,7 @@ export default new Router({
         next(
           !store.getters.getMicroserviceStatus
             ? false
-            : !store.getters.getDockerHealthCheck
-            ? false
-            : true
+            : !!store.getters.getDockerHealthCheck
         )
       }
     },
@@ -82,9 +80,7 @@ export default new Router({
         next(
           !store.getters.getMicroserviceStatus
             ? false
-            : !store.getters.getDockerHealthCheck
-            ? false
-            : true
+            : !!store.getters.getDockerHealthCheck
         )
       }
     },
@@ -96,9 +92,7 @@ export default new Router({
         next(
           !store.getters.getMicroserviceStatus
             ? false
-            : !store.getters.getDockerHealthCheck
-            ? false
-            : true
+            : !!store.getters.getDockerHealthCheck
         )
       }
     },
