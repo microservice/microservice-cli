@@ -133,6 +133,11 @@ export default {
     cursor: pointer;
     margin-left: 8px;
 
+    &:hover {
+      text-decoration: underline;
+      border-radius: 2px;
+    }
+
     &:not(:first-child) {
       margin-top: 12px;
     }
