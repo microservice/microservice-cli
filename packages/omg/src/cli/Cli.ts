@@ -482,6 +482,7 @@ export default class Cli {
    */
   async controlC() {
     if (this.uiServer !== null) {
+      await this.uiServer.removeListeners()
       await this.uiServer.stopContainer()
       await this.uiServer.removeContainer()
       setTimeout(() => {

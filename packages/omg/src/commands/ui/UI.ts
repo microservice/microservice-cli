@@ -209,6 +209,16 @@ export default class UIServer {
       )
     })
   }
+
+  /**
+   * Removes socket listeners
+   *
+   * @return {Promise} a promise when listeners have been removed
+   */
+  removeListeners(): Promise<any> {
+    return this.socket.removeAllListeners()
+  }
+
   /**
    * Wraps omg-cli validate command
    */
