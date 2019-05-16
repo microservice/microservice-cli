@@ -1,6 +1,6 @@
 <template>
   <div class="action-container">
-    <div class="left">
+    <div class="left" :class="{ raw: getActionSendRaw }">
       <event-selector
         class="event-selector"
         :actionName="$route.params.action"
@@ -14,12 +14,39 @@
         {{ getMicroservice.actions[$route.params.action].help }}
       </div>
       <div class="title">Arguments</div>
-      <action-form
-        :actionName="$route.params.action"
-        :eventName="event"
-        @argsEdited="processArgs"
-        v-if="getMicroservice"
-      />
+      <div class="args" v-if="getMicroservice">
+        <action-form
+          :actionName="$route.params.action"
+          :eventName="event"
+          @argsEdited="processArgs"
+          v-if="!getActionSendRaw"
+        />
+        <div v-else class="editor">
+          <Monaco
+            language="json"
+            theme="vs"
+            :options="{
+              minimap: {
+                enabled: false
+              },
+              automaticLayout: true
+            }"
+            :changeThrottle="100"
+            :code="rawJson"
+            @mounted="onEditorMounted"
+            @codeChange="onCodeChange"
+          ></Monaco>
+          <div class="btn-container form-row">
+            <button
+              class="run-btn"
+              @click="runHandler()"
+              :disabled="parseError"
+            >
+              {{ parseError ? "Cannot parse JSON" : "Run Action" }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="right"></div>
   </div>
@@ -27,6 +54,7 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
+import Monaco from 'monaco-editor-forvue'
 import ActionForm from '@/components/ActionForm'
 import EventSelector from '@/components/EventSelector'
 
@@ -34,14 +62,18 @@ export default {
   name: 'actions',
   components: {
     ActionForm,
-    EventSelector
+    EventSelector,
+    Monaco
   },
   data: () => ({
     microservice: '',
     args: {},
     ouput: '',
     edited: false,
-    event: ''
+    event: '',
+    rawJson: '',
+    editor: null,
+    parseError: false
   }),
   props: {
     query: {
@@ -59,7 +91,8 @@ export default {
       'getOwner',
       'getSocket',
       'getDockerRunning',
-      'getDockerRunStat'
+      'getDockerRunStat',
+      'getActionSendRaw'
     ])
   },
   watch: {
@@ -126,7 +159,9 @@ export default {
       } else {
         this.args['subscribe'] = false
       }
-      this.runHandler()
+      if (!this.getActionSendRaw) {
+        this.runHandler()
+      }
     },
     processEvent (data) {
       this.event = data
@@ -151,6 +186,23 @@ export default {
       this.setActionOutput('')
       this.getSocket.emit('subscribe', run)
       this.addHistoryEntry(run)
+    },
+    onEditorMounted (editor) {
+      this.editor = editor
+    },
+    onCodeChange (editor) {
+      this.parseError = false
+      let json = {}
+      try {
+        json = JSON.parse(this.editor.getValue())
+      } catch (e) {
+        this.parseError = true
+        return
+      }
+      this.processArgs({
+        action: this.$route.params.action,
+        args: json
+      })
     }
   }
 }
@@ -172,6 +224,10 @@ export default {
     align-items: flex-start;
     margin: 24px 0 0 24px;
     width: 100%;
+
+    &.raw {
+      height: calc(100% - 48px);
+    }
 
     .event-selector {
       margin-bottom: 24px;
@@ -195,6 +251,54 @@ export default {
       font-family: Graphik;
       font-size: 14px;
       line-height: 22px;
+    }
+
+    .args {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      text-align: left;
+
+      .editor {
+        width: calc(100% - 24px);
+        height: calc(100% - 24px);
+
+        .btn-container {
+          margin-top: 24px;
+
+          button.run-btn {
+            height: 35px;
+            width: 435px;
+            border-radius: 2px;
+            color: #ffffff;
+            font-family: Graphik;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 21px;
+            text-align: center;
+            background-color: #17b897;
+            margin-right: 109px;
+
+            &:hover {
+              background-color: #2dcca7;
+              cursor: pointer;
+            }
+
+            &:focus {
+              background-color: #079a82;
+            }
+
+            &:disabled {
+              background-color: #bcbed6;
+
+              &:hover {
+                background-color: #bcbed6;
+                cursor: not-allowed;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

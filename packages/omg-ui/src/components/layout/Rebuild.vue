@@ -1,19 +1,22 @@
 <template>
   <div class="rebuild-container">
     <div class="title">Auto Rebuild</div>
-    <div class="switch" @click="toggleDockerRebuild">
-      <div class="rectangle" :class="{ off: !getDockerRebuild }">
-        <div class="circle" :class="{ off: !getDockerRebuild }"></div>
-      </div>
-    </div>
+    <toggle-button
+      :toggleHandler="toggleDockerRebuild"
+      :toggleReceiver="getDockerRebuild"
+    ></toggle-button>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
+import ToggleButton from '@/components/ToggleButton'
 
 export default {
   name: 'rebuild',
+  components: {
+    ToggleButton
+  },
   computed: {
     ...mapGetters(['getDockerRebuild', 'getSocket'])
   },
