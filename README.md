@@ -1,6 +1,6 @@
 # OMG APP
 
-[![CircleCI](https://img.shields.io/circleci/project/github/microservices/omg-cli/master.svg?style=for-the-badge)](https://circleci.com/gh/microservices/omg-cli/tree/master)
+[![CircleCI](https://img.shields.io/circleci/project/github/microservices/omg/master.svg?style=for-the-badge)](https://circleci.com/gh/microservices/omg-cli/tree/master)
 
 ## About lerna
 
@@ -62,5 +62,5 @@ If you want to manually bump the packages version, you can use `lerna version`.
 
 ```bash
 # Making an alias is usefull to prevent using the real `omg` package when installed locally
-$> alias omg=~/path/to/omg-cli/omg
+$> alias omg=~/path/to/omg/omg
 ```
