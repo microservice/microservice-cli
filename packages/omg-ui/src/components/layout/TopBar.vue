@@ -16,67 +16,21 @@
       >
         {{ $route.name === "actions" ? $route.params.action : $route.name }}
       </div>
-      <!-- <div
-        class="method-container"
-        v-if="getMicroservice && $route.name === 'actions'"
-      >
-        <div class="vert-divider"></div>
-        <span class="text">
-          {{
-            getMicroservice.actions[$route.params.action].hasOwnProperty("http")
-              ? "http"
-              : getMicroservice.actions[$route.params.action].hasOwnProperty(
-                  "rpc"
-                )
-              ? "rpc"
-              : "format"
-          }}
-        </span>
-        <div class="vert-divider"></div>
+      <div class="toggle-action-raw" v-if="$route.params.action">
+        <span>Send raw JSON data</span>
+        <toggle-button
+          :toggleHandler="toggleActionSendRaw"
+          :toggleReceiver="getActionSendRaw"
+        ></toggle-button>
       </div>
-      <div
-        class="http-method-container"
-        v-if="
-          getMicroservice &&
-            $route.name === 'actions' &&
-            getMicroservice.actions[$route.params.action].hasOwnProperty('http')
-        "
-      >
-        {{ getMicroservice.actions[$route.params.action].http.method }}
-      </div>
-      <div
-        class="path-container"
-        v-if="
-          getMicroservice &&
-            $route.name === 'actions' &&
-            getMicroservice.actions[$route.params.action].hasOwnProperty(
-              'http' || 'rpc'
-            )
-        "
-      >
-        <div class="path">
-          {{
-            getMicroservice.actions[$route.params.action].hasOwnProperty("http")
-              ? getMicroservice.actions[$route.params.action].http.path
-              : "rpc path comming soon"
-          }}
-        </div>
-        <div
-          class="copy-btn"
-          @click="cURLHandler"
-          v-if="getDockerState === 'started' && getMicroservice"
-        >
-          Copy
-        </div>
-        <input id="curl" type="hidden" :value="cURL" />
-      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import Owner from '@/components/layout/Owner'
+import ToggleButton from '@/components/ToggleButton'
 
 export default {
   name: 'topbar',
@@ -85,12 +39,15 @@ export default {
     cURLInput: null
   }),
   components: {
-    Owner
+    Owner,
+    ToggleButton
   },
   computed: {
-    ...mapGetters(['getMicroservice', 'getActionCurlArgs', 'getDockerPort', 'getDockerState'])
+    ...mapGetters(['getMicroservice', 'getActionCurlArgs', 'getDockerPort',
+      'getDockerState', 'getActionSendRaw'])
   },
   methods: {
+    ...mapMutations(['toggleActionSendRaw']),
     copy () {
       this.cURLInput.setAttribute('type', 'text')
       this.cURLInput.select()
@@ -169,7 +126,8 @@ export default {
 
   .topbar-right {
     width: auto;
-    min-width: 300px;
+    min-width: calc(100vw - 878px);
+    // min-width: 300px;
     height: inherit;
     display: flex;
     align-items: center;
@@ -275,6 +233,19 @@ export default {
         font-size: 12px;
         letter-spacing: 0.38px;
         line-height: 28px;
+      }
+    }
+
+    .toggle-action-raw {
+      display: flex;
+      align-items: center;
+
+      span {
+        color: #1f2933;
+        font-family: Graphik;
+        font-size: 18px;
+        line-height: 20px;
+        margin-right: 8px;
       }
     }
   }
