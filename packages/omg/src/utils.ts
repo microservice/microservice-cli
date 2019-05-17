@@ -85,11 +85,23 @@ export function getForwardPorts(microservice: Microservice): number[] {
 export async function createImageName(ui: boolean = false): Promise<string> {
   try {
     const data = await exec('git remote -v')
-    return ui
-      ? `${data.match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1].toLowerCase()}`
-      : `omg/${data
-          .match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1]
-          .toLowerCase()}`
+    if (data.match(/git@github\.com:(\w+\/[\w|.|-]+).git/)) {
+      return ui
+        ? `${data
+            .match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1]
+            .toLowerCase()}`
+        : `omg/${data
+            .match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1]
+            .toLowerCase()}`
+    } else {
+      return ui
+        ? `${data
+            .match(/https:\/\/github\.com\/(\w+\/[\w|.|-]+)/)[1]
+            .toLowerCase()}`
+        : `omg/${data
+            .match(/https:\/\/github\.com\/(\w+\/[\w|.|-]+)/)[1]
+            .toLowerCase()}`
+    }
   } catch (e) {
     return ui
       ? `${Buffer.from(process.cwd())
