@@ -2,7 +2,7 @@
   <div class="owner-container">
     <img src="../../assets/ic-git.svg" alt="Github logo" class="gh-logo" />
     <a class="owner-name" :href="`https://github.com/${getOwner}`">{{
-      reduce(21, getOwner)
+      reduce(15, getOwner)
     }}</a>
   </div>
 </template>
@@ -19,7 +19,7 @@ export default {
   mounted () {},
   methods: {
     reduce (size, str) {
-      return str.length > 21 ? `${str.substr(0, size)}...` : str
+      return str.length > size ? `${str.substr(0, size)}...` : str
     }
   }
 }

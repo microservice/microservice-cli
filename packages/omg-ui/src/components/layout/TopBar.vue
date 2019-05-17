@@ -16,21 +16,13 @@
       >
         {{ $route.name === "actions" ? $route.params.action : $route.name }}
       </div>
-      <div class="toggle-action-raw" v-if="$route.params.action">
-        <span>Send raw JSON data</span>
-        <toggle-button
-          :toggleHandler="toggleActionSendRaw"
-          :toggleReceiver="getActionSendRaw"
-        ></toggle-button>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters } from 'vuex'
 import Owner from '@/components/layout/Owner'
-import ToggleButton from '@/components/ToggleButton'
 
 export default {
   name: 'topbar',
@@ -39,15 +31,13 @@ export default {
     cURLInput: null
   }),
   components: {
-    Owner,
-    ToggleButton
+    Owner
   },
   computed: {
     ...mapGetters(['getMicroservice', 'getActionCurlArgs', 'getDockerPort',
-      'getDockerState', 'getActionSendRaw'])
+      'getDockerState'])
   },
   methods: {
-    ...mapMutations(['toggleActionSendRaw']),
     copy () {
       this.cURLInput.setAttribute('type', 'text')
       this.cURLInput.select()
@@ -233,19 +223,6 @@ export default {
         font-size: 12px;
         letter-spacing: 0.38px;
         line-height: 28px;
-      }
-    }
-
-    .toggle-action-raw {
-      display: flex;
-      align-items: center;
-
-      span {
-        color: #1f2933;
-        font-family: Graphik;
-        font-size: 18px;
-        line-height: 20px;
-        margin-right: 8px;
       }
     }
   }

@@ -10,8 +10,17 @@
             getMicroservice.actions[$route.params.action].events
         "
       ></event-selector>
-      <div class="desc" v-if="getMicroservice">
-        {{ getMicroservice.actions[$route.params.action].help }}
+      <div class="row">
+        <div class="desc" v-if="getMicroservice">
+          {{ getMicroservice.actions[$route.params.action].help }}
+        </div>
+        <div class="toggle-action-raw" v-if="$route.params.action">
+          <span>Send raw JSON data</span>
+          <toggle-button
+            :toggleHandler="toggleActionSendRaw"
+            :toggleReceiver="getActionSendRaw"
+          ></toggle-button>
+        </div>
       </div>
       <div class="title">Arguments</div>
       <div class="args" v-if="getMicroservice">
@@ -57,13 +66,15 @@ import { mapGetters, mapMutations } from 'vuex'
 import Monaco from 'monaco-editor-forvue'
 import ActionForm from '@/components/ActionForm'
 import EventSelector from '@/components/EventSelector'
+import ToggleButton from '@/components/ToggleButton'
 
 export default {
   name: 'actions',
   components: {
     ActionForm,
     EventSelector,
-    Monaco
+    Monaco,
+    ToggleButton
   },
   data: () => ({
     microservice: '',
@@ -136,7 +147,8 @@ export default {
       'setAction',
       'addHistoryEntry',
       'setActionOutput',
-      'appendDockerLogs'
+      'appendDockerLogs',
+      'toggleActionSendRaw'
     ]),
     runHandler () {
       if (this.query && this.query.args && this.edited === false) {
@@ -243,16 +255,33 @@ export default {
       line-height: 27px;
     }
 
-    .desc {
-      // margin-top: 8px;
-      // height: 51px;
-      height: 31px;
-      color: #616e7c;
-      font-family: Graphik;
-      font-size: 14px;
-      line-height: 22px;
-    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      width: 97%;
+      align-items: center;
 
+      .desc {
+        height: 31px;
+        color: #616e7c;
+        font-family: Graphik;
+        font-size: 14px;
+        line-height: 22px;
+      }
+
+      .toggle-action-raw {
+        display: flex;
+        align-items: center;
+
+        span {
+          color: #1f2933;
+          font-family: Graphik;
+          font-size: 18px;
+          line-height: 20px;
+          margin-right: 8px;
+        }
+      }
+    }
     .args {
       width: 100%;
       height: 100%;
