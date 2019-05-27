@@ -7,7 +7,28 @@
           alt="toggle button"
           class="toggle"
           @click="openHandler()"
-        />
+        >
+        <div class="clear-logs" @click="clearLogs()">
+          <div class="rectangle">
+            <div class="cross">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+              >
+                <defs>
+                  <path
+                    id="a"
+                    d="M10.885 12.632l-2.882-2.88-2.888 2.885a1.238 1.238 0 1 1-1.752-1.751L6.25 7.999 3.363 5.114a1.238 1.238 0 1 1 1.752-1.75l2.888 2.884 2.882-2.88a1.238 1.238 0 1 1 1.752 1.751L9.755 8.001l2.882 2.88a1.236 1.236 0 0 1 0 1.75 1.24 1.24 0 0 1-1.752 0z"
+                  ></path>
+                </defs>
+                <use fill="#7b8794" fill-rule="evenodd" xlink:href="#a"></use>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="right">
         <div
@@ -41,7 +62,7 @@
       >
         <div class="header">
           <span class="title">Docker Logs</span>
-          <rebuild />
+          <rebuild/>
         </div>
         <div class="logs-output" id="dlog">
           <pre><code>{{ getDockerLogs }}</code></pre>
@@ -98,12 +119,15 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setContainerLogs']),
+    ...mapMutations(['setContainerLogs', 'clearDockerLogs']),
     openHandler () {
       this.open = !this.open
       if (this.state === 'close') {
         this.state = 'half'
       }
+    },
+    clearLogs () {
+      this.clearDockerLogs()
     },
     switchHandler (side) {
       switch (this.state) {
@@ -195,6 +219,21 @@ export default {
 
       .toggle {
         cursor: pointer;
+      }
+
+      .clear-logs {
+        width: 33px;
+        height: 19px;
+        background-color: #f5f7fa;
+        margin-left: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        .cross {
+          display: flex;
+        }
       }
     }
 

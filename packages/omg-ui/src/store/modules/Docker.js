@@ -50,6 +50,7 @@ const mutations = {
   toggleDockerRebuild: state => (state.rebuild = !state.rebuild),
   setContainerLogs: (state, log) => (state.containerLogs = log),
   appendDockerLogs: (state, line) => (state.dockerLogs += `${line}\n`),
+  clearDockerLogs: state => (state.dockerLogs = ''),
   setDockerState: (state, value) => (state.state = value),
   addDockerStatsEntry: (state, entry) => state.stats.push(entry),
   setDockerPortBindings: (state, bindings) => (state.portBindings = bindings),
