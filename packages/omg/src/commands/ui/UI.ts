@@ -104,62 +104,6 @@ export default class UIServer {
   }
 
   /**
-   * Rebuild image and restarts container
-   *
-   * @param  {any} data Data used to build image
-   * @param  {string} microservice
-   * @param  {Boolean} [bak=false]
-   * @param  {string} appPath
-   */
-  async rebuild(
-    data?: any,
-    microservice?: string,
-    bak = false,
-    appPath?: string
-  ) {
-    if (this.rebuildToggle) {
-      if (appPath) {
-        utils.log(
-          `${appPath.substr(appPath.lastIndexOf('/') + 1)} changed. Rebuilding.`
-        )
-      }
-      if (microservice) {
-        this.microserviceStr = microservice
-      }
-
-      this.sendFile(path.join(process.cwd(), 'microservice.yml'))
-      await this.stopContainer()
-      if (bak) {
-        await this.buildImage(this.rebuildBak.build)
-      } else {
-        await this.buildImage(data.build)
-        this.rebuildBak = { build: data.build, start: data.start }
-      }
-    }
-  }
-
-  /**
-   * Sends provided file raw content
-   *
-   * @param  {string} file
-   */
-  sendFile(file: string) {
-    fs.readFile(file, 'utf8', (err: any, data: any) => {
-      if (err) throw err
-      this.socket.emit('microservice.yml', data)
-      this.validate()
-    })
-  }
-  /**
-   * socket.emit serializer
-   *
-   * @param  {string} room
-   * @param  {ISocketNotif} msg
-   */
-  private emit(room: string, msg: ISocketNotif) {
-    this.socket.emit(room, msg)
-  }
-  /**
    * Inits all socket listeners
    */
   private initListeners() {
@@ -208,6 +152,64 @@ export default class UIServer {
         }
       )
     })
+  }
+
+  /**
+   * Rebuild image and restarts container
+   *
+   * @param  {any} data Data used to build image
+   * @param  {string} microservice
+   * @param  {Boolean} [bak=false]
+   * @param  {string} appPath
+   */
+  async rebuild(
+    data?: any,
+    microservice?: string,
+    bak = false,
+    appPath?: string
+  ) {
+    if (this.rebuildToggle) {
+      if (appPath) {
+        utils.log(
+          `${appPath.substr(appPath.lastIndexOf('/') + 1)} changed. Rebuilding.`
+        )
+      }
+      if (microservice) {
+        this.microserviceStr = microservice
+      }
+
+      this.sendFile(path.join(process.cwd(), 'microservice.yml'))
+      await this.stopContainer()
+      if (bak && this.rebuildBak) {
+        await this.buildImage(this.rebuildBak.build)
+      } else {
+        await this.buildImage(data.build)
+        this.rebuildBak = { build: data.build, start: data.start }
+      }
+    }
+  }
+
+  /**
+   * Sends provided file raw content
+   *
+   * @param  {string} file
+   */
+  sendFile(file: string) {
+    fs.readFile(file, 'utf8', (err: any, data: any) => {
+      if (err) throw err
+      this.socket.emit('microservice.yml', data)
+      this.validate()
+    })
+  }
+
+  /**
+   * socket.emit serializer
+   *
+   * @param  {string} room
+   * @param  {ISocketNotif} msg
+   */
+  private emit(room: string, msg: ISocketNotif) {
+    this.socket.emit(room, msg)
   }
 
   /**
@@ -262,7 +264,7 @@ export default class UIServer {
         data.name || (await utils.createImageName())
       ).go(false, true)
       const dockerode = new Dockerode()
-      const log = await new Promise((resolve, reject) => {
+      const log: any = await new Promise((resolve, reject) => {
         dockerode.modem.followProgress(stream, (err, res) =>
           err ? reject(err) : resolve(res)
         )

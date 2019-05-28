@@ -1,23 +1,21 @@
 <template>
   <div class="layout-container">
-    <top-bar />
+    <top-bar/>
     <div class="left-bar">
       <div class="validations-container">
         <div class="microservice-wrapper">
-          <span class="title title-padding">
-            Setup
-          </span>
-          <!-- <div @click="$router.push({ path: '/editor' })" class="tile-wrapper">
+          <span class="title title-padding">Setup</span>
+          <div @click="$router.push({ path: '/editor' })" class="tile-wrapper">
             <tile-grade
               :title="'microservice.yml'"
               :clickable="true"
               :state="getMicroserviceStatus ? 'good' : 'bad'"
-            /> -->
-          <tile-grade
+            />
+            <!-- <tile-grade
             :title="'microservice.yml'"
             :state="getMicroserviceStatus ? 'good' : 'bad'"
-          />
-          <!-- </div> -->
+            />-->
+          </div>
         </div>
         <div class="dcontainer-wrapper">
           <div class="tiles">
@@ -50,9 +48,9 @@
         </div>
       </div>
       <div class="divider"></div>
-      <navigation class="nav" />
+      <navigation class="nav"/>
       <div class="divider"></div>
-      <container-metrics />
+      <container-metrics/>
     </div>
   </div>
 </template>

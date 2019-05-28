@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Environment from '@/views/Environment'
 import Actions from '@/views/Actions'
 // import History from '@/views/History'
-// import Editor from '@/views/Editor'
+import Editor from '@/views/Editor'
 // import Documentation from '@/views/Documentation'
 // import Inspect from '@/views/Inspect'
 import Home from '@/views/Home'
@@ -57,11 +57,11 @@ export default new Router({
     //   name: 'history',
     //   component: History
     // },
-    // {
-    //   path: '/editor',
-    //   name: 'microservice.yml Live Editor',
-    //   component: Editor
-    // },
+    {
+      path: '/editor',
+      name: 'microservice.yml Live Editor',
+      component: Editor
+    },
     // {
     //   path: '/documentation',
     //   name: 'documentation',
