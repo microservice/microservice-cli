@@ -9,8 +9,7 @@
       :changeThrottle="100"
       @mounted="onMounted"
       @codeChange="onCodeChange"
-    >
-    </Monaco>
+    ></Monaco>
     <!-- </div> -->
     <!-- <div class="validation">
       <div class="refresh-wrapper">
@@ -25,7 +24,7 @@
       <div class="validation-wrapper">
         {{ getMicroserviceNotif }}
       </div>
-    </div> -->
+    </div>-->
   </div>
 </template>
 
@@ -53,68 +52,66 @@ export default {
   components: {
     Monaco
   },
+  watch: {
+    getMicroserviceNotif: function (data) {
+      if (data !== 'No errors') {
+        const errors = data.split(',')
+        const lines = []
+        for (const error in errors) {
+          errors[error] = errors[error].trim()
+          lines.push(this.searchLine(errors[error].substr(0, errors[error].split(' ')[0].length)))
+        }
+        for (const index in lines) {
+          this.addInsight(lines[index].line, 0, lines[index].line, lines[index].size, errors[index])
+        }
+      } else {
+        if (this.editor) {
+          // eslint-disable-next-line
+          monaco.editor.setModelMarkers(this.editor.getModel(), 'omg-app', [])
+        }
+      }
+    }
+  },
   mounted () {
     this.socket = this.getSocket
   },
   methods: {
     onMounted (editor) {
       this.editor = editor
-      console.log(yaml.load(this.editor.getValue()))
-      this.lines = this.fetchAllLines(this.editor.getValue())
-      console.log(this.lines)
-      console.log(this.mapMicroserviceToLines())
     },
     onCodeChange (editor) {
       this.disabled = false
-      this.lines = this.fetchAllLines(this.editor.getValue())
       this.socket.emit('microservice.yml', this.editor.getValue())
     },
-    fetchAllLines (content) {
-      const lines = {}
-      let file = content
-      for (let i = 0; i < (content.match(/\n/g) || []).length; i++) {
-        lines[i + 1] = file.substr(0, file.indexOf('\n'))
-        file = file.substr(file.indexOf('\n') + 1)
-        this.len = i + 1
-      }
-      return lines
-    },
-    getLineFromObj (obj, depth) {
-      for (let i = 1; i < this.len; i++) {
-        if (`${obj.key}: ${obj.value}`.trim() === this.lines[i].trim()) {
-          console.log(`${depth * ''}${obj.key}: ${obj.value}`.trim(), this.lines[i].trim(), `${obj.key}: ${obj.value}`.trim() === this.lines[i].trim(), i)
-          return i
-        }
-      }
-    },
-    mapMicroserviceToLines (map = yaml.load(this.editor.getValue()), parent = '', depth = 0) {
-      Object.keys(map).map(key => {
-        if (typeof map[key] === 'object') {
-          map['line'] = this.getLineFromObj({ key: key, value: '' }, depth)
-          this.mapMicroserviceToLines(map[key], key, depth++)
+    searchLine (query) {
+      query = query.replace('root.', '')
+      let json = yaml.safeLoad(this.getMicroserviceRaw)
+      let obj = ''
+      for (const path in query.split('.')) {
+        json = json[query.split('.')[path]]
+        if (typeof json === 'object') {
+          obj = `${query.split('.')[path]}:`
         } else {
-          map[key] = {
-            value: map[key],
-            line: this.getLineFromObj({ key: key, value: map[key] }, depth)
-          }
+          obj = `${query.split('.')[path]}: ${json}`
         }
-      })
-      return map
+      }
+      for (const line in this.getMicroserviceRaw.split('\n')) {
+        if (this.getMicroserviceRaw.split('\n')[line].trim() === obj.trim()) {
+          return { line: parseInt(line, 10) + 1, size: this.getMicroserviceRaw.split('\n')[line].length }
+        }
+      }
     },
-    refresh () {
-      // this.disabled = true
-      // window.location.reload()
+    addInsight (line, col, endL, endC, msg, state = 'error') {
+      // eslint-disable-next-line
+      monaco.editor.setModelMarkers(this.editor.getModel(), 'omg-app', [{
+        startLineNumber: line,
+        startColumn: col,
+        endLineNumber: endL,
+        endColumn: endC,
+        message: msg,
+        severity: state
+      }])
     }
-    // addInsight (line, col, endL, endC, msg, state = error) {
-    //   monaco.editor.setModelMarkers(this.editor.getModel(), 'omg-app', [{
-    //     startLineNumber: line,
-    //     startColumn: col,
-    //     endLineNumber: endL,
-    //     endColumn: endC,
-    //     message: msg,
-    //     severity: state
-    //   }])
-    // }
   }
 }
 </script>

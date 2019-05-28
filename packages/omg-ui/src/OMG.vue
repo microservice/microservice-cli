@@ -1,12 +1,12 @@
 <template>
   <div id="omg">
     <div class="omg-container">
-      <layout />
+      <layout/>
       <div class="topbar-margin">
-        <router-view />
-        <docker-logs />
+        <router-view/>
+        <docker-logs/>
       </div>
-      <output-action class="main-output" />
+      <output-action class="main-output"/>
     </div>
   </div>
 </template>
@@ -16,6 +16,7 @@ import { mapGetters, mapMutations } from 'vuex'
 import Layout from '@/views/Layout'
 import DockerLogs from '@/components/DockerLogs'
 import OutputAction from '@/components/layout/OutputAction'
+import { setInterval, clearInterval } from 'timers'
 
 export default {
   name: 'omg',
@@ -26,7 +27,8 @@ export default {
   },
   data: () => ({
     logsInterval: null,
-    statsInterval: null
+    statsInterval: null,
+    wait: true
   }),
   computed: mapGetters([
     'getSocket', 'getOwner', 'getEnvs', 'getMicroserviceStatus'
@@ -35,6 +37,7 @@ export default {
     this.initSocket()
     this.getSocket.on('validate', res => {
       this.setValidation(res)
+      this.wait = false
     })
     this.getSocket.on('owner', res => {
       this.setOwner(res.notif)
@@ -61,12 +64,21 @@ export default {
       if (!res.status) {
         this.setDockerHealthCheck(res)
         this.setDockerState('stopped')
-        this.$router.push({
-          path: '/container-error'
-        })
+        if (this.$router.currentRoute.path !== '/editor') {
+          this.$router.push({
+            path: '/container-error'
+          })
+        }
       }
     })
-    this.getSocket.emit('build', {})
+    const interval = setInterval(() => {
+      if (this.getMicroserviceStatus) {
+        this.getSocket.emit('build', {})
+      }
+      if (!this.wait) {
+        clearInterval(interval)
+      }
+    }, 1000)
   },
   beforeDestroy () {
     this.getSocket.removeListener('validate')
@@ -95,7 +107,7 @@ export default {
       }
     },
     start (data) {
-      if (data.notif) {
+      if (data.notif && data.notif.length > 0) {
         this.appendDockerLogs(data.notif.trim())
       }
       if (data.started) {
