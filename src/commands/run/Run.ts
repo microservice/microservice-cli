@@ -2,6 +2,8 @@ import * as utils from '../../utils';
 import * as verify from '../../verify';
 import Action from '../../models/Action';
 import Microservice from '../../models/Microservice';
+import { Readable, Writable, Stream, Duplex } from 'stream'
+
 
 /**
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
@@ -162,17 +164,78 @@ export default abstract class Run {
       this.exposedPorts[`${neededPorts[i]}/tcp`] = {};
       this.portBindings[`${neededPorts[i]}/tcp`] = [{HostPort: openPorts[i].toString()}];
     }
+    // console.log(this.microservice.lifecycle.startup)
+    // console.log(this.microservice.lifecycle.startup)
+
+    console.log(this.microservice.lifecycle.startup)
 
     const container = await utils.docker.createContainer({
       Image: this.dockerImage,
-      Cmd: this.microservice.lifecycle.startup,
+      Entrypoint: this.microservice.lifecycle.startup,
       Env: this.formatEnvironmentVariables(),
+      AttachStdin: true,
+      Tty: true,
+      OpenStdin: true,
       ExposedPorts: this.exposedPorts,
       HostConfig: {
         PortBindings: this.portBindings,
+        //LogConfig: {Type: "none", Config: {}}
       },
     });
+
     await container.start();
+
+    // logs.pipe(process.stdout);
+    console.log('~~~~~~~~~~~')
+    try {
+      const logs = await container.logs({
+        follow: true,
+        stdout: true,
+        sterr: true,
+        timestamps: true,
+      })
+      // console.log(logs instanceof Stream)
+      // console.log(logs instanceof Readable)
+      // console.log(logs instanceof Writable)
+
+      // console.log(logs)
+      // logs.push("PRINT STREAM TO STDOUT :::::: ")
+      logs.pipe(process.stdout)
+      await new Promise(function (resolve, reject) {
+        setTimeout(resolve, 4000);
+    });
+
+      // container.modem.demuxStream(logs, process.stdout, process.stdout);
+      // stream.on('end', function(){
+      //   logStream.end('!stop!');
+      // });
+      // logs.pipe( process.stdout )
+      // logs.on('start', function() {
+      //   console.log('starting');
+      // });
+      // logs.on('end', function() {
+      //   console.log('finished');
+      // });
+      // var logStream = new Duplex({
+      //   read(size) {
+      //     // ...
+      //   },
+      //   write(chunk, encoding, callback) {
+      //     // ...
+      //   }
+      //   )}
+      // logStream.on('pipe', function(chunk){
+      //   console.log(chunk.toString('utf8'));
+
+      // });
+      // container.modem.demuxStream(logs, logStream, logStream);
+      // stream.on('end', function(){
+      //   logStream.end('!stop!');
+      // });
+    } catch(e) {
+      console.error(e)
+    }
+    // console.log('~~~~~~~~~~~')
 
     this.containerID = container.$subject.id;
     return this.containerID;
