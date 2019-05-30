@@ -2,10 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Environment from '@/views/Environment'
 import Actions from '@/views/Actions'
-// import History from '@/views/History'
-import Editor from '@/views/Editor'
-// import Documentation from '@/views/Documentation'
-// import Inspect from '@/views/Inspect'
+// import Editor from '@/views/Editor'
 import Home from '@/views/Home'
 import Forward from '@/views/Forward'
 import ValidationError from '@/views/Errors/ValidationError'
@@ -53,24 +50,9 @@ export default new Router({
       }
     },
     // {
-    //   path: '/history',
-    //   name: 'history',
-    //   component: History
-    // },
-    {
-      path: '/editor',
-      name: 'microservice.yml Live Editor',
-      component: Editor
-    },
-    // {
-    //   path: '/documentation',
-    //   name: 'documentation',
-    //   component: Documentation
-    // },
-    // {
-    //   path: '/inspect',
-    //   name: 'inspect',
-    //   component: Inspect
+    //   path: '/editor',
+    //   name: 'microservice.yml Live Editor',
+    //   component: Editor
     // },
     {
       path: '/forward',
