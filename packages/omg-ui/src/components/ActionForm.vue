@@ -19,17 +19,14 @@
                 :value="query && query.args ? query.args[argName] : ''"
                 :placeholder="arg.type"
                 :type="arg.type === 'number' ? 'number' : 'string'"
-              />
+              >
             </label>
-            <span class="required-hint">
-              {{ arg.required ? "* Required" : "" }}
-            </span>
+            <span class="required-hint">{{ arg.required ? "* Required" : "" }}</span>
           </div>
           <span
             :class="{ help: arg.help && arg.help.length > 0 }"
             class="hint"
-            >{{ arg.help ? arg.help : "No help provided" }}</span
-          >
+          >{{ arg.help ? arg.help : "No help provided" }}</span>
         </div>
       </div>
       <div
@@ -39,7 +36,7 @@
         "
         class="inputs"
       >
-        <input type="hidden" name="type" value="event" />
+        <input type="hidden" name="type" value="event">
         <div
           class="input"
           :key="`arg-${argName}`"
@@ -57,13 +54,12 @@
               :value="query && query.args ? query.args[argName] : ''"
               :placeholder="arg.type"
               :type="arg.type === 'number' ? 'number' : 'string'"
-            />
+            >
           </label>
           <span
             :class="{ help: arg.help && arg.help.length > 0 }"
             class="hint"
-            >{{ arg.help ? arg.help : "No help provided" }}</span
-          >
+          >{{ arg.help ? arg.help : "No help provided" }}</span>
         </div>
       </div>
       <div class="btn-container form-row">
@@ -180,7 +176,6 @@ form.action {
           line-height: 21px;
           text-align: right;
           margin-bottom: 8px;
-          text-transform: capitalize;
         }
 
         input {

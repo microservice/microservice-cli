@@ -64,7 +64,7 @@ export default {
       if (!res.status) {
         this.setDockerHealthCheck(res)
         this.setDockerState('stopped')
-        if (this.$router.currentRoute.path !== '/editor') {
+        if (!['/editor', '/environments'].includes(this.$router.currentRoute.path)) {
           this.$router.push({
             path: '/container-error'
           })
