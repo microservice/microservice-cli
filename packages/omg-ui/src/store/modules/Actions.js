@@ -22,6 +22,9 @@ const mutations = {
     delete state.args[key]
   },
   setActionOutput: (state, output) => (state.output = output),
+  resetActionOutput: state =>
+    (state.output =
+      'No output available.\nExecute an action to view its output.'),
   toggleActionSendRaw: state => (state.sendRaw = !state.sendRaw)
 }
 

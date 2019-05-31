@@ -11,15 +11,13 @@
         "
       ></event-selector>
       <div class="row">
-        <div class="desc" v-if="getMicroservice">
-          {{ getMicroservice.actions[$route.params.action].help }}
-        </div>
+        <div
+          class="desc"
+          v-if="getMicroservice"
+        >{{ getMicroservice.actions[$route.params.action].help }}</div>
         <div class="toggle-action-raw" v-if="$route.params.action">
           <span>Send raw JSON data</span>
-          <toggle-button
-            :toggleHandler="toggleActionSendRaw"
-            :toggleReceiver="getActionSendRaw"
-          ></toggle-button>
+          <toggle-button :toggleHandler="toggleActionSendRaw" :toggleReceiver="getActionSendRaw"></toggle-button>
         </div>
       </div>
       <div class="title">Arguments</div>
@@ -50,9 +48,7 @@
               class="run-btn"
               @click="runHandler()"
               :disabled="parseError"
-            >
-              {{ parseError ? "Cannot parse JSON" : "Run Action" }}
-            </button>
+            >{{ parseError ? "Cannot parse JSON" : "Run Action" }}</button>
           </div>
         </div>
       </div>
@@ -79,7 +75,6 @@ export default {
   data: () => ({
     microservice: '',
     args: {},
-    ouput: '',
     edited: false,
     event: '',
     rawJson: '',
@@ -111,15 +106,25 @@ export default {
       if (!this.getMicroserviceStatus) {
         this.$router.push({ path: '/validation-error' })
       }
+    },
+    $route: function () {
+      this.rawJson = ''
+      this.args = {}
+      this.edited = false
+      this.event = ''
+      this.resetActionOutput()
+      if (this.editor) {
+        this.editor.setValue('')
+      }
     }
   },
   mounted () {
     this.microservice = this.getMicroservice
     this.args = this.getArgs
     this.getSocket.on('run', res => {
-      if (res && res.notif) {
-        this.appendDockerLogs(`[OMG]: ${res.notif}`)
-      }
+      // if (res && res.notif) {
+      //   this.appendDockerLogs(`[OMG]: ${res.notif}`)
+      // }
       if (res.output) {
         try {
           this.setActionOutput(JSON.parse(res.output))
@@ -148,7 +153,8 @@ export default {
       'addHistoryEntry',
       'setActionOutput',
       'appendDockerLogs',
-      'toggleActionSendRaw'
+      'toggleActionSendRaw',
+      'resetActionOutput'
     ]),
     runHandler () {
       if (this.query && this.query.args && this.edited === false) {
@@ -267,6 +273,8 @@ export default {
         font-family: Graphik;
         font-size: 14px;
         line-height: 22px;
+        width: 50%;
+        text-align: left;
       }
 
       .toggle-action-raw {

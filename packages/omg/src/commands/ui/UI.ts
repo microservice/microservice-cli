@@ -54,6 +54,7 @@ export default class UIServer {
   private rebuildToggle: boolean
   private isClientConnected: boolean
   private inheritEnv: boolean
+  private clogsSince: number
 
   /**
    * Constructor
@@ -139,6 +140,9 @@ export default class UIServer {
     })
     this.socket.on('rebuild-toggle', data => {
       this.rebuildToggle = data
+    })
+    this.socket.on('clear-container-logs', timestamp => {
+      this.clogsSince = timestamp
     })
     this.socket.on('microservice.yml', (data: any) => {
       const content = new Uint8Array(Buffer.from(data))
@@ -331,7 +335,10 @@ export default class UIServer {
    */
   private async dockerLogs() {
     if (this.dockerContainer) {
-      this.socket.emit('dockerLogs', await this.dockerContainer.getLogs())
+      this.socket.emit(
+        'dockerLogs',
+        await this.dockerContainer.getLogs(this.clogsSince)
+      )
     }
   }
 

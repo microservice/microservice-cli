@@ -2,6 +2,7 @@ import * as utils from '../../utils'
 import * as verify from '../../verify'
 import Action from '../../models/Action'
 import Microservice from '../../models/Microservice'
+import { truncateSync } from 'fs'
 
 /**
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
@@ -281,11 +282,14 @@ export default abstract class Run {
    *
    * @return {Promise}
    */
-  public async getLogs(): Promise<string> {
+  public async getLogs(since?: number): Promise<string> {
     const container = utils.docker.getContainer(this.containerID)
-    return (await container.logs({ stderr: true, stdout: true }))
-      .toString()
-      .trim()
+    const logs = await container.logs({
+      stderr: true,
+      stdout: true,
+      since: since !== null ? since : 0
+    })
+    return logs.toString().trim()
   }
 
   /**
