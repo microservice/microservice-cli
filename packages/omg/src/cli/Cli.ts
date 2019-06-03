@@ -32,7 +32,10 @@ export default class Cli {
       (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) ||
         !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) &&
       !process.argv.includes('--help') &&
+      !process.argv.includes('-h') &&
       !process.argv.includes('--version') &&
+      !process.argv.includes('-V') &&
+      !process.argv.includes('-v') &&
       process.argv.length > 2
     ) {
       utils.error(
