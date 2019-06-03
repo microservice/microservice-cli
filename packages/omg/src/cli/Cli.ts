@@ -478,6 +478,70 @@ export default class Cli {
     }
   }
 
+  private httpList(el: any, method: string) {
+    let req = `:${el.http.port}${el.http.path}?`
+    let body = {}
+    el.arguments.forEach(arg => {
+      if (arg.in === 'query') {
+        req = `${req}${arg.name}=<arg>&`
+      } else if (arg.in === 'requestBody') {
+        body[arg.name] = arg.type
+      }
+    })
+    utils.log(`${method.toUpperCase()} ${req} `)
+    let bodyStr
+    try {
+      bodyStr = JSON.stringify(body, null, 4)
+    } catch (e) {
+      utils.error('Failed parsing body requirements')
+      process.exit(1)
+    }
+    utils.log(bodyStr)
+  }
+
+  list(options: any): void {
+    const json = Cli.readYAML(path.join(process.cwd(), 'microservice.yml'))
+    try {
+      utils.checkActionInterface(json)
+      const m = new Microservice(json)
+      Cli.processValidateOutput(m.rawData, options)
+      if (options.json) {
+        utils.log(JSON.stringify(m.actions))
+      } else if (options.details) {
+        m.actions.forEach(a => {
+          utils.log(`${a.name}: ${a.help ? a.help : 'No help provided'}`)
+          const method = `${a.http ? 'http' : 'format'}`
+          if (a.http) {
+            this.httpList(a, method)
+          } else if (a.events) {
+            a.events.forEach(e => {
+              utils.log(`  ${e.name}: ${e.help ? e.help : 'No help provided'}`)
+              utils.log(
+                `    ${e.subscribe.method.toUpperCase()} :${e.subscribe.port}${
+                  e.subscribe.path
+                }`
+              )
+              utils.log(
+                `    ${e.unsubscribe.method.toUpperCase()} :${
+                  e.unsubscribe.port
+                }${e.unsubscribe.path}`
+              )
+            })
+          }
+          utils.log('')
+        })
+      } else {
+        m.actions.forEach(a => {
+          utils.log(`${a.name}: ${a.help ? a.help : 'No help provided'}`)
+        })
+      }
+      process.exit(0)
+    } catch (e) {
+      utils.error(Cli.processValidateOutput(e, options))
+      process.exit(1)
+    }
+  }
+
   /**
    * Catch the `CtrlC` command to stop running containers.
    */
