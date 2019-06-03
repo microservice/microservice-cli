@@ -32,14 +32,16 @@ export default class Event extends Command {
       `actions.${actionName}.events.${name}.http.subscribe`,
       rawEvent.http.port
     )
-    this._unsubscribe = rawEvent.http.unsubscribe
-      ? new Http(
-          name,
-          rawEvent.http.unsubscribe,
-          `actions.${actionName}.events.${name}.http.unsubscribe`,
-          rawEvent.http.port
-        )
-      : null
+    if (rawEvent.http.unsubscribe) {
+      this._unsubscribe = new Http(
+        name,
+        rawEvent.http.unsubscribe,
+        `actions.${actionName}.events.${name}.http.unsubscribe`,
+        rawEvent.http.port
+      )
+    } else {
+      this._unsubscribe = null
+    }
     this.checkHttpArguments(this._subscribe, 'event', 'Event')
     if (this._unsubscribe !== null) {
       this.checkHttpArguments(this._unsubscribe, 'event', 'Event')

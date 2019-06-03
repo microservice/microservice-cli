@@ -280,6 +280,7 @@ export default abstract class Run {
   /**
    * Returns docker logs result as a Promise
    *
+   * @param  {number} since Optional parameters filtering logs 'since' UNIX timestamp
    * @return {Promise}
    */
   public async getLogs(since?: number): Promise<string> {
