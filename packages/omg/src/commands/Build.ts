@@ -40,7 +40,7 @@ export default class Build {
         { t: this.name }
       )
       const dockerode = new Dockerode()
-      const log = await new Promise((resolve, reject) => {
+      const log: any = await new Promise((resolve, reject) => {
         dockerode.modem.followProgress(stream, (err, res) =>
           err ? reject(err) : resolve(res)
         )

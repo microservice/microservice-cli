@@ -110,7 +110,8 @@ if (
     'ui',
     'list',
     'shutdown',
-    '--version'
+    '--version',
+    '-V'
   ].includes(process.argv[2])
 ) {
   program.help()
