@@ -1,13 +1,13 @@
-import Http from './Http';
-import Command from './Command';
-const validateEvent = require('../schema/schema').event;
+import Http from './Http'
+import Command from './Command'
+const validateEvent = require('../schema/schema').event
 
 /**
  * Describes a event.
  */
 export default class Event extends Command {
-  private readonly _subscribe: Http;
-  private readonly _unsubscribe: Http;
+  private readonly _subscribe: Http
+  private readonly _unsubscribe: Http
 
   /**
    * Build a {@link Event}.
@@ -17,17 +17,32 @@ export default class Event extends Command {
    * @param {Object} rawEvent The raw data
    */
   constructor(name: string, actionName: string, rawEvent: any) {
-    super(name, rawEvent, `${actionName}.events.${name}`);
-    const isValid = validateEvent(rawEvent);
+    super(name, rawEvent, `${actionName}.events.${name}`)
+    const isValid = validateEvent(rawEvent)
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace('data', `actions.${actionName}.events.${name}`);
-      throw isValid;
+      isValid.text = isValid.text.replace(
+        'data',
+        `actions.${actionName}.events.${name}`
+      )
+      throw isValid
     }
-    this._subscribe = new Http(name, rawEvent.http.subscribe, `actions.${actionName}.events.${name}.http.subscribe`, rawEvent.http.port);
-    this._unsubscribe = ((rawEvent.http.unsubscribe) ? new Http(name, rawEvent.http.unsubscribe, `actions.${actionName}.events.${name}.http.unsubscribe`, rawEvent.http.port) : null);
-    this.checkHttpArguments(this._subscribe, 'event', 'Event');
+    this._subscribe = new Http(
+      name,
+      rawEvent.http.subscribe,
+      `actions.${actionName}.events.${name}.http.subscribe`,
+      rawEvent.http.port
+    )
+    this._unsubscribe = rawEvent.http.unsubscribe
+      ? new Http(
+          name,
+          rawEvent.http.unsubscribe,
+          `actions.${actionName}.events.${name}.http.unsubscribe`,
+          rawEvent.http.port
+        )
+      : null
+    this.checkHttpArguments(this._subscribe, 'event', 'Event')
     if (this._unsubscribe !== null) {
-      this.checkHttpArguments(this._unsubscribe, 'event', 'Event');
+      this.checkHttpArguments(this._unsubscribe, 'event', 'Event')
     }
   }
 
@@ -37,7 +52,7 @@ export default class Event extends Command {
    * @return {Http} The {@link Http} service
    */
   public get subscribe(): Http {
-    return this._subscribe;
+    return this._subscribe
   }
 
   /**
@@ -46,6 +61,6 @@ export default class Event extends Command {
    * @return {Http} The {@link Http} service
    */
   public get unsubscribe(): Http {
-    return this._unsubscribe;
+    return this._unsubscribe
   }
 }

@@ -94,6 +94,12 @@ program
   .description('Starts to omg-app which monitors your microservice.')
   .action(async options => cli.ui(options))
 
+program
+  .command('list')
+  .option('-j --json', 'Returns actions in json format')
+  .option('-d --details', 'Returns detailed actions')
+  .description('Lists all actions available in microservice.')
+  .action(options => cli.list(options))
 // needed because there is no default catch all command with commander.js
 if (
   process.argv.length < 3 ||
@@ -103,6 +109,7 @@ if (
     'run',
     'subscribe',
     'ui',
+    'list',
     'shutdown',
     '--version'
   ].includes(process.argv[2])
