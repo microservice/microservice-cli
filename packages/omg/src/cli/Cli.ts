@@ -477,10 +477,13 @@ export default class Cli {
       process.exit(1)
     }
   }
-
+  /**
+   * @param  {any} el Given action to parse from microservice
+   * @param  {string} method Given HTTP method
+   */
   private httpList(el: any, method: string) {
     let req = `:${el.http.port}${el.http.path}?`
-    let body = {}
+    const body = {}
     el.arguments.forEach(arg => {
       if (arg.in === 'query') {
         req = `${req}${arg.name}=<arg>&`
@@ -489,7 +492,7 @@ export default class Cli {
       }
     })
     utils.log(`${method.toUpperCase()} ${req} `)
-    let bodyStr
+    let bodyStr = ''
     try {
       bodyStr = JSON.stringify(body, null, 4)
     } catch (e) {
@@ -498,7 +501,9 @@ export default class Cli {
     }
     utils.log(bodyStr)
   }
-
+  /**
+   * @param  {any} options Provided options for 'list' action
+   */
   list(options: any): void {
     const json = Cli.readYAML(path.join(process.cwd(), 'microservice.yml'))
     try {
