@@ -7,6 +7,7 @@ import Home from '@/views/Home'
 import Forward from '@/views/Forward'
 import ValidationError from '@/views/Errors/ValidationError'
 import ContainerError from '@/views/Errors/ContainerError'
+import SocketDisconnected from '@/views/Errors/SocketDisconnected'
 
 import store from './store'
 
@@ -90,6 +91,11 @@ export default new Router({
       path: '/container-error',
       name: 'Unexpected container error',
       component: ContainerError
+    },
+    {
+      path: '/socket-disconnected',
+      name: 'Socket Disconnected',
+      component: SocketDisconnected
     }
   ]
 })

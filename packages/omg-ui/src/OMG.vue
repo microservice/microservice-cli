@@ -71,6 +71,9 @@ export default {
         }
       }
     })
+    this.getSocket.on('disconnect', () => {
+      this.$router.push({ path: '/socket-disconnected' })
+    })
     const interval = setInterval(() => {
       if (this.getMicroserviceStatus) {
         this.getSocket.emit('build', {})
