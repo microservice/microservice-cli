@@ -184,6 +184,7 @@ export default class UIServer {
 
       this.sendFile(path.join(process.cwd(), 'microservice.yml'))
       await this.stopContainer()
+      await this.removeContainer()
       if (bak && this.rebuildBak) {
         await this.buildImage(this.rebuildBak.build)
       } else {
@@ -440,6 +441,7 @@ export default class UIServer {
           notif: `Removed Docker container: ${output}`
         })
       }
+      this.dockerContainer = null
       resolve()
     })
   }
@@ -511,6 +513,9 @@ export default class UIServer {
         status: true
       })
       setInterval(async () => {
+        if (!this.dockerContainer) {
+          return
+        }
         if (!(await this.dockerContainer.isRunning())) {
           this.socket.emit('subscribe', {
             notif: 'Container unexpectedly stopped',
@@ -538,12 +543,13 @@ export default class UIServer {
       notif: 'Health check',
       status: true
     })
-    if (!(await this.dockerContainer.isRunning())) {
+    if (!this.dockerContainer || !(await this.dockerContainer.isRunning())) {
       this.socket.emit('health-check', {
         notif: 'Health check failed',
         status: false,
         log: `${await this.dockerContainer.getStderr()}`
       })
+      await this.removeContainer()
       return
     }
     this.socket.emit('health-check', {
