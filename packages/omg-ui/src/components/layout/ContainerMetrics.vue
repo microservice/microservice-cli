@@ -5,20 +5,19 @@
       <div class="cpu metrics-item">
         <div class="header">
           <div class="title">CPU</div>
-          <div class="value">
-            {{ cpuPercentage !== NaN ? cpuPercentage.toFixed(2) : 0 }} %
-          </div>
+          <div class="value">{{ cpuPercentage !== NaN ? cpuPercentage.toFixed(2) : 0 }} %</div>
         </div>
         <div class="graph">
-          <graph :values="cpuArr" />
+          <graph :values="cpuArr"/>
         </div>
       </div>
       <div class="ram metrics-item" @click="memModePercent = !memModePercent">
         <div class="header">
           <div class="title">Memory</div>
-          <div class="value" v-if="memModePercent">
-            {{ memPercentage !== NaN ? memPercentage.toFixed(2) : 0 }} %
-          </div>
+          <div
+            class="value"
+            v-if="memModePercent"
+          >{{ memPercentage !== NaN ? memPercentage.toFixed(2) : 0 }} %</div>
           <div
             class="value"
             v-if="
@@ -34,7 +33,7 @@
           </div>
         </div>
         <div class="graph">
-          <graph :values="memArr" />
+          <graph :values="memArr"/>
         </div>
       </div>
       <div class="io metrics-item">
@@ -43,32 +42,30 @@
           <div
             class="value"
             v-if="ioRawValue !== NaN && (ioRawValue.read && ioRawValue.write)"
-          >
-            {{ ioRawValue.read }} | {{ ioRawValue.write }}
-          </div>
+          >{{ ioRawValue.read }} | {{ ioRawValue.write }}</div>
         </div>
         <div class="graph">
-          <graph :values="diskArr" :biDataMode="true" />
+          <graph :values="diskArr" :biDataMode="true"/>
         </div>
       </div>
       <div class="network metrics-item">
         <div class="header">
           <div class="title">Network</div>
           <div class="value" v-if="networkRawValue !== NaN">
-            <arrow-forward class="rx" />
+            <arrow-forward class="rx"/>
             {{
-              networkRawValue.rx > 0 ? networkRawValue.rx.toFixed(2) : "0.00"
+            networkRawValue.rx > 0 ? networkRawValue.rx.toFixed(2) : "0.00"
             }}
             /
             {{
-              networkRawValue.tx > 0 ? networkRawValue.tx.toFixed(2) : "0.00"
+            networkRawValue.tx > 0 ? networkRawValue.tx.toFixed(2) : "0.00"
             }}
             KB/s
-            <arrow-forward class="tx" />
+            <arrow-forward class="tx"/>
           </div>
         </div>
         <div class="graph">
-          <graph :values="netArr" :biDataMode="true" />
+          <graph :values="netArr" :biDataMode="true"/>
         </div>
       </div>
     </div>
@@ -106,14 +103,14 @@ export default {
     },
     memPercentage: function () {
       const stats = this.getDockerStats
-      if (stats && stats.length > 0) {
+      if (stats && stats.length > 2) {
         return parseFloat(stats[stats.length - 1].memory_stats.usage) / parseFloat(stats[stats.length - 1].memory_stats.limit) * 100.0
       }
       return NaN
     },
     memRawValue: function () {
       const stats = this.getDockerStats
-      if (stats && stats.length > 0) {
+      if (stats && stats.length > 2) {
         return {
           mem: parseFloat(stats[stats.length - 1].memory_stats.usage) / 1024 / 1024,
           limit: parseFloat(stats[stats.length - 1].memory_stats.limit) / 1024 / 1024
@@ -123,7 +120,7 @@ export default {
     },
     ioRawValue: function () {
       const stats = this.getDockerStats
-      if (stats && stats.length > 0) {
+      if (stats && stats.length > 2) {
         return this.calculateBlockIO(stats[stats.length - 1].blkio_stats)
       }
       return NaN
@@ -143,7 +140,7 @@ export default {
   watch: {
     getDockerStats: function () {
       const stats = this.getDockerStats
-      if (stats && stats.length > 0) {
+      if (stats && stats.length > 2) {
         this.memArr.push(parseFloat(stats[stats.length - 1].memory_stats.usage) / 1024 / 1024)
         this.diskArr.push({
           up: this.calculateBlockIO(stats[stats.length - 1].blkio_stats).read,
@@ -168,7 +165,9 @@ export default {
   },
   mounted () {
     this.getSocket.on('container-stats', res => {
-      this.addDockerStatsEntry(res.log)
+      if (typeof res.log !== 'string') {
+        this.addDockerStatsEntry(res.log)
+      }
     })
   },
   beforeDestroy () {
