@@ -118,16 +118,20 @@ export function verifyOutputType(command: Command, output: string) {
     const json = JSON.parse(output)
     Object.keys(props).forEach(key => {
       if (!dataTypes[props[key].type](JSON.stringify(json[key]))) {
-        throw `Action: \`${command.name}\`` +
-          ` property \`${key}\` must have output type: \`${props[key].type}\`` +
-          ` instead got: \`${
+        const typeFound = (json, key): string => {
+          if (
             typeof json[key] === 'number' &&
             dataTypes['int'](json[key].toString())
-              ? 'int'
-              : dataTypes['float'](json[key].toString())
-              ? 'float'
-              : typeof json[key]
-          }\`` +
+          ) {
+            return 'int'
+          } else if (dataTypes['float'](json[key].toString())) {
+            return 'float'
+          }
+          return typeof json[key]
+        }
+        throw `Action: \`${command.name}\`` +
+          ` property \`${key}\` must have output type: \`${props[key].type}\`` +
+          ` instead got: \`${typeFound(json, key)}\`` +
           `\n${output}`
       }
     })
