@@ -280,7 +280,6 @@ export const dataTypes = {
   object: (object: string): boolean => {
     try {
       return (
-        // still need to check properties
         (!Array.isArray(object) && typeof object === 'object') ||
         JSON.parse(object).toString() === '[object Object]'
       )
