@@ -1,6 +1,6 @@
 # OMG APP
 
-[![CircleCI](https://img.shields.io/circleci/project/github/microservices/omg/master.svg?style=for-the-badge)](https://circleci.com/gh/microservices/omg-cli/tree/master)
+[![CircleCI](https://img.shields.io/circleci/project/github/microservices/omg/master.svg?style=for-the-badge)](https://circleci.com/gh/microservices/omg/tree/master)
 
 ## About lerna
 
