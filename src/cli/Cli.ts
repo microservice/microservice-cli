@@ -28,7 +28,6 @@ export default class Cli {
   constructor() {
     if ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) || !fs.existsSync(path.join(process.cwd(), 'Dockerfile')))
     && (!process.argv.includes('--help')) && (process.argv.length > 2)) {
-      utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`');
       process.exit(1);
     }
   }

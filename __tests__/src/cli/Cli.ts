@@ -79,7 +79,7 @@ describe('Cli.ts', () => {
       const argvStub = sinon.stub(process, 'argv').value([1, 2, 3]);
       new Cli();
 
-      expect(errorStub.calledWith('Must be ran in a directory with a `Dockerfile` and a `microservice.yml`')).toBeTruthy();
+      expect(errorStub.calledWith('Must be run in a directory with a `Dockerfile` and a `microservice.yml`')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
       argvStub.restore();
     });
