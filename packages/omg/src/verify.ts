@@ -109,6 +109,28 @@ export function verifyOutputType(command: Command, output: string) {
       ` must have output type: \`${command.output.type}\`` +
       ` instead got: \`${typeof output}\`` +
       ` ${output}`
+  } else if (
+    command.output &&
+    command.output.type &&
+    command.output.type === 'object'
+  ) {
+    const props = command.output.properties
+    const json = JSON.parse(output)
+    Object.keys(props).forEach(key => {
+      if (!dataTypes[props[key].type](JSON.stringify(json[key]))) {
+        throw `Action: \`${command.name}\`` +
+          ` property \`${key}\` must have output type: \`${props[key].type}\`` +
+          ` instead got: \`${
+            typeof json[key] === 'number' &&
+            dataTypes['int'](json[key].toString())
+              ? 'int'
+              : dataTypes['float'](json[key].toString())
+              ? 'float'
+              : typeof json[key]
+          }\`` +
+          `\n${output}`
+      }
+    })
   }
 }
 
