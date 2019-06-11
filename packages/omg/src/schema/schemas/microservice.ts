@@ -181,6 +181,34 @@ module.exports = {
         }
       },
       additionalProperties: false
+    },
+    health: {
+      type: 'object',
+      properties: {
+        interval: {
+          type: 'string',
+          pattern: '^([0-9]+(ms|s))|0$'
+        },
+        timeout: {
+          type: 'string',
+          pattern: '^([0-9]+(ms|s))|0$'
+        },
+        start_period: {
+          type: 'string',
+          pattern: '^([0-9]+(ms|s))|0$'
+        },
+        retries: {
+          type: 'integer',
+          minimum: 0
+        },
+        command: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        }
+      },
+      required: ['command']
     }
   },
   _comment:
