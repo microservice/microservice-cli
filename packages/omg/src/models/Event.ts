@@ -1,5 +1,6 @@
 import Http from './Http'
 import Command from './Command'
+import { dataTypes } from '../utils'
 const validateEvent = require('../schema/schema').event
 
 /**
@@ -18,6 +19,9 @@ export default class Event extends Command {
    */
   constructor(name: string, actionName: string, rawEvent: any) {
     super(name, rawEvent, `${actionName}.events.${name}`)
+    if (!dataTypes['map'](rawEvent)) {
+      rawEvent = {}
+    }
     const isValid = validateEvent(rawEvent)
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(
