@@ -202,10 +202,7 @@ module.exports = {
           minimum: 0
         },
         command: {
-          type: 'array',
-          items: {
-            type: 'string'
-          }
+          type: 'string'
         }
       },
       required: ['command']
