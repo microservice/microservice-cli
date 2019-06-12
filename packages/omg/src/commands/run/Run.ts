@@ -198,17 +198,40 @@ export default abstract class Run {
       ]
     }
 
-    const container = await utils.docker.createContainer({
-      Image: this.dockerImage,
-      Cmd: this.microservice.lifecycle
-        ? this.microservice.lifecycle.startup
-        : null,
-      Env: this.formatEnvironmentVariables(),
-      ExposedPorts: this.exposedPorts,
-      HostConfig: {
-        PortBindings: this.portBindings
+    let config
+    if (this.microservice.health !== null) {
+      config = {
+        Image: this.dockerImage,
+        Cmd: this.microservice.lifecycle
+          ? this.microservice.lifecycle.startup
+          : null,
+        Env: this.formatEnvironmentVariables(),
+        ExposedPorts: this.exposedPorts,
+        HostConfig: {
+          PortBindings: this.portBindings
+        },
+        Healthcheck: {
+          Test: this.microservice.health.command,
+          Interval: this.microservice.health.interval,
+          Timeout: this.microservice.health.timeout,
+          StartPeriod: this.microservice.health.startPeriod,
+          Retries: this.microservice.health.retries
+        }
       }
-    })
+    } else {
+      config = {
+        Image: this.dockerImage,
+        Cmd: this.microservice.lifecycle
+          ? this.microservice.lifecycle.startup
+          : null,
+        Env: this.formatEnvironmentVariables(),
+        ExposedPorts: this.exposedPorts,
+        HostConfig: {
+          PortBindings: this.portBindings
+        }
+      }
+    }
+    const container = await utils.docker.createContainer(config)
     await container.start()
 
     this.containerID = container.$subject.id
@@ -316,5 +339,10 @@ export default abstract class Run {
       }
     }
     return bindings
+  }
+
+  public async getHealth(): Promise<string> {
+    const container = utils.docker.getContainer(this.containerID)
+    return (await container.inspect()).State.Health.Status
   }
 }
