@@ -26,7 +26,7 @@ export default class Health {
     this._interval = Health.getNanoSecondsValue(rawHealth.interval || null)
     this._timeout = Health.getNanoSecondsValue(rawHealth.timeout || null)
     this._startPeriod = Health.getNanoSecondsValue(
-      rawHealth.startPeriod || null
+      rawHealth.start_period || null
     )
     this._retries = rawHealth.retries || 0
     this._cmd = ['CMD-SHELL', rawHealth.command]

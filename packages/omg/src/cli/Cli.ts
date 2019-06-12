@@ -345,16 +345,23 @@ export default class Cli {
       spinner = ora.start(`Health check`)
     }
 
-    await this._run.getStats() // waits for the container to starts, but avoids using a basic setTimeout
+    let state: string = ''
+    while (state !== 'healthy') {
+      state = await this._run.getHealth()
+      if (state === 'unhealthy') {
+        break
+      }
+    }
 
-    if (!(await this._run.isRunning())) {
+    // if (!(await this._run.isRunning())) {
+    if (state === 'unhealthy') {
       // 2. health check
       if (options.raw) {
         utils.error('Health check failed')
       } else {
         spinner.fail('Health check failed')
       }
-      utils.error(`  Docker logs:\n${await this._run.getStderr()}`)
+      utils.error(`  Docker logs:\n${await this._run.getLogs()}`)
       process.exit(1)
     }
     if (!options.raw) {
