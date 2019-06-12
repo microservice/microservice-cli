@@ -211,7 +211,7 @@ export default abstract class Run {
           PortBindings: this.portBindings
         },
         Healthcheck: {
-          Test: this.microservice.health.command,
+          Test: this.microservice.health.endpoint,
           Interval: this.microservice.health.interval,
           Timeout: this.microservice.health.timeout,
           StartPeriod: this.microservice.health.startPeriod,
@@ -345,4 +345,8 @@ export default abstract class Run {
     const container = utils.docker.getContainer(this.containerID)
     return (await container.inspect()).State.Health.Status
   }
+
+  // public async getHealthLogs(): Promise<Array<string>> {
+
+  // }
 }
