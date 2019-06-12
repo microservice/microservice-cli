@@ -17,10 +17,11 @@ module.exports = {
       type: 'integer',
       minimum: 0
     },
-    command: {
-      type: 'string'
+    endpoint: {
+      type: 'string',
+      patten: '^http://localhost:([d]*)?/?.*?/?$'
     }
   },
-  required: ['command'],
+  required: ['endpoint'],
   additionalProperties: false
 }

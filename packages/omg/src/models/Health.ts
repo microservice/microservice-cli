@@ -10,7 +10,7 @@ export default class Health {
   private readonly _timeout: number
   private readonly _startPeriod: number
   private readonly _retries: number
-  private readonly _cmd: Array<string>
+  private readonly _endpoint: Array<string>
 
   /**
    * @param  {any} rawHealth Health json object from microservice.yml
@@ -29,7 +29,10 @@ export default class Health {
       rawHealth.start_period || null
     )
     this._retries = rawHealth.retries || 0
-    this._cmd = ['CMD-SHELL', rawHealth.command]
+    this._endpoint = [
+      'CMD-SHELL',
+      `curl --fail ${rawHealth.endpoint} || exit 1`
+    ]
   }
 
   /**
@@ -96,11 +99,11 @@ export default class Health {
   }
 
   /**
-   * Getter for health command
+   * Getter for health endpoint
    *
    * @return {Array} Command in an Array<string>
    */
-  public get command(): Array<string> {
-    return this._cmd
+  public get endpoint(): Array<string> {
+    return this._endpoint
   }
 }
