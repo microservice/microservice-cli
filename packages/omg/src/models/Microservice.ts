@@ -3,6 +3,7 @@ import EnvironmentVariable from './EnvironmentVariable'
 import Volume from './Volume'
 import Lifecycle from './Lifecycle'
 import Forward from './Forward'
+import Health from './Health'
 const validateMicroservice = require('../schema/schema').microservice
 
 /**
@@ -14,6 +15,7 @@ export default class Microservice {
   private readonly environmentMap: object
   private readonly volumeMap: object
   private readonly _lifecycle: Lifecycle
+  private readonly _health: Health
   private readonly forwardMap: object
 
   /**
@@ -77,6 +79,9 @@ export default class Microservice {
         )
       }
     }
+    this._health = microserviceYamlJson.health
+      ? new Health(microserviceYamlJson.health)
+      : null
     // Disabling lifecycle when actions.$.http
     // for (let i = 0; i < this.actions.length; i += 1) {
     //   if ((this.actions[i].http !== null) && (this.lifecycle === null)) {
@@ -226,5 +231,12 @@ export default class Microservice {
       throw { message: `Forward: \`${forward}\` does not exist` }
     }
     return this.forwardMap[forward]
+  }
+
+  /**
+   * @return {Health} Health object
+   */
+  public get health(): Health {
+    return this._health
   }
 }
