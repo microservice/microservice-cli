@@ -9,6 +9,7 @@ const argumentSchema = require('./schemas/argument')
 const volumeSchema = require('./schemas/volume')
 const lifecycleSchema = require('./schemas/lifecycle')
 const forwardSchema = require('./schemas/forward')
+const healthSchema = require('./schemas/health')
 
 const ajv = new Ajv({ allErrors: true })
 
@@ -48,5 +49,6 @@ module.exports = {
   argument: (o: any) => validate(o, ajv.compile(argumentSchema)),
   volume: (o: any) => validate(o, ajv.compile(volumeSchema)),
   lifecycle: (o: any) => validate(o, ajv.compile(lifecycleSchema)),
-  forward: (o: any) => validate(o, ajv.compile(forwardSchema))
+  forward: (o: any) => validate(o, ajv.compile(forwardSchema)),
+  health: (o: any) => validate(o, ajv.compile(healthSchema))
 }

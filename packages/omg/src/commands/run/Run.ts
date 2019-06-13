@@ -2,7 +2,7 @@ import * as utils from '../../utils'
 import * as verify from '../../verify'
 import Action from '../../models/Action'
 import Microservice from '../../models/Microservice'
-import { truncateSync } from 'fs'
+import * as rp from 'request-promise'
 
 /**
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
@@ -316,5 +316,67 @@ export default abstract class Run {
       }
     }
     return bindings
+  }
+
+  /**
+   * Gets health status of the service
+   *
+   * @param  {number} timeout Optionnal timeout, used during healthcheck
+   * @return {Promise} Empty promise
+   */
+  public async isHealthy(timeout?: number): Promise<void> {
+    let boundPort = -1
+    Object.keys(this.portBindings).forEach(p => {
+      const port = parseInt(p.match(/[\d]*/)[0], 10)
+      if (port === utils.getHealthPort(this.microservice)) {
+        boundPort = this.portBindings[p][0].HostPort
+      }
+    })
+    return new Promise((resolve, reject) => {
+      const promise = rp.get({
+        uri: `http://localhost:${boundPort}${this.microservice.health.path}`,
+        method: 'GET',
+        resolveWithFullResponse: true
+      })
+      if (timeout) {
+        setTimeout(() => {
+          reject(promise.cancel())
+        }, timeout)
+      }
+      promise
+        .then(response => {
+          response.statusCode / 100 === 2 ? resolve() : reject()
+        })
+        .catch(e => {
+          reject()
+        })
+    })
+  }
+
+  /**
+   * Does health check for the service until it's healthy or unhealthy
+   *
+   * @return {Promise} health status as a boolean
+   */
+  public async healthCheck(): Promise<boolean> {
+    const timeout = 1000
+    const interval = 3000
+    const retries: number = 3
+
+    const sleep = (ms: number): Promise<NodeJS.Timeout> => {
+      return new Promise(resolve => setTimeout(resolve, ms))
+    }
+
+    return new Promise(async (resolve, reject) => {
+      await sleep(1500)
+      for (let i = retries; i > 0; i--) {
+        await this.isHealthy(timeout)
+          .then(() => resolve(true))
+          .catch(async () => {
+            await sleep(interval)
+          })
+      }
+      reject(false)
+    })
   }
 }

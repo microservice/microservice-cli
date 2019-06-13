@@ -45,6 +45,12 @@ describe('Subscribe.ts', () => {
         title: 'test',
         description: 'for tests',
       },
+      health: {
+        http: {
+          path: '/health',
+          port: 5000
+        }
+      },
       actions: {
         foo: {
           events: {

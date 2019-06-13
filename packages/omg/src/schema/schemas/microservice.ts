@@ -181,10 +181,13 @@ module.exports = {
         }
       },
       additionalProperties: false
+    },
+    health: {
+      type: 'object'
     }
   },
   _comment:
     'arguments, commands, environment, lifecycle, and volumes checks are done in their respective constructors. The metrics, system, and scale checks are still done here as there was no need to create a class for those attributes yet.',
   additionalProperties: false,
-  required: ['omg', 'info']
+  required: ['omg', 'info', 'health']
 }

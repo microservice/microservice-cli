@@ -129,6 +129,12 @@ describe('verify.ts', () => {
             title: 'test',
             description: 'for tests',
           },
+          health: {
+            http: {
+              path: '/health',
+              port: 5000
+            }
+          },
           environment: {
             foo: {
               type: 'int',
@@ -152,6 +158,12 @@ describe('verify.ts', () => {
             version: '1.0.0',
             title: 'test',
             description: 'for tests',
+          },
+          health: {
+            http: {
+              path: '/health',
+              port: 5000
+            }
           },
           environment: {
             foo: {
