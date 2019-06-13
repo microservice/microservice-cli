@@ -93,44 +93,6 @@ module.exports = {
       required: ['port', 'uri'],
       additionalProperties: false
     },
-    system: {
-      type: 'object',
-      properties: {
-        requests: {
-          type: 'object',
-          properties: {
-            cpu: {
-              type: 'integer'
-            },
-            gpu: {
-              type: 'integer'
-            },
-            memory: {
-              type: 'string',
-              pattern: '[0-9]+[MB|GB].'
-            }
-          },
-          additionalProperties: false
-        },
-        limits: {
-          type: 'object',
-          properties: {
-            cpu: {
-              type: 'integer'
-            },
-            gpu: {
-              type: 'integer'
-            },
-            memory: {
-              type: 'string',
-              pattern: '[0-9]+[MB|GB].'
-            }
-          },
-          additionalProperties: false
-        }
-      },
-      additionalProperties: false
-    },
     scale: {
       type: 'object',
       properties: {
@@ -187,7 +149,7 @@ module.exports = {
     }
   },
   _comment:
-    'arguments, commands, environment, lifecycle, and volumes checks are done in their respective constructors. The metrics, system, and scale checks are still done here as there was no need to create a class for those attributes yet.',
+    'arguments, commands, environment, lifecycle, and volumes checks are done in their respective constructors. The metrics, and scale checks are still done here as there was no need to create a class for those attributes yet.',
   additionalProperties: false,
   required: ['omg', 'info', 'health']
 }
