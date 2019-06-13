@@ -38,6 +38,12 @@ describe('FormatRun.ts', () => {
           title: 'test',
           description: 'for tests',
         },
+        health: {
+          http: {
+            path: '/health',
+            port: 5000
+          }
+        },
         actions: {
           test: {
             format: {
@@ -63,6 +69,12 @@ describe('FormatRun.ts', () => {
           version: '1.0.0',
           title: 'test',
           description: 'for tests',
+        },
+        health: {
+          http: {
+            path: '/health',
+            port: 5000
+          }
         },
         actions: {
           test: {
@@ -117,6 +129,12 @@ describe('FormatRun.ts', () => {
           title: 'test',
           description: 'for tests',
         },
+        health: {
+          http: {
+            path: '/health',
+            port: 5000
+          }
+        },
         actions: {
           test: {
             format: {
@@ -154,6 +172,12 @@ describe('FormatRun.ts', () => {
           title: 'test',
           description: 'for tests',
         },
+        health: {
+          http: {
+            path: '/health',
+            port: 5000
+          }
+        },
         actions: {
           test: {
             format: {
@@ -180,6 +204,12 @@ describe('FormatRun.ts', () => {
             version: '1.0.0',
             title: 'test',
             description: 'for tests',
+          },
+          health: {
+            http: {
+              path: '/health',
+              port: 5000
+            }
           },
           actions: {
             tom: {
@@ -208,6 +238,12 @@ describe('FormatRun.ts', () => {
             version: '1.0.0',
             title: 'test',
             description: 'for tests',
+          },
+          health: {
+            http: {
+              path: '/health',
+              port: 5000
+            }
           },
           actions: {
             tom: {
