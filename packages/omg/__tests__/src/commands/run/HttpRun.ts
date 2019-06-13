@@ -60,6 +60,12 @@ describe('HttpRun.js', () => {
             command: ['node', 'app.js'],
           },
         },
+        health: {
+          http: {
+            path: '/get',
+            port: 5555
+          }
+        }
       }), {}, {}).startService();
 
       expect(utilsDockerCreateContainer.calledWith({
@@ -115,6 +121,12 @@ describe('HttpRun.js', () => {
           title: 'test',
           description: 'for tests',
         },
+        health: {
+          http: {
+            path: '/health',
+            port: 5555
+          }
+        },
         actions: {
           get: {
             output: {type: 'string'},
@@ -154,6 +166,12 @@ describe('HttpRun.js', () => {
           title: 'test',
           description: 'for tests',
         },
+        health: {
+          http: {
+            path: '/health',
+            port: 5555
+          }
+        },
         actions: {
           get: {
             output: {type: 'string'},
@@ -181,6 +199,12 @@ describe('HttpRun.js', () => {
           version: '1.0.0',
           title: 'test',
           description: 'for tests',
+        },
+        health: {
+          http: {
+            path: '/health',
+            port: 5555
+          }
         },
         actions: {
           get: {
@@ -212,6 +236,12 @@ describe('HttpRun.js', () => {
           version: '1.0.0',
           title: 'test',
           description: 'for tests',
+        },
+        health: {
+          http: {
+            path: '/health',
+            port: 5555
+          }
         },
         actions: {
           post: {
@@ -270,6 +300,12 @@ describe('HttpRun.js', () => {
           title: 'test',
           description: 'for tests',
         },
+        health: {
+          http: {
+            path: '/health',
+            port: 7777
+          }
+        },
         actions: {
           put: {
             output: {type: 'string'},
@@ -305,6 +341,12 @@ describe('HttpRun.js', () => {
           version: '1.0.0',
           title: 'test',
           description: 'for tests',
+        },
+        health: {
+          http: {
+            path: '/health',
+            port: 5555
+          }
         },
         actions: {
           delete: {

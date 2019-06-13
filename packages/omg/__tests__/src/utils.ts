@@ -1,6 +1,7 @@
 import * as utils from '../../src/utils';
 import Microservice from '../../src/models/Microservice';
 import EnvironmentVariable from '../../src/models/EnvironmentVariable';
+import 'jest'
 
 describe('utils.ts', () => {
   describe('setVal(val, _else)', () => {
@@ -22,9 +23,15 @@ describe('utils.ts', () => {
           title: 'test',
           description: 'for tests',
         },
+        health: {
+          http: {
+            port: 5000,
+            path: '/health'
+          }
+        }
       });
 
-      expect(utils.getNeededPorts(m)).toEqual([]);
+      expect(utils.getNeededPorts(m)).toEqual([5000]);
     });
 
     test('returns a list consisting of the port 5050 and 6060 because it is used by a http interfacing action', () => {
@@ -39,6 +46,12 @@ describe('utils.ts', () => {
           startup: {
             command: 'server.sh',
           },
+        },
+        health: {
+          http: {
+            path: '/health',
+            port: 5050
+          }
         },
         actions: {
           foo: {

@@ -20,6 +20,12 @@ describe('RunFactory.ts', () => {
           title: 'test',
           description: 'for tests',
         },
+        health: {
+          http: {
+            path: '/health',
+            port: 5000
+          }
+        },
         actions: {
           foo: rawFormatAction,
         },
@@ -44,6 +50,12 @@ describe('RunFactory.ts', () => {
           version: '1.0.0',
           title: 'test',
           description: 'for tests',
+        },
+        health: {
+          http: {
+            path: '/health',
+            port: 5000
+          }
         },
         actions: {
           foo: rawHttpAction,
@@ -85,6 +97,12 @@ describe('RunFactory.ts', () => {
           version: '1.0.0',
           title: 'test',
           description: 'for tests',
+        },
+        health: {
+          http: {
+            path: '/health',
+            port: 5000
+          }
         },
         actions: {
           foo: rawEventAction,
