@@ -6,11 +6,8 @@ const validateHealth = require('../schema/schema').health
  * See https://docs.docker.com/engine/api/v1.37/#operation/ContainerCreate
  */
 export default class Health {
-  private readonly _interval: number
-  private readonly _timeout: number
-  private readonly _startPeriod: number
-  private readonly _retries: number
-  private readonly _endpoint: Array<string>
+  private readonly _path: string
+  private readonly _port: number
 
   /**
    * @param  {any} rawHealth Health json object from microservice.yml
@@ -23,87 +20,25 @@ export default class Health {
       throw isValid
     }
 
-    this._interval = Health.getNanoSecondsValue(rawHealth.interval || null)
-    this._timeout = Health.getNanoSecondsValue(rawHealth.timeout || null)
-    this._startPeriod = Health.getNanoSecondsValue(
-      rawHealth.start_period || null
-    )
-    this._retries = rawHealth.retries || 0
-    this._endpoint = [
-      'CMD-SHELL',
-      `curl --fail ${rawHealth.endpoint} || exit 1`
-    ]
+    this._path = rawHealth.http.path
+    this._port = rawHealth.http.port
   }
 
   /**
-   * Converts number as string or number to number in nanoseconds
+   * Getter for health port
    *
-   * @param  {string} initial Initial number as a string, using units such as 's', 'ms'
-   * @return {number} The interger in nanoseconds
+   * @return {number} port number
    */
-  private static getNanoSecondsValue(initial: string): number {
-    if (typeof initial === 'number' && parseInt(initial, 10)) {
-      return initial
-    }
-    if (!initial) {
-      return 0
-    }
-    const int = parseInt(initial.match(/(\d)+/)[0], 10)
-    const unit = initial.match(/ms|s/)[0]
-    if (int === 0) {
-      return 0
-    }
-    switch (unit) {
-      case 'ms':
-        return int * 1000000
-      case 's':
-        return int * 1000000000
-    }
-    return 0
+  public get port(): number {
+    return this._port
   }
 
   /**
-   * Getter for health interval
+   * Getter for health path
    *
-   * @return {number} interval
+   * @return {string} path
    */
-  public get interval(): number {
-    return this._interval
-  }
-
-  /**
-   * Getter for health timeout
-   *
-   * @return {number} timeout
-   */
-  public get timeout(): number {
-    return this._timeout
-  }
-
-  /**
-   * Getter for health startPeriod
-   *
-   * @return {number} startPeriod
-   */
-  public get startPeriod(): number {
-    return this._startPeriod
-  }
-
-  /**
-   * Getter for health retries
-   *
-   * @return {number} retries
-   */
-  public get retries(): number {
-    return this._retries
-  }
-
-  /**
-   * Getter for health endpoint
-   *
-   * @return {Array} Command in an Array<string>
-   */
-  public get endpoint(): Array<string> {
-    return this._endpoint
+  public get path(): string {
+    return this._path
   }
 }
