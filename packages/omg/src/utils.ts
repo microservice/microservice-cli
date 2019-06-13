@@ -56,6 +56,12 @@ export function getNeededPorts(microservice: Microservice): number[] {
       ports.push(forward.http.port)
     }
   }
+  if (
+    microservice.health.port !== null &&
+    !ports.includes(microservice.health.port)
+  ) {
+    ports.push(microservice.health.port)
+  }
   return ports
 }
 
@@ -74,6 +80,15 @@ export function getForwardPorts(microservice: Microservice): number[] {
     }
   }
   return ports
+}
+/**
+ * Return the health port
+ *
+ * @param  {Microservice} microservice Provided microservice as a JSON
+ * @return {number} port number
+ */
+export function getHealthPort(microservice: Microservice): number {
+  return microservice.health.port
 }
 
 /**
