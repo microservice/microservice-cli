@@ -1,0 +1,25 @@
+{
+  "name": "omg-validate",
+  "version": "1.0.0",
+  "description": "OMG microservice.yml validation library",
+  "main": "omg-validate",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microservices/omg.git"
+  },
+  "keywords": [
+    "omg",
+    "microservice",
+    "validation",
+    "yaml"
+  ],
+  "author": "Aurelien ARINO <aurelien@storyscript.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/microservices/omg/issues"
+  },
+  "homepage": "https://github.com/microservices/omg#readme"
+}
