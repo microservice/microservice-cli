@@ -272,6 +272,13 @@ export default class Cli {
       spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`);
       spinner = ora.start(`Health check`);
     }
+
+    if (options.debug) {
+      const logStream = await this._run.getLogStream()
+      logStream.pipe(process.stdout)
+    }
+
+
     await new Promise((res) => setTimeout(res, 1000)); // wait for the container to start
     if (!await this._run.isRunning()) { // 2. health check
       if (options.raw) {
@@ -338,6 +345,12 @@ export default class Cli {
       process.exit(1);
     }
     this._subscribe = new Subscribe(this.microservice, argsObj, this._run);
+
+    if (options.debug) {
+      const logStream = await this._run.getLogStream()
+      logStream.pipe(process.stdout)
+    }
+    
     try {
       await this._subscribe.go(action, event);
       spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`);
