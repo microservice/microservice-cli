@@ -1,6 +1,6 @@
 import * as sinon from 'sinon';
 import FormatRun from '../../../../src/commands/run/FormatRun';
-import Microservice from '../../../../src/models/Microservice';
+import { Microservice } from 'omg-validate';
 import * as utils from '../../../../src/utils';
 
 describe('FormatRun.ts', () => {

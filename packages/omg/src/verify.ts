@@ -1,7 +1,6 @@
 import * as _ from 'underscore'
 import { dataTypes } from './utils'
-import Command from './models/Command'
-import Microservice from './models/Microservice'
+import { Command, Microservice } from 'omg-validate'
 
 /**
  * Verifies the pattern, enum, and range of the given arguments.

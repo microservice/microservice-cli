@@ -1,5 +1,5 @@
 import Run from './Run'
-import Microservice from '../../models/Microservice'
+import { Microservice } from 'omg-validate'
 import * as utils from '../../utils'
 import * as verify from '../../verify'
 const fs = require('fs')

@@ -1,8 +1,7 @@
 import * as utils from '../../utils'
 import * as verify from '../../verify'
-import Action from '../../models/Action'
-import Microservice from '../../models/Microservice'
 import * as rp from 'request-promise'
+import { Action, Microservice } from 'omg-validate'
 
 /**
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.

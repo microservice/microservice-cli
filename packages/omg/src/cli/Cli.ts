@@ -3,16 +3,19 @@ import * as path from 'path'
 import * as YAML from 'yamljs'
 import * as utils from '../utils'
 import ora from '../ora'
-import Microservice from '../models/Microservice'
 import Build from '../commands/Build'
 import Subscribe from '../commands/Subscribe'
 import Run from '../commands/run/Run'
 import RunFactory from '../commands/run/RunFactory'
-import Action from '../models/Action'
-import Argument from '../models/Argument'
-import Command from '../models/Command'
 import UIServer from '../commands/ui/UI'
 import * as chokidar from 'chokidar'
+import {
+  OMGValidate,
+  Microservice,
+  Action,
+  Command,
+  Argument
+} from 'omg-validate'
 
 /**
  * Describes the cli.
@@ -224,14 +227,18 @@ export default class Cli {
    * @param {Object} options The given options (json, silent, or text)
    */
   static validate(options: any): void {
-    const json = Cli.readYAML(path.join(process.cwd(), 'microservice.yml'))
     try {
-      utils.checkActionInterface(json)
-      const m = new Microservice(json)
-      utils.log(Cli.processValidateOutput(m.rawData, options))
+      utils.log(
+        new OMGValidate(
+          fs
+            .readFileSync(path.join(process.cwd(), 'microservice.yml'))
+            .toString(),
+          options
+        ).validate()
+      )
       process.exit(0)
     } catch (e) {
-      utils.error(Cli.processValidateOutput(e, options))
+      utils.error(e)
       process.exit(1)
     }
   }

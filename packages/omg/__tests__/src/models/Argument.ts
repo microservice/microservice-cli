@@ -1,4 +1,4 @@
-import Argument from '../../../src/models/Argument';
+import {Argument} from 'omg-validate';
 
 describe('Argument.ts', () => {
   describe('constructor', () => {

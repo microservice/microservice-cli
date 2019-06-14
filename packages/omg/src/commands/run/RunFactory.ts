@@ -1,9 +1,8 @@
 import Run from './Run'
-import Microservice from '../../models/Microservice'
 import FormatRun from './FormatRun'
 import HttpRun from './HttpRun'
 import EventRun from './EventRun'
-import Action from '../../models/Action'
+import { Action, Microservice } from 'omg-validate'
 import UIRun from './UIRun'
 
 /**

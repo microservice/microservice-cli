@@ -1,7 +1,7 @@
 import * as _ from 'underscore'
 import * as rp from 'request-promise'
 import * as querystring from 'querystring'
-import Microservice from '../../models/Microservice'
+import { Microservice } from 'omg-validate'
 import Run from './Run'
 import * as verify from '../../verify'
 
