@@ -1,4 +1,4 @@
-import Lifecycle from '../../../src/models/Lifecycle';
+import { Lifecycle } from 'omg-validate';
 
 describe('Lifecycle.ts', () => {
   describe('constructor', () => {

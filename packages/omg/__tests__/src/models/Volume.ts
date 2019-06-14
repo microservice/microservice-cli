@@ -1,4 +1,4 @@
-import Volume from '../../../src/models/Volume';
+import { Volume } from 'omg-validate';
 
 describe('Volume.ts', () => {
   describe('constructor', () => {

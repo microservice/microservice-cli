@@ -1,4 +1,4 @@
-import Microservice from '../../models/Microservice'
+import { Microservice } from 'omg-validate'
 import Run from './Run'
 import { verifyOutputType } from '../../verify'
 import * as rp from 'request-promise'

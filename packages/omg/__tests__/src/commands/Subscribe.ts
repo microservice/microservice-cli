@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 import * as rp from '../../../src/request';
 import * as utils from '../../../src/utils';
 import Subscribe from '../../../src/commands/Subscribe';
-import Microservice from '../../../src/models/Microservice';
+import { Microservice } from 'omg-validate';
 import HttpRun from '../../../src/commands/run/HttpRun';
 
 describe('Subscribe.ts', () => {

@@ -1,4 +1,4 @@
-import Format from '../../../src/models/Format';
+import { Format } from 'omg-validate';
 
 describe('Format.ts', () => {
   describe('constructor', () => {

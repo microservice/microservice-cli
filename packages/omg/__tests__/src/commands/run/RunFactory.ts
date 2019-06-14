@@ -1,7 +1,6 @@
 import RunFactory from '../../../../src/commands/run/RunFactory';
 import FormatRun from '../../../../src/commands/run/FormatRun';
-import Microservice from '../../../../src/models/Microservice';
-import Action from '../../../../src/models/Action';
+import { Action, Microservice } from 'omg-validate';
 import EventRun from '../../../../src/commands/run/EventRun';
 import HttpRun from '../../../../src/commands/run/HttpRun';
 

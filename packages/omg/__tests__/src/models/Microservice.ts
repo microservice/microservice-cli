@@ -1,8 +1,4 @@
-import Microservice from '../../../src/models/Microservice'
-import Action from '../../../src/models/Action'
-import EnvironmentVariable from '../../../src/models/EnvironmentVariable'
-import Volume from '../../../src/models/Volume'
-import Lifecycle from '../../../src/models/Lifecycle'
+import { Action, EnvironmentVariable, Lifecycle, Microservice, Volume } from 'omg-validate'
 
 describe('Microservice.ts', () => {
   describe('constructor', () => {

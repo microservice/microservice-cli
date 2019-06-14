@@ -2,9 +2,7 @@ import * as fs from 'fs'
 import * as http from 'http'
 import * as utils from '../utils'
 import * as verify from '../verify'
-import Microservice from '../models/Microservice'
-import Action from '../models/Action'
-import Event from '../models/Event'
+import { Action, Event, Microservice } from 'omg-validate'
 const homedir = require('os').homedir()
 const uuidv4 = require('uuid/v4')
 import * as rp from '../request'

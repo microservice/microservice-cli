@@ -1,6 +1,4 @@
-import Argument from '../../../src/models/Argument';
-import Event from '../../../src/models/Event';
-import Http from '../../../src/models/Http';
+import { Argument, Event, Http } from 'omg-validate';
 
 describe('Event.ts', () => {
   describe('constructor', () => {
