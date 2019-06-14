@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import * as rp from 'request-promise';
 import HttpRun from '../../../../src/commands/run/HttpRun';
-import Microservice from '../../../../src/models/Microservice';
+import { Microservice } from 'omg-validate';
 import * as utils from '../../../../src/utils';
 
 describe('HttpRun.js', () => {

@@ -1,4 +1,4 @@
-import Http from '../../../src/models/Http';
+import { Http } from 'omg-validate';
 
 describe('Https.ts', () => {
   describe('constructor', () => {

@@ -12,7 +12,8 @@
     "coverage": "lerna run coverage",
     "build": "lerna run build",
     "publish": "lerna run publish",
-    "bump": "lerna version --no-git-tag-version --no-push"
+    "version": "lerna version --no-git-tag-version --no-push"
   },
-  "bin": "omg"
+  "bin": "omg",
+  "dependencies": {}
 }

@@ -1,9 +1,7 @@
 import * as _ from 'underscore'
 import * as $ from 'shelljs'
 import * as net from 'http'
-import Microservice from './models/Microservice'
-import EnvironmentVariable from './models/EnvironmentVariable'
-import Forward from './models/Forward'
+import { EnvironmentVariable, Forward, Microservice } from 'omg-validate'
 const Docker = require('dockerode-promise')
 export const docker = new Docker()
 
