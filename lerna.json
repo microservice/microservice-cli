@@ -1,6 +1,10 @@
 {
-  "packages": [
-    "packages/*"
-  ],
+  "command": {
+    "publish": {
+      "ignoreChanges": ["ignored-file", "*.md"],
+      "message": "chore(release): publish"
+    }
+  },
+  "packages": ["packages/*"],
   "version": "0.13.3"
 }
