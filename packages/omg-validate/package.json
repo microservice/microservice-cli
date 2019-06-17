@@ -1,6 +1,6 @@
 {
   "name": "omg-validate",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "description": "OMG microservice.yml validation library",
   "main": "dist/index.js",
   "scripts": {
@@ -22,17 +22,19 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^12.0.8",
-    "ajv": "^6.10.0",
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.13.0",
     "eslint-plugin-typescript": "^0.14.0",
     "typescript": "^3.5.2",
-    "typescript-eslint-parser": "^22.0.0",
-    "underscore": "^1.9.1",
-    "yamljs": "^0.3.0"
+    "typescript-eslint-parser": "^22.0.0"
   },
   "bugs": {
     "url": "https://github.com/microservices/omg/issues"
   },
-  "homepage": "https://github.com/microservices/omg#readme"
+  "homepage": "https://github.com/microservices/omg#readme",
+  "dependencies": {
+    "ajv": "^6.10.0",
+    "underscore": "^1.9.1",
+    "yamljs": "^0.3.0"
+  }
 }
