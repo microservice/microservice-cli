@@ -3,7 +3,8 @@ const state = {
   rawMicroservice: '',
   status: false,
   notif: '',
-  owner: ''
+  owner: '',
+  ownerGenerated: false
 }
 
 const getters = {
@@ -17,7 +18,8 @@ const getters = {
     }
     return null
   },
-  getOwner: state => state.owner
+  getOwner: state => state.owner,
+  getOwnerGenerated: state => state.ownerGenerated
 }
 
 const mutations = {
@@ -37,7 +39,12 @@ const mutations = {
     state.rawMicroservice = data
   },
   setOwner: (state, owner) => {
-    state.owner = owner
+    if (typeof owner === 'object' && owner.generated) {
+      state.ownerGenerated = true
+      state.owner = owner.owner
+    } else {
+      state.owner = owner
+    }
   }
 }
 

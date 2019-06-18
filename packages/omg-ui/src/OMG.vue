@@ -40,7 +40,11 @@ export default {
       this.wait = false
     })
     this.getSocket.on('owner', res => {
-      this.setOwner(res.notif)
+      if (res.generated) {
+        this.setOwner({ owner: res.notif, generated: res.generated })
+      } else {
+        this.setOwner(res.notif)
+      }
     })
     this.getSocket.on('microservice.yml', res => {
       this.setMicroserviceRaw(res)
