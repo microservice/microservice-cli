@@ -250,8 +250,10 @@ export default class UIServer {
         status: false
       })
     }
-    this.emit('owner', {
-      notif: await utils.createImageName(true),
+    const owner = await utils.createImageName(true)
+    this.socket.emit('owner', {
+      notif: typeof owner && owner.generated ? owner.owner : owner,
+      generated: typeof owner && owner.generated,
       status: true
     })
   }

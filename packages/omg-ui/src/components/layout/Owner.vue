@@ -1,9 +1,12 @@
 <template>
   <div class="owner-container">
-    <img src="../../assets/ic-git.svg" alt="Github logo" class="gh-logo" />
-    <a class="owner-name" :href="`https://github.com/${getOwner}`">{{
+    <img src="../../assets/ic-git.svg" alt="Github logo" class="gh-logo">
+    <a class="owner-name" :href="`https://github.com/${getOwner}`" v-if="!getOwnerGenerated">
+      {{
       reduce(15, getOwner)
-    }}</a>
+      }}
+    </a>
+    <span class="owner-name" v-else>{{ reduce(15, getOwner) }}</span>
   </div>
 </template>
 
@@ -15,7 +18,7 @@ export default {
   data: () => ({
     url: ''
   }),
-  computed: mapGetters(['getOwner']),
+  computed: mapGetters(['getOwner', 'getOwnerGenerated']),
   mounted () {},
   methods: {
     reduce (size, str) {

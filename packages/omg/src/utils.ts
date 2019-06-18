@@ -95,7 +95,9 @@ export function getHealthPort(microservice: Microservice): number {
  * @param {boolean} ui Defines if UI mode is enabled or not
  * @return {Promise<String>} The image name
  */
-export async function createImageName(ui: boolean = false): Promise<string> {
+export async function createImageName(
+  ui: boolean = false
+): Promise<string | any> {
   try {
     const data = await exec('git remote -v')
     if (data.match(/git@github\.com:(\w+\/[\w|.|-]+).git/)) {
@@ -117,10 +119,13 @@ export async function createImageName(ui: boolean = false): Promise<string> {
     }
   } catch (e) {
     return ui
-      ? `${Buffer.from(process.cwd())
-          .toString('base64')
-          .toLowerCase()
-          .replace(/=/g, '')}`
+      ? {
+          owner: `${Buffer.from(process.cwd())
+            .toString('base64')
+            .toLowerCase()
+            .replace(/=/g, '')}`,
+          generated: true
+        }
       : `omg/${Buffer.from(process.cwd())
           .toString('base64')
           .toLowerCase()
