@@ -17,7 +17,7 @@ export default {
       required: true
     },
     toggleReceiver: {
-      type: Function,
+      type: Boolean,
       required: true
     }
   }

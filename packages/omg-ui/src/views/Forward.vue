@@ -2,17 +2,11 @@
   <div class="forward-container">
     <div class="forward-wrapper">
       <div class="off" v-if="!getMicroservice || !getMicroservice.forward">
-        <div class="title">
-          Forward
-        </div>
-        <div class="desc">
-          There are not forward attributes on this microservice.
-        </div>
+        <div class="title">Forward</div>
+        <div class="desc">There are not forward attributes on this microservice.</div>
       </div>
       <div class="on" v-else>
-        <div class="title">
-          Forward
-        </div>
+        <div class="title">Forward</div>
         <div
           class="values"
           v-for="(value, valueName) of getDockerForwardBindings"
@@ -24,10 +18,9 @@
               Port bound from {{ value.host[0].HostPort }} (host) to the port
               {{ value.container }} (container).
               <a
-                href="http://localhost:{{value.host[0].HostPort}}/"
+                :href="`http://localhost:${value.host[0].HostPort}/`"
                 target="_blank"
-                >Visit</a
-              >
+              >Visit</a>
             </div>
           </div>
         </div>
