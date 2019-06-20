@@ -68,7 +68,7 @@ export default new Router({
       }
     },
     {
-      path: '/',
+      path: '/home',
       name: 'Home',
       component: Home,
       beforeEnter: (to, from, next) => {

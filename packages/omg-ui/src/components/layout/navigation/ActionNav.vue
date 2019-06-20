@@ -8,14 +8,10 @@
           class="search"
           placeholder="Search"
           name="omg-search"
-          v-model="search"
-        />
+          v-model="searchValue"
+        >
         <button type="submit">
-          <img
-            src="../../../assets/ic-search.svg"
-            alt="magnifyer icon"
-            class="magnifyer"
-          />
+          <img src="../../../assets/ic-search.svg" alt="magnifyer icon" class="magnifyer">
         </button>
       </form>
       <div class="action-list">
@@ -25,11 +21,9 @@
           v-for="action of filteredActions"
           @click="
             $router.push({ name: 'actions', params: { action: action } });
-            search = '';
+            searchValue = '';
           "
-        >
-          {{ action }}
-        </div>
+        >{{ action }}</div>
       </div>
     </div>
   </div>
@@ -41,14 +35,14 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'action-nav',
   data: () => ({
-    search: ''
+    searchValue: ''
   }),
   computed: {
     ...mapGetters(['getMicroservice', 'getMicroserviceActionList']),
     filteredActions: function () {
       if (this.getMicroserviceActionList) {
         return this.getMicroserviceActionList.filter(action => {
-          return action.toLowerCase().includes(this.search.toLowerCase())
+          return action.toLowerCase().includes(this.searchValue.toLowerCase())
         })
       }
       return null

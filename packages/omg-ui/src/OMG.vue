@@ -48,6 +48,9 @@ export default {
     })
     this.getSocket.on('microservice.yml', res => {
       this.setMicroserviceRaw(res)
+      if (!this.getMicroserviceStatus) {
+        this.$router.push({ path: '/validation-error' })
+      }
     })
     this.getSocket.on('build', res => {
       this.build(res)

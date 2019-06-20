@@ -20,7 +20,7 @@
             Protocol, Method, Path, ...
           </div>
         </div>
-      </div> -->
+      </div>-->
     </div>
     <!-- <div class="row">
       <div class="i-menu info">
@@ -54,17 +54,26 @@
           </div>
         </div>
       </div>
-    </div> -->
+    </div>-->
   </div>
 </template>
 
 <script>
-// import ArrowForward from '@/components/ArrowForward'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'home',
   components: {
-    // ArrowForward
+  },
+  computed: {
+    ...mapGetters(['getMicroserviceStatus'])
+  },
+  created () {
+    if (!this.getMicroserviceStatus) {
+      this.$router.push({
+        path: '/validation-error'
+      })
+    }
   }
 }
 </script>
