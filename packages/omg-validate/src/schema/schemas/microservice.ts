@@ -151,5 +151,5 @@ module.exports = {
   _comment:
     'arguments, commands, environment, lifecycle, and volumes checks are done in their respective constructors. The metrics, and scale checks are still done here as there was no need to create a class for those attributes yet.',
   additionalProperties: false,
-  required: ['omg', 'info', 'health']
+  required: ['omg', 'info']
 }

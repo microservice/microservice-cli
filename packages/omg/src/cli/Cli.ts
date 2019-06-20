@@ -305,7 +305,7 @@ export default class Cli {
       options.image = await Cli.build({ raw: options.raw })
     }
 
-    let _action
+    let _action: Action
     let argsObj
     let envObj
     try {
@@ -352,11 +352,15 @@ export default class Cli {
       spinner = ora.start(`Health check`)
     }
 
-    let isHealthy: boolean
-    try {
-      isHealthy = await this._run.healthCheck()
-    } catch {
-      isHealthy = false
+    let isHealthy: boolean = false
+    let tmpRetryExec: boolean = true // Temporary, remove when health is mandatory
+    if (this.microservice.health) {
+      try {
+        isHealthy = await this._run.healthCheck()
+        tmpRetryExec = false // Temporary, remove when health is mandatory
+      } catch {
+        isHealthy = false
+      }
     }
 
     // if (!(await this._run.isRunning())) {
@@ -367,29 +371,69 @@ export default class Cli {
       } else {
         spinner.fail('Health check failed')
       }
-      utils.error(`  Docker logs:\n${await this._run.getLogs()}`)
-      if (this._run.constructor.name !== 'EventRun') {
-        if (!options.raw) {
-          spinner = ora.start(
-            `Stopping Docker container: ${this.startedID.substring(0, 12)}`
-          )
+      // utils.error(`  Docker logs:\n${await this._run.getLogs()}`)
+      if (false) {
+        // Temporary, remove when health is mandatory
+        if (this._run.constructor.name !== 'EventRun') {
+          if (!options.raw) {
+            spinner = ora.start(
+              `Stopping Docker container: ${this.startedID.substring(0, 12)}`
+            )
+          }
+          const stoppedID = await this._run.stopService()
+          if (!options.raw) {
+            spinner.succeed(
+              `Stopped Docker container: ${stoppedID.substring(0, 12)}`
+            )
+          }
         }
-        const stoppedID = await this._run.stopService()
-        if (!options.raw) {
-          spinner.succeed(
-            `Stopped Docker container: ${stoppedID.substring(0, 12)}`
-          )
-        }
+        process.exit(1)
       }
-      process.exit(1)
     }
-    if (!options.raw) {
+    if (!options.raw && !tmpRetryExec) {
       spinner.succeed(`Health check passed`)
       spinner = ora.start(`Running action: \`${action}\``)
     }
     let output
     try {
-      output = await this._run.exec(action) // 3. run service
+      if (tmpRetryExec) {
+        await utils.sleep(1500)
+        output = await new Promise<string>(async (resolve, reject) => {
+          for (let i = 3; i > 0; i--) {
+            const attempt = () => {
+              return new Promise<string>((resolve, reject) => {
+                this._run
+                  .exec(action, tmpRetryExec)
+                  .then(response => {
+                    response.statusCode / 100 === 2
+                      ? resolve(response.body)
+                      : reject()
+                  })
+                  .catch(() => {
+                    reject()
+                  })
+              })
+            }
+            await attempt()
+              .then(res => resolve(res))
+              .catch(async () => {
+                await utils.sleep(3000)
+              })
+          }
+        })
+        const tmpAction = this.microservice.getAction(action)
+        if (
+          tmpAction.output &&
+          tmpAction.output.type &&
+          (tmpAction.output.type === 'map' ||
+            tmpAction.output.type === 'object')
+        ) {
+          output = JSON.stringify(JSON.parse(output.trim()), null, 2)
+        }
+        output = output.trim()
+      } else {
+        output = await this._run.exec(action) // 3. run service
+      }
       if (!options.raw) {
         spinner.succeed(`Ran action: \`${action}\` with output: ${output}`)
       }

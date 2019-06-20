@@ -27,21 +27,32 @@ export default class HttpRun extends Run {
   }
 
   /** @inheritdoc */
-  public async exec(action: string): Promise<string> {
+  public async exec(
+    action: string,
+    tmpRetryExec: boolean = false
+  ): Promise<string> {
     this.action = this.microservice.getAction(action)
     this.preChecks()
     this.verification()
-    const output = await this.httpCommand(this.portMap[this.action.http.port])
-    verify.verifyOutputType(this.action, output.trim())
-    if (
-      this.action.output &&
-      this.action.output.type &&
-      (this.action.output.type === 'map' ||
-        this.action.output.type === 'object')
-    ) {
-      return JSON.stringify(JSON.parse(output.trim()), null, 2)
+    const output = await this.httpCommand(
+      this.portMap[this.action.http.port],
+      tmpRetryExec
+    )
+    if (tmpRetryExec) {
+      verify.verifyOutputType(this.action, output.body.trim())
+      return output
+    } else {
+      verify.verifyOutputType(this.action, output.trim())
+      if (
+        this.action.output &&
+        this.action.output.type &&
+        (this.action.output.type === 'map' ||
+          this.action.output.type === 'object')
+      ) {
+        return JSON.stringify(JSON.parse(output.trim()), null, 2)
+      }
+      return output.trim()
     }
-    return output.trim()
   }
 
   /**
@@ -50,31 +61,40 @@ export default class HttpRun extends Run {
    * @param {Number} port The given sever started in Docker
    * @return {Promise<String>} The response of the Http request
    */
-  private async httpCommand(port: number): Promise<string> {
+  private async httpCommand(
+    port: number,
+    tmpRetryExec: boolean = false
+  ): Promise<any> {
+    // Temporary, remove when health is mandatory (put <string> back too)
     let data
-    const httpData = this.formatHttp(port)
+    let httpData = this.formatHttp(port)
+    if (tmpRetryExec) {
+      // Temporary, remove when health is mandatory
+      httpData = { ...httpData, resolveWithFullResponse: true }
+      // Don't forget to remove all ternary operations
+    }
     switch (this.action.http.method) {
       case 'get':
-        data = await rp.get(httpData.url)
+        data = await rp.get(tmpRetryExec ? httpData : httpData.url)
         break
       case 'post':
-        data = await rp.post(httpData.url, {
+        data = await rp.post(tmpRetryExec ? httpData : httpData.url, {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(httpData.jsonData)
+          body: JSON.stringify(tmpRetryExec ? httpData : httpData.jsonData)
         })
         break
       case 'put':
-        data = await rp.put(httpData.url, {
+        data = await rp.put(tmpRetryExec ? httpData : httpData.url, {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(httpData.jsonData)
+          body: JSON.stringify(tmpRetryExec ? httpData : httpData.jsonData)
         })
         break
       case 'delete':
-        data = await rp.delete(httpData.url)
+        data = await rp.delete(tmpRetryExec ? httpData : httpData.url)
         break
     }
     return data
