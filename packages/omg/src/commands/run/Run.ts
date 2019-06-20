@@ -162,7 +162,10 @@ export default abstract class Run {
    * @param {String} action The given action
    * @return {String} The output
    */
-  public abstract async exec(action: string): Promise<string>
+  public abstract async exec(
+    action: string,
+    tmpRetryExec?: boolean
+  ): Promise<any> // Temporary, remove when health is mandatory
 
   /**
    * Sets provided arguments
@@ -323,7 +326,7 @@ export default abstract class Run {
    * @param  {number} timeout Optionnal timeout, used during healthcheck
    * @return {Promise} Empty promise
    */
-  public async isHealthy(timeout?: number): Promise<void> {
+  private async isHealthy(timeout?: number): Promise<void> {
     let boundPort = -1
     Object.keys(this.portBindings).forEach(p => {
       const port = parseInt(p.match(/[\d]*/)[0], 10)
@@ -346,7 +349,7 @@ export default abstract class Run {
         .then(response => {
           response.statusCode / 100 === 2 ? resolve() : reject()
         })
-        .catch(e => {
+        .catch(() => {
           reject()
         })
     })
@@ -362,18 +365,16 @@ export default abstract class Run {
     const interval = 3000
     const retries: number = 3
 
-    const sleep = (ms: number): Promise<NodeJS.Timeout> => {
-      return new Promise(resolve => setTimeout(resolve, ms))
-    }
-
     return new Promise(async (resolve, reject) => {
-      await sleep(1500)
+      await utils.sleep(1500)
       for (let i = retries; i > 0; i--) {
-        await this.isHealthy(timeout)
-          .then(() => resolve(true))
-          .catch(async () => {
-            await sleep(interval)
-          })
+        if (this.microservice.health) {
+          await this.isHealthy(timeout)
+            .then(() => resolve(true))
+            .catch(async () => {
+              await utils.sleep(interval)
+            })
+        }
       }
       reject(false)
     })

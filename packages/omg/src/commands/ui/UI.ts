@@ -545,7 +545,15 @@ export default class UIServer {
       notif: 'Health check',
       status: true
     })
-    if (!this.dockerContainer || !(await this.dockerContainer.isRunning())) {
+
+    let isHealthy: boolean
+    try {
+      isHealthy = await this.dockerContainer.healthCheck()
+    } catch {
+      isHealthy = false
+    }
+
+    if (!isHealthy) {
       this.socket.emit('health-check', {
         notif: 'Health check failed',
         status: false,

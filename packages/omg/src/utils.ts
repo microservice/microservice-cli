@@ -19,6 +19,10 @@ export function setVal(val: any, _else: any): any {
   return val
 }
 
+export function sleep(ms: number): Promise<NodeJS.Timeout> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 /**
  * Get's the ports that need to be open defined by the given {@link Microservice}.
  *
@@ -55,6 +59,7 @@ export function getNeededPorts(microservice: Microservice): number[] {
     }
   }
   if (
+    microservice.health &&
     microservice.health.port !== null &&
     !ports.includes(microservice.health.port)
   ) {
