@@ -1,4 +1,20 @@
 import * as _ from 'underscore'
+import { scopes } from './schema/schemas'
+
+export function getPossibleProperties(scope: string): string[] {
+  let arr = []
+  if (scope === 'root') {
+    scope = 'microservice'
+  }
+  if (scopes.includes(scope)) {
+    Object.keys(require(`./schema/schemas/${scope}`).properties).forEach(
+      key => {
+        arr.push(key)
+      }
+    )
+  }
+  return arr
+}
 
 /**
  * Value Setter

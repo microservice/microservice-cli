@@ -14,6 +14,7 @@ import {
   Microservice,
   Volume
 } from './src/models'
+import { getPossibleProperties } from './src/utils'
 
 export {
   OMGValidate,
@@ -29,5 +30,6 @@ export {
   Item,
   Lifecycle,
   Microservice,
-  Volume
+  Volume,
+  getPossibleProperties
 }

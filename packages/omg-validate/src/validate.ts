@@ -1,6 +1,7 @@
 import yamljs from './wrapper/yamljs'
 import * as utils from './utils'
 import Microservice from './models/Microservice'
+import { scopes } from './schema/schemas'
 
 /**
  * OMGValidate class
@@ -80,7 +81,20 @@ export default class OMGValidate {
         `${errorCount} error${errorCount === 1 ? '' : 's'} found:`
       ]
       for (let i = 0; i < errors.length; i += 1) {
-        formattedError.push(`\n  ${i + 1}. ${errors[i]}`)
+        const generalScope = errors[i].split(' ')[0].split('.')
+        const scope = generalScope[generalScope.length - 1]
+        let error = errors[i]
+        if (scopes.includes(scope)) {
+          let str = `should only have theses properties:`
+          utils.getPossibleProperties(scope).forEach(prop => {
+            str = `${str}\n    '${prop}'`
+          })
+          error = errors[i].replace(
+            'should NOT have additional properties',
+            str
+          )
+        }
+        formattedError.push(`\n  ${i + 1}. ${error}`)
       }
       return formattedError.join('')
     }
