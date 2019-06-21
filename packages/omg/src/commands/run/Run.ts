@@ -347,7 +347,11 @@ export default abstract class Run {
       }
       promise
         .then(response => {
-          response.statusCode / 100 === 2 ? resolve() : reject()
+          response.statusCode / 100 === 2
+            ? resolve()
+            : response.statusCode / 100 === 3
+            ? resolve()
+            : reject()
         })
         .catch(() => {
           reject()
@@ -361,12 +365,12 @@ export default abstract class Run {
    * @return {Promise} health status as a boolean
    */
   public async healthCheck(): Promise<boolean> {
-    const timeout = 1000
-    const interval = 3000
-    const retries: number = 3
+    const timeout = 350
+    const interval = 10
+    const retries: number = 100
 
     return new Promise(async (resolve, reject) => {
-      await utils.sleep(1500)
+      await utils.sleep(10)
       for (let i = retries; i > 0; i--) {
         if (this.microservice.health) {
           await this.isHealthy(timeout)
