@@ -108,7 +108,7 @@ export function verifyProperties(command: Command, output: string) {
   const properties = command.output.properties;
   const outputedProperties = Object.keys(outputObject);
   for (const property of Object.keys(properties)) {
-    if (!outputObject[property]) {
+    if (!(property in outputObject)) {
       throw `Action: \`${command.name}\`'s output does not have expected property: \`${property}\``;
     }
     if (!dataTypes[properties[property].type](JSON.stringify(outputObject[property]))) {
