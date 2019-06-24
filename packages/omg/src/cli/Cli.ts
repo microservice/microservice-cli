@@ -496,11 +496,10 @@ export default class Cli {
       spinner.succeed(
         `Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`
       )
-      const that = this
       setInterval(async () => {
-        if (!(await that._run.isRunning())) {
+        if (!(await this._run.isRunning())) {
           utils.error(
-            `\n\nContainer unexpectedly stopped\nDocker logs:\n${await that._run.getStderr()}`
+            `\n\nContainer unexpectedly stopped\nDocker logs:\n${await this._run.getStderr()}`
           )
           process.exit(1)
         }

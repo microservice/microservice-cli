@@ -110,7 +110,6 @@ if (
     'subscribe',
     'ui',
     'list',
-    'shutdown',
     '--version',
     '-V'
   ].includes(process.argv[2])
