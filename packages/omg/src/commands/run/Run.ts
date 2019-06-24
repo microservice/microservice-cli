@@ -365,8 +365,8 @@ export default abstract class Run {
    * @return {Promise} health status as a boolean
    */
   public async healthCheck(): Promise<boolean> {
-    const timeout = 350
-    const interval = 10
+    const timeout = 500
+    const interval = 100
     const retries: number = 100
 
     return new Promise(async (resolve, reject) => {

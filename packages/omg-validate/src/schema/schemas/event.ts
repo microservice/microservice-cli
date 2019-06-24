@@ -1,31 +1,29 @@
 module.exports = {
   properties: {
     help: {
-      type: 'string',
+      type: 'string'
     },
     http: {
       type: 'object',
       properties: {
         port: {
-          type: 'integer',
+          type: 'integer'
         },
         subscribe: {
-          type: 'object',
+          type: 'object'
         },
         unsubscribe: {
-          type: 'object',
-        },
+          type: 'object'
+        }
       },
-      required: [
-        'subscribe',
-      ],
-      additionalProperties: false,
+      required: ['subscribe'],
+      additionalProperties: false
     },
     output: {
       type: 'object',
       properties: {
-        commands: {
-          type: 'object',
+        actions: {
+          type: 'object'
         },
         type: {
           type: 'string',
@@ -41,30 +39,28 @@ module.exports = {
             'boolean',
             'path',
             'any',
-            'null',
-          ],
+            'null'
+          ]
         },
         contentType: {
-          type: 'string',
+          type: 'string'
         },
         properties: {
-          type: 'object',
-        },
+          type: 'object'
+        }
       },
-      additionalProperties: false,
+      additionalProperties: false
     },
     arguments: {
       type: 'object',
       patternProperties: {
         '^\\w+$': {
-          type: 'object',
-        },
+          type: 'object'
+        }
       },
-      additionalProperties: false,
-    },
+      additionalProperties: false
+    }
   },
-  required: [
-    'http',
-  ],
-  additionalProperties: false,
-};
+  required: ['http'],
+  additionalProperties: false
+}

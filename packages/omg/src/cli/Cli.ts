@@ -397,9 +397,9 @@ export default class Cli {
     let output
     try {
       if (tmpRetryExec) {
-        await utils.sleep(1500)
+        await utils.sleep(10)
         output = await new Promise<string>(async (resolve, reject) => {
-          for (let i = 3; i > 0; i--) {
+          for (let i = 100; i > 0; i--) {
             const attempt = () => {
               return new Promise<string>((resolve, reject) => {
                 this._run
@@ -417,7 +417,7 @@ export default class Cli {
             await attempt()
               .then(res => resolve(res))
               .catch(async () => {
-                await utils.sleep(3000)
+                await utils.sleep(100)
               })
           }
         })
@@ -491,7 +491,8 @@ export default class Cli {
     }
     this._subscribe = new Subscribe(this.microservice, argsObj, this._run)
     try {
-      await this._subscribe.go(action, event)
+      const hostIp = (await this._run.getInspect()).NetworkSettings.IPAddress
+      await this._subscribe.go(action, event, hostIp)
       spinner.succeed(
         `Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`
       )
