@@ -38,7 +38,7 @@ export default class Subscribe {
    * @param {String} action The given action
    * @param {String} event The given event
    */
-  async go(action: string, event: string) {
+  async go(action: string, event: string, ip: string) {
     this.omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'))
     this.action = this.microservice.getAction(action)
     this.event = this.action.getEvent(event)
@@ -53,7 +53,7 @@ export default class Subscribe {
     const port = await utils.getOpenPort()
     server.listen({ port, hostname: '127.0.0.1' })
     this.id = uuidv4()
-    await this.subscribe(port)
+    await this.subscribe(port, ip)
   }
 
   /**
@@ -62,7 +62,7 @@ export default class Subscribe {
    * @param {Number} port The given port to request on
    * @return {Promise<void>}
    */
-  private async subscribe(port: number): Promise<void> {
+  private async subscribe(port: number, ip: string): Promise<void> {
     await rp.makeRequest({
       method: this.event.subscribe.method,
       uri: `http://localhost:${
@@ -70,7 +70,7 @@ export default class Subscribe {
       }${this.event.subscribe.path}`,
       body: {
         id: this.id,
-        endpoint: `http://host.docker.internal:${port}`,
+        endpoint: `http://${ip}:${port}`,
         event: this.event.name,
         data: this._arguments
       },
