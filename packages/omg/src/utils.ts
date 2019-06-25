@@ -232,7 +232,7 @@ export function doesContainerExist(name: string, containers: any[]): boolean {
  *
  * @param {String} string The given sting to log
  */
-export function log(string) {
+export function log(string: string) {
   process.stdout.write(`${string}\n`)
 }
 

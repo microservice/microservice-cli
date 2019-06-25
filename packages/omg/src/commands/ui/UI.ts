@@ -97,6 +97,12 @@ export default class UIServer {
       this.port = await utils.getOpenPort()
     }
     this.http.listen(this.port, async () => {
+      utils.log('===============================================')
+      utils.log('OMG UI is currently a work-in-progress product.')
+      utils.log(
+        'It can have some issues, which you can report here: https://github.com/microservices/omg/issues'
+      )
+      utils.log('===============================================\n\n')
       utils.log(`OMG UI started on http://localhost:${this.port}`)
       if (doOpen) {
         await open(`http://localhost:${this.port}`)
