@@ -64,7 +64,10 @@
       </div>
       <div class="btn-container form-row">
         <div class="spacer"></div>
-        <button class="run-btn">Run Action</button>
+        <button class="run-btn">
+          <clip-loader :color="'white'" :size="'20px'" class="loader" v-if="loading"></clip-loader>
+          <span v-else>{{ parseError ? "Cannot parse JSON" : "Run Action" }}</span>
+        </button>
       </div>
     </form>
   </div>
@@ -72,9 +75,13 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
+import ClipLoader from 'vue-spinner/src/ClipLoader'
 
 export default {
   name: 'action-form',
+  components: {
+    ClipLoader
+  },
   data: () => ({
     open: '',
     obj: {}
@@ -89,6 +96,11 @@ export default {
       type: String,
       default: '',
       required: false
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+      required: true
     },
     query: {
       type: Object,
