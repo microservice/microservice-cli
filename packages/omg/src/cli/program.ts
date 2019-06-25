@@ -82,6 +82,7 @@ program
     cli.buildMicroservice()
     await cli.subscribe(action, event, options)
   })
+
 program
   .command('ui')
   .option('-p --port, <p>', 'The port to bind')

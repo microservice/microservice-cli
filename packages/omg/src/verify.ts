@@ -95,7 +95,7 @@ export function verifyEnvironmentVariablePattern(
 /**
  * Verifies the output type of a container.
  *
- * @param {Command} command The given {@link Command}
+ * @param {Command} command The given {@link Action}
  * @param {String} output The given output
  */
 export function verifyOutputType(command: Command, output: string) {
@@ -134,34 +134,5 @@ export function verifyOutputType(command: Command, output: string) {
           `\n${output}`
       }
     })
-  }
-}
-
-/**
- * If defined, verifies the output properties of a map or object.
- *
- * @param {Command} command  The given {@link Command}
- * @param {String} output The given output
- */
-export function verifyProperties(command: Command, output: string) {
-  const outputObject = JSON.parse(output);
-  const properties = command.output.properties;
-  const outputedProperties = Object.keys(outputObject);
-  for (const property of Object.keys(properties)) {
-    if (!outputObject[property]) {
-      throw `Action: \`${command.name}\`'s output does not have expected property: \`${property}\``;
-    }
-    if (!dataTypes[properties[property].type](JSON.stringify(outputObject[property]))) {
-      throw `Action: \`${command.name}\`'s output property: \`${property}\``
-      + ` must have type: \`${properties[property].type}\``
-      + ` instead got: \`${typeof outputObject[property]}\`:`
-      + ` ${JSON.stringify(outputObject[property])}`;
-    }
-    outputedProperties.splice(outputedProperties.indexOf(property), 1);
-  }
-
-  const extraPropertyCount = outputedProperties.length;
-  if (extraPropertyCount > 0) {
-    throw `Action: \`${command.name}\` outputed ${extraPropertyCount} extra propert${((extraPropertyCount === 1) ? 'y' : 'ies')}: \`${outputedProperties.toString()}\``;
   }
 }

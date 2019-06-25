@@ -51,7 +51,11 @@ npm install -g omg
 ```
   Usage: run [options] <action>
 
+<<<<<<< HEAD
   Run actions defined in your `microservice.yml`. Must be run in a directory with a `Dockerfile` and a `microservice.yml`
+=======
+  Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`
+>>>>>>> 9a82584f458e73978f00b90d34ef25f17b6b81de
 
   Options:
 
@@ -67,7 +71,11 @@ npm install -g omg
 ```
   Usage: subscribe [options] <action> <event>
 
+<<<<<<< HEAD
   Subscribe to an event defined in your `microservice.yml`. Must be run in a directory with a `Dockerfile` and a `microservice.yml`
+=======
+  Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`
+>>>>>>> 9a82584f458e73978f00b90d34ef25f17b6b81de
 
   Options:
 

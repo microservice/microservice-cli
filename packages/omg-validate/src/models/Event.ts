@@ -50,14 +50,6 @@ export default class Event extends Command {
     if (this._unsubscribe !== null) {
       this.checkHttpArguments(this._unsubscribe, 'event', 'Event')
     }
-    if (this._output && this._output.properties) {
-      if ((this._output.type !== 'map') && (this._output.type !== 'object')) {
-        throw {
-          context: `Event: \`${name}\` for action: \`${actionName}\``,
-          message: 'The output properties can only be defined if the output type is a map or an object',
-        };
-      }
-    }
   }
 
   /**

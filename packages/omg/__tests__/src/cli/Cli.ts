@@ -354,18 +354,14 @@ describe('Cli.ts', () => {
     })
 
     test('does not execute action because arguments are not given', async () => {
-      const cli = new Cli()
-      cli.buildMicroservice()
-      await cli.run('action', {})
+      const cli = new Cli();
+      cli.buildMicroservice();
+      await cli.run('action', {});
 
-      expect(
-        errorStub.calledWith(
-          'Failed to parse command, run `omg run --help` for more information.'
-        )
-      ).toBeTruthy()
-      expect(processExitStub.calledWith(1)).toBeTruthy()
-      expect(formatRunRunStub.called).toBeFalsy()
-    })
+      expect(errorStub.calledWith('Failed to parse command, run `omg run --help` for more information.')).toBeTruthy();
+      expect(processExitStub.calledWith(1)).toBeTruthy();
+      expect(formatRunRunStub.called).toBeFalsy();
+    });
 
     // test('image option given and action is executed', async () => {
     //   (utils.docker.listImages as any).restore();
