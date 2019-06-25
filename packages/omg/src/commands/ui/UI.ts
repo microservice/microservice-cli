@@ -472,6 +472,7 @@ export default class UIServer {
     } catch (e) {
       this.socket.emit('run', {
         notif: `Failed action: \`${data.action}\`: ${e}`,
+        output: e.error,
         status: false
       })
       return
@@ -556,12 +557,20 @@ export default class UIServer {
     }
 
     if (!isHealthy) {
-      this.socket.emit('health-check', {
-        notif: 'Health check failed',
-        status: false,
-        log: `${await this.dockerContainer.getStderr()}`
-      })
-      await this.removeContainer()
+      if (this.dockerContainer) {
+        this.socket.emit('health-check', {
+          notif: 'Health check failed',
+          status: false,
+          log: `${await this.dockerContainer.getStderr()}`
+        })
+        await this.removeContainer()
+      } else {
+        this.socket.emit('health-check', {
+          notif: 'Health check failed',
+          status: false,
+          log: 'Unable to retrieve error logs'
+        })
+      }
       return
     }
     this.socket.emit('health-check', {

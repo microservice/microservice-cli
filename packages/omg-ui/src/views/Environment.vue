@@ -1,15 +1,9 @@
 <template>
   <div class="env-container">
-    <div class="title" v-if="!getMicroservice.environment">
-      Environment Variable
-    </div>
+    <div class="title" v-if="!getMicroservice.environment">Environment Variable</div>
     <form @submit.prevent="saveHandler" v-if="getMicroservice.environment">
       <div class="inputs">
-        <div
-          class="input"
-          :key="`env-${name}`"
-          v-for="(env, name) of getMicroservice.environment"
-        >
+        <div class="input" :key="`env-${name}`" v-for="(env, name) of getMicroservice.environment">
           <label class="form-row">
             {{ name }} {{ env.required ? "*" : "" }}
             <input
@@ -18,13 +12,12 @@
               :value="`${getEnvs[name] || ''}`"
               :placeholder="env.type"
               :type="env.type === 'number' ? 'number' : 'string'"
-            />
+            >
           </label>
           <span
             :class="{ help: env.help && env.help.length > 0 }"
             class="hint"
-            >{{ env.help ? env.help : "No help provided" }}</span
-          >
+          >{{ env.help ? env.help : "No help provided" }}</span>
         </div>
       </div>
       <div class="btn-container">
@@ -53,7 +46,7 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
+import ClipLoader from 'vue-spinner/src/ClipLoader'
 
 export default {
   name: 'environment',

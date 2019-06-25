@@ -25,6 +25,7 @@
         <action-form
           :actionName="$route.params.action"
           :eventName="event"
+          :loading="loading"
           @argsEdited="processArgs"
           v-if="!getActionSendRaw"
         />
@@ -44,11 +45,10 @@
             @codeChange="onCodeChange"
           ></Monaco>
           <div class="btn-container form-row">
-            <button
-              class="run-btn"
-              @click="runHandler()"
-              :disabled="parseError"
-            >{{ parseError ? "Cannot parse JSON" : "Run Action" }}</button>
+            <button class="run-btn" @click="runHandler()" :disabled="parseError">
+              <clip-loader :color="'white'" :size="'20px'" class="loader" v-if="loading"></clip-loader>
+              <span v-else>{{ parseError ? "Cannot parse JSON" : "Run Action" }}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -63,6 +63,7 @@ import Monaco from 'monaco-editor-forvue'
 import ActionForm from '@/components/ActionForm'
 import EventSelector from '@/components/EventSelector'
 import ToggleButton from '@/components/ToggleButton'
+import ClipLoader from 'vue-spinner/src/ClipLoader'
 
 export default {
   name: 'actions',
@@ -70,7 +71,8 @@ export default {
     ActionForm,
     EventSelector,
     Monaco,
-    ToggleButton
+    ToggleButton,
+    ClipLoader
   },
   data: () => ({
     microservice: '',
@@ -79,7 +81,8 @@ export default {
     event: '',
     rawJson: '',
     editor: null,
-    parseError: false
+    parseError: false,
+    loading: false
   }),
   props: {
     query: {
@@ -122,9 +125,7 @@ export default {
     this.microservice = this.getMicroservice
     this.args = this.getArgs
     this.getSocket.on('run', res => {
-      // if (res && res.notif) {
-      //   this.appendDockerLogs(`[OMG]: ${res.notif}`)
-      // }
+      this.loading = false
       if (res.output) {
         try {
           this.setActionOutput(JSON.parse(res.output))
@@ -157,6 +158,7 @@ export default {
       'resetActionOutput'
     ]),
     runHandler () {
+      this.loading = true
       if (this.query && this.query.args && this.edited === false) {
         this.run(this.query)
       } else {
