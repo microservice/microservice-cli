@@ -37,6 +37,7 @@ export default class Subscribe {
    *
    * @param {String} action The given action
    * @param {String} event The given event
+   * @param  {string} ip The given IP address
    */
   async go(action: string, event: string, ip: string) {
     this.omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'))
@@ -60,6 +61,7 @@ export default class Subscribe {
    * Subscribes to an event, the try catch is needed for the slow start of the container. (same issue with http commands)
    *
    * @param {Number} port The given port to request on
+   * @param  {string} ip The given IP address
    * @return {Promise<void>}
    */
   private async subscribe(port: number, ip: string): Promise<void> {

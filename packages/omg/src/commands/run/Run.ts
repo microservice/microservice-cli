@@ -347,11 +347,15 @@ export default abstract class Run {
       }
       promise
         .then(response => {
-          response.statusCode / 100 === 2
-            ? resolve()
-            : response.statusCode / 100 === 3
-            ? resolve()
-            : reject()
+          switch (response.statusCode / 100) {
+            case 2:
+            case 3:
+              resolve()
+              break
+            default:
+              reject()
+              break
+          }
         })
         .catch(() => {
           reject()

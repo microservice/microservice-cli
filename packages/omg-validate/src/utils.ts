@@ -1,8 +1,12 @@
 import * as _ from 'underscore'
 import { scopes } from './schema/schemas'
 
+/**
+ * @param  {string} scope scope of the microservice.yml
+ * @return {string} array of properties
+ */
 export function getPossibleProperties(scope: string): string[] {
-  let arr = []
+  const arr = []
   if (scope === 'root') {
     scope = 'microservice'
   }

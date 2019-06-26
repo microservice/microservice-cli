@@ -18,7 +18,10 @@ export function setVal(val: any, _else: any): any {
   }
   return val
 }
-
+/**
+ * @param  {number} ms Time to sleep in milliseconds
+ * @return {Promise} Promise to await
+ */
 export function sleep(ms: number): Promise<NodeJS.Timeout> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
@@ -123,18 +126,20 @@ export async function createImageName(
             .toLowerCase()}`
     }
   } catch (e) {
-    return ui
-      ? {
-          owner: `${Buffer.from(process.cwd())
-            .toString('base64')
-            .toLowerCase()
-            .replace(/=/g, '')}`,
-          generated: true
-        }
-      : `omg/${Buffer.from(process.cwd())
+    if (ui) {
+      return {
+        owner: `${Buffer.from(process.cwd())
           .toString('base64')
           .toLowerCase()
-          .replace(/=/g, '')}`
+          .replace(/=/g, '')}`,
+        generated: true
+      }
+    } else {
+      return `omg/${Buffer.from(process.cwd())
+        .toString('base64')
+        .toLowerCase()
+        .replace(/=/g, '')}`
+    }
   }
 }
 

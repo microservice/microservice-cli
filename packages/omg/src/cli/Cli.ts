@@ -372,7 +372,8 @@ export default class Cli {
         spinner.fail('Health check failed')
       }
       // utils.error(`  Docker logs:\n${await this._run.getLogs()}`)
-      if (false) {
+      const tmp = 2
+      if (0 < tmp) {
         // Temporary, remove when health is mandatory
         if (this._run.constructor.name !== 'EventRun') {
           if (!options.raw) {

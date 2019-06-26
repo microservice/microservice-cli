@@ -59,6 +59,7 @@ export default class HttpRun extends Run {
    * Run this {@link HttpRun}'s {@link Action} that interfaces via HTTP.
    *
    * @param {Number} port The given sever started in Docker
+   * @param {boolean} tmpRetryExec Temporary boolean
    * @return {Promise<String>} The response of the Http request
    */
   private async httpCommand(

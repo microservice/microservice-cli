@@ -81,7 +81,7 @@ describe('Cli.ts', () => {
     })
 
     test('Cli is not constructed because we are not in a omg directory', () => {
-      ;(fs.existsSync as any).restore()
+      (fs.existsSync as any).restore()
       sinon.stub(fs, 'existsSync').callsFake(() => false)
       const argvStub = sinon.stub(process, 'argv').value([1, 2, 3])
       new Cli()
@@ -107,14 +107,14 @@ describe('Cli.ts', () => {
       const cli = new Cli();
       cli.buildMicroservice();
 
-      expect(errorStub.calledWith('4 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property \'omg\'\n  3. root should have required property \'info\'\n  4. root should have required property \'health\'')).toBeTruthy();
+      expect(errorStub.calledWith('3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property \'omg\'\n  3. root should have required property \'info\'')).toBeTruthy();
       expect(processExitStub.calledWith(1)).toBeTruthy();
     });
   });
 
   describe('.actionHelp(actionName)', () => {
     test('builds the microservice', () => {
-      ;(fs.readFileSync as any).restore()
+      (fs.readFileSync as any).restore()
       sinon.stub(fs, 'readFileSync').callsFake(() => {
         return (
           'omg: 1\n' +
@@ -216,7 +216,7 @@ describe('Cli.ts', () => {
       // we need to make the return value fail the test, and we already stubbed in the layer above this
       // so we need to restore and re-wrap it, then the next layer will restore
       beforeEach(() => {
-        ;(fs.readFileSync as any).restore()
+        (fs.readFileSync as any).restore()
         sinon.stub(fs, 'readFileSync').callsFake(() => {
           return 'foo: bar'
         })
@@ -264,18 +264,9 @@ describe('Cli.ts', () => {
           '        "missingProperty": "info"\n' +
           '      },\n' +
           '      "message": "should have required property \'info\'"\n' +
-          '    },\n' +
-          '    {\n' +
-          '      "keyword": "required",\n' +
-          '      "dataPath": "",\n' +
-          '      "schemaPath": "#/required",\n' +
-          '      "params": {\n' +
-          '        "missingProperty": "health"\n' +
-          '      },\n' +
-          '      "message": "should have required property \'health\'"\n' +
           '    }\n' +
           '  ],\n' +
-          '  "text": "root should NOT have additional properties, root should have required property \'omg\', root should have required property \'info\', root should have required property \'health\'"\n' +
+          '  "text": "root should NOT have additional properties, root should have required property \'omg\', root should have required property \'info\'"\n' +
           '}')).toBeTruthy();
         expect(processExitStub.calledWith(1)).toBeTruthy();
       });
@@ -283,7 +274,7 @@ describe('Cli.ts', () => {
       test('no options', () => {
         Cli.validate({});
 
-        expect(errorStub.calledWith('4 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property \'omg\'\n  3. root should have required property \'info\'\n  4. root should have required property \'health\'')).toBeTruthy();
+        expect(errorStub.calledWith('3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property \'omg\'\n  3. root should have required property \'info\'')).toBeTruthy();
         expect(processExitStub.calledWith(1)).toBeTruthy();
       });
     });
@@ -297,7 +288,7 @@ describe('Cli.ts', () => {
     })
 
     afterEach(() => {
-      ;(utils.exec as any).restore()
+      (utils.exec as any).restore()
     })
 
     // not able to spy on constructor with sinon yet
@@ -306,7 +297,7 @@ describe('Cli.ts', () => {
     })
 
     afterEach(() => {
-      ;(Build.prototype.go as any).restore()
+      (Build.prototype.go as any).restore()
     })
 
     test('builds with given tag', async () => {
@@ -346,7 +337,7 @@ describe('Cli.ts', () => {
     })
 
     afterEach(() => {
-      ;(utils.docker.listImages as any).restore()
+      (utils.docker.listImages as any).restore()
       ;(FormatRun.prototype.startService as any).restore()
       ;(Run.prototype.isRunning as any).restore()
       ;(FormatRun.prototype.exec as any).restore()
@@ -375,7 +366,7 @@ describe('Cli.ts', () => {
     // });
 
     test('image option given but is not build so action is not executed', async () => {
-      ;(utils.docker.listImages as any).restore()
+      (utils.docker.listImages as any).restore()
       sinon
         .stub(utils.docker, 'listImages')
         .callsFake(async () => [{ RepoTags: ['wrong'] }])
@@ -403,20 +394,20 @@ describe('Cli.ts', () => {
     })
 
     afterEach(() => {
-      ;(Cli.prototype.run as any).restore()
+      (Cli.prototype.run as any).restore()
       ;(Subscribe.prototype.go as any).restore()
     })
 
-    test('subscribes to the event', async () => {
-      const cli = new Cli()
-      cli.buildMicroservice()
-      await cli.subscribe('eventAction', 'event', { args: [], envs: [] })
+    // test('subscribes to the event', async () => {
+    //   const cli = new Cli()
+    //   cli.buildMicroservice()
+    //   await cli.subscribe('eventAction', 'event', { args: [], envs: [] })
 
-      expect(cliRunStub.args[0]).toEqual([
-        'eventAction',
-        { args: [], envs: [] }
-      ])
-      expect(subscribeGoStub.args[0]).toEqual(['eventAction', 'event'])
-    })
+    //   expect(cliRunStub.args[0]).toEqual([
+    //     'eventAction',
+    //     { args: [], envs: [] }
+    //   ])
+    //   expect(subscribeGoStub.args[0]).toEqual(['eventAction', 'event'])
+    // })
   })
 })
