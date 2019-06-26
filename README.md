@@ -1,91 +1,66 @@
-# Open Microservice CLI
+# OMG APP
 
-[![CircleCI](https://circleci.com/gh/microservices/omg.svg?style=svg)](https://circleci.com/gh/microservices/omg)
-[![codecov](https://codecov.io/gh/microservices/omg-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/microservices/omg-cli)
+[![CircleCI](https://img.shields.io/circleci/project/github/microservices/omg/dev.svg?style=for-the-badge)](https://circleci.com/gh/microservices/omg/tree/master)
 
-[![omg](https://user-images.githubusercontent.com/11602092/47048623-f3aff880-d168-11e8-98df-41baa301b242.png)](https://microservice.guide/)
+## About lerna
 
-Verify, test, and execute microservices built with the [OMG](https://microservice.guide/) standard.
+This project uses [lerna](https://github.com/lerna/lerna) to manage packages.
+Thanks to lerna you can run commands available in all packages using `lerna run <command>`.
 
-## Overview
+## Project setup
 
-The goals of this project is to provide a utility for developers to test/execute their microservices before being used in a production environment.
+```bash
+# Install lerna
+$> npm install
 
-## Installation
-
-```
-npm install -g omg
-```
-
-## Commands
-
-### `omg validate`
-
-```
-  Usage: validate [options]
-
-  Validate the structure of a `microservice.yml` in the current directory
-
-  Options:
-
-    -j --json    Formats output to JSON
-    -s --silent  Only feedback is the status exit code
-    -h, --help   output usage information
+# Install the packages dependencies
+$> npm run bootstrap
 ```
 
-## `omg build`
+## Compiles and minifies all packages for production
 
-```
-  Usage: build [options]
-
-  Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a random string will be used
-
-  Options:
-
-    -t --tag, <t>  The tag name of the image
-    -h, --help     output usage information
+```bash
+$> lerna run build
 ```
 
-## `omg run`
+## Lint all packages
 
-```
-  Usage: run [options] <action>
-
-  Run actions defined in your `microservice.yml`. Must be run in a directory with a `Dockerfile` and a `microservice.yml`
-
-  Options:
-
-    -i --image <i>  The name of the image to spin up the microservice, if not provided a fresh image will be build based of the `Dockerfile`
-    -a --args <a>   Arguments to be passed to the command, must be of the form `key="val"` (default: )
-    -e --envs <e>   Environment variables to be passed to run environment, must be of the form `key="val"` (default: )
-    -r --raw        All logging is suppressed expect for the output of the action.
-    -h, --help      output usage information
+```bash
+$> lerna run lint
 ```
 
-## `omg subscribe`
+## Test all packages
 
 ```
-  Usage: subscribe [options] <action> <event>
-
-  Subscribe to an event defined in your `microservice.yml`. Must be run in a directory with a `Dockerfile` and a `microservice.yml`
-
-  Options:
-
-    -a --args <a>  Arguments to be passed to the event, must be of the form `key="val"` (default: )
-    -e --envs <e>  Environment variables to be passed to run environment, must be of the form `key="val"` (default: )
-    -h, --help     output usage information
+$> lerna run test
 ```
 
-## `omg shutdown`
+## Coverage on all packages
 
 ```
-  Usage: shutdown [options]
-
-  Shutdown a microservice process that was started by an event command
-
-  Options:
-
-    -h, --help  output usage information
+$> lerna run coverage
 ```
 
-More information can be found in the [docs](/docs).
+## Publish all packages that need to be published
+
+```
+$> npm run publish
+```
+
+## Automatic version bump
+
+This script bumps the version of all packages using [conventional commit](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#type) types.
+This script does not created nor push git tags.
+
+```
+$> npm run bump
+```
+
+If you want to manually bump the packages version, you can use `lerna version`.
+
+## Make an alias
+
+```bash
+# Making an alias is usefull to prevent using the real `omg` package when installed locally
+$> alias omg=~/path/to/omg/omg
+```

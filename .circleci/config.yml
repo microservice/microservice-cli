@@ -1,19 +1,164 @@
 version: 2
+
+defaults: &defaults
+  working_directory: ~/project/omg
+  docker:
+    - image: circleci/node:latest
+
 jobs:
-  build:
-    docker:
-      - image: circleci/node:10.13.0
+  # Install dependencies, restore/save them to cache, add them to the current workspace
+  install:
+    <<: *defaults
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/package-lock.json" }}
+            - v1-dependencies-omg-cli
+      - restore_cache:
+          keys:
+            - v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/package-lock.json" }}
+            - v1-dependencies-omg-ui
       - run:
-          name: yarn-install
-          command: yarn install
+          name: Installing Lerna
+          command: npm i
       - run:
-          name: eslint
-          command: yarn eslint
+          name: Install local dependencies
+          command: npm run bootstrap
+      - save_cache:
+          key: v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/package-lock.json" }}
+          paths:
+            - ~/.cache/yarn
+            - packages/omg-cli/node_modules
+      - save_cache:
+          key: v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/package-lock.json" }}
+          paths:
+            - ~/.cache/yarn
+            - packages/omg-ui/node_modules
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - omg
+
+  # Lint all packages
+  lint:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
       - run:
-          name: test-with-coverage
-          command: yarn coverage
+          name: Linting
+          command: npm run lint
+
+  # Run tests on all packages
+  test:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
       - run:
-          name: upload-to-codecov
+          name: Testing with coverage
+          command: npm run coverage
+      - run:
+          name: Uploading to Codecov
           command: bash <(curl -s https://codecov.io/bash)
+
+  # Build all packages in production mode
+  build:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - restore_cache:
+          keys:
+            - v1-dist-omg-cli-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-omg-cli-
+      - restore_cache:
+          keys:
+            - v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-omg-ui-
+      - run:
+          name: Building
+          command: npm run build
+      - save_cache:
+          key: v1-dist-omg-cli-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - packages/omg-cli/dist
+      - save_cache:
+          key: v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - packages/omg-ui/dist
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - omg
+
+  # Publish to npm using the 'latest' tag
+  publish_latest:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Setup npm publish token
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          name: Publishing to npmjs using lerna
+          command: npm run publish
+
+  # Publish to npm using the 'beta' tag
+  publish_prerelease:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Setup npm publish token
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          name: Publishing to npmjs using lerna
+          command: npm run publish --dist-tag beta
+
+workflows:
+  version: 2
+
+  release:
+    jobs:
+      - install:
+          filters:
+            tags:
+              only: /.*/
+      - lint:
+          filters:
+            tags:
+              only: /.*/
+          requires:
+            - install
+      - test:
+          filters:
+            tags:
+              only: /.*/
+          requires:
+            - install
+      - build:
+          filters:
+            tags:
+              only: /.*/
+          requires:
+            - install
+      - publish_prerelease: # Publish as 'beta' when the git tag matches the RegExp
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*-beta(\.[0-9]+)?/ # https://regex101.com/r/bAxl2k/1
+            branches:
+              ignore: /.*/
+          requires:
+            - build
+      - publish_latest: # Publish as 'latest' when the git tag matches the RegExp
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/ # https://regex101.com/r/ZaIbap/1
+            branches:
+              ignore: /.*/
+          requires:
+            - build
