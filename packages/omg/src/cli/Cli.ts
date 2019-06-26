@@ -352,7 +352,7 @@ export default class Cli {
       spinner = ora.start(`Health check`)
     }
 
-    let isHealthy: boolean = false
+    let isHealthy: boolean = undefined
     let tmpRetryExec: boolean = true // Temporary, remove when health is mandatory
     if (this.microservice.health) {
       try {
@@ -364,7 +364,7 @@ export default class Cli {
     }
 
     // if (!(await this._run.isRunning())) {
-    if (!isHealthy) {
+    if (isHealthy === false) {
       // 2. health check
       if (options.raw) {
         utils.error('Health check failed')
@@ -372,8 +372,7 @@ export default class Cli {
         spinner.fail('Health check failed')
       }
       // utils.error(`  Docker logs:\n${await this._run.getLogs()}`)
-      const tmp = 2
-      if (0 < tmp) {
+      if (this.microservice.health) {
         // Temporary, remove when health is mandatory
         if (this._run.constructor.name !== 'EventRun') {
           if (!options.raw) {
@@ -398,6 +397,7 @@ export default class Cli {
     let output
     try {
       if (tmpRetryExec) {
+        ora.start('Executing default health check')
         await utils.sleep(10)
         output = await new Promise<string>(async (resolve, reject) => {
           for (let i = 100; i > 0; i--) {
@@ -406,9 +406,15 @@ export default class Cli {
                 this._run
                   .exec(action, tmpRetryExec)
                   .then(response => {
-                    response.statusCode / 100 === 2
-                      ? resolve(response.body)
-                      : reject()
+                    switch (response.statusCode / 100) {
+                      case 2:
+                      case 3:
+                        resolve(response.body)
+                        break
+                      default:
+                        ora.failt('Default health check failed')
+                        reject()
+                    }
                   })
                   .catch(() => {
                     reject()
@@ -436,6 +442,7 @@ export default class Cli {
         output = await this._run.exec(action) // 3. run service
       }
       if (!options.raw) {
+        ora.succeed('Default health check passed')
         spinner.succeed(`Ran action: \`${action}\` with output: ${output}`)
       }
     } catch (e) {

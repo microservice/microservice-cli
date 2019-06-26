@@ -11,7 +11,7 @@
     "test": "lerna run test",
     "coverage": "lerna run coverage",
     "build": "lerna run build",
-    "publish": "lerna run publish",
+    "publish": "lerna publish --from-package",
     "version": "lerna version --no-git-tag-version --no-push"
   },
   "bin": "omg",
