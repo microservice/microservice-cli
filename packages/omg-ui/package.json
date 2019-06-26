@@ -63,7 +63,7 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-  "description": "> TODO: description",
+  "description": "UI used in the cli with the command 'omg ui'",
   "bugs": {
     "url": "https://github.com/microservices/omg-cli/issues"
   },
