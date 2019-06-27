@@ -14,6 +14,5 @@
     "publish": "lerna publish --from-package",
     "version": "lerna version --no-git-tag-version --no-push"
   },
-  "bin": "omg",
-  "dependencies": {}
+  "bin": "omg"
 }

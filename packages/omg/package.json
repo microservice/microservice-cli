@@ -31,6 +31,7 @@
     "commander": "^2.15.1",
     "dockerode": "^2.5.8",
     "dockerode-promise": "^0.1.0",
+    "lineup": "^0.0.7",
     "log-symbols": "^2.2.0",
     "omg-ui": "^0.13.6",
     "omg-validate": "^0.13.6",
