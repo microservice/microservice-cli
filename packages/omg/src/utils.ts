@@ -426,7 +426,9 @@ export function checkVersion() {
     (e, out, err) => {
       if (out) {
         const versions = {
-          local: '0.13.5'.trim().match(/^(\d+).(\d+).(\d+)/),
+          local: require('../package.json')
+            .version.trim()
+            .match(/^(\d+).(\d+).(\d+)/),
           distant: out
             .toString()
             .trim()
