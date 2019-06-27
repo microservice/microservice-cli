@@ -6,7 +6,13 @@ import * as fs from 'fs'
 import * as path from 'path'
 import Cli from './Cli'
 const appender = require('../utils').appender
+const exec = require('child_process').exec
 const cli = new Cli()
+
+exec('npm view omg version', (err, stdout, stderr) => {
+  const onlineVersion = stdout
+  const installedVersion = require('../../package.json').version
+})
 
 program
   .description(
