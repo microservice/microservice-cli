@@ -6,45 +6,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import Cli from './Cli'
 const appender = require('../utils').appender
-const exec = require('child_process').execSync
 const cli = new Cli()
 
-const versions = {
-  local: require('../../package.json')
-    .version.trim()
-    .match(/^(\d+).(\d+).(\d+)/),
-  distant: exec('npm view omg version', {
-    encoding: 'utf8'
-  })
-    .toString()
-    .trim()
-    .match(/^(\d+).(\d+).(\d+)/)
-}
-const LineUp = require('lineup')
-const lineup = new LineUp()
-for (let i = 1; i <= 3; i++) {
-  if (versions.distant[i] > versions.local[i]) {
-    lineup.sticker.note('')
-    lineup.sticker.note(
-      `${lineup.colors.yellow(
-        `${i === 1 ? 'Major' : i === 2 ? 'Minor' : 'Patch'} update available: `
-      )}${lineup.colors.red(versions.local[0])} ${lineup.colors.yellow(
-        '=>'
-      )} ${lineup.colors.green(versions.distant[0])}`
-    )
-    lineup.sticker.note(
-      `${lineup.colors.yellow(
-        `Run: 'npm i -g omg' or 'yarn global add omg' to update`
-      )}`
-    )
-    lineup.sticker.note('')
-    lineup.sticker.show({
-      align: 'center',
-      color: 'red'
-    })
-    break
-  }
-}
+utils.checkVersion()
 
 program
   .description(
@@ -212,6 +176,10 @@ process.on('SIGINT', async function() {
   } catch (e) {
     process.exit()
   }
+})
+
+process.on('exit', () => {
+  utils.showVersionCard()
 })
 
 module.exports = program

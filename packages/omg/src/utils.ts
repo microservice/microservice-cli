@@ -1,9 +1,13 @@
 import * as _ from 'underscore'
 import * as $ from 'shelljs'
 import * as net from 'http'
-import { EnvironmentVariable, Forward, Microservice } from 'omg-validate'
+import { EnvironmentVariable, Microservice } from 'omg-validate'
 const Docker = require('dockerode-promise')
+const LineUp = require('lineup')
+const execCmd = require('child_process').exec
+const lineup = new LineUp()
 export const docker = new Docker()
+let versionAvailable = false
 
 /**
  * Used to set values in the constructors of the microservice classes.
@@ -407,5 +411,61 @@ export function checkActionInterface(microserviceJson: any): void {
         }
       }
     }
+  }
+}
+
+/**
+ * Checks if the current version is up to date with the published one
+ */
+export function checkVersion() {
+  execCmd(
+    'npm view omg version',
+    {
+      encoding: 'utf8'
+    },
+    (e, out, err) => {
+      if (out) {
+        const versions = {
+          local: '0.13.5'.trim().match(/^(\d+).(\d+).(\d+)/),
+          distant: out
+            .toString()
+            .trim()
+            .match(/^(\d+).(\d+).(\d+)/)
+        }
+        for (let i = 1; i <= 3; i++) {
+          if (versions.distant[i] > versions.local[i]) {
+            lineup.sticker.note('')
+            lineup.sticker.note(
+              `${lineup.colors.yellow(
+                `${
+                  i === 1 ? 'Major' : i === 2 ? 'Minor' : 'Patch'
+                } update available: `
+              )}${lineup.colors.red(versions.local[0])} ${lineup.colors.yellow(
+                '=>'
+              )} ${lineup.colors.green(versions.distant[0])}`
+            )
+            lineup.sticker.note(
+              `${lineup.colors.yellow(
+                `Run: 'npm i -g omg' or 'yarn global add omg' to update`
+              )}`
+            )
+            lineup.sticker.note('')
+            versionAvailable = true
+          }
+        }
+      }
+    }
+  )
+}
+
+/**
+ * If the CLI is outdated, posts a warning in the terminal
+ */
+export function showVersionCard() {
+  if (versionAvailable) {
+    lineup.sticker.show({
+      align: 'center',
+      color: 'red'
+    })
   }
 }
