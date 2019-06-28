@@ -4,6 +4,7 @@ import * as querystring from 'querystring'
 import { Microservice } from 'omg-validate'
 import Run from './Run'
 import * as verify from '../../verify'
+import http from '../ui/wrappers/http'
 
 /**
  * Represents a http execution of an {@link Action}.
@@ -69,35 +70,62 @@ export default class HttpRun extends Run {
     // Temporary, remove when health is mandatory (put <string> back too)
     let data
     let httpData = this.formatHttp(port)
-    if (tmpRetryExec) {
-      // Temporary, remove when health is mandatory
-      httpData = { ...httpData, resolveWithFullResponse: true }
-      // Don't forget to remove all ternary operations
+    let opts = {
+      method: `${this.action.http.method.toUpperCase()}`,
+      resolveWithFullResponse: tmpRetryExec,
+      uri: `${httpData.uri}`,
+      body: {},
+      headers: {}
     }
-    switch (this.action.http.method) {
-      case 'get':
-        data = await rp.get(tmpRetryExec ? httpData : httpData.url)
-        break
-      case 'post':
-        data = await rp.post(tmpRetryExec ? httpData : httpData.url, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(tmpRetryExec ? httpData : httpData.jsonData)
-        })
-        break
-      case 'put':
-        data = await rp.put(tmpRetryExec ? httpData : httpData.url, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(tmpRetryExec ? httpData : httpData.jsonData)
-        })
-        break
-      case 'delete':
-        data = await rp.delete(tmpRetryExec ? httpData : httpData.url)
-        break
+    if (this.action.http.method === 'post' || 'put') {
+      opts.body = JSON.stringify(httpData.jsonData)
+      opts.headers = {
+        'Content-Type': 'application/json'
+      }
     }
+    data = await rp(opts)
+    // switch (this.action.http.method) {
+    //   case 'get':
+    //     data = await rp.get(
+    //       tmpRetryExec
+    //         ? { url: httpData.url, resolveWithFullResponse: true }
+    //         : httpData.url
+    //     )
+    //     break
+    //   case 'post':
+    //     data = await rp.post(
+    //       tmpRetryExec
+    //         ? { url: httpData.url, resolveWithFullResponse: true }
+    //         : httpData.url,
+    //       {
+    //         headers: {
+    //           'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(httpData.jsonData)
+    //       }
+    //     )
+    //     break
+    //   case 'put':
+    //     data = await rp.put(
+    //       tmpRetryExec
+    //         ? { url: httpData.url, resolveWithFullResponse: true }
+    //         : httpData.url,
+    //       {
+    //         headers: {
+    //           'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(httpData.jsonData)
+    //       }
+    //     )
+    //     break
+    //   case 'delete':
+    //     data = await rp.delete(
+    //       tmpRetryExec
+    //         ? { url: httpData.url, resolveWithFullResponse: true }
+    //         : httpData.url
+    //     )
+    //     break
+    // }
     return data
   }
 
@@ -110,7 +138,7 @@ export default class HttpRun extends Run {
   private formatHttp(port: number): any {
     const jsonData = {}
     const queryParams = {}
-    let url = `http://localhost:${port}${this.action.http.path}`
+    let uri = `http://localhost:${port}${this.action.http.path}`
     for (let i = 0; i < this.action.arguments.length; i += 1) {
       const argument = this.action.arguments[i]
       switch (this.action.getArgument(argument.name).in) {
@@ -120,7 +148,7 @@ export default class HttpRun extends Run {
           }
           break
         case 'path':
-          url = url.replace(
+          uri = uri.replace(
             `{${argument.name}}`,
             this._arguments[argument.name]
           )
@@ -131,10 +159,10 @@ export default class HttpRun extends Run {
       }
     }
     if (querystring.stringify(queryParams) !== '') {
-      url = `${url}?${querystring.stringify(queryParams)}`
+      uri = `${uri}?${querystring.stringify(queryParams)}`
     }
     return {
-      url,
+      uri,
       jsonData
     }
   }

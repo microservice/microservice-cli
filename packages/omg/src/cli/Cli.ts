@@ -414,6 +414,7 @@ export default class Cli {
                       default:
                         ora.failt('Default health check failed')
                         reject()
+                        break
                     }
                   })
                   .catch(() => {
@@ -422,7 +423,10 @@ export default class Cli {
               })
             }
             await attempt()
-              .then(res => resolve(res))
+              .then(res => {
+                i = 0
+                resolve(res)
+              })
               .catch(async () => {
                 await utils.sleep(100)
               })
