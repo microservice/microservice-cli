@@ -4,6 +4,7 @@ import * as querystring from 'querystring'
 import { Microservice } from 'omg-validate'
 import Run from './Run'
 import * as verify from '../../verify'
+import http from '../ui/wrappers/http'
 
 /**
  * Represents a http execution of an {@link Action}.
@@ -67,35 +68,56 @@ export default class HttpRun extends Run {
     tmpRetryExec: boolean = false
   ): Promise<any> {
     // Temporary, remove when health is mandatory (put <string> back too)
-    let data
-    let httpData = this.formatHttp(port)
-    if (tmpRetryExec) {
-      // Temporary, remove when health is mandatory
-      httpData = { ...httpData, resolveWithFullResponse: true }
-      // Don't forget to remove all ternary operations
+    const httpData = this.formatHttp(port)
+    const opts: {
+      method: string
+      resolveWithFullResponse: boolean
+      uri: string
+      body?: string
+      headers?: any
+    } = {
+      method: this.action.http.method.toUpperCase(),
+      resolveWithFullResponse: tmpRetryExec,
+      uri: httpData.uri
     }
+    if (
+      this.action.http.method === 'post' ||
+      this.action.http.method === 'put'
+    ) {
+      opts.body = JSON.stringify(httpData.jsonData)
+      opts.headers = {
+        'Content-Type': 'application/json'
+      }
+    }
+    /**
+     * Since rp(opts) doesn't pass the tests, I use this
+     * in order to add resolveWithFullResponse
+     *
+     * Since rp.get/post/put/delete cannot use
+     * resolveWithFullResponse, I must keep the switchCase for now
+     */
+    if (tmpRetryExec) {
+      return await rp(opts)
+    }
+    let data = {}
     switch (this.action.http.method) {
       case 'get':
-        data = await rp.get(tmpRetryExec ? httpData : httpData.url)
+        data = await rp.get(opts.uri)
         break
       case 'post':
-        data = await rp.post(tmpRetryExec ? httpData : httpData.url, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(tmpRetryExec ? httpData : httpData.jsonData)
+        data = await rp.post(opts.uri, {
+          headers: opts.headers,
+          body: opts.body
         })
         break
       case 'put':
-        data = await rp.put(tmpRetryExec ? httpData : httpData.url, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(tmpRetryExec ? httpData : httpData.jsonData)
+        data = await rp.put(opts.uri, {
+          headers: opts.headers,
+          body: opts.body
         })
         break
       case 'delete':
-        data = await rp.delete(tmpRetryExec ? httpData : httpData.url)
+        data = await rp.delete(opts.uri)
         break
     }
     return data
@@ -110,7 +132,7 @@ export default class HttpRun extends Run {
   private formatHttp(port: number): any {
     const jsonData = {}
     const queryParams = {}
-    let url = `http://localhost:${port}${this.action.http.path}`
+    let uri = `http://localhost:${port}${this.action.http.path}`
     for (let i = 0; i < this.action.arguments.length; i += 1) {
       const argument = this.action.arguments[i]
       switch (this.action.getArgument(argument.name).in) {
@@ -120,7 +142,7 @@ export default class HttpRun extends Run {
           }
           break
         case 'path':
-          url = url.replace(
+          uri = uri.replace(
             `{${argument.name}}`,
             this._arguments[argument.name]
           )
@@ -131,10 +153,10 @@ export default class HttpRun extends Run {
       }
     }
     if (querystring.stringify(queryParams) !== '') {
-      url = `${url}?${querystring.stringify(queryParams)}`
+      uri = `${uri}?${querystring.stringify(queryParams)}`
     }
     return {
-      url,
+      uri,
       jsonData
     }
   }

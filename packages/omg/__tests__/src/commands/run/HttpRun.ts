@@ -3,6 +3,7 @@ import * as rp from 'request-promise';
 import HttpRun from '../../../../src/commands/run/HttpRun';
 import { Microservice } from 'omg-validate';
 import * as utils from '../../../../src/utils';
+import 'jest'
 
 describe('HttpRun.js', () => {
   let rpGetStub;
@@ -199,12 +200,6 @@ describe('HttpRun.js', () => {
           version: '1.0.0',
           title: 'test',
           description: 'for tests',
-        },
-        health: {
-          http: {
-            path: '/health',
-            port: 5555
-          }
         },
         actions: {
           get: {
