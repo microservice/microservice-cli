@@ -8,6 +8,8 @@ import Cli from './Cli'
 const appender = require('../utils').appender
 const cli = new Cli()
 
+utils.checkVersion()
+
 program
   .description(
     'For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`'
@@ -174,6 +176,10 @@ process.on('SIGINT', async function() {
   } catch (e) {
     process.exit()
   }
+})
+
+process.on('exit', () => {
+  utils.showVersionCard()
 })
 
 module.exports = program

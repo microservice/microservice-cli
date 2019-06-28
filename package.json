@@ -3,10 +3,11 @@
   "version": "0.10.2",
   "private": true,
   "devDependencies": {
-    "lerna": "^3.13.4"
+    "lerna": "^3.13.4",
+    "yarn": "^1.16.0"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap --npm-client=yarn",
     "lint": "lerna run lint",
     "test": "lerna run test",
     "coverage": "lerna run coverage",
@@ -14,6 +15,5 @@
     "publish": "lerna publish --from-package",
     "version": "lerna version --no-git-tag-version --no-push"
   },
-  "bin": "omg",
-  "dependencies": {}
+  "bin": "omg"
 }
