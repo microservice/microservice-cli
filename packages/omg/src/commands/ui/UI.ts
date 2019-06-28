@@ -12,6 +12,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import open from './wrappers/open'
 import Dockerode from './wrappers/dockerode'
+const LineUp = require('lineup')
+const lineup = new LineUp()
 
 interface ISocketNotif {
   notif: any
@@ -97,12 +99,26 @@ export default class UIServer {
       this.port = await utils.getOpenPort()
     }
     this.http.listen(this.port, async () => {
-      utils.log('===============================================')
-      utils.log('OMG UI is currently a work-in-progress product.')
-      utils.log(
-        'It can have some issues, which you can report here: https://github.com/microservices/omg/issues'
+      lineup.sticker.note('')
+      lineup.sticker.note(
+        `${lineup.colors.yellow(
+          'OMG UI is currently a work-in-progress product.'
+        )}`
       )
-      utils.log('===============================================\n\n')
+      lineup.sticker.note(
+        `${lineup.colors.yellow(
+          'It can have some issues, which you can report here:'
+        )}`
+      )
+      lineup.sticker.note(
+        `${lineup.colors.yellow('https://github.com/microservices/omg/issues')}`
+      )
+
+      lineup.sticker.note('')
+      lineup.sticker.show({
+        align: 'center',
+        color: 'red'
+      })
       utils.log(`OMG UI started on http://localhost:${this.port}`)
       if (doOpen) {
         await open(`http://localhost:${this.port}`)
