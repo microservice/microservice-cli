@@ -378,7 +378,10 @@ export default abstract class Run {
       for (let i = retries; i > 0; i--) {
         if (this.microservice.health) {
           await this.isHealthy(timeout)
-            .then(() => resolve(true))
+            .then(() => {
+              i = 0
+              resolve(true)
+            })
             .catch(async () => {
               await utils.sleep(interval)
             })
