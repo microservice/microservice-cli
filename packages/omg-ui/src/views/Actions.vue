@@ -125,7 +125,9 @@ export default {
     this.microservice = this.getMicroservice
     this.args = this.getArgs
     this.getSocket.on('run', res => {
-      this.loading = false
+      if (res.done) {
+        this.loading = false
+      }
       if (res.output) {
         try {
           this.setActionOutput(JSON.parse(res.output))

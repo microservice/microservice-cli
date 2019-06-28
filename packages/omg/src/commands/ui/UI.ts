@@ -479,6 +479,7 @@ export default class UIServer {
       this.socket.emit('run', {
         notif: `Failed action: \`${data.action}\`: ${e}`,
         output: e.error,
+        done: true,
         status: false
       })
       return
@@ -486,6 +487,7 @@ export default class UIServer {
     this.socket.emit('run', {
       output: output,
       notif: output,
+      done: true,
       status: true
     })
   }
