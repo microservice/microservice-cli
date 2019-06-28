@@ -68,64 +68,58 @@ export default class HttpRun extends Run {
     tmpRetryExec: boolean = false
   ): Promise<any> {
     // Temporary, remove when health is mandatory (put <string> back too)
-    let data
-    let httpData = this.formatHttp(port)
-    let opts = {
-      method: `${this.action.http.method.toUpperCase()}`,
+    const httpData = this.formatHttp(port)
+    const opts: {
+      method: string
+      resolveWithFullResponse: boolean
+      uri: string
+      body?: string
+      headers?: any
+    } = {
+      method: this.action.http.method.toUpperCase(),
       resolveWithFullResponse: tmpRetryExec,
-      uri: `${httpData.uri}`,
-      body: {},
-      headers: {}
+      uri: httpData.uri
     }
-    if (this.action.http.method === 'post' || 'put') {
+    if (
+      this.action.http.method === 'post' ||
+      this.action.http.method === 'put'
+    ) {
       opts.body = JSON.stringify(httpData.jsonData)
       opts.headers = {
         'Content-Type': 'application/json'
       }
     }
-    data = await rp(opts)
-    // switch (this.action.http.method) {
-    //   case 'get':
-    //     data = await rp.get(
-    //       tmpRetryExec
-    //         ? { url: httpData.url, resolveWithFullResponse: true }
-    //         : httpData.url
-    //     )
-    //     break
-    //   case 'post':
-    //     data = await rp.post(
-    //       tmpRetryExec
-    //         ? { url: httpData.url, resolveWithFullResponse: true }
-    //         : httpData.url,
-    //       {
-    //         headers: {
-    //           'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(httpData.jsonData)
-    //       }
-    //     )
-    //     break
-    //   case 'put':
-    //     data = await rp.put(
-    //       tmpRetryExec
-    //         ? { url: httpData.url, resolveWithFullResponse: true }
-    //         : httpData.url,
-    //       {
-    //         headers: {
-    //           'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(httpData.jsonData)
-    //       }
-    //     )
-    //     break
-    //   case 'delete':
-    //     data = await rp.delete(
-    //       tmpRetryExec
-    //         ? { url: httpData.url, resolveWithFullResponse: true }
-    //         : httpData.url
-    //     )
-    //     break
-    // }
+    /**
+     * Since rp(opts) doesn't pass the tests, I use this
+     * in order to add resolveWithFullResponse
+     *
+     * Since rp.get/post/put/delete cannot use
+     * resolveWithFullResponse, I must keep the switchCase for now
+     */
+    if (tmpRetryExec) {
+      return await rp(opts)
+    }
+    let data = {}
+    switch (this.action.http.method) {
+      case 'get':
+        data = await rp.get(opts.uri)
+        break
+      case 'post':
+        data = await rp.post(opts.uri, {
+          headers: opts.headers,
+          body: opts.body
+        })
+        break
+      case 'put':
+        data = await rp.put(opts.uri, {
+          headers: opts.headers,
+          body: opts.body
+        })
+        break
+      case 'delete':
+        data = await rp.delete(opts.uri)
+        break
+    }
     return data
   }
 
