@@ -425,6 +425,7 @@ export default class Cli {
             await attempt()
               .then(res => {
                 i = 0
+                ora.succeed('Default health check passed')
                 resolve(res)
               })
               .catch(async () => {
@@ -446,7 +447,6 @@ export default class Cli {
         output = await this._run.exec(action) // 3. run service
       }
       if (!options.raw) {
-        ora.succeed('Default health check passed')
         spinner.succeed(`Ran action: \`${action}\` with output: ${output}`)
       }
     } catch (e) {
@@ -476,7 +476,7 @@ export default class Cli {
     }
 
     if (options.raw) {
-      utils.log(output)
+      utils.log(JSON.stringify(JSON.parse(output)))
     }
   }
 
