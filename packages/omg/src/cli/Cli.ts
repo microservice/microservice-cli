@@ -397,7 +397,9 @@ export default class Cli {
     let output
     try {
       if (tmpRetryExec) {
-        ora.start('Executing default health check')
+        if (!options.raw) {
+          ora.start('Executing default health check')
+        }
         await utils.sleep(10)
         output = await new Promise<string>(async (resolve, reject) => {
           for (let i = 100; i > 0; i--) {
@@ -412,7 +414,9 @@ export default class Cli {
                         resolve(response.body)
                         break
                       default:
-                        ora.failt('Default health check failed')
+                        if (!options.raw) {
+                          ora.failt('Default health check failed')
+                        }
                         reject()
                         break
                     }
@@ -425,7 +429,9 @@ export default class Cli {
             await attempt()
               .then(res => {
                 i = 0
-                ora.succeed('Default health check passed')
+                if (!options.raw) {
+                  ora.succeed('Default health check passed')
+                }
                 resolve(res)
               })
               .catch(async () => {
