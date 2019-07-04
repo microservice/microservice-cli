@@ -125,7 +125,7 @@ export default abstract class Run {
    */
   protected castTypes(): void {
     const argumentList = Object.keys(this._arguments)
-    for (let i = 0; i < argumentList.length; i += 1) {
+    for (let i = 0; i < argumentList.length; i++) {
       const argument = this.action.getArgument(argumentList[i])
       this._arguments[argument.name] = utils.typeCast[argument.type](
         this._arguments[argument.name]

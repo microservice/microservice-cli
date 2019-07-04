@@ -77,6 +77,10 @@ program
     appender(),
     []
   )
+  .option(
+    '-r --raw',
+    'All logging is suppressed expect for the output of the action.'
+  )
   .description(
     'Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`'
   )
