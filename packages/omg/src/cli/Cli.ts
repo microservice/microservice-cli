@@ -26,6 +26,7 @@ export default class Cli {
   private _subscribe: Subscribe = null
   private startedID: string
   private uiServer: UIServer = null
+  private raw: boolean = false
 
   /**
    * Build an {@link Cli}.
@@ -397,7 +398,9 @@ export default class Cli {
     let output
     try {
       if (tmpRetryExec) {
-        ora.start('Executing default health check')
+        if (!options.raw) {
+          ora.start('Executing default health check')
+        }
         await utils.sleep(10)
         output = await new Promise<string>(async (resolve, reject) => {
           for (let i = 100; i > 0; i--) {
@@ -412,7 +415,9 @@ export default class Cli {
                         resolve(response.body)
                         break
                       default:
-                        ora.failt('Default health check failed')
+                        if (!options.raw) {
+                          ora.failt('Default health check failed')
+                        }
                         reject()
                         break
                     }
@@ -425,7 +430,9 @@ export default class Cli {
             await attempt()
               .then(res => {
                 i = 0
-                ora.succeed('Default health check passed')
+                if (!options.raw) {
+                  ora.succeed('Default health check passed')
+                }
                 resolve(res)
               })
               .catch(async () => {
@@ -476,7 +483,13 @@ export default class Cli {
     }
 
     if (options.raw) {
-      utils.log(JSON.stringify(JSON.parse(output)))
+      let json = {}
+      try {
+        json = JSON.parse(output)
+        utils.log(JSON.stringify(json))
+      } catch {
+        utils.log(output)
+      }
     }
   }
 
@@ -489,8 +502,12 @@ export default class Cli {
    */
   async subscribe(action: string, event: string, options: any) {
     await Cli.checkDocker()
-    await this.run(action, { args: [], envs: options.envs })
-    const spinner = ora.start(`Subscribing to event: \`${event}\``)
+    this.raw = options.raw
+    await this.run(action, { args: [], envs: options.envs, raw: options.raw })
+    let spinner
+    if (!options.raw) {
+      spinner = ora.start(`Subscribing to event: \`${event}\``)
+    }
     let argsObj
     try {
       argsObj = utils.parse(
@@ -498,16 +515,20 @@ export default class Cli {
         'Unable to parse arguments. Must be of form: `-a key="val"`'
       )
     } catch (e) {
-      spinner.fail(`Failed action: \`${action}\`: ${e}`)
+      if (!options.raw) {
+        spinner.fail(`Failed action: \`${action}\`: ${e}`)
+      }
       process.exit(1)
     }
     this._subscribe = new Subscribe(this.microservice, argsObj, this._run)
     try {
       const hostIp = (await this._run.getInspect()).NetworkSettings.IPAddress
       await this._subscribe.go(action, event, hostIp)
-      spinner.succeed(
-        `Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`
-      )
+      if (!options.raw) {
+        spinner.succeed(
+          `Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`
+        )
+      }
       setInterval(async () => {
         if (!(await this._run.isRunning())) {
           utils.error(
@@ -521,7 +542,9 @@ export default class Cli {
         await this._run.stopService()
       }
       const logs = await this._run.getStderr()
-      spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`)
+      if (!options.raw) {
+        spinner.fail(`Failed subscribing to event \`${event}\`: ${e}`)
+      }
       if (logs) {
         utils.error(`  Docker logs:\n${await this._run.getStderr()}`)
       }
@@ -644,18 +667,23 @@ export default class Cli {
         process.exit(0)
       }, 3000) // Lil timeout to serve the last statics before shutting down
     }
-    const spinner = ora.start(
-      `Stopping Docker container: ${this.startedID.substring(0, 12)}`
-    )
+    let spinner
+    if (!this.raw) {
+      spinner = ora.start(
+        `Stopping Docker container: ${this.startedID.substring(0, 12)}`
+      )
+    }
     if (this._subscribe) {
       await this._subscribe.unsubscribe()
     }
     if (this._run && this._run.isDockerProcessRunning()) {
       await this._run.stopService()
     }
-    spinner.succeed(
-      `Stopped Docker container: ${this.startedID.substring(0, 12)}`
-    )
+    if (!this.raw) {
+      spinner.succeed(
+        `Stopped Docker container: ${this.startedID.substring(0, 12)}`
+      )
+    }
     process.exit()
   }
 
