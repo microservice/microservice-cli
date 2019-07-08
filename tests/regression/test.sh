@@ -1,6 +1,5 @@
 #!/bin/sh
 
-echo $1
 if [[ $1 != "--dev" ]]; then
     echo "===== CLEANING ===="
     rm jq-linux64
