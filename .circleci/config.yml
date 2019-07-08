@@ -111,7 +111,8 @@ jobs:
             - omg
 
   test-post-build:
-    <<: *defaults
+    # <<: *defaults
+    working_directory: ~/project/omg
     machine: true
     steps:
       - attach_workspace:
