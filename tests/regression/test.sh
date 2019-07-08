@@ -1,6 +1,8 @@
 #!/bin/sh
 
-if [[ $1 != "--dev" ]]; then
+opt=$1 || ''
+
+if [[ $opt != "--dev" ]]; then
     echo "===== CLEANING ===="
     rm jq-linux64
     
