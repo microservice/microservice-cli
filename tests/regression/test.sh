@@ -1,8 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-opt=$1 || ''
-
-if [[ $opt != "--dev" ]]; then
+if [[ $1 != "--dev" ]]; then
     echo "===== CLEANING ===="
     rm jq-linux64
     
@@ -19,18 +17,18 @@ alias omg="$(pwd)/../../packages/omg/omg"
 echo "===== PULLING REPOSITORIES ===="
 mkdir repos
 cd repos
-git clone https://github.com/microservices/d.git
-git clone https://github.com/microservices/go.git
-git clone https://github.com/microservices/node.git
-git clone https://github.com/microservices/java.git
-git clone https://github.com/microservices/python.git
-git clone https://github.com/microservices/ruby.git
-git clone https://github.com/microservices/scala.git
-#git clone https://github.com/microservices/python-events.git
-#git clone https://github.com/microservices/node-events.git
-git clone https://github.com/omg-services/base64.git
-git clone https://github.com/omg-services/hashes.git
-# git clone https://github.com/JeanBarriere/jwt.git
+git clone -q https://github.com/microservices/d.git
+git clone -q https://github.com/microservices/go.git
+git clone -q https://github.com/microservices/node.git
+git clone -q https://github.com/microservices/java.git
+git clone -q https://github.com/microservices/python.git
+git clone -q https://github.com/microservices/ruby.git
+git clone -q https://github.com/microservices/scala.git
+#git clone -q https://github.com/microservices/python-events.git
+#git clone -q https://github.com/microservices/node-events.git
+git clone -q https://github.com/omg-services/base64.git
+git clone -q https://github.com/omg-services/hashes.git
+# git clone -q https://github.com/JeanBarriere/jwt.git
 
 echo "===== OMG VERSION ====="
 omg -V
