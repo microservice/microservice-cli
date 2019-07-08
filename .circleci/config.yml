@@ -128,8 +128,8 @@ jobs:
             - v1-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
             - v1-dist-omg-validate-
       - run:
-        name: Run test
-        command: yarn test-post-build
+          name: Run test
+          command: yarn test-post-build
       - save_cache:
           key: v1-test-post-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
