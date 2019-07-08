@@ -30,6 +30,8 @@ git clone -q https://github.com/omg-services/base64.git
 git clone -q https://github.com/omg-services/hashes.git
 # git clone -q https://github.com/JeanBarriere/jwt.git
 
+which omg
+
 echo "===== OMG VERSION ====="
 omg -V
 
