@@ -129,6 +129,7 @@ jobs:
             - v1-dist-omg-validate-
       - setup_remote_docker:
           docker_layer_caching: true
+      - run: ls -l && ls -l ../../ && pwd
       - run:
           name: Run test
           command: yarn test-post-build
