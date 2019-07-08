@@ -111,9 +111,7 @@ jobs:
             - omg
 
   test-post-build:
-    # <<: *defaults
-    working_directory: ~/project/omg
-    machine: true
+    <<: *defaults
     steps:
       - attach_workspace:
           at: ~/project
@@ -129,8 +127,9 @@ jobs:
           keys:
             - v1-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
             - v1-dist-omg-validate-
-      # - setup_remote_docker:
-      #     docker_layer_caching: true
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: docker --version
       - run:
           name: Run test
           command: yarn test-post-build
