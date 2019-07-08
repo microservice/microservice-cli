@@ -1,0 +1,7 @@
+2 errors found:
+  1. forward.http should only have theses properties:
+    'method'
+    'port'
+    'path'
+    'contentType'
+  2. forward.http should have required property 'http'

@@ -1,0 +1,2 @@
+1 error found:
+  1. root.info.license should have required property 'url'

@@ -1,0 +1,10 @@
+omg: 1
+info:
+  version: 1.0.0
+  title: toto
+  description: tata
+actions:
+  toto:
+    http:
+      method: get
+      path: /toto

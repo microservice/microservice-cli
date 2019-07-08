@@ -1,0 +1,2 @@
+1 error found:
+  1. undefined has an issue. Cannot read property 'actions' of null

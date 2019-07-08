@@ -1,0 +1,2 @@
+1 error found:
+  1. actions.toto.http should have required property 'method'

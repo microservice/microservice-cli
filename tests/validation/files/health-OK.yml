@@ -1,0 +1,9 @@
+omg: 1
+info:
+  version: 1.0.0
+  title: microservice-validate
+  description: One microservice to rule them all
+health:
+  http:
+    port: 5000
+    path: /health

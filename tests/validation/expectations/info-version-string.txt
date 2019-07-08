@@ -1,0 +1,2 @@
+1 error found:
+  1. root.info.version should be string

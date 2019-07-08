@@ -12,6 +12,7 @@
     "test": "lerna run test",
     "coverage": "lerna run coverage",
     "build": "lerna run build",
+    "test-post-build": "lerna run test-post-build",
     "publish": "lerna publish --from-package",
     "version": "lerna version --no-git-tag-version --no-push"
   },

@@ -45,9 +45,11 @@ export default class Build {
           err ? reject(err) : resolve(res)
         )
       })
-      for (const line in log) {
-        if (log[line].stream && log[line].stream.length > 1) {
-          utils.log(log[line].stream.trim())
+      if (!silent) {
+        for (const line in log) {
+          if (log[line].stream && log[line].stream.length > 1) {
+            utils.log(log[line].stream.trim())
+          }
         }
       }
       return this.name

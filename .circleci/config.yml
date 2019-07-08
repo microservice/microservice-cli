@@ -13,12 +13,16 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/yarn.lock" }}
-            - v1-dependencies-omg-cli
+            - v1-dependencies-omg-{{ checksum "packages/omg/yarn.lock" }}
+            - v1-dependencies-omg
       - restore_cache:
           keys:
             - v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/yarn.lock" }}
             - v1-dependencies-omg-ui
+      - restore_cache:
+          keys:
+            - v1-dependencies-omg-validate-{{ checksum "packages/omg-validate/yarn.lock" }}
+            - v1-dependencies-omg-validate
       - run:
           name: Installing Lerna
           command: yarn
@@ -26,15 +30,20 @@ jobs:
           name: Install local dependencies
           command: yarn bootstrap
       - save_cache:
-          key: v1-dependencies-omg-cli-{{ checksum "packages/omg-cli/yarn.lock" }}
+          key: v1-dependencies-omg-{{ checksum "packages/omg/yarn.lock" }}
           paths:
             - ~/.cache/yarn
-            - packages/omg-cli/node_modules
+            - packages/omg/node_modules
       - save_cache:
           key: v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - packages/omg-ui/node_modules
+      - save_cache:
+          key: v1-dependencies-omg-validate-{{ checksum "packages/omg-validate/yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+            - packages/omg-validate/node_modules
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -71,39 +80,64 @@ jobs:
           at: ~/project
       - restore_cache:
           keys:
-            - v1-dist-omg-cli-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v1-dist-omg-cli-
+            - v1-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-omg-
       - restore_cache:
           keys:
             - v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
             - v1-dist-omg-ui-
+      - restore_cache:
+          keys:
+            - v1-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-omg-validate-
       - run:
           name: Building
           command: yarn build
       - save_cache:
-          key: v1-dist-omg-cli-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v1-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - packages/omg-cli/dist
+            - packages/omg/dist
       - save_cache:
           key: v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - packages/omg-ui/dist
+      - save_cache:
+          key: v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - packages/omg-validate/dist
       - persist_to_workspace:
           root: ~/project
           paths:
             - omg
 
-  publish_latest:
+  test-post-build:
     <<: *defaults
     steps:
       - attach_workspace:
           at: ~/project
+      - restore_cache:
+          keys:
+            - v1-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-omg-
+      - restore_cache:
+          keys:
+            - v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-omg-ui-
+      - restore_cache:
+          keys:
+            - v1-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v1-dist-omg-validate-
       - run:
-          name: Setup npm publish token
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      - run:
-          name: Publishing to npmjs using lerna
-          command: yarn publish
+        name: Run test
+        command: yarn test-post-build
+      - save_cache:
+          key: v1-test-post-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - tests
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - omg
 
 workflows:
   version: 2
@@ -132,11 +166,9 @@ workflows:
               only: /.*/
           requires:
             - install
-      # - publish_latest: # Publish as 'latest' when the git tag matches the RegExp
-      #     filters:
-      #       tags:
-      #         only: /[0-9]+(\.[0-9]+)*/ # https://regex101.com/r/ZaIbap/1
-      #       branches:
-      #         ignore: /.*/
-      #     requires:
-      #       - build
+      - test-post-build:
+          filters:
+            tags:
+              only: /.*/
+          requires:
+            - build

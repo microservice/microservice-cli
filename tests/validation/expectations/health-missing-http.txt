@@ -1,0 +1,6 @@
+3 errors found:
+  1. health should only have theses properties:
+    'http'
+  2. health should only have theses properties:
+    'http'
+  3. health should have required property 'http'
