@@ -1,3 +1,0 @@
-#!/usr/bin/env node
-
-require('../../packages/omg/dist/cli/program').parse(process.argv)
