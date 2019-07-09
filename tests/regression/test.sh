@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PATH="$PATH:~/project/omg/tests/regression/bin"
+export PATH="$PATH:/home/circleci/project/omg/tests/regression/bin"
 
 echo $PATH
 
