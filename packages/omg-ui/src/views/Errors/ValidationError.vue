@@ -1,15 +1,24 @@
 <template>
   <div class="validation-error-container">
     <div class="error">{{ getMicroserviceNotif }}</div>
+    <div class="error" v-if="getDockerState === 'building' || getDockerState === 'starting'">
+      <span>Building</span>
+      <clip-loader :color="'rgb(45, 204, 167)'" :size="'20px'" class="loader"></clip-loader>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import ClipLoader from 'vue-spinner/src/ClipLoader'
+
 export default {
   name: 'validation-error',
+  components: {
+    ClipLoader
+  },
   computed: {
-    ...mapGetters(['getMicroserviceNotif'])
+    ...mapGetters(['getMicroserviceNotif', 'getDockerState'])
   }
 }
 </script>
@@ -20,5 +29,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 </style>

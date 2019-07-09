@@ -19,7 +19,7 @@
                 :value="query && query.args ? query.args[argName] : ''"
                 :placeholder="arg.type"
                 :type="arg.type === 'number' ? 'number' : 'string'"
-              >
+              />
             </label>
             <span class="required-hint">{{ arg.required ? "* Required" : "" }}</span>
           </div>
@@ -36,7 +36,7 @@
         "
         class="inputs"
       >
-        <input type="hidden" name="type" value="event">
+        <input type="hidden" name="type" value="event" />
         <div
           class="input"
           :key="`arg-${argName}`"
@@ -54,7 +54,7 @@
               :value="query && query.args ? query.args[argName] : ''"
               :placeholder="arg.type"
               :type="arg.type === 'number' ? 'number' : 'string'"
-            >
+            />
           </label>
           <span
             :class="{ help: arg.help && arg.help.length > 0 }"
@@ -64,7 +64,7 @@
       </div>
       <div class="btn-container form-row">
         <div class="spacer"></div>
-        <button class="run-btn">
+        <button class="run-btn" :disabled="loading">
           <clip-loader :color="'white'" :size="'20px'" class="loader" v-if="loading"></clip-loader>
           <span v-else>{{ parseError ? "Cannot parse JSON" : "Run Action" }}</span>
         </button>

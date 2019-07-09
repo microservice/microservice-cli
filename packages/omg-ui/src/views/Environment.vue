@@ -12,7 +12,7 @@
               :value="`${getEnvs[name] || ''}`"
               :placeholder="env.type"
               :type="env.type === 'number' ? 'number' : 'string'"
-            >
+            />
           </label>
           <span
             :class="{ help: env.help && env.help.length > 0 }"
@@ -22,7 +22,11 @@
       </div>
       <div class="btn-container">
         <div class="spacer"></div>
-        <button type="submit" class="run-btn">
+        <button
+          type="submit"
+          class="run-btn"
+          :disabled="getDockerState === 'building' || getDockerState === 'starting'"
+        >
           <clip-loader
             :color="'white'"
             :size="'20px'"
