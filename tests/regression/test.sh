@@ -2,6 +2,8 @@
 
 export PATH="$PATH:~/project/omg/tests/regression/bin"
 
+echo $PATH
+
 echo "===== PULLING REPOSITORIES ===="
 mkdir repos
 cd repos
