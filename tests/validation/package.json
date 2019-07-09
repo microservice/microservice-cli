@@ -1,6 +1,6 @@
 {
   "name": "validation",
-  "version": "0.0.1",
+  "version": "0.13.7-alpha.3",
   "description": "Tests for the validation system",
   "main": "index.js",
   "scripts": {
