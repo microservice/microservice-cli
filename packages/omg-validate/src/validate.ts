@@ -50,7 +50,7 @@ export default class OMGValidate {
       yamljs.parse(file)
       return yamljs.load(file)
     } catch (e) {
-      console.error(`Issue with microservice.yml:\n${e}`)
+      utils.error(`Issue with microservice.yml:\n${e}`)
       process.exit(1)
     }
   }
