@@ -1,7 +1,7 @@
 <template>
   <div class="validation-error-container">
     <div class="error">{{ getMicroserviceNotif }}</div>
-    <div class="error" v-if="getDockerState === 'building' || getDockerState === 'starting'">
+    <div class="error" v-if="getDockerState === 'building'">
       <span>Building</span>
       <clip-loader :color="'rgb(45, 204, 167)'" :size="'20px'" class="loader"></clip-loader>
     </div>

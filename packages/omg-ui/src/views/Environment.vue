@@ -78,13 +78,20 @@ export default {
       }
       if (this.getDockerRebuild) {
         this.setContainerLogs('')
-        this.getSocket.emit('rebuild', {
-          build: {},
-          start: {
+        if (this.getDockerState === 'started') {
+          this.getSocket.emit('rebuild', {
+            build: {},
+            start: {
+              image: `omg/${this.getOwner}`,
+              envs: { ...this.getEnvs }
+            }
+          })
+        } else {
+          this.getSocket.emit('start', {
             image: `omg/${this.getOwner}`,
             envs: { ...this.getEnvs }
-          }
-        })
+          })
+        }
       }
     }
   }

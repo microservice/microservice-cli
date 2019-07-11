@@ -581,25 +581,23 @@ export default class UIServer {
     }
 
     if (!isHealthy) {
-      if (this.dockerContainer) {
+      if (this.dockerContainer && this.dockerContainer.isRunning) {
         this.socket.emit('health-check', {
           notif: 'Health check failed',
-          status: false,
-          log: `${await this.dockerContainer.getStderr()}`
+          status: 0
         })
-        await this.removeContainer()
       } else {
         this.socket.emit('health-check', {
           notif: 'Health check failed',
-          status: false,
+          status: -1,
           log: 'Unable to retrieve error logs'
         })
       }
-      return
+    } else {
+      this.socket.emit('health-check', {
+        notif: 'Health check passed',
+        status: 1
+      })
     }
-    this.socket.emit('health-check', {
-      notif: 'Health check passed',
-      status: true
-    })
   }
 }

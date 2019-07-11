@@ -1,6 +1,6 @@
 <template>
   <div class="layout-container">
-    <top-bar/>
+    <top-bar />
     <div class="left-bar">
       <div class="validations-container">
         <div class="microservice-wrapper">
@@ -11,7 +11,7 @@
               :clickable="true"
               :state="getMicroserviceStatus ? 'good' : 'bad'"
           />-->
-          <tile-grade :title="'microservice.yml'" :state="getMicroserviceStatus ? 'good' : 'bad'"/>
+          <tile-grade :title="'microservice.yml'" :state="getMicroserviceStatus ? 'good' : 'bad'" />
           <!-- </div> -->
         </div>
         <div class="dcontainer-wrapper">
@@ -23,6 +23,8 @@
                   ? 'Stopped'
                   : getDockerState === 'building'
                   ? 'Building'
+                  : getDockerState === 'built'
+                  ? 'Built'
                   : getDockerState === 'starting'
                   ? 'Starting'
                   : getDockerState === 'started'
@@ -35,19 +37,24 @@
                   : getDockerState === 'building' ||
                     getDockerState === 'starting'
                   ? 'warn'
-                  : getDockerState === 'started'
+                  : getDockerState === 'started' ||
+                    getDockerState === 'built'
                   ? 'good'
                   : 'bad'
               "
             />
-            <!-- <tile-grade class="tile" :title="'Validations'" :state="'bad'" /> -->
+            <tile-grade
+              class="tile"
+              :title="'health-check'"
+              :state="getDockerHealthCheck.status === -1 ? 'bad' : getDockerHealthCheck.status === 0 ? 'warn' : 'good'"
+            />
           </div>
         </div>
       </div>
       <div class="divider"></div>
-      <navigation class="nav"/>
+      <navigation class="nav" />
       <div class="divider"></div>
-      <container-metrics/>
+      <container-metrics />
     </div>
   </div>
 </template>
@@ -69,7 +76,7 @@ export default {
     ContainerMetrics
   },
   computed: {
-    ...mapGetters(['getMicroserviceStatus', 'getDockerState'])
+    ...mapGetters(['getMicroserviceStatus', 'getDockerState', 'getDockerHealthCheck'])
   }
 }
 </script>

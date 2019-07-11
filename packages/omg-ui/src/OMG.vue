@@ -1,12 +1,12 @@
 <template>
   <div id="omg">
     <div class="omg-container">
-      <layout/>
+      <layout />
       <div class="topbar-margin">
-        <router-view/>
-        <docker-logs/>
+        <router-view />
+        <docker-logs />
       </div>
-      <output-action class="main-output"/>
+      <output-action class="main-output" />
     </div>
   </div>
 </template>
@@ -17,6 +17,7 @@ import Layout from '@/views/Layout'
 import DockerLogs from '@/components/DockerLogs'
 import OutputAction from '@/components/layout/OutputAction'
 import { setInterval, clearInterval } from 'timers'
+import { isEmpty, isEnvRequired, isRequiredEnvFilled } from '@/utils'
 
 export default {
   name: 'omg',
@@ -31,7 +32,7 @@ export default {
     wait: true
   }),
   computed: mapGetters([
-    'getSocket', 'getOwner', 'getEnvs', 'getMicroserviceStatus'
+    'getSocket', 'getOwner', 'getEnvs', 'getMicroserviceStatus', 'getMicroservice'
   ]),
   created () {
     this.initSocket()
@@ -68,8 +69,8 @@ export default {
       this.stop(res)
     })
     this.getSocket.on('health-check', res => {
-      if (!res.status) {
-        this.setDockerHealthCheck(res)
+      this.setDockerHealthCheck(res)
+      if (res.status === -1) {
         this.setDockerState('stopped')
         if (!['/editor', '/environments'].includes(this.$router.currentRoute.path)) {
           this.$router.push({
@@ -108,12 +109,27 @@ export default {
       if (data.notif) {
         this.appendDockerLogs(data.notif.trim())
       }
+      this.setDockerState('built')
       if (data.status && data.built) {
-        this.setDockerState('starting')
-        this.getSocket.emit('start', {
-          image: `omg/${this.getOwner}`,
-          envs: { ...this.getEnvs }
-        })
+        if (isEnvRequired(this.getMicroservice)) {
+          this.setDockerState('starting')
+          this.getSocket.emit('start', {
+            image: `omg/${this.getOwner}`,
+            envs: { ...this.getEnvs }
+          })
+        } else {
+          if (isEmpty(this.getEnvs)) {
+            this.$router.push({ path: '/environments' })
+          } else {
+            if (isRequiredEnvFilled(this.setMicroserviceRaw, this.getEnvs)) {
+              this.setDockerState('starting')
+              this.getSocket.emit('start', {
+                image: `omg/${this.getOwner}`,
+                envs: { ...this.getEnvs }
+              })
+            }
+          }
+        }
       }
     },
     start (data) {
