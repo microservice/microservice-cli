@@ -35,6 +35,6 @@
   "dependencies": {
     "ajv": "^6.10.0",
     "underscore": "^1.9.1",
-    "yamljs": "^0.3.0"
+    "yaml-js": "^0.2.3"
   }
 }
