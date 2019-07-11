@@ -1,3 +1,3 @@
-const yamljs = require('yamljs')
+const yamljs = require('yaml-js')
 
 export default yamljs
