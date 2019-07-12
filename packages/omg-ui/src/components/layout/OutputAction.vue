@@ -4,14 +4,19 @@
     <div class="logs-output">
       <pre><code>{{ getActionOutput }}</code></pre>
     </div>
+    <div class="version">{{ version }}</div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+const version = require('../../../package.json').version
 
 export default {
   name: 'output-action',
+  data: () => ({
+    version: version
+  }),
   computed: {
     ...mapGetters(['getActionOutput'])
   }
@@ -30,6 +35,16 @@ export default {
   align-items: flex-start;
   overflow: auto;
 
+  .version {
+    text-align: right;
+    color: white;
+    font-size: 0.7em;
+    bottom: 0;
+    right: 0;
+    position: fixed;
+    padding: 10px 20px;
+  }
+
   .title {
     height: 27px;
     color: #ffffff;
@@ -41,7 +56,7 @@ export default {
   }
 
   .logs-output {
-    height: 100%;
+    height: 90%;
     color: #ffffff;
     font-family: SF Mono;
     font-size: 13px;

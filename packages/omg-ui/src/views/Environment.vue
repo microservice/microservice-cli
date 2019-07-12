@@ -12,7 +12,7 @@
               :value="`${getEnvs[name] || ''}`"
               :placeholder="env.type"
               :type="env.type === 'number' ? 'number' : 'string'"
-            >
+            />
           </label>
           <span
             :class="{ help: env.help && env.help.length > 0 }"
@@ -22,7 +22,11 @@
       </div>
       <div class="btn-container">
         <div class="spacer"></div>
-        <button type="submit" class="run-btn">
+        <button
+          type="submit"
+          class="run-btn"
+          :disabled="getDockerState === 'building' || getDockerState === 'starting'"
+        >
           <clip-loader
             :color="'white'"
             :size="'20px'"
@@ -74,13 +78,20 @@ export default {
       }
       if (this.getDockerRebuild) {
         this.setContainerLogs('')
-        this.getSocket.emit('rebuild', {
-          build: {},
-          start: {
+        if (this.getDockerState === 'started') {
+          this.getSocket.emit('rebuild', {
+            build: {},
+            start: {
+              image: `omg/${this.getOwner}`,
+              envs: { ...this.getEnvs }
+            }
+          })
+        } else {
+          this.getSocket.emit('start', {
             image: `omg/${this.getOwner}`,
             envs: { ...this.getEnvs }
-          }
-        })
+          })
+        }
       }
     }
   }
