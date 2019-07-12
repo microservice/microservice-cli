@@ -250,6 +250,10 @@ form.action {
       &:focus {
         background-color: #079a82;
       }
+
+      .loader {
+        margin-top: 4px;
+      }
     }
   }
 }
