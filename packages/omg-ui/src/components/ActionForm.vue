@@ -120,11 +120,11 @@ export default {
     ...mapMutations(['updateActionContinuousArgs', 'addActionCurlArgs']),
     processData (data) {
       this.obj['action'] = this.actionName
+      this.obj['args'] = {}
       for (let i = 0; i < data.srcElement.length - 1; i++) {
         const key = data.srcElement[i].name.substr(4)
         const value = data.srcElement[i].value
 
-        this.obj['args'] = {}
         this.obj.args[key] = value
         if (this.event && this.event.length > 0) {
           this.obj['subscribe'] = true

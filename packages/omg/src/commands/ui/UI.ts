@@ -568,11 +568,6 @@ export default class UIServer {
    * Gets docker container health status then sends the result through socket
    */
   private async healthCheck() {
-    this.socket.emit('health-check', {
-      notif: 'Health check',
-      status: true
-    })
-
     let isHealthy: boolean
     try {
       isHealthy = await this.dockerContainer.healthCheck()

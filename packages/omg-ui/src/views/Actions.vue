@@ -134,6 +134,8 @@ export default {
         } catch (e) {
           this.setActionOutput(res.output.trim())
         }
+      } else if (res.notif && res.status === false) {
+        this.setActionOutput(res.notif.trim())
       }
     })
     this.getSocket.on('subscribe', res => {
