@@ -5,7 +5,7 @@ import { scopes } from './schema/schemas'
 
 /**
  * OMGValidate class
- * Used to validate microservice.yml
+ * Used to validate microservice.yml.
  */
 export default class OMGValidate {
   private readonly _microservice: string
