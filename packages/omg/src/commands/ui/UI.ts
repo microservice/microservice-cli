@@ -439,7 +439,10 @@ export default class UIServer {
   stopContainer(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let output
-      if (this.dockerContainer && (await this.dockerContainer.isRunning())) {
+      if (
+        this.dockerContainer !== null &&
+        (await this.dockerContainer.isRunning())
+      ) {
         output = await this.dockerContainer.stopService()
         this.emit('stop', {
           status: true,
@@ -458,7 +461,10 @@ export default class UIServer {
   removeContainer(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let output
-      if (this.dockerContainer && !(await this.dockerContainer.isRunning())) {
+      if (
+        this.dockerContainer !== null &&
+        !(await this.dockerContainer.isRunning())
+      ) {
         output = await this.dockerContainer.removeContainer()
         this.emit('stop', {
           status: true,
@@ -568,25 +574,31 @@ export default class UIServer {
    * Gets docker container health status then sends the result through socket
    */
   private async healthCheck() {
-    this.socket.emit('health-check', {
-      notif: 'Health check',
-      status: true
-    })
-
     let isHealthy: boolean
     try {
       isHealthy = await this.dockerContainer.healthCheck()
-    } catch {
+    } catch (e) {
       isHealthy = false
     }
 
     if (!isHealthy) {
-      if (this.dockerContainer && this.dockerContainer.isRunning) {
-        this.socket.emit('health-check', {
-          notif: 'Health check failed',
-          status: 0
-        })
-      } else {
+      try {
+        if (
+          this.dockerContainer !== null &&
+          (await this.dockerContainer.isRunning())
+        ) {
+          this.socket.emit('health-check', {
+            notif: 'Health check failed',
+            status: 0
+          })
+        } else {
+          this.socket.emit('health-check', {
+            notif: 'Health check failed',
+            status: -1,
+            log: 'Unable to retrieve error logs'
+          })
+        }
+      } catch {
         this.socket.emit('health-check', {
           notif: 'Health check failed',
           status: -1,

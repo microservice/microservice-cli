@@ -8,21 +8,25 @@ export const isEmpty = obj => {
 }
 
 export const isEnvRequired = microservice => {
-  const env = microservice.environment
-  Object.keys(env).forEach(key => {
-    if (env[key].required) {
-      return true
-    }
-  })
+  if (microservice && microservice.environment) {
+    const env = microservice.environment
+    Object.keys(env).forEach(key => {
+      if (env[key].required) {
+        return true
+      }
+    })
+  }
   return false
 }
 
 export const isRequiredEnvFilled = (microservice, cEnv) => {
-  const mEnv = microservice.environment
-  Object.keys(mEnv).forEach(key => {
-    if (cEnv[key] === undefined || null) {
-      return false
-    }
-  })
+  if (microservice && microservice.environment) {
+    const mEnv = microservice.environment
+    Object.keys(mEnv).forEach(key => {
+      if (cEnv[key] === undefined || null) {
+        return false
+      }
+    })
+  }
   return true
 }
