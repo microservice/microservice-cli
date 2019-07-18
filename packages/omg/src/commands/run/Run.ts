@@ -245,11 +245,8 @@ export default abstract class Run {
    * @return {Boolean} True if running, otherwise false
    */
   public async isRunning(): Promise<boolean> {
-    if (this.containerID) {
-      const container = utils.docker.getContainer(this.containerID)
-      return (await container.inspect()).State.Running
-    }
-    return false
+    const container = utils.docker.getContainer(this.containerID)
+    return (await container.inspect()).State.Running
   }
 
   /**
