@@ -1,6 +1,6 @@
 {
   "name": "validation",
-  "version": "0.13.7-alpha.4",
+  "version": "0.13.7",
   "description": "Tests for the validation system",
   "main": "index.js",
   "scripts": {
@@ -25,6 +25,6 @@
   },
   "homepage": "https://github.com/microservices/omg#readme",
   "dependencies": {
-    "omg-validate": "^0.13.7-alpha.4"
+    "omg-validate": "^0.13.7"
   }
 }
