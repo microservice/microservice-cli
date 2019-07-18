@@ -439,7 +439,10 @@ export default class UIServer {
   stopContainer(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let output
-      if (this.dockerContainer && (await this.dockerContainer.isRunning())) {
+      if (
+        this.dockerContainer !== null &&
+        (await this.dockerContainer.isRunning())
+      ) {
         output = await this.dockerContainer.stopService()
         this.emit('stop', {
           status: true,
@@ -458,7 +461,10 @@ export default class UIServer {
   removeContainer(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let output
-      if (this.dockerContainer && !(await this.dockerContainer.isRunning())) {
+      if (
+        this.dockerContainer !== null &&
+        !(await this.dockerContainer.isRunning())
+      ) {
         output = await this.dockerContainer.removeContainer()
         this.emit('stop', {
           status: true,
@@ -571,12 +577,12 @@ export default class UIServer {
     let isHealthy: boolean
     try {
       isHealthy = await this.dockerContainer.healthCheck()
-    } catch {
+    } catch (e) {
       isHealthy = false
     }
 
     if (!isHealthy) {
-      if (this.dockerContainer && this.dockerContainer.isRunning) {
+      if (this.dockerContainer && (await this.dockerContainer.isRunning())) {
         this.socket.emit('health-check', {
           notif: 'Health check failed',
           status: 0

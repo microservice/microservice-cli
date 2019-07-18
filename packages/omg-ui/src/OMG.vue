@@ -3,7 +3,15 @@
     <div class="omg-container">
       <layout />
       <div class="topbar-margin">
-        <router-view />
+        <router-view
+          @rebuild="getSocket.emit('rebuild', {
+            build: {},
+            start: {
+              image: `omg/${getOwner}`,
+              envs: { ...getEnvs }
+            }
+          })"
+        />
         <docker-logs />
       </div>
       <output-action class="main-output" />
@@ -111,7 +119,7 @@ export default {
       }
       this.setDockerState('built')
       if (data.status && data.built) {
-        if (isEnvRequired(this.getMicroservice)) {
+        if (!isEnvRequired(this.getMicroservice)) {
           this.setDockerState('starting')
           this.getSocket.emit('start', {
             image: `omg/${this.getOwner}`,

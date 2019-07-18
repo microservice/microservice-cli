@@ -8,7 +8,7 @@
           <div class="value">{{ cpuPercentage !== NaN ? cpuPercentage.toFixed(2) : 0 }} %</div>
         </div>
         <div class="graph">
-          <graph :values="cpuArr"/>
+          <graph :values="cpuArr" />
         </div>
       </div>
       <div class="ram metrics-item" @click="memModePercent = !memModePercent">
@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="graph">
-          <graph :values="memArr"/>
+          <graph :values="memArr" />
         </div>
       </div>
       <div class="io metrics-item">
@@ -45,14 +45,14 @@
           >{{ ioRawValue.read }} | {{ ioRawValue.write }}</div>
         </div>
         <div class="graph">
-          <graph :values="diskArr" :biDataMode="true"/>
+          <graph :values="diskArr" :biDataMode="true" />
         </div>
       </div>
       <div class="network metrics-item">
         <div class="header">
           <div class="title">Network</div>
           <div class="value" v-if="networkRawValue !== NaN">
-            <arrow-forward class="rx"/>
+            <arrow-forward class="rx" />
             {{
             networkRawValue.rx > 0 ? networkRawValue.rx.toFixed(2) : "0.00"
             }}
@@ -61,11 +61,11 @@
             networkRawValue.tx > 0 ? networkRawValue.tx.toFixed(2) : "0.00"
             }}
             KB/s
-            <arrow-forward class="tx"/>
+            <arrow-forward class="tx" />
           </div>
         </div>
         <div class="graph">
-          <graph :values="netArr" :biDataMode="true"/>
+          <graph :values="netArr" :biDataMode="true" />
         </div>
       </div>
     </div>
@@ -94,7 +94,7 @@ export default {
     ...mapGetters(['getDockerStats', 'getSocket']),
     cpuPercentage: function () {
       const stats = this.getDockerStats
-      if (stats && stats.length > 2) {
+      if (stats && stats.length > 4) {
         const previousCPU = stats[stats.length - 2].cpu_stats.cpu_usage.total_usage
         const previousSystem = stats[stats.length - 2].cpu_stats.system_cpu_usage
         return this.calculateCPUPercentUnix(previousCPU, previousSystem, stats[stats.length - 1])
@@ -103,14 +103,14 @@ export default {
     },
     memPercentage: function () {
       const stats = this.getDockerStats
-      if (stats && stats.length > 2) {
+      if (stats && stats.length > 4) {
         return parseFloat(stats[stats.length - 1].memory_stats.usage) / parseFloat(stats[stats.length - 1].memory_stats.limit) * 100.0
       }
       return NaN
     },
     memRawValue: function () {
       const stats = this.getDockerStats
-      if (stats && stats.length > 2) {
+      if (stats && stats.length > 4) {
         return {
           mem: parseFloat(stats[stats.length - 1].memory_stats.usage) / 1024 / 1024,
           limit: parseFloat(stats[stats.length - 1].memory_stats.limit) / 1024 / 1024
@@ -120,14 +120,14 @@ export default {
     },
     ioRawValue: function () {
       const stats = this.getDockerStats
-      if (stats && stats.length > 2) {
+      if (stats && stats.length > 4) {
         return this.calculateBlockIO(stats[stats.length - 1].blkio_stats)
       }
       return NaN
     },
     networkRawValue: function () {
       const stats = this.getDockerStats
-      if (stats && stats.length > 2) {
+      if (stats && stats.length > 4) {
         const previous = stats[stats.length - 2].networks
         const net = this.calculateNetwork(previous, stats[stats.length - 1].networks)
         net.rx /= 1024
@@ -140,14 +140,14 @@ export default {
   watch: {
     getDockerStats: function () {
       const stats = this.getDockerStats
-      if (stats && stats.length > 2) {
+      if (stats && stats.length > 4) {
         this.memArr.push(parseFloat(stats[stats.length - 1].memory_stats.usage) / 1024 / 1024)
         this.diskArr.push({
           up: this.calculateBlockIO(stats[stats.length - 1].blkio_stats).read,
           down: this.calculateBlockIO(stats[stats.length - 1].blkio_stats).write
         })
       }
-      if (stats && stats.length > 2) {
+      if (stats && stats.length > 4) {
         const previousCPU = stats[stats.length - 2].cpu_stats.cpu_usage.total_usage
         const previousSystem = stats[stats.length - 2].cpu_stats.system_cpu_usage
         const previousNet = stats[stats.length - 2].networks
