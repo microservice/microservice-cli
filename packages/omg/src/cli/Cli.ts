@@ -414,12 +414,6 @@ export default class Cli {
                       case 3:
                         resolve(response.body)
                         break
-                      default:
-                        if (!options.raw) {
-                          ora.failt('Default health check failed')
-                        }
-                        reject()
-                        break
                     }
                   })
                   .catch(() => {
@@ -436,6 +430,14 @@ export default class Cli {
                 resolve(res)
               })
               .catch(async () => {
+                if (i === 1) {
+                  if (!options.raw) {
+                    ora.fail('Default health check failed')
+                  }
+                  reject(
+                    'Action did not returned a valid HTTP response code (2xx/3xx)'
+                  )
+                }
                 await utils.sleep(100)
               })
           }
