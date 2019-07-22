@@ -1,68 +1,40 @@
 #!/bin/bash
 
-export PATH="$PATH:/home/circleci/project/omg/tests/regression/bin"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+export PATH="$DIR/bin:$PATH"
 
 echo $PATH
 
-echo "===== PULLING REPOSITORIES ===="
+echo "===== OMG VERSION ====="
+omg -V
+
+echo "===== HELLO WORLD TEMPLATES ===="
 mkdir repos
 cd repos
-git clone -q https://github.com/microservices/d.git
-git clone -q https://github.com/microservices/go.git
-git clone -q https://github.com/microservices/node.git
-git clone -q https://github.com/microservices/java.git
-git clone -q https://github.com/microservices/python.git
-git clone -q https://github.com/microservices/ruby.git
-git clone -q https://github.com/microservices/scala.git
+for repo in clojure d go node java python php ruby rust scala ; do
+    echo "===== Testing $repo ====="
+    git clone -q --depth 1 "https://github.com/microservices/${d}.git"
+    ( cd "$repo";
+        output="$(omg run --raw message -a name="Peter" | jq -c .)";
+        if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
+    )
+done
+
+echo "===== PULLING REPOSITORIES ===="
+
+# Other repos
 #git clone -q https://github.com/microservices/python-events.git
 #git clone -q https://github.com/microservices/node-events.git
 git clone -q https://github.com/omg-services/base64.git
 git clone -q https://github.com/omg-services/hashes.git
 # git clone -q https://github.com/JeanBarriere/jwt.git
 
-echo "===== OMG VERSION ====="
-omg -V
-
-echo "===== TESTING TEMPLATES ====="
-echo "===== Testing d ====="
-cd d
-output="$(omg run --raw message -a name="Peter" | jq -c .)"
-if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
-
-echo "===== Testing go ====="
-cd ../go
-output="$(omg run --raw message -a name="Peter" | jq -c .)"
-if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
-
-echo "===== Testing node ====="
-cd ../node
-output="$(omg run --raw message -a name="Peter" | jq -c .)"
-if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
-
-echo "===== Testing java ====="
-cd ../java
-output="$(omg run --raw message -a name="Peter" | jq -c .)"
-if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
-
-echo "===== Testing python ====="
-cd ../python
-output="$(omg run --raw message -a name="Peter" | jq -c .)"
-if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
-
-echo "===== Testing ruby ====="
-cd ../ruby
-output="$(omg run --raw message -a name="Peter" | jq -c .)"
-if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
-
-echo "===== Testing scala ====="
-cd ../scala
-output="$(omg run --raw message -a name="Peter" | jq -c .)"
-if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
-
 
 echo "===== TESTING BASIC SERVICES ====="
+
 echo "===== Testing base64 ====="
-cd ../base64
+cd base64
 output="$(omg run --raw encode -a content="Peter")"
 if [ "$output" != 'UGV0ZXI=' ] ; then echo "$output"; exit 1; fi
 output="$(omg run --raw decode -a content="UGV0ZXI=")"
