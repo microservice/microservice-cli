@@ -223,4 +223,27 @@ describe('verify.ts', () => {
       }
     })
   })
+
+  describe('verifyProperties(command, output)', () => {
+    test('succeeds in verifying a boolean output property with value false', () => {
+      expect(
+        verify.verifyProperties(
+          new Action('name', {
+            format: {
+              command: 'name.sh'
+            },
+            output: {
+              type: 'object',
+              properties: {
+                falsey: {
+                  type: 'boolean'
+                }
+              }
+            }
+          }),
+          '{"falsey": false}'
+        )
+      ).toBeUndefined() // i.e. not to throw
+    })
+  })
 })

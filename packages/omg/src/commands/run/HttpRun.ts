@@ -50,6 +50,9 @@ export default class HttpRun extends Run {
         (this.action.output.type === 'map' ||
           this.action.output.type === 'object')
       ) {
+        if (this.action.output.properties) {
+          verify.verifyProperties(this.action, output)
+        }
         return JSON.stringify(JSON.parse(output.trim()), null, 2)
       }
       return output.trim()
