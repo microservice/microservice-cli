@@ -6,6 +6,7 @@ import * as _ from 'underscore'
 import * as querystring from 'querystring'
 import * as fs from 'fs'
 import * as utils from '../../utils'
+import * as verify from '../../verify'
 
 const homedir = require('os').homedir()
 
@@ -51,6 +52,9 @@ export default class UIRun extends Run {
         (this.action.output.type === 'map' ||
           this.action.output.type === 'object')
       ) {
+        if (this.action.output.properties) {
+          verify.verifyProperties(this.action, output)
+        }
         return JSON.stringify(JSON.parse(output.trim()), null, 2)
       }
       return output.trim()
