@@ -72,7 +72,7 @@ export default class Subscribe {
       }${this.event.subscribe.path}`,
       body: {
         id: this.id,
-        endpoint: `http://${ip}:${port}`,
+        endpoint: `http://host.docker.internal:${port}`,
         event: this.event.name,
         data: this._arguments
       },
