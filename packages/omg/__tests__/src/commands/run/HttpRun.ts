@@ -87,6 +87,7 @@ describe('HttpRun.js', () => {
               },
             ],
           },
+          ExtraHosts: []
         },
       })).toBeTruthy();
       expect(containerID).toBe('fake_docker_id');

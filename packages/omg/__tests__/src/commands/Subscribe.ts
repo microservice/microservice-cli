@@ -81,17 +81,17 @@ describe('Subscribe.ts', () => {
 
     test('fails because required arguments are not supplied', async () => {
       try {
-        await new Subscribe(m, {}, new HttpRun('docker_image', m, {}, {})).go('foo', 'bar', 'foobar');
+        await new Subscribe(m, {}, new HttpRun('docker_image', m, {}, {})).go('foo', 'bar');
       } catch (e) {
         expect(e).toBe('Failed subscribing to event: `bar`. Need to supply required arguments: `x`');
       }
     });
 
     test('subscribes to the event', async () => {
-      await new Subscribe(m, {x: '1'}, new HttpRun('docker_image', m, {}, {})).go('foo', 'bar', 'toto.tata.titi');
+      await new Subscribe(m, {x: '1'}, new HttpRun('docker_image', m, {}, {})).go('foo', 'bar');
 
       expect(rpMakeRequestStub.args[0][0].body.data).toEqual({x: 1});
-      expect(rpMakeRequestStub.args[0][0].body.endpoint).toEqual('http://toto.tata.titi:4444');
+      expect(rpMakeRequestStub.args[0][0].body.endpoint).toEqual('http://host.docker.internal:4444');
       expect(rpMakeRequestStub.args[0][0].json).toBeTruthy();
       expect(rpMakeRequestStub.args[0][0].method).toEqual('post');
       expect(rpMakeRequestStub.args[0][0].uri).toEqual('http://localhost:4444/sub');
