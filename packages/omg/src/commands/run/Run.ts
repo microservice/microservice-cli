@@ -1,6 +1,7 @@
 import * as utils from '../../utils'
 import * as verify from '../../verify'
 import * as rp from 'request-promise'
+import * as $ from 'shelljs'
 import { Action, Microservice } from 'omg-validate'
 
 /**
@@ -200,6 +201,22 @@ export default abstract class Run {
       ]
     }
 
+    const getHostIp = async () => {
+      const hostDomain = 'host.docker.internal'
+      return new Promise<string>((resolve, reject) => {
+        $.exec(
+          'ip -4 addr show docker0',
+          { silent: true },
+          (code, stdout, stderr) => {
+            if (code === 0) {
+              resolve(`${hostDomain}:${stdout.match(/inet ([\d.]+)/)[1]}`)
+            }
+            reject()
+          }
+        )
+      })
+    }
+
     const container = await utils.docker.createContainer({
       Image: this.dockerImage,
       Cmd: this.microservice.lifecycle
@@ -208,7 +225,8 @@ export default abstract class Run {
       Env: this.formatEnvironmentVariables(),
       ExposedPorts: this.exposedPorts,
       HostConfig: {
-        PortBindings: this.portBindings
+        PortBindings: this.portBindings,
+        ExtraHosts: process.platform !== 'darwin' ? [await getHostIp()] : []
       }
     })
     await container.start()

@@ -2,7 +2,13 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-export PATH="$DIR/bin:$PATH"
+if [[ "$OSTYPE" == "linux-gnu" ]];
+then
+    export PATH="$DIR/bin/omg:$DIR/bin/jq:$PATH"
+elif [[ "$OSTYPE" == "darwin"* ]];
+then
+    export PATH="$DIR/bin/omg:$PATH"
+fi
 
 echo $PATH
 
@@ -14,18 +20,24 @@ mkdir repos
 cd repos
 for repo in clojure d go node java python php ruby rust scala ; do
     echo "===== Testing $repo ====="
-    git clone -q --depth 1 "https://github.com/microservices/${d}.git"
+    git clone -q "https://github.com/microservices/${repo}.git"
     ( cd "$repo";
         output="$(omg run --raw message -a name="Peter" | jq -c .)";
         if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
     )
 done
 
+# for repo in python-events node-events; do
+#     echo "===== Testing $repo ====="
+#     git clone -q "https://github.com/microservices/${repo}.git"
+#     ( cd "$repo";
+#         ./test/all.js
+#     )
+# done
+
 echo "===== PULLING REPOSITORIES ===="
 
 # Other repos
-#git clone -q https://github.com/microservices/python-events.git
-#git clone -q https://github.com/microservices/node-events.git
 git clone -q https://github.com/omg-services/base64.git
 git clone -q https://github.com/omg-services/hashes.git
 # git clone -q https://github.com/JeanBarriere/jwt.git

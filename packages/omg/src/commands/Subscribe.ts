@@ -39,7 +39,7 @@ export default class Subscribe {
    * @param {String} event The given event
    * @param  {string} ip The given IP address
    */
-  async go(action: string, event: string, ip: string) {
+  async go(action: string, event: string) {
     this.omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'))
     this.action = this.microservice.getAction(action)
     this.event = this.action.getEvent(event)
@@ -54,7 +54,7 @@ export default class Subscribe {
     const port = await utils.getOpenPort()
     server.listen({ port, hostname: '127.0.0.1' })
     this.id = uuidv4()
-    await this.subscribe(port, ip)
+    await this.subscribe(port)
   }
 
   /**
@@ -64,7 +64,7 @@ export default class Subscribe {
    * @param  {string} ip The given IP address
    * @return {Promise<void>}
    */
-  private async subscribe(port: number, ip: string): Promise<void> {
+  private async subscribe(port: number): Promise<void> {
     await rp.makeRequest({
       method: this.event.subscribe.method,
       uri: `http://localhost:${

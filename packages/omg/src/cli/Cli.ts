@@ -524,8 +524,7 @@ export default class Cli {
     }
     this._subscribe = new Subscribe(this.microservice, argsObj, this._run)
     try {
-      const hostIp = (await this._run.getInspect()).NetworkSettings.IPAddress
-      await this._subscribe.go(action, event, hostIp)
+      await this._subscribe.go(action, event)
       if (!options.raw) {
         spinner.succeed(
           `Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`
