@@ -3,7 +3,6 @@ import * as rp from 'request-promise';
 import HttpRun from '../../../../src/commands/run/HttpRun';
 import { Microservice } from 'omg-validate';
 import * as utils from '../../../../src/utils';
-import 'jest'
 
 describe('HttpRun.js', () => {
   let rpGetStub;

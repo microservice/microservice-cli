@@ -8,11 +8,11 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --npm-client=yarn",
-    "lint": "lerna run lint",
-    "test": "lerna run test",
-    "coverage": "lerna run coverage",
-    "build": "lerna run build",
-    "test-post-build": "lerna run test-post-build",
+    "lint": "lerna run --parallel lint",
+    "test": "lerna run --parallel test",
+    "coverage": "lerna run --parallel coverage",
+    "build": "lerna run --parallel build",
+    "test-post-build": "lerna run --parallel test-post-build",
     "publish": "yarn bootstrap && yarn build && yarn test && yarn test-post-build && lerna publish --from-package",
     "version": "lerna version --no-git-tag-version --no-push"
   },
