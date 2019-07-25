@@ -91,6 +91,9 @@ jobs:
             - v1-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
             - v1-dist-omg-validate-
       - run:
+          name: Rebuilding node-sass
+          command: npm rebuild node-sass
+      - run:
           name: Building
           command: yarn build
       - save_cache:

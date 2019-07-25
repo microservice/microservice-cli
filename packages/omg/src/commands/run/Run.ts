@@ -341,6 +341,7 @@ export default abstract class Run {
   /**
    * Gets health status of the service
    *
+   * @param  {number} boundPort port used for health checking
    * @param  {number} timeout Optionnal timeout, used during healthcheck
    * @return {Promise} Empty promise
    */
