@@ -19,7 +19,7 @@ omg -V
 echo "===== HELLO WORLD TEMPLATES ===="
 mkdir repos
 cd repos
-for repo in clojure d go node java python php ruby rust scala ; do
+for repo in d go node java python php ruby rust scala ; do
     echo "===== Testing $repo ====="
     git clone -q --depth 1 "https://github.com/microservices/${repo}.git"
     cd "$repo"
