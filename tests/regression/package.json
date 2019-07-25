@@ -4,7 +4,7 @@
   "description": "Tests checking for regressions on omg-cli",
   "main": "index.js",
   "scripts": {
-    "test-post-build": "./test.sh"
+    "test-post-build-disable": "./test.sh"
   },
   "repository": {
     "type": "git",

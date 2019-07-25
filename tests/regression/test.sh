@@ -4,10 +4,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if [[ "$OSTYPE" == "linux-gnu" ]];
 then
-    export PATH="$DIR/bin/linux:$DIR/bin/omg:$PATH"
+    export PATH="$DIR/bin/linux:$DIR/bin:$PATH"
 elif [[ "$OSTYPE" == "darwin"* ]];
 then
-    export PATH="$DIR/bin/osx:$DIR/bin/omg:$PATH"
+    export PATH="$DIR/bin/osx:$DIR/bin:$PATH"
 fi
 
 
@@ -22,13 +22,13 @@ cd repos
 for repo in clojure d go node java python php ruby rust scala ; do
     echo "===== Testing $repo ====="
     git clone -q --depth 1 "https://github.com/microservices/${repo}.git"
-    ( cd "$repo";
-        output="$(omg run --raw message -a name="Peter" | jq -c .)";
-        if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
-    )
+    cd "$repo"
+    output="$(omg run --raw message -a name="Peter" | jq -c .)"
+    if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
+    cd ..
 done
 
-# for repo in python-events node-events; do
+# for repo in python-events node-events ; do
 #     echo "===== Testing $repo ====="
 #     git clone -q "https://github.com/microservices/${repo}.git"
 #     ( cd "$repo";
