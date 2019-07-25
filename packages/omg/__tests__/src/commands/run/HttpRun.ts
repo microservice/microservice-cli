@@ -37,7 +37,7 @@ describe('HttpRun.js', () => {
   });
 
   describe('.startService()', () => {
-    test('starts service with lifecycle', async () => {
+    it('starts service with lifecycle', async () => {
       const containerID = await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         info: {
