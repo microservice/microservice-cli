@@ -13,16 +13,16 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-omg-{{ checksum "packages/omg/yarn.lock" }}
-            - v1-dependencies-omg
+            - v2-dependencies-omg-{{ checksum "packages/omg/yarn.lock" }}
+            - v2-dependencies-omg
       - restore_cache:
           keys:
-            - v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/yarn.lock" }}
-            - v1-dependencies-omg-ui
+            - v2-dependencies-omg-ui-{{ checksum "packages/omg-ui/yarn.lock" }}
+            - v2-dependencies-omg-ui
       - restore_cache:
           keys:
-            - v1-dependencies-omg-validate-{{ checksum "packages/omg-validate/yarn.lock" }}
-            - v1-dependencies-omg-validate
+            - v2-dependencies-omg-validate-{{ checksum "packages/omg-validate/yarn.lock" }}
+            - v2-dependencies-omg-validate
       - run:
           name: Installing Lerna
           command: yarn
@@ -30,17 +30,17 @@ jobs:
           name: Install local dependencies
           command: yarn bootstrap
       - save_cache:
-          key: v1-dependencies-omg-{{ checksum "packages/omg/yarn.lock" }}
+          key: v2-dependencies-omg-{{ checksum "packages/omg/yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - packages/omg/node_modules
       - save_cache:
-          key: v1-dependencies-omg-ui-{{ checksum "packages/omg-ui/yarn.lock" }}
+          key: v2-dependencies-omg-ui-{{ checksum "packages/omg-ui/yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - packages/omg-ui/node_modules
       - save_cache:
-          key: v1-dependencies-omg-validate-{{ checksum "packages/omg-validate/yarn.lock" }}
+          key: v2-dependencies-omg-validate-{{ checksum "packages/omg-validate/yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - packages/omg-validate/node_modules
@@ -80,32 +80,29 @@ jobs:
           at: ~/project
       - restore_cache:
           keys:
-            - v1-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v1-dist-omg-
+            - v2-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v2-dist-omg-
       - restore_cache:
           keys:
-            - v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v1-dist-omg-ui-
+            - v2-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v2-dist-omg-ui-
       - restore_cache:
           keys:
-            - v1-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v1-dist-omg-validate-
-      - run:
-          name: Rebuilding node-sass
-          command: npm rebuild node-sass
+            - v2-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v2-dist-omg-validate-
       - run:
           name: Building
           command: yarn build
       - save_cache:
-          key: v1-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v2-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - packages/omg/dist
       - save_cache:
-          key: v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v2-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - packages/omg-ui/dist
       - save_cache:
-          key: v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v2-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - packages/omg-validate/dist
       - persist_to_workspace:
@@ -120,23 +117,23 @@ jobs:
           at: ~/project
       - restore_cache:
           keys:
-            - v1-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v1-dist-omg-
+            - v2-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v2-dist-omg-
       - restore_cache:
           keys:
-            - v1-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v1-dist-omg-ui-
+            - v2-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v2-dist-omg-ui-
       - restore_cache:
           keys:
-            - v1-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v1-dist-omg-validate-
+            - v2-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v2-dist-omg-validate-
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
           name: Run test
           command: yarn test-post-build
       - save_cache:
-          key: v1-test-post-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v2-test-post-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - tests
       - persist_to_workspace:
