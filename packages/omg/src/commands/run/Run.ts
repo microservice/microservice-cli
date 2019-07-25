@@ -217,6 +217,18 @@ export default abstract class Run {
       })
     }
 
+    let HostConfig
+    if (process.platform !== 'darwin') {
+      HostConfig = {
+        PortBindings: this.portBindings,
+        ExtraHosts: [await getHostIp()]
+      }
+    } else {
+      HostConfig = {
+        PortBindings: this.portBindings
+      }
+    }
+
     const container = await utils.docker.createContainer({
       Image: this.dockerImage,
       Cmd: this.microservice.lifecycle
@@ -224,10 +236,7 @@ export default abstract class Run {
         : null,
       Env: this.formatEnvironmentVariables(),
       ExposedPorts: this.exposedPorts,
-      HostConfig: {
-        PortBindings: this.portBindings,
-        ExtraHosts: process.platform !== 'darwin' ? [await getHostIp()] : []
-      }
+      HostConfig
     })
     await container.start()
 

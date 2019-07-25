@@ -37,7 +37,7 @@ describe('HttpRun.js', () => {
   });
 
   describe('.startService()', () => {
-    it('starts service with lifecycle', async () => {
+    test('starts service with lifecycle', async () => {
       const containerID = await new HttpRun('fake_docker_id', new Microservice({
         omg: 1,
         info: {
@@ -86,7 +86,6 @@ describe('HttpRun.js', () => {
               },
             ],
           },
-          ExtraHosts: [],
         },
       })).toBeTruthy();
       expect(containerID).toBe('fake_docker_id');
