@@ -2,14 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if [[ "$OSTYPE" == "linux-gnu" ]];
-then
-    export PATH="$DIR/bin/linux:$DIR/bin:$PATH"
-elif [[ "$OSTYPE" == "darwin"* ]];
-then
-    export PATH="$DIR/bin/osx:$DIR/bin:$PATH"
-fi
-
+export PATH="$DIR/bin/linux:$PATH"
 
 echo $PATH
 
