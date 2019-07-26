@@ -114,7 +114,6 @@ jobs:
     machine:
       image: circleci/classic:latest
       docker_layer_caching: true
-      working_directory: ~/project/omg
     steps:
       - attach_workspace:
           at: ~/project
@@ -135,7 +134,7 @@ jobs:
             node -v
       - run:
           name: Run test
-          command: npm run test-post-build
+          command: cd ~/project/omg && npm run test-post-build
       - save_cache:
           key: v3-test-post-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
