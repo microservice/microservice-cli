@@ -33,7 +33,8 @@ export default class Cli {
    */
   constructor() {
     if (
-      (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) ||
+      ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) &&
+        !fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) ||
         !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) &&
       !process.argv.includes('--help') &&
       !process.argv.includes('-h') &&
@@ -43,7 +44,7 @@ export default class Cli {
       process.argv.length > 2
     ) {
       utils.error(
-        'Must be ran in a directory with a `Dockerfile` and a `microservice.yml`'
+        'Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`'
       )
       process.exit(1)
     }
@@ -67,9 +68,7 @@ export default class Cli {
    */
   buildMicroservice(): void {
     try {
-      const json = YAML.parse(
-        fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString()
-      )
+      const json = YAML.parse(utils.readMicroserviceFile())
       this.microservice = new Microservice(json)
     } catch (e) {
       Cli.validate({})
@@ -230,12 +229,7 @@ export default class Cli {
   static validate(options: any): void {
     try {
       utils.log(
-        new OMGValidate(
-          fs
-            .readFileSync(path.join(process.cwd(), 'microservice.yml'))
-            .toString(),
-          options
-        ).validate()
+        new OMGValidate(utils.readMicroserviceFile(), options).validate()
       )
       process.exit(0)
     } catch (e) {
@@ -563,7 +557,7 @@ export default class Cli {
     try {
       this.uiServer = new UIServer(
         options,
-        Cli.readYAML(path.join(process.cwd(), 'microservice.yml'), true)
+        Cli.readYAML(utils.getMicroserviceFilePath(), true)
       )
       this.uiServer.startUI(options.open ? true : false)
 
@@ -575,7 +569,7 @@ export default class Cli {
           if (event === 'change') {
             this.uiServer.rebuild(
               {},
-              Cli.readYAML(path.join(process.cwd(), 'microservice.yml'), true),
+              Cli.readYAML(utils.getMicroserviceFilePath(), true),
               true,
               appPath
             )
@@ -614,7 +608,7 @@ export default class Cli {
    * @param  {any} options Provided options for 'list' action
    */
   list(options: any): void {
-    const json = Cli.readYAML(path.join(process.cwd(), 'microservice.yml'))
+    const json = Cli.readYAML(utils.getMicroserviceFilePath())
     try {
       utils.checkActionInterface(json)
       const m = new Microservice(json)
