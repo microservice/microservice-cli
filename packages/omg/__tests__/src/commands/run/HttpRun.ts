@@ -70,7 +70,7 @@ describe('HttpRun.js', () => {
         }
       }), {}, {}).startService();
 
-      if (process.platform !== 'darwin') {
+      if (!['darwin', 'win32'].includes(process.platform)) {
         expect(utilsDockerCreateContainer.calledWith({
           Image: 'fake_docker_id',
           Cmd: [

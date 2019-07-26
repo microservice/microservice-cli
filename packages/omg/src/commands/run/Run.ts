@@ -228,7 +228,7 @@ export default abstract class Run {
       ExposedPorts: this.exposedPorts,
       HostConfig: {
         PortBindings: this.portBindings,
-        ExtraHosts: process.platform !== 'darwin' ? [await Run.getHostIp()] : []
+        ExtraHosts: !['darwin', 'win32'].includes(process.platform) ? [await Run.getHostIp()] : []
       }
     })
     await container.start()
