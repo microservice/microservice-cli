@@ -131,11 +131,10 @@ jobs:
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
             nvm install node && \
-            node -v && \
-            sudo npm install -g yarn
+            node -v
       - run:
           name: Run test
-          command: yarn test-post-build
+          command: npm run test-post-build
       - save_cache:
           key: v3-test-post-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
