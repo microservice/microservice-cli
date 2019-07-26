@@ -3,7 +3,7 @@ import * as rp from 'request-promise';
 import HttpRun from '../../../../src/commands/run/HttpRun';
 import { Microservice } from 'omg-validate';
 import * as utils from '../../../../src/utils';
-import 'jest'
+import Run from '../../../../src/commands/run/Run';
 
 describe('HttpRun.js', () => {
   let rpGetStub;
@@ -25,6 +25,7 @@ describe('HttpRun.js', () => {
         },
       };
     });
+    Run.getHostIp = jest.fn().mockImplementation(async () => 'host.docker.internal toto');
     sinon.stub(utils, 'getOpenPort').callsFake(async () => 5555);
   });
 
@@ -69,26 +70,51 @@ describe('HttpRun.js', () => {
         }
       }), {}, {}).startService();
 
-      expect(utilsDockerCreateContainer.calledWith({
-        Image: 'fake_docker_id',
-        Cmd: [
-          'node',
-          'app.js',
-        ],
-        Env: [],
-        ExposedPorts: {
-          '5555/tcp': {},
-        },
-        HostConfig: {
-          PortBindings: {
-            '5555/tcp': [
-              {
-                HostPort: '5555',
-              },
-            ],
+      if (!['darwin', 'win32'].includes(process.platform)) {
+        expect(utilsDockerCreateContainer.calledWith({
+          Image: 'fake_docker_id',
+          Cmd: [
+            'node',
+            'app.js',
+          ],
+          Env: [],
+          ExposedPorts: {
+            '5555/tcp': {},
           },
-        },
-      })).toBeTruthy();
+          HostConfig: {
+            PortBindings: {
+              '5555/tcp': [
+                {
+                  HostPort: '5555',
+                },
+              ],
+            },
+            ExtraHosts: ['host.docker.internal toto']
+          },
+        })).toBeTruthy();
+      } else {
+        expect(utilsDockerCreateContainer.calledWith({
+          Image: 'fake_docker_id',
+          Cmd: [
+            'node',
+            'app.js',
+          ],
+          Env: [],
+          ExposedPorts: {
+            '5555/tcp': {},
+          },
+          HostConfig: {
+            PortBindings: {
+              '5555/tcp': [
+                {
+                  HostPort: '5555',
+                },
+              ],
+            },
+            ExtraHosts: []
+          },
+        })).toBeTruthy();
+      }
       expect(containerID).toBe('fake_docker_id');
     });
   });

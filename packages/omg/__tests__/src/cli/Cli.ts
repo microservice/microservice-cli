@@ -7,7 +7,6 @@ import Run from '../../../src/commands/run/Run';
 import FormatRun from '../../../src/commands/run/FormatRun';
 import Subscribe from '../../../src/commands/Subscribe';
 import Cli from '../../../src/cli/Cli';
-import 'jest'
 
 describe('Cli.ts', () => {
   let processExitStub

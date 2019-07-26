@@ -116,7 +116,10 @@ export function verifyOutputType(command: Command, output: string) {
     const props = command.output.properties
     const json = JSON.parse(output)
     Object.keys(props).forEach(key => {
-      if (!dataTypes[props[key].type](JSON.stringify(json[key]))) {
+      if (
+        props[key].type in dataTypes &&
+        !dataTypes[props[key].type](JSON.stringify(json[key]))
+      ) {
         const typeFound = (json, key): string => {
           if (
             typeof json[key] === 'number' &&

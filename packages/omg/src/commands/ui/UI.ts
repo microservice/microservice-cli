@@ -538,9 +538,7 @@ export default class UIServer {
       this.dockerContainer
     )
     try {
-      const hostIp = (await this.dockerContainer.getInspect()).NetworkSettings
-        .IPAddress
-      await this.subscribe.go(data.action, data.event, hostIp)
+      await this.subscribe.go(data.action, data.event)
       this.socket.emit('subscribe', {
         notif: `Subscribed to event: \`${
           data.event

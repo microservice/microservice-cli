@@ -1,6 +1,7 @@
 import * as utils from '../../utils'
 import * as verify from '../../verify'
 import * as rp from 'request-promise'
+import * as $ from 'shelljs'
 import { Action, Microservice } from 'omg-validate'
 
 /**
@@ -176,6 +177,24 @@ export default abstract class Run {
   public abstract setArgs(args: any): void
 
   /**
+   * @return {Promise} Return the host IP
+   */
+  public static getHostIp(): Promise<string> {
+    const hostDomain = 'host.docker.internal'
+    return new Promise<string>((resolve, reject) => {
+      $.exec(
+        'ip -4 addr show docker0',
+        { silent: true },
+        (code, stdout, stderr) => {
+          if (code === 0) {
+            resolve(`${hostDomain}:${stdout.match(/inet ([\d.]+)/)[1]}`)
+          }
+          reject()
+        }
+      )
+    })
+  }
+  /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
    *
    * @param {boolean} [inheritEnv=false] Boolean that allows to get env from host env or not
@@ -208,7 +227,8 @@ export default abstract class Run {
       Env: this.formatEnvironmentVariables(),
       ExposedPorts: this.exposedPorts,
       HostConfig: {
-        PortBindings: this.portBindings
+        PortBindings: this.portBindings,
+        ExtraHosts: !['darwin', 'win32'].includes(process.platform) ? [await Run.getHostIp()] : []
       }
     })
     await container.start()
@@ -323,17 +343,11 @@ export default abstract class Run {
   /**
    * Gets health status of the service
    *
+   * @param  {number} boundPort port used for health checking
    * @param  {number} timeout Optionnal timeout, used during healthcheck
    * @return {Promise} Empty promise
    */
-  private async isHealthy(timeout?: number): Promise<void> {
-    let boundPort = -1
-    Object.keys(this.portBindings).forEach(p => {
-      const port = parseInt(p.match(/[\d]*/)[0], 10)
-      if (port === utils.getHealthPort(this.microservice)) {
-        boundPort = this.portBindings[p][0].HostPort
-      }
-    })
+  private async isHealthy(boundPort: number, timeout?: number): Promise<void> {
     return new Promise((resolve, reject) => {
       const promise = rp.get({
         uri: `http://localhost:${boundPort}${this.microservice.health.path}`,
@@ -357,7 +371,7 @@ export default abstract class Run {
               break
           }
         })
-        .catch(() => {
+        .catch(e => {
           reject()
         })
     })
@@ -372,12 +386,20 @@ export default abstract class Run {
     const timeout = 500
     const interval = 100
     const retries: number = 100
+    let boundPort = -1
+
+    Object.keys(this.portBindings).forEach(p => {
+      const port = parseInt(p.match(/[\d]*/)[0], 10)
+      if (port === utils.getHealthPort(this.microservice)) {
+        boundPort = this.portBindings[p][0].HostPort
+      }
+    })
 
     return new Promise(async (resolve, reject) => {
       await utils.sleep(10)
       for (let i = retries; i > 0; i--) {
         if (this.microservice.health) {
-          await this.isHealthy(timeout)
+          await this.isHealthy(boundPort, timeout)
             .then(() => {
               i = 0
               resolve(true)

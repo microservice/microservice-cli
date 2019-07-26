@@ -1,6 +1,5 @@
 import * as utils from '../../src/utils'
 import { EnvironmentVariable, Microservice } from 'omg-validate'
-import 'jest'
 
 describe('utils.ts', () => {
   describe('setVal(val, _else)', () => {
