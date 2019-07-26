@@ -141,8 +141,7 @@ module.exports = {
         '^[a-zA-Z_][a-zA-Z_0-9]*$': {
           type: 'object'
         }
-      },
-      additionalProperties: false
+      }
     },
     health: {
       type: 'object'

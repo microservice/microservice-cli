@@ -1,9 +1,10 @@
 import * as utils from '../../src/utils'
 import { EnvironmentVariable, Microservice } from 'omg-validate'
+import * as sinon from 'sinon'
 
 describe('utils.ts', () => {
   describe('setVal(val, _else)', () => {
-    test('sets the value to val because it\'s given', () => {
+    test(`sets the value to val because it's given`, () => {
       expect(utils.setVal(1, 3)).toBe(1)
     })
 
@@ -86,6 +87,37 @@ describe('utils.ts', () => {
       })
 
       expect(utils.getNeededPorts(m)).toEqual([5050, 6060, 6061])
+    })
+
+    test('returns a forward port', () => {
+      const m = new Microservice({
+        omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests'
+        },
+        lifecycle: {
+          startup: {
+            command: 'server.sh'
+          }
+        },
+        health: {
+          http: {
+            path: '/health',
+            port: 5050
+          }
+        },
+        forward: {
+          ui: {
+            http: {
+              path: '/ui',
+              port: 8080
+            }
+          }
+        }
+      })
+      expect(utils.getNeededPorts(m)).toEqual([8080, 5050])
     })
   })
 
@@ -257,6 +289,114 @@ describe('utils.ts', () => {
       expect(port <= 17000).toBeTruthy()
       expect(port >= 2000).toBeTruthy()
       done()
+    })
+  })
+
+  describe('sleep(ms)', () => {
+    test('waits the given time in ms', async () => {
+      const start = Date.now()
+      await utils.sleep(1000)
+      const end = Date.now()
+
+      expect(end - start).toBeGreaterThanOrEqual(1000)
+    })
+  })
+
+  describe('getForwardPorts(microservice)', () => {
+    test('returns a forward port', () => {
+      const m = new Microservice({
+        omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests'
+        },
+        lifecycle: {
+          startup: {
+            command: 'server.sh'
+          }
+        },
+        health: {
+          http: {
+            path: '/health',
+            port: 5050
+          }
+        },
+        forward: {
+          ui: {
+            http: {
+              path: '/ui',
+              port: 8080
+            }
+          }
+        }
+      })
+      expect(utils.getForwardPorts(m)).toEqual([8080])
+    })
+  })
+
+  describe('getHealthPort(microservice)', () => {
+    test('returns the health port', () => {
+      const m = new Microservice({
+        omg: 1,
+        info: {
+          version: '1.0.0',
+          title: 'test',
+          description: 'for tests'
+        },
+        lifecycle: {
+          startup: {
+            command: 'server.sh'
+          }
+        },
+        health: {
+          http: {
+            path: '/health',
+            port: 5050
+          }
+        }
+      })
+      expect(utils.getHealthPort(m)).toEqual(5050)
+    })
+  })
+
+  describe('createImageName()', () => {
+    let utilsExecRemote
+
+    afterEach(() => {
+      (utils.exec as any).restore()
+    })
+
+    test('returns the git remote', async () => {
+      utilsExecRemote = sinon.stub(utils, 'exec').callsFake(async () => {
+        return 'origin  git@github.com:microservices/omg.git (fetch)\norigin  git@github.com:microservices/omg.git (push)'
+      })
+
+      expect(await utils.createImageName()).toBe('omg/microservices/omg')
+    })
+
+    test('returns the git remote for UI', async () => {
+      utilsExecRemote = sinon.stub(utils, 'exec').callsFake(async () => {
+        return 'origin  git@github.com:microservices/omg.git (fetch)\norigin  git@github.com:microservices/omg.git (push)'
+      })
+
+      expect(await utils.createImageName(true)).toBe('microservices/omg')
+    })
+
+    test('returns the http', async () => {
+      utilsExecRemote = sinon.stub(utils, 'exec').callsFake(async () => {
+        return 'origin  https://github.com/microservice/machinebox-classificationbox (fetch)\norigin  https://github.com/microservice/machinebox-classificationbox (push)'
+      })
+
+      expect(await utils.createImageName()).toBe('omg/microservices/omg')
+    })
+
+    test('returns the http for UI', async () => {
+      utilsExecRemote = sinon.stub(utils, 'exec').callsFake(async () => {
+        return 'origin  https://github.com/microservice/machinebox-classificationbox (fetch)\norigin  https://github.com/microservice/machinebox-classificationbox (push)'
+      })
+
+      expect(await utils.createImageName(true)).toBe('microservices/omg')
     })
   })
 })

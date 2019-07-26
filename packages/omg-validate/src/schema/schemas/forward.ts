@@ -2,7 +2,6 @@ module.exports = {
   type: 'object',
   properties: {
     http: {
-      type: 'object',
       properties: {
         path: {
           type: 'string',

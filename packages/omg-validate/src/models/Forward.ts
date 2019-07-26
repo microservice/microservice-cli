@@ -20,15 +20,17 @@ export default class Forward {
       isValid.text = isValid.text.replace(/data/g, `forward.${name}`)
       throw isValid
     }
-    Object.keys(actionMap).forEach(actionName => {
-      if (actionMap[actionName].http.port === rawForward.http.port) {
-        throw {
-          text: `Foward \`${name}\`: port ${
-            rawForward.http.port
-          } already used by action ${actionMap[actionName].name}`
+    if (actionMap !== null) {
+      Object.keys(actionMap).forEach(actionName => {
+        if (actionMap[actionName].http.port === rawForward.http.port) {
+          throw {
+            text: `Foward \`${name}\`: port ${
+              rawForward.http.port
+            } already used by action ${actionMap[actionName].name}`
+          }
         }
-      }
-    })
+      })
+    }
     Object.keys(forwardMap).forEach(forwardName => {
       if (forwardMap[forwardName].http.port === rawForward.http.port) {
         throw {

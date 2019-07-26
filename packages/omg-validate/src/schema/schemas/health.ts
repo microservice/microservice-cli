@@ -11,7 +11,8 @@ module.exports = {
           type: 'integer'
         }
       },
-      required: ['path', 'port']
+      required: ['path', 'port'],
+      additionalProperties: false
     }
   },
   required: ['http'],
