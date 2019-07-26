@@ -177,6 +177,24 @@ export default abstract class Run {
   public abstract setArgs(args: any): void
 
   /**
+   * @return {Promise} Return the host IP
+   */
+  public static getHostIp(): Promise<string> {
+    const hostDomain = 'host.docker.internal'
+    return new Promise<string>((resolve, reject) => {
+      $.exec(
+        'ip -4 addr show docker0',
+        { silent: true },
+        (code, stdout, stderr) => {
+          if (code === 0) {
+            resolve(`${hostDomain}:${stdout.match(/inet ([\d.]+)/)[1]}`)
+          }
+          reject()
+        }
+      )
+    })
+  }
+  /**
    * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
    *
    * @param {boolean} [inheritEnv=false] Boolean that allows to get env from host env or not
@@ -201,22 +219,6 @@ export default abstract class Run {
       ]
     }
 
-    const getHostIp = async () => {
-      const hostDomain = 'host.docker.internal'
-      return new Promise<string>((resolve, reject) => {
-        $.exec(
-          'ip -4 addr show docker0',
-          { silent: true },
-          (code, stdout, stderr) => {
-            if (code === 0) {
-              resolve(`${hostDomain}:${stdout.match(/inet ([\d.]+)/)[1]}`)
-            }
-            reject()
-          }
-        )
-      })
-    }
-
     const container = await utils.docker.createContainer({
       Image: this.dockerImage,
       Cmd: this.microservice.lifecycle
@@ -226,7 +228,7 @@ export default abstract class Run {
       ExposedPorts: this.exposedPorts,
       HostConfig: {
         PortBindings: this.portBindings,
-        ExtraHosts: process.platform !== 'darwin' ? [await getHostIp()] : []
+        ExtraHosts: process.platform !== 'darwin' ? [await Run.getHostIp()] : []
       }
     })
     await container.start()
