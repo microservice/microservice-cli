@@ -126,6 +126,13 @@ jobs:
             - v3-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
             - v3-dist-omg-validate-
       - run:
+          name: Install node and yarn
+          command: |
+            wget -qO- https://deb.nodesource.com/setup_12.x | sudo -E bash && \
+            sudo apt-get install -y nodejs && \
+            node -v && \
+            sudo npm install -g yarn
+      - run:
           name: Run test
           command: yarn test-post-build
       - save_cache:
