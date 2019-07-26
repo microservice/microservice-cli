@@ -1,6 +1,8 @@
 import * as _ from 'underscore'
 import * as $ from 'shelljs'
 import * as net from 'http'
+import * as fs from 'fs'
+import * as path from 'path'
 import { EnvironmentVariable, Microservice } from 'omg-validate'
 const Docker = require('dockerode-promise')
 const LineUp = require('lineup')
@@ -469,5 +471,39 @@ export function showVersionCard() {
       align: 'center',
       color: 'red'
     })
+  }
+}
+
+/**
+ * @return string Content of the microservice file
+ */
+export function readMicroserviceFile(): string {
+  let content = ''
+  try {
+    content = fs
+      .readFileSync(path.join(process.cwd(), 'microservice.yml'))
+      .toString()
+  } catch {
+    try {
+      content = fs
+        .readFileSync(path.join(process.cwd(), 'microservice.yaml'))
+        .toString()
+    } catch {
+      content = ''
+    }
+  }
+  return content
+}
+
+/**
+ * @return string microservice file path
+ */
+export function getMicroserviceFilePath(): string {
+  if (fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
+    return path.join(process.cwd(), 'microservice.yml')
+  } else if (fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) {
+    return path.join(process.cwd(), 'microservice.yaml')
+  } else {
+    return null
   }
 }

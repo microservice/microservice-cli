@@ -132,11 +132,12 @@ if (
   theArgs[1] !== '--help'
 ) {
   if (
-    !fs.existsSync(path.join(process.cwd(), 'microservice.yml')) ||
+    (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) &&
+      !fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) ||
     !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))
   ) {
     utils.error(
-      'Must be ran in a directory with a `Dockerfile` and a `microservice.yml`'
+      'Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`'
     )
     process.exit(1)
   }
@@ -157,11 +158,12 @@ if (
   theArgs[1] !== '--help'
 ) {
   if (
-    !fs.existsSync(path.join(process.cwd(), 'microservice.yml')) ||
+    (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) &&
+      !fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) ||
     !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))
   ) {
     utils.error(
-      'Must be ran in a directory with a `Dockerfile` and a `microservice.yml`'
+      'Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`'
     )
     process.exit(1)
   }
