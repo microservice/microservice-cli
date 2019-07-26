@@ -2,27 +2,36 @@ version: 2
 
 defaults: &defaults
   working_directory: ~/project/omg
-  docker:
-    - image: circleci/node:lts
+  machine:
+    image: circleci/classic:latest
 
 jobs:
   # Install dependencies, restore/save them to cache, add them to the current workspace
   install:
     <<: *defaults
     steps:
+      - run:
+          name: Installing node
+          command: nvm install node
+      - run:
+          name: Installing yarn
+          command: |
+            curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+            echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+            sudo apt-get update && sudo apt-get -y install yarn
       - checkout
       - restore_cache:
           keys:
-            - v2-dependencies-omg-{{ checksum "packages/omg/yarn.lock" }}
-            - v2-dependencies-omg
+            - v3-dependencies-omg-{{ checksum "packages/omg/yarn.lock" }}
+            - v3-dependencies-omg
       - restore_cache:
           keys:
-            - v2-dependencies-omg-ui-{{ checksum "packages/omg-ui/yarn.lock" }}
-            - v2-dependencies-omg-ui
+            - v3-dependencies-omg-ui-{{ checksum "packages/omg-ui/yarn.lock" }}
+            - v3-dependencies-omg-ui
       - restore_cache:
           keys:
-            - v2-dependencies-omg-validate-{{ checksum "packages/omg-validate/yarn.lock" }}
-            - v2-dependencies-omg-validate
+            - v3-dependencies-omg-validate-{{ checksum "packages/omg-validate/yarn.lock" }}
+            - v3-dependencies-omg-validate
       - run:
           name: Installing Lerna
           command: yarn
@@ -30,17 +39,17 @@ jobs:
           name: Install local dependencies
           command: yarn bootstrap
       - save_cache:
-          key: v2-dependencies-omg-{{ checksum "packages/omg/yarn.lock" }}
+          key: v3-dependencies-omg-{{ checksum "packages/omg/yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - packages/omg/node_modules
       - save_cache:
-          key: v2-dependencies-omg-ui-{{ checksum "packages/omg-ui/yarn.lock" }}
+          key: v3-dependencies-omg-ui-{{ checksum "packages/omg-ui/yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - packages/omg-ui/node_modules
       - save_cache:
-          key: v2-dependencies-omg-validate-{{ checksum "packages/omg-validate/yarn.lock" }}
+          key: v3-dependencies-omg-validate-{{ checksum "packages/omg-validate/yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - packages/omg-validate/node_modules
@@ -80,29 +89,29 @@ jobs:
           at: ~/project
       - restore_cache:
           keys:
-            - v2-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v2-dist-omg-
+            - v3-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v3-dist-omg-
       - restore_cache:
           keys:
-            - v2-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v2-dist-omg-ui-
+            - v3-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v3-dist-omg-ui-
       - restore_cache:
           keys:
-            - v2-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v2-dist-omg-validate-
+            - v3-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v3-dist-omg-validate-
       - run:
           name: Building
           command: yarn build
       - save_cache:
-          key: v2-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v3-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - packages/omg/dist
       - save_cache:
-          key: v2-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v3-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - packages/omg-ui/dist
       - save_cache:
-          key: v2-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v3-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - packages/omg-validate/dist
       - persist_to_workspace:
@@ -117,23 +126,23 @@ jobs:
           at: ~/project
       - restore_cache:
           keys:
-            - v2-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v2-dist-omg-
+            - v3-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v3-dist-omg-
       - restore_cache:
           keys:
-            - v2-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v2-dist-omg-ui-
+            - v3-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v3-dist-omg-ui-
       - restore_cache:
           keys:
-            - v2-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v2-dist-omg-validate-
+            - v3-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+            - v3-dist-omg-validate-
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
           name: Run test
           command: yarn test-post-build
       - save_cache:
-          key: v2-test-post-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v3-test-post-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - tests
       - persist_to_workspace:
