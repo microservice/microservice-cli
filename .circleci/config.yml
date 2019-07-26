@@ -3,7 +3,7 @@ version: 2
 defaults: &defaults
   working_directory: ~/project/omg
   docker:
-    image: circleci/node:latest
+    - image: circleci/node:latest
 
 jobs:
   # Install dependencies, restore/save them to cache, add them to the current workspace
