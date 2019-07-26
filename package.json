@@ -13,7 +13,7 @@
     "coverage": "lerna run --parallel coverage",
     "build": "lerna run --parallel build",
     "test-post-build": "lerna run --parallel test-post-build",
-    "publish": "yarn bootstrap && yarn build && yarn test && yarn test-post-build && lerna publish --from-package",
+    "publish": "yarn bootstrap && yarn build && yarn test && yarn test-post-build && lerna publish",
     "version": "lerna version --no-git-tag-version --no-push"
   },
   "bin": "omg"
