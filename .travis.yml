@@ -5,5 +5,8 @@ node_js:
 services:
   - docker
 
+before_install:
+  - npm i -g omg
+
 script:
   - cd tests/regression && ./travis.sh
