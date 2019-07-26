@@ -111,7 +111,8 @@ jobs:
             - omg
 
   test-post-build:
-    <<: *defaults
+    machine:
+      image: circleci/classic:latest
     steps:
       - attach_workspace:
           at: ~/project
@@ -119,10 +120,6 @@ jobs:
           keys:
             - v3-dist-omg-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
             - v3-dist-omg-
-      - restore_cache:
-          keys:
-            - v3-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v3-dist-omg-ui-
       - restore_cache:
           keys:
             - v3-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
