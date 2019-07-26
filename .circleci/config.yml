@@ -128,8 +128,9 @@ jobs:
       - run:
           name: Install node and yarn
           command: |
-            wget -qO- https://deb.nodesource.com/setup_12.x | sudo -E bash && \
-            sudo apt-get install -y nodejs && \
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
+            nvm install node && \
             node -v && \
             sudo npm install -g yarn
       - run:
