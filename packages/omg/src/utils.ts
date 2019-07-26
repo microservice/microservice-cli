@@ -475,7 +475,7 @@ export function showVersionCard() {
 }
 
 /**
- * @return string Content of the microservice file
+ * @return {string} Content of the microservice file
  */
 export function readMicroserviceFile(): string {
   let content = ''
@@ -496,7 +496,7 @@ export function readMicroserviceFile(): string {
 }
 
 /**
- * @return string microservice file path
+ * @return {string} microservice file path
  */
 export function getMicroserviceFilePath(): string {
   if (fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
