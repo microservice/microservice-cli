@@ -7,6 +7,7 @@
     "yarn": "^1.16.0"
   },
   "scripts": {
+    "link-bin": "(cd packages/omg; yarn link)",
     "bootstrap": "lerna bootstrap --npm-client=yarn",
     "lint": "lerna run --parallel lint",
     "test": "lerna run --parallel test",
