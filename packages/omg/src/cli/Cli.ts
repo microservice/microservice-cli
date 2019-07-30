@@ -410,8 +410,8 @@ export default class Cli {
                         break
                     }
                   })
-                  .catch(() => {
-                    reject()
+                  .catch(e => {
+                    reject(e)
                   })
               })
             }
@@ -423,14 +423,12 @@ export default class Cli {
                 }
                 resolve(res)
               })
-              .catch(async () => {
+              .catch(async e => {
                 if (i === 1) {
                   if (!options.raw) {
                     ora.fail('Default health check failed')
                   }
-                  reject(
-                    'Action did not returned a valid HTTP response code (2xx/3xx)'
-                  )
+                  reject(e)
                 }
                 await utils.sleep(100)
               })

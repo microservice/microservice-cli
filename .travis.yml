@@ -6,7 +6,7 @@ services:
   - docker
 
 before_install:
-  - npm i omg
+  - npm i -g omg
 
 script:
-  - cd tests/regression && ./test.sh
+  - cd tests/regression && ./travis.sh

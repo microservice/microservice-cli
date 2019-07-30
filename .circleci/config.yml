@@ -121,14 +121,8 @@ jobs:
             - v3-dist-omg-
       - restore_cache:
           keys:
-            - v3-dist-omg-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v3-dist-omg-ui-
-      - restore_cache:
-          keys:
             - v3-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
             - v3-dist-omg-validate-
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run:
           name: Run test
           command: yarn test-post-build
