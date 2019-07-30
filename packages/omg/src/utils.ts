@@ -271,7 +271,7 @@ export const typeCast = {
 
 export const dataTypes = {
   int: (int: string): boolean => {
-    return int.match(/^[-+]?\d+$/) !== null
+    return int.toString().match(/^[-+]?\d+$/) !== null
   },
   float: (float: string): boolean => {
     return (
