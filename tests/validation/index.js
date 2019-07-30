@@ -21,7 +21,7 @@ const loading = () => {
             encoding: 'utf8'
           })
           const key = file.replace('.txt', '')
-          tests[key] = {}
+          tests[key] = { expect: '', content: '' }
           tests[key]['expect'] = content
           console.log(`${file} loaded`)
         }
