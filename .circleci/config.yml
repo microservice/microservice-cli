@@ -124,15 +124,8 @@ jobs:
             - v3-dist-omg-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
             - v3-dist-omg-validate-
       - run:
-          name: Install node and yarn
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
-            nvm install node && \
-            node -v
-      - run:
           name: Run test
-          command: cd ~/project/omg && npm run test-post-build
+          command: yarn test-post-build
       - save_cache:
           key: v3-test-post-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
