@@ -4,7 +4,7 @@ import * as querystring from 'querystring'
 import { Microservice } from 'omg-validate'
 import Run from './Run'
 import * as verify from '../../verify'
-import http from '../ui/wrappers/http'
+import * as FormData from 'form-data'
 
 /**
  * Represents a http execution of an {@link Action}.
@@ -78,6 +78,7 @@ export default class HttpRun extends Run {
       uri: string
       body?: string
       headers?: any
+      formData?: FormData
     } = {
       method: this.action.http.method.toUpperCase(),
       resolveWithFullResponse: tmpRetryExec,
@@ -87,9 +88,33 @@ export default class HttpRun extends Run {
       this.action.http.method === 'post' ||
       this.action.http.method === 'put'
     ) {
-      opts.body = JSON.stringify(httpData.jsonData)
-      opts.headers = {
-        'Content-Type': 'application/json'
+      switch (this.action.http.contentType) {
+        case 'multipart/form-data': {
+          opts.formData = this.jsonToFormData(httpData.jsonData)
+          opts.headers = opts.formData.getHeaders()
+          break
+        }
+        case 'application/x-www-form-urlencoded':
+          opts.body = Object.keys(httpData.jsonData)
+            .map(key => {
+              return (
+                encodeURIComponent(key) +
+                '=' +
+                encodeURIComponent(httpData.jsonData[key])
+              )
+            })
+            .join('&')
+          opts.headers = {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+          }
+          break
+        case 'application/json':
+        default: {
+          opts.body = JSON.stringify(httpData.jsonData)
+          opts.headers = {
+            'Content-Type': 'application/json'
+          }
+        }
       }
     }
     /**
@@ -107,12 +132,13 @@ export default class HttpRun extends Run {
       case 'get':
         data = await rp.get(opts.uri)
         break
-      case 'post':
+      case 'post': {
         data = await rp.post(opts.uri, {
           headers: opts.headers,
           body: opts.body
         })
         break
+      }
       case 'put':
         data = await rp.put(opts.uri, {
           headers: opts.headers,
@@ -163,6 +189,22 @@ export default class HttpRun extends Run {
       jsonData
     }
   }
+
+  /**
+   * Makes a FormData out of a JSON object
+   * Not used yet
+   *
+   * @param  {any} json JSON input
+   * @return {FormData} FormData
+   */
+  private jsonToFormData(json: any): FormData {
+    const form: FormData = new FormData()
+    Object.keys(json).forEach(key => {
+      form.append(key, json[key])
+    })
+    return form
+  }
+
   /**
    * @param  {any} args
    */

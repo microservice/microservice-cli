@@ -55,6 +55,7 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-typescript": "^0.13.0",
+    "form-data": "^2.5.0",
     "jest": "^24.8.0",
     "sinon": "^7.3.2",
     "ts-jest": "^24.0.2",
