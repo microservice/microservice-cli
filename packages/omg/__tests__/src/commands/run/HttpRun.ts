@@ -1,9 +1,9 @@
 import * as sinon from 'sinon'
 import * as rp from 'request-promise'
 import { Microservice } from 'omg-validate'
-import HttpRun from '../../../../src/commands/run/HttpRun'
-import * as utils from '../../../../src/utils'
-import Run from '../../../../src/commands/run/Run'
+import HttpRun from '~/commands/run/HttpRun'
+import * as utils from '~/utils'
+import Run from '~/commands/run/Run'
 
 describe('HttpRun.js', () => {
   let rpGetStub

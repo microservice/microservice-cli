@@ -1,6 +1,6 @@
 import * as sinon from 'sinon'
-import * as utils from '../../../src/utils'
-import Build from '../../../src/commands/Build'
+import * as utils from '~/utils'
+import Build from '~/commands/Build'
 
 describe('Build.ts', () => {
   describe('.go()', () => {

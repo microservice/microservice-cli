@@ -1,5 +1,5 @@
 import { Action, Microservice } from 'omg-validate'
-import * as verify from '../../src/verify'
+import * as verify from '~/verify'
 
 describe('verify.ts', () => {
   describe('verifyArgumentConstrains(command, args)', () => {

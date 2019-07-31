@@ -1,10 +1,10 @@
 import * as fs from 'fs'
 import * as sinon from 'sinon'
 import { Microservice } from 'omg-validate'
-import * as rp from '../../../src/request'
-import * as utils from '../../../src/utils'
-import Subscribe from '../../../src/commands/Subscribe'
-import HttpRun from '../../../src/commands/run/HttpRun'
+import * as rp from '~/request'
+import * as utils from '~/utils'
+import Subscribe from '~/commands/Subscribe'
+import HttpRun from '~/commands/run/HttpRun'
 
 describe('Subscribe.ts', () => {
   let rpMakeRequestStub

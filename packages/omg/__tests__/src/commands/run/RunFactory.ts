@@ -1,8 +1,8 @@
 import { Action, Microservice } from 'omg-validate'
-import RunFactory from '../../../../src/commands/run/RunFactory'
-import FormatRun from '../../../../src/commands/run/FormatRun'
-import EventRun from '../../../../src/commands/run/EventRun'
-import HttpRun from '../../../../src/commands/run/HttpRun'
+import RunFactory from '~/commands/run/RunFactory'
+import FormatRun from '~/commands/run/FormatRun'
+import EventRun from '~/commands/run/EventRun'
+import HttpRun from '~/commands/run/HttpRun'
 
 describe('RunFactory.ts', () => {
   describe('.getRun', () => {

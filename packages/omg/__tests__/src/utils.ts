@@ -1,6 +1,6 @@
 import { EnvironmentVariable, Microservice } from 'omg-validate'
 import * as sinon from 'sinon'
-import * as utils from '../../src/utils'
+import * as utils from '~/utils'
 
 describe('utils.ts', () => {
   describe('setVal(val, _else)', () => {

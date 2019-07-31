@@ -1,12 +1,12 @@
 import * as fs from 'fs'
 import * as sinon from 'sinon'
-import * as utils from '../../../src/utils'
-import ora from '../../../src/ora'
-import Build from '../../../src/commands/Build'
-import Run from '../../../src/commands/run/Run'
-import FormatRun from '../../../src/commands/run/FormatRun'
-import Subscribe from '../../../src/commands/Subscribe'
-import Cli from '../../../src/cli/Cli'
+import * as utils from '~/utils'
+import ora from '~/ora'
+import Build from '~/commands/Build'
+import Run from '~/commands/run/Run'
+import FormatRun from '~/commands/run/FormatRun'
+import Subscribe from '~/commands/Subscribe'
+import Cli from '~/cli/Cli'
 
 describe('Cli.ts', () => {
   let processExitStub

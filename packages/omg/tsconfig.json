@@ -17,7 +17,7 @@
     "target": "es2019",
     "lib": ["esnext"]
   },
-  "include": ["src"],
+  "include": ["src", "__tests__"],
   "exclude": [
     "node_modules"
   ]
