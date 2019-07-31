@@ -22,9 +22,9 @@
     "sb-babel-cli": "^2.0.0"
   },
   "scripts": {
-    "prettier:fix": "prettier --write packages/*/src/**/*.ts",
-    "lint:prettier": "prettier --list-different packages/*/src/**/*.ts",
-    "lint:eslint": "eslint . --ext .js,.ts",
+    "prettier:fix": "prettier --write packages/*/{src,__tests__}/**/*.ts",
+    "lint:prettier": "prettier --list-different packages/*/{src,__tests__}/**/*.ts",
+    "lint:eslint": "eslint . --ext .js,.ts --quiet",
     "bootstrap": "lerna bootstrap --npm-client=yarn",
     "test": "lerna run --parallel test",
     "coverage": "lerna run --parallel coverage",

@@ -21,6 +21,10 @@ module.exports = {
     'lines-between-class-members': 'off',
     'no-underscore-dangle': 'warn',
     '@typescript-eslint/explicit-member-accessibility': 'warn',
+    '@typescript-eslint/camelcase': 'warn',
+
+    // TODO: Eventually re-enable these after codebase is migrated
+    'no-throw-literal': 'warn',
   },
   env: {
     jest: true,
