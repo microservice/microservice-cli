@@ -20,7 +20,7 @@ export default class Action extends Command {
    * @param {String} name The given name
    * @param {Object} rawAction The raw data
    */
-  constructor(name: string, rawAction: any) {
+  public constructor(name: string, rawAction: any) {
     const isValid = validateAction(rawAction)
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(/data/g, `actions.${name}`)

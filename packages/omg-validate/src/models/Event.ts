@@ -18,7 +18,7 @@ export default class Event extends Command {
    * @param {String} actionName The name of this {@link Event}'s {@link Action}
    * @param {Object} rawEvent The raw data
    */
-  constructor(name: string, actionName: string, rawEvent: any) {
+  public constructor(name: string, actionName: string, rawEvent: any) {
     super(name, rawEvent, `${actionName}.events.${name}`)
     if (!dataTypes.map(rawEvent)) {
       rawEvent = {}

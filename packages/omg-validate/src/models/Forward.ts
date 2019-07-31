@@ -14,7 +14,7 @@ export default class Forward {
    * @param  {any} actionMap actionMap to compares available ports
    * @param  {any} forwardMap forwardMap to compares available ports
    */
-  constructor(name: string, rawForward: any, actionMap: any, forwardMap: any) {
+  public constructor(name: string, rawForward: any, actionMap: any, forwardMap: any) {
     const isValid = validateForward(rawForward)
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(/data/g, `forward.${name}`)

@@ -12,7 +12,7 @@ export default class Lifecycle {
    *
    * @param {Object} rawLifecycle The given raw data
    */
-  constructor(rawLifecycle: any) {
+  public constructor(rawLifecycle: any) {
     const isValid = validateLifecycle(rawLifecycle)
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(/data/g, 'lifecycle')

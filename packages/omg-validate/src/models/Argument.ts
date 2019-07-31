@@ -17,7 +17,7 @@ export default class Argument extends Item {
    * @param {String} pathToArgument The path in the `microservice.yml` to this {@link Argument}
    * @param {Object} rawArguments The given raw data
    */
-  constructor(name: string, pathToArgument: string, rawArguments: any) {
+  public constructor(name: string, pathToArgument: string, rawArguments: any) {
     const isValid = validateArgument(rawArguments)
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(/data/g, `actions.${pathToArgument}.arguments.${name}`)

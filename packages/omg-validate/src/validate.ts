@@ -17,7 +17,7 @@ export default class OMGValidate {
    * @param  {string} microservice microservice.yml as a string
    * @param  {any} opts optionnal options mostly used by omg-cli
    */
-  constructor(microservice: string, opts?: any) {
+  public constructor(microservice: string, opts?: any) {
     this._microservice = microservice
     this._opts = opts || {}
   }

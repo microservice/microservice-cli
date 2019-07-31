@@ -24,7 +24,7 @@ export default class Microservice {
    *
    * @param {Object} microserviceYamlJson The given raw JSON of the `microservice.yml`
    */
-  constructor(microserviceYamlJson: any) {
+  public constructor(microserviceYamlJson: any) {
     const isValid = validateMicroservice(microserviceYamlJson)
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(/data/g, `root`)

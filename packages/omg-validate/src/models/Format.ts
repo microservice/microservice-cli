@@ -12,7 +12,7 @@ export default class Format {
    * @param {String} commandName The given command name
    * @param {Object} rawFormat The given raw data
    */
-  constructor(commandName: string, rawFormat: any) {
+  public constructor(commandName: string, rawFormat: any) {
     const isValid = validateFormat(rawFormat)
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(/data/g, `commands.${commandName}.format`)

@@ -14,7 +14,7 @@ export default class Volume {
    * @param {String} name The given name
    * @param {Object} rawVolume The given raw data
    */
-  constructor(name: string, rawVolume: any) {
+  public constructor(name: string, rawVolume: any) {
     const isValid = validateVolume(rawVolume)
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(/data/g, `volumes.${name}`)
