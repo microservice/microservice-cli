@@ -10,6 +10,7 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
+import * as rpc from '@/rpc/cli'
 import ToggleButton from '@/components/ToggleButton'
 
 export default {
@@ -18,15 +19,18 @@ export default {
     ToggleButton
   },
   computed: {
-    ...mapGetters(['getDockerRebuild', 'getSocket'])
+    ...mapGetters(['getDockerRebuild'])
   },
   methods: {
     ...mapMutations(['toggleDockerRebuild'])
   },
   watch: {
-    getDockerRebuild: function () {
-      this.getSocket.emit('rebuild-toggle', this.getDockerRebuild)
+    getDockerRebuild() {
+      this.socket.emit('rebuild-toggle', this.getDockerRebuild)
     }
+  },
+  mounted() {
+    this.socket = rpc.getSocket()
   }
 }
 </script>

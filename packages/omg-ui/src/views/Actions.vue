@@ -60,6 +60,7 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import Monaco from 'monaco-editor-forvue'
+import * as rpc from '@/rpc/cli'
 import ActionForm from '@/components/ActionForm'
 import EventSelector from '@/components/EventSelector'
 import ToggleButton from '@/components/ToggleButton'
@@ -98,7 +99,6 @@ export default {
       'getMicroservice',
       'getMicroserviceStatus',
       'getOwner',
-      'getSocket',
       'getDockerRunning',
       'getDockerRunStat',
       'getActionSendRaw'
@@ -122,9 +122,10 @@ export default {
     }
   },
   mounted () {
+    this.socket = rpc.getSocket()
     this.microservice = this.getMicroservice
     this.args = this.getArgs
-    this.getSocket.on('run', res => {
+    this.socket.on('run', res => {
       if (res.done) {
         this.loading = false
       }
@@ -138,7 +139,7 @@ export default {
         this.setActionOutput(res.notif.trim())
       }
     })
-    this.getSocket.on('subscribe', res => {
+    this.socket.on('subscribe', res => {
       if (res.output) {
         try {
           this.setActionOutput(JSON.parse(res.output))
@@ -149,8 +150,8 @@ export default {
     })
   },
   beforeDestroy () {
-    this.getSocket.removeListener('run')
-    this.getSocket.removeListener('subscribe')
+    this.socket.removeListener('run')
+    this.socket.removeListener('subscribe')
   },
   methods: {
     ...mapMutations([
@@ -197,7 +198,7 @@ export default {
         args: { ...e.args }
       }
       this.setActionOutput('')
-      this.getSocket.emit('run', run)
+      this.socket.emit('run', run)
       this.addHistoryEntry(run)
     },
     subscribe (e) {
@@ -208,7 +209,7 @@ export default {
         event: this.event
       }
       this.setActionOutput('')
-      this.getSocket.emit('subscribe', run)
+      this.socket.emit('subscribe', run)
       this.addHistoryEntry(run)
     },
     onEditorMounted (editor) {

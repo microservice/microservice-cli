@@ -3,7 +3,7 @@ const state = {
   args: {},
   output: 'No output available.\nExecute an action to view its output.',
   curlArgs: {},
-  sendRaw: false
+  sendRaw: false,
 }
 
 const getters = {
@@ -11,7 +11,7 @@ const getters = {
   getActionArgs: state => state.args,
   getActionOutput: state => state.output,
   getActionCurlArgs: state => state.curlArgs,
-  getActionSendRaw: state => state.sendRaw
+  getActionSendRaw: state => state.sendRaw,
 }
 
 const mutations = {
@@ -22,10 +22,8 @@ const mutations = {
     delete state.args[key]
   },
   setActionOutput: (state, output) => (state.output = output),
-  resetActionOutput: state =>
-    (state.output =
-      'No output available.\nExecute an action to view its output.'),
-  toggleActionSendRaw: state => (state.sendRaw = !state.sendRaw)
+  resetActionOutput: state => (state.output = 'No output available.\nExecute an action to view its output.'),
+  toggleActionSendRaw: state => (state.sendRaw = !state.sendRaw),
 }
 
 const actions = {}
@@ -34,5 +32,5 @@ export default {
   state,
   getters,
   mutations,
-  actions
+  actions,
 }

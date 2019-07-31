@@ -4,7 +4,7 @@ const state = {
   status: false,
   notif: '',
   owner: '',
-  ownerGenerated: false
+  ownerGenerated: false,
 }
 
 const getters = {
@@ -19,7 +19,7 @@ const getters = {
     return null
   },
   getOwner: state => state.owner,
-  getOwnerGenerated: state => state.ownerGenerated
+  getOwnerGenerated: state => state.ownerGenerated,
 }
 
 const mutations = {
@@ -45,7 +45,7 @@ const mutations = {
     } else {
       state.owner = owner
     }
-  }
+  },
 }
 
 const actions = {}
@@ -54,5 +54,5 @@ export default {
   state,
   getters,
   mutations,
-  actions
+  actions,
 }

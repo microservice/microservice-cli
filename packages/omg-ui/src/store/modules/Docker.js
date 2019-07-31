@@ -14,7 +14,7 @@ const state = {
   stats: [],
   portBindings: {},
   fowardBindings: {},
-  healthCheck: {}
+  healthCheck: {},
 }
 
 const getters = {
@@ -33,7 +33,7 @@ const getters = {
   getDockerStats: state => state.stats,
   getDockerPortBindings: state => state.portBindings,
   getDockerForwardBindings: state => state.fowardBindings,
-  getDockerHealthCheck: state => state.healthCheck
+  getDockerHealthCheck: state => state.healthCheck,
 }
 
 const mutations = {
@@ -54,10 +54,8 @@ const mutations = {
   setDockerState: (state, value) => (state.state = value),
   addDockerStatsEntry: (state, entry) => state.stats.push(entry),
   setDockerPortBindings: (state, bindings) => (state.portBindings = bindings),
-  setDockerForwardBindings: (state, bindings) =>
-    (state.fowardBindings = bindings),
-  setDockerHealthCheck: (state, healthCheck) =>
-    (state.healthCheck = healthCheck)
+  setDockerForwardBindings: (state, bindings) => (state.fowardBindings = bindings),
+  setDockerHealthCheck: (state, healthCheck) => (state.healthCheck = healthCheck),
 }
 
 const actions = {}
@@ -66,5 +64,5 @@ export default {
   state,
   getters,
   mutations,
-  actions
+  actions,
 }

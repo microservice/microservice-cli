@@ -110,6 +110,7 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
+import * as rpc from '@/rpc/cli'
 import Rebuild from '@/components/layout/Rebuild'
 
 export default {
@@ -121,9 +122,10 @@ export default {
     open: true,
     state: 'half'
   }),
-  computed: mapGetters(['getDockerLogs', 'getContainerLogs', 'getSocket']),
+  computed: mapGetters(['getDockerLogs', 'getContainerLogs']),
   mounted () {
-    this.getSocket.on('dockerLogs', res => {
+    this.socket = rpc.getSocket()
+    this.socket.on('dockerLogs', res => {
       if (res.trim().length <= 0) {
         this.setContainerLogs('No logs available')
       } else {
@@ -151,7 +153,7 @@ export default {
     },
     clearLogs () {
       this.clearDockerLogs()
-      this.getSocket.emit('clear-container-logs', Date.now() / 1000)
+      this.socket.emit('clear-container-logs', Date.now() / 1000)
     },
     switchHandler (side) {
       switch (this.state) {

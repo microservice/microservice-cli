@@ -4,7 +4,7 @@
       <layout />
       <div class="topbar-margin">
         <router-view
-          @rebuild="getSocket.emit('rebuild', {
+          @rebuild="socket.emit('rebuild', {
             build: {},
             start: {
               image: `omg/${getOwner}`,
@@ -21,6 +21,7 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
+import * as rpc from '@/rpc/cli'
 import Layout from '@/views/Layout'
 import DockerLogs from '@/components/DockerLogs'
 import OutputAction from '@/components/layout/OutputAction'
@@ -40,31 +41,31 @@ export default {
     wait: true
   }),
   computed: mapGetters([
-    'getSocket', 'getOwner', 'getEnvs', 'getMicroserviceStatus', 'getMicroservice'
+    'getOwner', 'getEnvs', 'getMicroserviceStatus', 'getMicroservice'
   ]),
   created () {
-    this.initSocket()
-    this.getSocket.on('validate', res => {
+    this.socket = rpc.connect()
+    this.socket.on('validate', res => {
       this.setValidation(res)
       this.wait = false
     })
-    this.getSocket.on('owner', res => {
+    this.socket.on('owner', res => {
       if (res.generated) {
         this.setOwner({ owner: res.notif, generated: res.generated })
       } else {
         this.setOwner(res.notif)
       }
     })
-    this.getSocket.on('microservice.yml', res => {
+    this.socket.on('microservice.yml', res => {
       this.setMicroserviceRaw(res)
       if (!this.getMicroserviceStatus) {
         this.$router.push({ path: '/validation-error' })
       }
     })
-    this.getSocket.on('build', res => {
+    this.socket.on('build', res => {
       this.build(res)
     })
-    this.getSocket.on('start', res => {
+    this.socket.on('start', res => {
       if (res.ports) {
         this.setDockerPortBindings(res.ports)
       }
@@ -73,10 +74,10 @@ export default {
       }
       this.start(res)
     })
-    this.getSocket.on('stop', res => {
+    this.socket.on('stop', res => {
       this.stop(res)
     })
-    this.getSocket.on('health-check', res => {
+    this.socket.on('health-check', res => {
       this.setDockerHealthCheck(res)
       if (res.status === -1) {
         this.setDockerState('stopped')
@@ -87,12 +88,12 @@ export default {
         }
       }
     })
-    this.getSocket.on('disconnect', () => {
+    this.socket.on('disconnect', () => {
       this.$router.push({ path: '/socket-disconnected' })
     })
     const interval = setInterval(() => {
       if (this.getMicroserviceStatus) {
-        this.getSocket.emit('build', {})
+        this.socket.emit('build', {})
       }
       if (!this.wait) {
         clearInterval(interval)
@@ -100,16 +101,16 @@ export default {
     }, 1000)
   },
   beforeDestroy () {
-    this.getSocket.removeListener('validate')
-    this.getSocket.removeListener('owner')
-    this.getSocket.removeListener('microservice.yml')
-    this.getSocket.removeListener('build')
-    this.getSocket.removeListener('start')
-    this.getSocket.removeListener('stop')
-    this.getSocket.removeListener('health-check')
+    this.socket.removeListener('validate')
+    this.socket.removeListener('owner')
+    this.socket.removeListener('microservice.yml')
+    this.socket.removeListener('build')
+    this.socket.removeListener('start')
+    this.socket.removeListener('stop')
+    this.socket.removeListener('health-check')
   },
   methods: {
-    ...mapMutations(['initSocket', 'setValidation', 'setOwner',
+    ...mapMutations(['setValidation', 'setOwner',
       'setMicroserviceRaw', 'appendDockerLogs', 'setDockerState',
       'setDockerPortBindings', 'setDockerForwardBindings', 'setDockerHealthCheck']),
     build (data) {
@@ -121,7 +122,7 @@ export default {
       if (data.status && data.built) {
         if (!isEnvRequired(this.getMicroservice)) {
           this.setDockerState('starting')
-          this.getSocket.emit('start', {
+          this.socket.emit('start', {
             image: `omg/${this.getOwner}`,
             envs: { ...this.getEnvs }
           })
@@ -131,7 +132,7 @@ export default {
           } else {
             if (isRequiredEnvFilled(this.setMicroserviceRaw, this.getEnvs)) {
               this.setDockerState('starting')
-              this.getSocket.emit('start', {
+              this.socket.emit('start', {
                 image: `omg/${this.getOwner}`,
                 envs: { ...this.getEnvs }
               })
@@ -146,10 +147,10 @@ export default {
       }
       if (data.started) {
         this.setDockerState('started')
-        this.logsInterval = setInterval(() => this.getSocket.emit('dockerLogs'), 1000)
+        this.logsInterval = setInterval(() => this.socket.emit('dockerLogs'), 1000)
         this.statsInterval = setInterval(() => {
-          this.getSocket.emit('container-stats')
-          this.getSocket.emit('health-check')
+          this.socket.emit('container-stats')
+          this.socket.emit('health-check')
         }, 1000)
       }
     },

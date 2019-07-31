@@ -51,14 +51,18 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import ClipLoader from 'vue-spinner/src/ClipLoader'
+import * as rpc from '@/rpc/cli'
 
 export default {
   name: 'environment',
   components: {
     ClipLoader
   },
+  created() {
+    this.socket = rpc.getSocket()
+  },
   data: () => ({}),
-  computed: mapGetters(['getMicroservice', 'getEnvs', 'getOwner', 'getSocket',
+  computed: mapGetters(['getMicroservice', 'getEnvs', 'getOwner',
     'getDockerRebuild', 'getDockerState', 'getMicroserviceStatus']),
   watch: {
     getMicroserviceStatus: function () {
@@ -79,7 +83,7 @@ export default {
       if (this.getDockerRebuild) {
         this.setContainerLogs('')
         if (this.getDockerState === 'started') {
-          this.getSocket.emit('rebuild', {
+          this.socket.emit('rebuild', {
             build: {},
             start: {
               image: `omg/${this.getOwner}`,
@@ -87,7 +91,7 @@ export default {
             }
           })
         } else {
-          this.getSocket.emit('start', {
+          this.socket.emit('start', {
             image: `omg/${this.getOwner}`,
             envs: { ...this.getEnvs }
           })
