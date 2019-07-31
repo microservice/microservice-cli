@@ -1,27 +1,27 @@
 module.exports = {
   root: true,
-  parser: 'typescript-eslint-parser',
-  plugins: ['typescript'],
-  extends: ['eslint:recommended', 'google'],
+  parser: '@typescript-eslint/parser',
+  extends: ['airbnb-base', 'prettier', 'plugin:@typescript-eslint/recommended'],
+  plugins: ['@typescript-eslint', 'prettier'],
+
   rules: {
-    'max-len': 0,
-    'no-throw-literal': 0,
-    'no-undef': 0,
-    'no-unused-vars': 0,
-    'quote-props': [2, 'as-needed'],
-    indent: ['error', 2, { MemberExpression: 'off', SwitchCase: 1 }],
-    semi: 0,
-    'comma-dangle': 0,
-    'arrow-parens': 0,
-    'object-curly-spacing': 0,
+    'prettier/prettier': 'off',
+    // ^ Let the prettier CLI handle these.
+    'no-use-before-define': 'off',
+    // ^ Replaced by typescript-eslint
+    'no-unused-vars': 'off',
+    // ^ Replaced by typescript-eslint
+    '@typescript-eslint/indent': 'off',
+    // ^ Conflicts with Prettier
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    // ^ Let the IDE handle shaming for this one
+    'import/prefer-default-export': 'off',
+    // ^ Noisy and not particularly useful
+    'lines-between-class-members': 'off',
+    'no-underscore-dangle': 'warn',
   },
   env: {
     jest: true,
     node: true,
-    es6: true,
-  },
-  parserOptions: {
-    ecmaVersion: 8,
-    sourceType: 'module',
   },
 }

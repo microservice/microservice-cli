@@ -6,6 +6,12 @@
     "packages/*"
   ],
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "eslint": "^4.19.1 || ^5.3.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-prettier": "^3.1.0",
     "lerna": "^3.16.4",
     "prettier-cli": "^0.1.0"
@@ -13,8 +19,8 @@
   "scripts": {
     "prettier:fix": "prettier --write packages/*/src/**/*.ts",
     "lint:prettier": "prettier --list-different packages/*/src/**/*.ts",
+    "lint:eslint": "eslint . --ext .js,.ts",
     "bootstrap": "lerna bootstrap --npm-client=yarn",
-    "lint": "lerna run --parallel lint",
     "test": "lerna run --parallel test",
     "coverage": "lerna run --parallel coverage",
     "build": "lerna run --parallel build",

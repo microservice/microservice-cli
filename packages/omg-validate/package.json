@@ -5,8 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "watch": "tsc -w",
-    "lint": "eslint . --ext .ts,.js --quiet"
+    "watch": "tsc -w"
   },
   "repository": {
     "type": "git",

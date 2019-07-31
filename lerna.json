@@ -12,5 +12,7 @@
     "packages/*",
     "tests/*"
   ],
-  "version": "0.13.12"
+  "version": "0.13.12",
+  "npmClient": "yarn",
+  "useWorkspaces": true
 }
