@@ -20,6 +20,7 @@ module.exports = {
     // ^ Noisy and not particularly useful
     'lines-between-class-members': 'off',
     'no-underscore-dangle': 'warn',
+    '@typescript-eslint/explicit-member-accessibility': 'warn',
   },
   env: {
     jest: true,
