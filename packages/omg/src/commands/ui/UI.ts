@@ -400,18 +400,15 @@ export default class UIServer {
    *
    * @return {Promise}
    */
-  public stopContainer(): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      let output
-      if (this.dockerContainer !== null && (await this.dockerContainer.isRunning())) {
-        output = await this.dockerContainer.stopService()
-        this.emit('stop', {
-          status: true,
-          notif: `Stoppped Docker container: ${output}`,
-        })
-      }
-      resolve()
-    })
+  public async stopContainer(): Promise<any> {
+    let output
+    if (this.dockerContainer !== null && (await this.dockerContainer.isRunning())) {
+      output = await this.dockerContainer.stopService()
+      this.emit('stop', {
+        status: true,
+        notif: `Stoppped Docker container: ${output}`,
+      })
+    }
   }
 
   /**
@@ -419,19 +416,16 @@ export default class UIServer {
    *
    * @return {Promise}
    */
-  public removeContainer(): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      let output
-      if (this.dockerContainer !== null && !(await this.dockerContainer.isRunning())) {
-        output = await this.dockerContainer.removeContainer()
-        this.emit('stop', {
-          status: true,
-          notif: `Removed Docker container: ${output}`,
-        })
-      }
-      this.dockerContainer = null
-      resolve()
-    })
+  public async removeContainer(): Promise<any> {
+    let output
+    if (this.dockerContainer !== null && !(await this.dockerContainer.isRunning())) {
+      output = await this.dockerContainer.removeContainer()
+      this.emit('stop', {
+        status: true,
+        notif: `Removed Docker container: ${output}`,
+      })
+    }
+    this.dockerContainer = null
   }
 
   /**
