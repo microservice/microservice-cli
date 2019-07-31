@@ -1,8 +1,8 @@
 import * as _ from 'underscore'
 import * as $ from 'shelljs'
-import * as net from 'http'
 import * as fs from 'fs'
 import * as path from 'path'
+import * as getPort from 'get-port'
 import { EnvironmentVariable, Microservice } from 'omg-validate'
 const Docker = require('dockerode-promise')
 const LineUp = require('lineup')
@@ -347,31 +347,7 @@ export const dataTypes = {
  * @return {Promise<Number>} The open port
  */
 export function getOpenPort(): Promise<number> {
-  return new Promise(resolve => {
-    getPort(data => {
-      resolve(data)
-    })
-  })
-
-  /**
-   * Helper for {@link getOpenPort}. Tries to open a server on a random port, if fail try again, otherwise call
-   * the callback with the port.
-   *
-   * @param {Function} cb The given callback
-   */
-  function getPort(cb: Function): void {
-    const server = net.createServer()
-    const port = Math.floor(Math.random() * 15000) + 2000 // port range 2000 to 17000
-    server.listen(port, () => {
-      server.once('close', () => {
-        cb(port)
-      })
-      server.close()
-    })
-    server.on('error', () => {
-      getPort(cb)
-    })
-  }
+  return getPort({ port: getPort.makeRange(8000, 9000) })
 }
 
 /**
