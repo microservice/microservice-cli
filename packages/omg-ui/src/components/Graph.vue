@@ -75,7 +75,7 @@ export default {
       }
       if (this.values.length > 63) {
         this.$el.querySelector(`#bar-${this.toDelete}`).remove()
-        ++this.toDelete
+        this.toDelete += 1
       }
     }
   }

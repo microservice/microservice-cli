@@ -121,7 +121,7 @@ export default {
     processData (data) {
       this.obj['action'] = this.actionName
       this.obj['args'] = {}
-      for (let i = 0; i < data.srcElement.length - 1; i++) {
+      for (let i = 0; i < data.srcElement.length - 1; i+=1) {
         const key = data.srcElement[i].name.substr(4)
         const value = data.srcElement[i].value
 

@@ -51,7 +51,7 @@ export default class Action extends Command {
     if (this.eventMap === null) {
       return null
     }
-    return (<any>Object).values(this.eventMap)
+    return Object.values(this.eventMap)
   }
 
   /**

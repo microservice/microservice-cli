@@ -59,7 +59,7 @@ export const dataTypes = {
   },
   float: (float: string): boolean => {
     return (
-      !isNaN(parseFloat(float)) &&
+      !Number.isNaN(parseFloat(float)) &&
       parseFloat(float)
         .toString()
         .indexOf('.') !== -1

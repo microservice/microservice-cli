@@ -136,7 +136,7 @@ export default abstract class Command {
     if (this.argumentsMap === null) {
       return []
     }
-    return (<any>Object).values(this.argumentsMap)
+    return Object.values(this.argumentsMap)
   }
 
   /**

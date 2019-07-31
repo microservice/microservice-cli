@@ -60,7 +60,7 @@ export function getNeededPorts(microservice: Microservice): number[] {
       }
     }
   }
-  for (let i = 0; i < microservice.forwards.length; i++) {
+  for (let i = 0; i < microservice.forwards.length; i += 1) {
     const forward = microservice.forwards[i]
     if (forward.http !== null) {
       ports.push(forward.http.port)
@@ -80,7 +80,7 @@ export function getNeededPorts(microservice: Microservice): number[] {
  */
 export function getForwardPorts(microservice: Microservice): number[] {
   const ports = []
-  for (let i = 0; i < microservice.forwards.length; i++) {
+  for (let i = 0; i < microservice.forwards.length; i += 1) {
     const forward = microservice.forwards[i]
     if (forward.http !== null) {
       ports.push(forward.http.port)
@@ -372,7 +372,7 @@ export function checkVersion() {
             .trim()
             .match(/^(\d+).(\d+).(\d+)/),
         }
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 3; i += 1) {
           if (versions.distant[i] > versions.local[i]) {
             lineup.sticker.note('')
             lineup.sticker.note(

@@ -95,7 +95,7 @@ export default abstract class Run {
     }
 
     if (inheritEnv) {
-      for (let i = 0; i < this.microservice.environmentVariables.length; i++) {
+      for (let i = 0; i < this.microservice.environmentVariables.length; i += 1) {
         const environmentVariable = this.microservice.environmentVariables[i]
         if (process.env[environmentVariable.name]) {
           this.environmentVariables[environmentVariable.name] = process.env[environmentVariable.name]
@@ -109,7 +109,7 @@ export default abstract class Run {
    */
   protected castTypes(): void {
     const argumentList = Object.keys(this._arguments)
-    for (let i = 0; i < argumentList.length; i++) {
+    for (let i = 0; i < argumentList.length; i += 1) {
       const argument = this.action.getArgument(argumentList[i])
       this._arguments[argument.name] = utils.typeCast[argument.type](this._arguments[argument.name])
     }

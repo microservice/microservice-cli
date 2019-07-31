@@ -63,7 +63,7 @@ export default class Microservice {
     if (microserviceYamlJson.forward) {
       this.forwardMap = {}
       const forwardList = Object.keys(microserviceYamlJson.forward)
-      for (let i = 0; i < forwardList.length; i++) {
+      for (let i = 0; i < forwardList.length; i += 1) {
         this.forwardMap[forwardList[i]] = new Forward(
           forwardList[i],
           microserviceYamlJson.forward[forwardList[i]],
@@ -102,7 +102,7 @@ export default class Microservice {
     if (this.actionMap === null) {
       return []
     }
-    return (<any>Object).values(this.actionMap)
+    return Object.values(this.actionMap)
   }
 
   /**
@@ -128,7 +128,7 @@ export default class Microservice {
     if (this.environmentMap === null) {
       return []
     }
-    return (<any>Object).values(this.environmentMap)
+    return Object.values(this.environmentMap)
   }
 
   /**
@@ -165,7 +165,7 @@ export default class Microservice {
     if (this.volumeMap === null) {
       return []
     }
-    return (<any>Object).values(this.volumeMap)
+    return Object.values(this.volumeMap)
   }
 
   /**
@@ -200,7 +200,7 @@ export default class Microservice {
     if (this.forwardMap === null) {
       return []
     }
-    return (<any>Object).values(this.forwardMap)
+    return Object.values(this.forwardMap)
   }
 
   /**

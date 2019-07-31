@@ -1,15 +1,16 @@
-const Ajv = require('ajv')
-const microserviceSchema = require('./schemas/microservice')
-const actionSchema = require('./schemas/action')
-const eventSchema = require('./schemas/event')
-const environmentVariableSchema = require('./schemas/environmentVariable')
-const httpSchema = require('./schemas/http')
-const formatSchema = require('./schemas/format')
-const argumentSchema = require('./schemas/argument')
-const volumeSchema = require('./schemas/volume')
-const lifecycleSchema = require('./schemas/lifecycle')
-const forwardSchema = require('./schemas/forward')
-const healthSchema = require('./schemas/health')
+import Ajv from 'ajv'
+
+import microserviceSchema from './schemas/microservice'
+import actionSchema from './schemas/action'
+import eventSchema from './schemas/event'
+import environmentVariableSchema from './schemas/environmentVariable'
+import httpSchema from './schemas/http'
+import formatSchema from './schemas/format'
+import argumentSchema from './schemas/argument'
+import volumeSchema from './schemas/volume'
+import lifecycleSchema from './schemas/lifecycle'
+import forwardSchema from './schemas/forward'
+import healthSchema from './schemas/health'
 
 const ajv = new Ajv({ allErrors: true })
 

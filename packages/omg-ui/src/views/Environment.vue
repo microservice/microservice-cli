@@ -71,7 +71,7 @@ export default {
     ...mapMutations(['addEnv', 'setContainerLogs']),
     saveHandler (data) {
       const e = data.srcElement.elements
-      for (let i = 0; i < e.length - 1; i++) {
+      for (let i = 0; i < e.length - 1; i+=1) {
         if (e[i].type !== 'submit') {
           this.addEnv({ key: e[i].name.substr(4), value: e[i].value })
         }
