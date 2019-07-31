@@ -4,8 +4,8 @@
   "description": "OMG microservice.yml validation library",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w"
+    "build": "sb-babel-cli src -o dist --typescript",
+    "watch": "yarn build -w"
   },
   "repository": {
     "type": "git",

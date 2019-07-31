@@ -10,8 +10,8 @@
   "version": "0.13.12",
   "main": "omg",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
+    "build": "sb-babel-cli src -o dist --typescript",
+    "watch": "yarn build -w",
     "test": "jest",
     "coverage": "jest --coverage"
   },
