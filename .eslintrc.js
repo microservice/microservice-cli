@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   parser: 'typescript-eslint-parser',
   plugins: ['typescript'],
   extends: ['eslint:recommended', 'google'],
@@ -12,15 +13,15 @@ module.exports = {
     semi: 0,
     'comma-dangle': 0,
     'arrow-parens': 0,
-    'object-curly-spacing': 0
+    'object-curly-spacing': 0,
   },
   env: {
     jest: true,
     node: true,
-    es6: true
+    es6: true,
   },
   parserOptions: {
     ecmaVersion: 8,
-    sourceType: 'module'
-  }
+    sourceType: 'module',
+  },
 }

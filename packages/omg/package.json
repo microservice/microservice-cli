@@ -12,7 +12,6 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "lint": "eslint . --ext .ts,.js --quiet",
     "test": "jest",
     "coverage": "jest --coverage"
   },
@@ -48,19 +47,10 @@
   "devDependencies": {
     "@types/jest": "^24.0.14",
     "@types/node": "^12.6.8",
-    "eslint": "^5.16.0",
-    "eslint-config-google": "^0.11.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "eslint-plugin-typescript": "^0.13.0",
     "jest": "^24.8.0",
     "sinon": "^7.3.2",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.1.6",
-    "typescript-eslint-parser": "^20.1.1"
+    "typescript": "^3.1.6"
   },
   "gitHead": "fcbefab45c0c4991a98ca3eccde9b196e41863e7"
 }
