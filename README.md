@@ -47,7 +47,7 @@ $> lerna run coverage
 ## Publish all packages that need to be published
 
 ```
-$> lerna run publish
+$> yarn run publish
 ```
 
 ## Automatic version bump
