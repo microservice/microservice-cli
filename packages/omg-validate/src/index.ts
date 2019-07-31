@@ -1,4 +1,4 @@
-import OMGValidate from './src/validate'
+import OMGValidate from './validate'
 import {
   Action,
   Argument,
@@ -12,9 +12,9 @@ import {
   Item,
   Lifecycle,
   Microservice,
-  Volume
-} from './src/models'
-import { getPossibleProperties } from './src/utils'
+  Volume,
+} from './models'
+import { getPossibleProperties } from './utils'
 
 export {
   OMGValidate,
@@ -31,5 +31,5 @@ export {
   Lifecycle,
   Microservice,
   Volume,
-  getPossibleProperties
+  getPossibleProperties,
 }

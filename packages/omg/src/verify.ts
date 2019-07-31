@@ -1,4 +1,4 @@
-import * as _ from 'underscore'
+import _ from 'underscore'
 import { Command, Microservice } from 'omg-validate'
 import { dataTypes } from './utils'
 

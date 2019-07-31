@@ -1,7 +1,7 @@
-import * as _ from 'underscore'
-import * as $ from 'shelljs'
-import * as fs from 'fs'
-import * as path from 'path'
+import _ from 'underscore'
+import $ from 'shelljs'
+import fs from 'fs'
+import path from 'path'
 import getPort from 'get-port'
 import { EnvironmentVariable, Microservice } from 'omg-validate'
 

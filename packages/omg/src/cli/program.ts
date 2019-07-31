@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import * as program from 'commander'
-import * as fs from 'fs'
-import * as path from 'path'
+import program from 'commander'
+import fs from 'fs'
+import path from 'path'
 import * as utils from '../utils'
 import Cli from './Cli'
 
@@ -83,6 +83,7 @@ program
   .option('-d --details', 'Returns detailed actions')
   .description('Lists all actions available in microservice.')
   .action(options => cli.list(options))
+
 // needed because there is no default catch all command with commander.js
 if (
   process.argv.length < 3 ||

@@ -1,4 +1,4 @@
-import * as fs from 'fs'
+import fs from 'fs'
 import Run from './Run'
 
 const homedir = require('os').homedir()
@@ -50,6 +50,7 @@ export default class EventRun extends Run {
   public isDockerProcessRunning(): boolean {
     return this.containerID !== null
   }
+
   /**
    * @param  {any} args
    */

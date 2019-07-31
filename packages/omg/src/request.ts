@@ -1,4 +1,4 @@
-import * as rp from 'request-promise'
+import rp from 'request-promise'
 
 /**
  * Thin wrapper over rp so it can be mocked in tests.

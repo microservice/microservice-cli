@@ -1,5 +1,5 @@
-import * as rp from 'request-promise'
-import * as $ from 'shelljs'
+import rp from 'request-promise'
+import $ from 'shelljs'
 import { Action, Microservice } from 'omg-validate'
 import * as verify from '../../verify'
 import * as utils from '../../utils'
@@ -27,7 +27,7 @@ export default abstract class Run {
    * @param {Object} _arguments The argument map
    * @param {Object} environmentVariables The environment map
    */
-  protected constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
+  public constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     this.dockerImage = dockerImage
     this.microservice = microservice
     this._arguments = _arguments

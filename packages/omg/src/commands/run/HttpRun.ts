@@ -1,6 +1,6 @@
-import * as _ from 'underscore'
-import * as rp from 'request-promise'
-import * as querystring from 'querystring'
+import _ from 'underscore'
+import rp from 'request-promise'
+import querystring from 'querystring'
 import Run from './Run'
 import * as verify from '../../verify'
 

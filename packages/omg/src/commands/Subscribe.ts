@@ -1,5 +1,5 @@
-import * as fs from 'fs'
-import * as http from 'http'
+import fs from 'fs'
+import http from 'http'
 import uuidv4 from 'uuid/v4'
 import { Action, Event, Microservice } from 'omg-validate'
 import * as utils from '../utils'
