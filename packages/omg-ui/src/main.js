@@ -8,5 +8,5 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
-  render: h => h(OMG)
+  render: h => h(OMG),
 }).$mount('#app')

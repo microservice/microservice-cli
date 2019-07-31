@@ -1,11 +1,8 @@
 module.exports = {
-  root: true,
   env: {
-    node: true
+    node: true,
   },
-  extends: ['plugin:vue/essential', '@vue/standard'],
-  rules: {},
-  parserOptions: {
-    parser: 'babel-eslint'
-  }
+  rules: {
+    '@typescript-eslint/no-var-requires': 'off',
+  },
 }

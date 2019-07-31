@@ -1,5 +1,3 @@
 dist/
 node_modules/
 coverage/
-packages/omg-ui
-# ^ Ignore omg-ui app in top-level linting

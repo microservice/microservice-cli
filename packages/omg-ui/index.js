@@ -5,7 +5,7 @@ const history = require('connect-history-api-fallback')
 const distPath = path.resolve(__dirname, './dist')
 const publicPath = path.resolve(__dirname, './public')
 
-const app = function() {
+function app() {
   const self = express()
   self.use(
     express.static(distPath, {
