@@ -1,41 +1,43 @@
+import { app } from 'omg-ui'
+import { Microservice } from 'omg-validate'
+import * as fs from 'fs'
+import * as path from 'path'
 import * as utils from '../../utils'
 import http from './wrappers/http'
 import io from './wrappers/socket-io'
-import { app } from 'omg-ui'
 import Run from '../run/Run'
 import Subscribe from '../Subscribe'
-import { Microservice } from 'omg-validate'
 import Build from '../Build'
 import Cli from '../../cli/Cli'
 import RunFactory from '../run/RunFactory'
-import * as fs from 'fs'
-import * as path from 'path'
 import open from './wrappers/open'
 import Dockerode from './wrappers/dockerode'
+
 const LineUp = require('lineup')
+
 const lineup = new LineUp()
 
 interface ISocketNotif {
-  notif: any
-  status: boolean
-  log?: string
+  notif: any;
+  status: boolean;
+  log?: string;
 }
 
 interface IDataBuild {
-  name?: string
+  name?: string;
 }
 
 interface IStartContainer {
-  image: string
-  envs: any
+  image: string;
+  envs: any;
 }
 
 interface IDataAction {
-  image: string
-  action: string
-  args: {}
-  envs: {}
-  event?: string
+  image: string;
+  action: string;
+  args: {};
+  envs: {};
+  event?: string;
 }
 
 /**
@@ -503,7 +505,7 @@ export default class UIServer {
       return
     }
     this.socket.emit('run', {
-      output: output,
+      output,
       notif: output,
       done: true,
       status: true
@@ -551,7 +553,7 @@ export default class UIServer {
             status: false,
             logs: `${await this.dockerContainer.getStderr()}`
           })
-          return
+          
         }
       }, 1500)
     } catch (e) {
@@ -560,7 +562,7 @@ export default class UIServer {
         status: false,
         logs: `${await this.dockerContainer.getStderr()}`
       })
-      return
+      
     }
   }
 

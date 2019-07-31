@@ -1,15 +1,15 @@
-import {setVal} from '../utils';
+import { setVal } from '../utils'
 
 /**
  * Represents a data for an {@link Argument} or an {@link EnvironmentVariable}.
  */
 export default abstract class Item {
-  private readonly _name: string;
-  private readonly _type: string;
-  private readonly _pattern: string;
-  private readonly required: boolean;
-  private readonly _default: any;
-  private readonly _help: string;
+  private readonly _name: string
+  private readonly _type: string
+  private readonly _pattern: string
+  private readonly required: boolean
+  private readonly _default: any
+  private readonly _help: string
 
   /**
    * Builds a {@link Item}.
@@ -18,12 +18,12 @@ export default abstract class Item {
    * @param {Object} rawItem The given raw data
    */
   protected constructor(name: string, rawItem: any) {
-    this._name = name;
-    this._type = rawItem.type;
-    this._pattern = rawItem.pattern || null;
-    this.required = rawItem.required || false;
-    this._default = setVal(rawItem.default, null);
-    this._help = rawItem.help || null;
+    this._name = name
+    this._type = rawItem.type
+    this._pattern = rawItem.pattern || null
+    this.required = rawItem.required || false
+    this._default = setVal(rawItem.default, null)
+    this._help = rawItem.help || null
   }
 
   /**
@@ -32,7 +32,7 @@ export default abstract class Item {
    * @return {String} The name of this {@link EnvironmentVariable}
    */
   public get name(): string {
-    return this._name;
+    return this._name
   }
 
   /**
@@ -41,7 +41,7 @@ export default abstract class Item {
    * @return {String} The type
    */
   public get type(): string {
-    return this._type;
+    return this._type
   }
 
   /**
@@ -50,7 +50,7 @@ export default abstract class Item {
    * @return {String} The pattern
    */
   public get pattern(): string {
-    return this._pattern;
+    return this._pattern
   }
 
   /**
@@ -59,7 +59,7 @@ export default abstract class Item {
    * @return {Boolean} True if required, otherwise false
    */
   public isRequired(): boolean {
-    return this.required;
+    return this.required
   }
 
   /**
@@ -68,7 +68,7 @@ export default abstract class Item {
    * @return {*|null} The default value
    */
   public get default(): any {
-    return this._default;
+    return this._default
   }
 
   /**
@@ -77,6 +77,6 @@ export default abstract class Item {
    * @return {String|null} The help
    */
   public get help(): string {
-    return this._help;
+    return this._help
   }
 }

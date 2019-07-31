@@ -1,12 +1,13 @@
 import * as fs from 'fs'
 import * as http from 'http'
+import { Action, Event, Microservice } from 'omg-validate'
 import * as utils from '../utils'
 import * as verify from '../verify'
-import { Action, Event, Microservice } from 'omg-validate'
-const homedir = require('os').homedir()
-const uuidv4 = require('uuid/v4')
 import * as rp from '../request'
 import Run from './run/Run'
+
+const homedir = require('os').homedir()
+const uuidv4 = require('uuid/v4')
 
 /**
  * Describes a way to subscribe to an event.
@@ -67,16 +68,14 @@ export default class Subscribe {
   private async subscribe(port: number): Promise<void> {
     await rp.makeRequest({
       method: this.event.subscribe.method,
-      uri: `http://localhost:${
-        this.omgJson[process.cwd()].ports[this.event.subscribe.port]
-      }${this.event.subscribe.path}`,
+      uri: `http://localhost:${this.omgJson[process.cwd()].ports[this.event.subscribe.port]}${this.event.subscribe.path}`,
       body: {
         id: this.id,
         endpoint: `http://host.docker.internal:${port}`,
         event: this.event.name,
-        data: this._arguments
+        data: this._arguments,
       },
-      json: true
+      json: true,
     })
   }
 
@@ -94,8 +93,7 @@ export default class Subscribe {
             if (
               this.event.output &&
               this.event.output.type &&
-              (this.event.output.type === 'map' ||
-                this.event.output.type === 'object')
+              (this.event.output.type === 'map' || this.event.output.type === 'object')
             ) {
               utils.log(JSON.stringify(JSON.parse(data), null, 2))
             } else {
@@ -117,9 +115,7 @@ export default class Subscribe {
     const argumentList = Object.keys(this._arguments)
     for (let i = 0; i < argumentList.length; i += 1) {
       const argument = this.event.getArgument(argumentList[i])
-      this._arguments[argument.name] = utils.typeCast[argument.type](
-        this._arguments[argument.name]
-      )
+      this._arguments[argument.name] = utils.typeCast[argument.type](this._arguments[argument.name])
     }
   }
 
@@ -132,13 +128,13 @@ export default class Subscribe {
     }
     await rp.makeRequest({
       method: this.event.unsubscribe.method,
-      uri: `http://localhost:${
-        this.omgJson[process.cwd()].ports[this.event.unsubscribe.port]
-      }${this.event.unsubscribe.path}`,
+      uri: `http://localhost:${this.omgJson[process.cwd()].ports[this.event.unsubscribe.port]}${
+        this.event.unsubscribe.path
+      }`,
       body: {
-        id: this.id
+        id: this.id,
       },
-      json: true
+      json: true,
     })
   }
 }

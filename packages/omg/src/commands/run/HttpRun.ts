@@ -42,7 +42,7 @@ export default class HttpRun extends Run {
     if (tmpRetryExec) {
       verify.verifyOutputType(this.action, output.body.trim())
       return output
-    } else {
+    } 
       verify.verifyOutputType(this.action, output.trim())
       if (
         this.action.output &&
@@ -56,7 +56,7 @@ export default class HttpRun extends Run {
         return JSON.stringify(JSON.parse(output.trim()), null, 2)
       }
       return output.trim()
-    }
+    
   }
 
   /**
@@ -73,11 +73,11 @@ export default class HttpRun extends Run {
     // Temporary, remove when health is mandatory (put <string> back too)
     const httpData = this.formatHttp(port)
     const opts: {
-      method: string
-      resolveWithFullResponse: boolean
-      uri: string
-      body?: string
-      headers?: any
+      method: string;
+      resolveWithFullResponse: boolean;
+      uri: string;
+      body?: string;
+      headers?: any;
     } = {
       method: this.action.http.method.toUpperCase(),
       resolveWithFullResponse: tmpRetryExec,

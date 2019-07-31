@@ -1,7 +1,8 @@
-import Run from './Run'
 import { Microservice } from 'omg-validate'
+import Run from './Run'
 import * as utils from '../../utils'
 import * as verify from '../../verify'
+
 const fs = require('fs')
 
 /**
@@ -54,7 +55,7 @@ export default class FormatRun extends Run {
    */
   public async startService(): Promise<string> {
     this.setDefaultEnvironmentVariables()
-    const lifecycle = this.microservice.lifecycle
+    const {lifecycle} = this.microservice
     if (lifecycle !== null && lifecycle.startup !== null) {
       const container = await utils.docker.createContainer({
         Image: this.dockerImage,

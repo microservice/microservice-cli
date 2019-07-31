@@ -1,13 +1,14 @@
-import Item from './Item';
-const validateArgument = require('../schema/schema').argument;
+import Item from './Item'
+
+const validateArgument = require('../schema/schema').argument
 
 /**
  * Describes an argument.
  */
 export default class Argument extends Item {
-  private readonly _in: string;
-  private readonly _enum: string[];
-  private readonly _range: any;
+  private readonly _in: string
+  private readonly _enum: string[]
+  private readonly _range: any
 
   /**
    * Builds an {@link Argument}.
@@ -17,20 +18,20 @@ export default class Argument extends Item {
    * @param {Object} rawArguments The given raw data
    */
   constructor(name: string, pathToArgument: string, rawArguments: any) {
-    const isValid = validateArgument(rawArguments);
+    const isValid = validateArgument(rawArguments)
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace(/data/g, `actions.${pathToArgument}.arguments.${name}`);
-      throw isValid;
+      isValid.text = isValid.text.replace(/data/g, `actions.${pathToArgument}.arguments.${name}`)
+      throw isValid
     }
-    super(name, rawArguments);
-    this._in = rawArguments.in || null;
-    this._enum = rawArguments.enum || null;
-    this._range = rawArguments.range || null;
-    if ([(this.pattern !== null), (this._enum !== null), (this._range !== null)].filter((b) => b).length > 1) {
+    super(name, rawArguments)
+    this._in = rawArguments.in || null
+    this._enum = rawArguments.enum || null
+    this._range = rawArguments.range || null
+    if ([this.pattern !== null, this._enum !== null, this._range !== null].filter(b => b).length > 1) {
       throw {
         context: `Argument with name: \`${name}\``,
         message: 'An Argument can only have a pattern, enum, or range defined',
-      };
+      }
     }
   }
 
@@ -40,7 +41,7 @@ export default class Argument extends Item {
    * @return {String} The location
    */
   public get in(): string {
-    return this._in;
+    return this._in
   }
 
   /**
@@ -49,7 +50,7 @@ export default class Argument extends Item {
    * @return {Array} The enum
    */
   public get enum(): string[] {
-    return this._enum;
+    return this._enum
   }
 
   /**
@@ -58,6 +59,6 @@ export default class Argument extends Item {
    * @return {*|Object} The range
    */
   public get range(): any {
-    return this._range;
+    return this._range
   }
 }

@@ -1,6 +1,7 @@
 import * as fs from 'fs'
-import Run from './Run'
 import { Microservice } from 'omg-validate'
+import Run from './Run'
+
 const homedir = require('os').homedir()
 
 /**

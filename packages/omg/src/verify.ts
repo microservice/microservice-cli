@@ -1,6 +1,6 @@
 import * as _ from 'underscore'
-import { dataTypes } from './utils'
 import { Command, Microservice } from 'omg-validate'
+import { dataTypes } from './utils'
 
 /**
  * Verifies the pattern, enum, and range of the given arguments.
@@ -123,10 +123,10 @@ export function verifyOutputType(command: Command, output: string) {
         const typeFound = (json, key): string => {
           if (
             typeof json[key] === 'number' &&
-            dataTypes['int'](json[key].toString())
+            dataTypes.int(json[key].toString())
           ) {
             return 'int'
-          } else if (dataTypes['float'](json[key].toString())) {
+          } if (dataTypes.float(json[key].toString())) {
             return 'float'
           }
           return typeof json[key]
@@ -148,7 +148,7 @@ export function verifyOutputType(command: Command, output: string) {
  */
 export function verifyProperties(command: Command, output: string) {
   const outputObject = JSON.parse(output)
-  const properties = command.output.properties
+  const {properties} = command.output
   const outputedProperties = Object.keys(outputObject)
   for (const property of Object.keys(properties)) {
     if (!(property in outputObject)) {

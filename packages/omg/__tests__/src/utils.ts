@@ -1,6 +1,6 @@
-import * as utils from '../../src/utils'
 import { EnvironmentVariable, Microservice } from 'omg-validate'
 import * as sinon from 'sinon'
+import * as utils from '../../src/utils'
 
 describe('utils.ts', () => {
   describe('setVal(val, _else)', () => {
@@ -187,98 +187,98 @@ describe('utils.ts', () => {
 
   describe('{ typeCast }', () => {
     test('casts an integer', () => {
-      expect(typeof utils.typeCast['int']('20')).toBe('number')
+      expect(typeof utils.typeCast.int('20')).toBe('number')
     })
 
     test('casts a float', () => {
-      expect(typeof utils.typeCast['float']('20.20')).toBe('number')
+      expect(typeof utils.typeCast.float('20.20')).toBe('number')
     })
 
     test('casts a string', () => {
-      expect(typeof utils.typeCast['string']('test')).toBe('string')
+      expect(typeof utils.typeCast.string('test')).toBe('string')
     })
 
     test('casts a uuid', () => {
       expect(
-        typeof utils.typeCast['uuid']('2d9eb156-d047-428a-b5c1-b1b6c55e56ab')
+        typeof utils.typeCast.uuid('2d9eb156-d047-428a-b5c1-b1b6c55e56ab')
       ).toBe('string')
     })
 
     test('casts a list', () => {
-      expect(typeof utils.typeCast['list']('["val"]')).toBe('object')
+      expect(typeof utils.typeCast.list('["val"]')).toBe('object')
     })
 
     test('cast a map', () => {
-      expect(typeof utils.typeCast['map']('{"key": "val"}')).toBe('object')
+      expect(typeof utils.typeCast.map('{"key": "val"}')).toBe('object')
     })
 
     test('cast an object', () => {
-      expect(typeof utils.typeCast['object']('{"key": "val"}')).toBe('object')
+      expect(typeof utils.typeCast.object('{"key": "val"}')).toBe('object')
     })
 
     test('cast a boolean', () => {
-      expect(typeof utils.typeCast['boolean']('true')).toBe('boolean')
+      expect(typeof utils.typeCast.boolean('true')).toBe('boolean')
     })
 
     test('cast a path', () => {
-      expect(typeof utils.typeCast['path']('/path')).toBe('string')
+      expect(typeof utils.typeCast.path('/path')).toBe('string')
     })
   })
 
   describe('{ dataTypes }', () => {
     test('type checks a stringified integer', () => {
-      expect(utils.dataTypes['int']('20')).toBeTruthy()
-      expect(utils.dataTypes['int']('20.2')).toBeFalsy()
-      expect(utils.dataTypes['int']('asd')).toBeFalsy()
+      expect(utils.dataTypes.int('20')).toBeTruthy()
+      expect(utils.dataTypes.int('20.2')).toBeFalsy()
+      expect(utils.dataTypes.int('asd')).toBeFalsy()
     })
 
     test('type checks a stringified float', () => {
-      expect(utils.dataTypes['float']('20.20')).toBeTruthy()
-      expect(utils.dataTypes['float']('20')).toBeFalsy()
-      expect(utils.dataTypes['float']('asd')).toBeFalsy()
+      expect(utils.dataTypes.float('20.20')).toBeTruthy()
+      expect(utils.dataTypes.float('20')).toBeFalsy()
+      expect(utils.dataTypes.float('asd')).toBeFalsy()
     })
 
     test('type checks a stringified string', () => {
-      expect(utils.dataTypes['string']('any')).toBeTruthy()
+      expect(utils.dataTypes.string('any')).toBeTruthy()
     })
 
     test('type checks a stringified uuid', () => {
       expect(
-        utils.dataTypes['uuid']('db3a6ed8-5419-4c35-8640-1e46ef27f94d')
+        utils.dataTypes.uuid('db3a6ed8-5419-4c35-8640-1e46ef27f94d')
       ).toBeTruthy()
-      expect(utils.dataTypes['uuid']('db3a6')).toBeFalsy()
+      expect(utils.dataTypes.uuid('db3a6')).toBeFalsy()
     })
 
     test('type checks a stringified list', () => {
-      expect(utils.dataTypes['list']('["data"]')).toBeTruthy()
-      expect(utils.dataTypes['list']('{"data": "value"}')).toBeFalsy()
-      expect(utils.dataTypes['list']('asd')).toBeFalsy()
-      expect(utils.dataTypes['list']('{"a": 1}')).toBeFalsy()
+      expect(utils.dataTypes.list('["data"]')).toBeTruthy()
+      expect(utils.dataTypes.list('{"data": "value"}')).toBeFalsy()
+      expect(utils.dataTypes.list('asd')).toBeFalsy()
+      expect(utils.dataTypes.list('{"a": 1}')).toBeFalsy()
     })
 
     test('type checks a stringified map', () => {
-      expect(utils.dataTypes['map']('{"data": "value"}')).toBeTruthy()
-      expect(utils.dataTypes['map']('["data"]')).toBeFalsy()
-      expect(utils.dataTypes['map']('asd')).toBeFalsy()
+      expect(utils.dataTypes.map('{"data": "value"}')).toBeTruthy()
+      expect(utils.dataTypes.map('["data"]')).toBeFalsy()
+      expect(utils.dataTypes.map('asd')).toBeFalsy()
     })
 
     test('type checks a stringified object', () => {
-      expect(utils.dataTypes['object']('{"data": "value"}')).toBeTruthy()
-      expect(utils.dataTypes['object']('["data"]')).toBeFalsy()
-      expect(utils.dataTypes['object']('asd')).toBeFalsy()
+      expect(utils.dataTypes.object('{"data": "value"}')).toBeTruthy()
+      expect(utils.dataTypes.object('["data"]')).toBeFalsy()
+      expect(utils.dataTypes.object('asd')).toBeFalsy()
     })
 
     test('type checks a stringified boolean', () => {
-      expect(utils.dataTypes['boolean']('true')).toBeTruthy()
-      expect(utils.dataTypes['boolean']('false')).toBeTruthy()
-      expect(utils.dataTypes['boolean']('{"data": "value"}')).toBeFalsy()
-      expect(utils.dataTypes['boolean']('asd')).toBeFalsy()
+      expect(utils.dataTypes.boolean('true')).toBeTruthy()
+      expect(utils.dataTypes.boolean('false')).toBeTruthy()
+      expect(utils.dataTypes.boolean('{"data": "value"}')).toBeFalsy()
+      expect(utils.dataTypes.boolean('asd')).toBeFalsy()
     })
 
     test('type checks a stringified path', () => {
-      expect(utils.dataTypes['path']('/path')).toBeTruthy()
-      expect(utils.dataTypes['path']('dataPath')).toBeTruthy()
-      expect(utils.dataTypes['path']('{"data": "value"}')).toBeFalsy()
+      expect(utils.dataTypes.path('/path')).toBeTruthy()
+      expect(utils.dataTypes.path('dataPath')).toBeTruthy()
+      expect(utils.dataTypes.path('{"data": "value"}')).toBeFalsy()
     })
   })
 

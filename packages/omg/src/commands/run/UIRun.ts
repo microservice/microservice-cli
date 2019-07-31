@@ -1,10 +1,10 @@
 import { Microservice } from 'omg-validate'
-import Run from './Run'
-import { verifyOutputType } from '../../verify'
 import * as rp from 'request-promise'
 import * as _ from 'underscore'
 import * as querystring from 'querystring'
 import * as fs from 'fs'
+import { verifyOutputType } from '../../verify'
+import Run from './Run'
 import * as utils from '../../utils'
 import * as verify from '../../verify'
 
@@ -43,7 +43,7 @@ export default class UIRun extends Run {
     if (this.action.http === null) {
       this.omgJsonFileHandler()
       return ''
-    } else {
+    } 
       const output = await this.httpCommand(this.portMap[this.action.http.port])
       verifyOutputType(this.action, output.trim())
       if (
@@ -58,7 +58,7 @@ export default class UIRun extends Run {
         return JSON.stringify(JSON.parse(output.trim()), null, 2)
       }
       return output.trim()
-    }
+    
   }
 
   /**

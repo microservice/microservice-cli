@@ -19,7 +19,7 @@ export default class OMGValidate {
    */
   constructor(microservice: string, opts?: any) {
     this._microservice = microservice
-    this._opts = opts ? opts : {}
+    this._opts = opts || {}
   }
 
   /**
@@ -65,9 +65,9 @@ export default class OMGValidate {
   private processValidateOutput(data: any, options: any): string {
     if (options.json) {
       return JSON.stringify(data, null, 2)
-    } else if (options.silent) {
+    } if (options.silent) {
       return ''
-    } else {
+    } 
       let errorString
       if (!data.text) {
         errorString = `${data.context} has an issue. ${data.message}`
@@ -99,6 +99,6 @@ export default class OMGValidate {
         formattedError.push(`\n  ${i + 1}. ${error}`)
       }
       return formattedError.join('')
-    }
+    
   }
 }

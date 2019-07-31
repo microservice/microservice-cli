@@ -1,8 +1,8 @@
-import * as utils from '../../utils'
-import * as verify from '../../verify'
 import * as rp from 'request-promise'
 import * as $ from 'shelljs'
 import { Action, Microservice } from 'omg-validate'
+import * as verify from '../../verify'
+import * as utils from '../../utils'
 
 /**
  * Used to represent a way to execute a {@link Microservice}'s {@link Action}s.
@@ -87,7 +87,7 @@ export default abstract class Run {
           if (typeof argument.default === 'object') {
             this._arguments[argument.name] = JSON.stringify(argument.default)
           } else {
-            this._arguments[argument.name] = argument.default + ''
+            this._arguments[argument.name] = `${argument.default  }`
           }
         }
       }
@@ -385,7 +385,7 @@ export default abstract class Run {
   public async healthCheck(): Promise<boolean> {
     const timeout = 500
     const interval = 100
-    const retries: number = 100
+    const retries = 100
     let boundPort = -1
 
     Object.keys(this.portBindings).forEach(p => {

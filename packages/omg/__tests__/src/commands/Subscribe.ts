@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import * as sinon from 'sinon';
+import { Microservice } from 'omg-validate';
 import * as rp from '../../../src/request';
 import * as utils from '../../../src/utils';
 import Subscribe from '../../../src/commands/Subscribe';
-import { Microservice } from 'omg-validate';
 import HttpRun from '../../../src/commands/run/HttpRun';
 
 describe('Subscribe.ts', () => {

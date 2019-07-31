@@ -1,8 +1,8 @@
+import { Action, Microservice } from 'omg-validate'
 import Run from './Run'
 import FormatRun from './FormatRun'
 import HttpRun from './HttpRun'
 import EventRun from './EventRun'
-import { Action, Microservice } from 'omg-validate'
 import UIRun from './UIRun'
 
 /**
@@ -48,21 +48,21 @@ export default class RunFactory {
         this.microservice,
         this.environmentVariables
       )
-    } else if (action.format !== null) {
+    } if (action.format !== null) {
       return new FormatRun(
         this.dockerImage,
         this.microservice,
         this._arguments,
         this.environmentVariables
       )
-    } else if (action.http !== null) {
+    } if (action.http !== null) {
       return new HttpRun(
         this.dockerImage,
         this.microservice,
         this._arguments,
         this.environmentVariables
       )
-    } else if (action.events !== null) {
+    } if (action.events !== null) {
       return new EventRun(
         this.dockerImage,
         this.microservice,

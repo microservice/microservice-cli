@@ -1,5 +1,6 @@
-import Item from './Item';
-const validateEnvironmentVariable = require('../schema/schema').environmentVariable;
+import Item from './Item'
+
+const validateEnvironmentVariable = require('../schema/schema').environmentVariable
 
 /**
  * Describes and environment variable.
@@ -12,11 +13,11 @@ export default class EnvironmentVariable extends Item {
    * @param {Object} rawEnvironment The given raw data
    */
   constructor(name: string, rawEnvironment: any) {
-    const isValid = validateEnvironmentVariable(rawEnvironment);
+    const isValid = validateEnvironmentVariable(rawEnvironment)
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace(/data/g, `environment.${name}`);
-      throw isValid;
+      isValid.text = isValid.text.replace(/data/g, `environment.${name}`)
+      throw isValid
     }
-    super(name, rawEnvironment);
+    super(name, rawEnvironment)
   }
 }

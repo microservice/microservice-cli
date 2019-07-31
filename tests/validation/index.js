@@ -1,4 +1,4 @@
-const OMGValidate = require('omg-validate').OMGValidate
+const {OMGValidate} = require('omg-validate')
 const path = require('path')
 const fs = require('fs')
 
@@ -22,7 +22,7 @@ const loading = () => {
           })
           const key = file.replace('.txt', '')
           tests[key] = { expect: '', content: '' }
-          tests[key]['expect'] = content
+          tests[key].expect = content
           console.log(`${file} loaded`)
         }
       })
@@ -40,7 +40,7 @@ const loading = () => {
             encoding: 'utf8'
           })
           const key = file.replace('.yml', '')
-          tests[key]['content'] = content
+          tests[key].content = content
           console.log(`${file} loaded`)
         }
       })

@@ -2,6 +2,7 @@ import Http from './Http'
 import Format from './Format'
 import Event from './Event'
 import Command from './Command'
+
 const validateAction = require('../schema/schema').action
 
 /**
@@ -31,16 +32,10 @@ export default class Action extends Command {
       this.eventMap = {}
       const eventList = Object.keys(rawAction.events)
       for (let i = 0; i < eventList.length; i += 1) {
-        this.eventMap[eventList[i]] = new Event(
-          eventList[i],
-          name,
-          rawAction.events[eventList[i]]
-        )
+        this.eventMap[eventList[i]] = new Event(eventList[i], name, rawAction.events[eventList[i]])
       }
     }
-    this._http = rawAction.http
-      ? new Http(name, rawAction.http, `actions.${name}.http`, null)
-      : null
+    this._http = rawAction.http ? new Http(name, rawAction.http, `actions.${name}.http`, null) : null
     this._format = rawAction.format ? new Format(name, rawAction.format) : null
     if (this._http !== null) {
       this.checkHttpArguments(this._http, 'action', 'Action')

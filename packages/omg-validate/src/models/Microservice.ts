@@ -4,6 +4,7 @@ import Volume from './Volume'
 import Lifecycle from './Lifecycle'
 import Forward from './Forward'
 import Health from './Health'
+
 const validateMicroservice = require('../schema/schema').microservice
 
 /**
@@ -35,10 +36,7 @@ export default class Microservice {
       this.actionMap = {}
       const actionList = Object.keys(microserviceYamlJson.actions)
       for (let i = 0; i < actionList.length; i += 1) {
-        this.actionMap[actionList[i]] = new Action(
-          actionList[i],
-          microserviceYamlJson.actions[actionList[i]]
-        )
+        this.actionMap[actionList[i]] = new Action(actionList[i], microserviceYamlJson.actions[actionList[i]])
       }
     }
     this.environmentMap = null
@@ -48,7 +46,7 @@ export default class Microservice {
       for (let i = 0; i < environmentList.length; i += 1) {
         this.environmentMap[environmentList[i]] = new EnvironmentVariable(
           environmentList[i],
-          microserviceYamlJson.environment[environmentList[i]]
+          microserviceYamlJson.environment[environmentList[i]],
         )
       }
     }
@@ -57,15 +55,10 @@ export default class Microservice {
       this.volumeMap = {}
       const volumeList = Object.keys(microserviceYamlJson.volumes)
       for (let i = 0; i < volumeList.length; i += 1) {
-        this.volumeMap[volumeList[i]] = new Volume(
-          volumeList[i],
-          microserviceYamlJson.volumes[volumeList[i]]
-        )
+        this.volumeMap[volumeList[i]] = new Volume(volumeList[i], microserviceYamlJson.volumes[volumeList[i]])
       }
     }
-    this._lifecycle = microserviceYamlJson.lifecycle
-      ? new Lifecycle(microserviceYamlJson.lifecycle)
-      : null
+    this._lifecycle = microserviceYamlJson.lifecycle ? new Lifecycle(microserviceYamlJson.lifecycle) : null
     this.forwardMap = null
     if (microserviceYamlJson.forward) {
       this.forwardMap = {}
@@ -75,13 +68,11 @@ export default class Microservice {
           forwardList[i],
           microserviceYamlJson.forward[forwardList[i]],
           this.actionMap,
-          this.forwardMap
+          this.forwardMap,
         )
       }
     }
-    this._health = microserviceYamlJson.health
-      ? new Health(microserviceYamlJson.health)
-      : null
+    this._health = microserviceYamlJson.health ? new Health(microserviceYamlJson.health) : null
     // Disabling lifecycle when actions.$.http
     // for (let i = 0; i < this.actions.length; i += 1) {
     //   if ((this.actions[i].http !== null) && (this.lifecycle === null)) {
@@ -146,16 +137,10 @@ export default class Microservice {
    * @param {Object} environmentVariableMapping The given mapping of environment variables
    * @return {Boolean} True if all required environment variables are given, otherwise false
    */
-  public areRequiredEnvironmentVariablesSupplied(
-    environmentVariableMapping
-  ): boolean {
+  public areRequiredEnvironmentVariablesSupplied(environmentVariableMapping): boolean {
     const requiredEnvironmentVariable = this.requiredEnvironmentVariables
     for (let i = 0; i < requiredEnvironmentVariable.length; i += 1) {
-      if (
-        !Object.keys(environmentVariableMapping).includes(
-          requiredEnvironmentVariable[i]
-        )
-      ) {
+      if (!Object.keys(environmentVariableMapping).includes(requiredEnvironmentVariable[i])) {
         return false
       }
     }
@@ -168,9 +153,7 @@ export default class Microservice {
    * @return {Array<String>} The required {@link EnvironmentVariable}'s names
    */
   public get requiredEnvironmentVariables(): string[] {
-    return this.environmentVariables
-      .filter(e => e.isRequired())
-      .map(e => e.name)
+    return this.environmentVariables.filter(e => e.isRequired()).map(e => e.name)
   }
 
   /**

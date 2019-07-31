@@ -1,4 +1,5 @@
 import * as utils from '../utils'
+
 const Dockerode = require('dockerode')
 
 /**
@@ -27,32 +28,29 @@ export default class Build {
     if (ui) {
       const stream = await utils.docker.buildImage(
         {
-          context: process.cwd()
+          context: process.cwd(),
         },
-        { t: this.name }
+        { t: this.name },
       )
       return stream
-    } else {
-      const stream = await utils.docker.buildImage(
-        {
-          context: process.cwd()
-        },
-        { t: this.name }
-      )
-      const dockerode = new Dockerode()
-      const log: any = await new Promise((resolve, reject) => {
-        dockerode.modem.followProgress(stream, (err, res) =>
-          err ? reject(err) : resolve(res)
-        )
-      })
-      if (!silent) {
-        for (const line in log) {
-          if (log[line].stream && log[line].stream.length > 1) {
-            utils.log(log[line].stream.trim())
-          }
+    }
+    const stream = await utils.docker.buildImage(
+      {
+        context: process.cwd(),
+      },
+      { t: this.name },
+    )
+    const dockerode = new Dockerode()
+    const log: any = await new Promise((resolve, reject) => {
+      dockerode.modem.followProgress(stream, (err, res) => (err ? reject(err) : resolve(res)))
+    })
+    if (!silent) {
+      for (const line in log) {
+        if (log[line].stream && log[line].stream.length > 1) {
+          utils.log(log[line].stream.trim())
         }
       }
-      return this.name
     }
+    return this.name
   }
 }

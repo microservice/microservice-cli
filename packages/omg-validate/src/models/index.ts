@@ -25,5 +25,5 @@ export {
   Item,
   Lifecycle,
   Microservice,
-  Volume
+  Volume,
 }

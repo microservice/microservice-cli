@@ -4,9 +4,11 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as getPort from 'get-port'
 import { EnvironmentVariable, Microservice } from 'omg-validate'
+
 const Docker = require('dockerode-promise')
 const LineUp = require('lineup')
 const execCmd = require('child_process').exec
+
 const lineup = new LineUp()
 export const docker = new Docker()
 let versionAvailable = false
@@ -122,7 +124,7 @@ export async function createImageName(
         : `omg/${data
             .match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1]
             .toLowerCase()}`
-    } else {
+    } 
       return ui
         ? `${data
             .match(/https:\/\/github\.com\/(\w+\/[\w|.|-]+)/)[1]
@@ -130,7 +132,7 @@ export async function createImageName(
         : `omg/${data
             .match(/https:\/\/github\.com\/(\w+\/[\w|.|-]+)/)[1]
             .toLowerCase()}`
-    }
+    
   } catch (e) {
     if (ui) {
       return {
@@ -140,12 +142,12 @@ export async function createImageName(
           .replace(/=/g, '')}`,
         generated: true
       }
-    } else {
+    } 
       return `omg/${Buffer.from(process.cwd())
         .toString('base64')
         .toLowerCase()
         .replace(/=/g, '')}`
-    }
+    
   }
 }
 
@@ -209,13 +211,11 @@ export function exec(command: string, silent: boolean = true): Promise<string> {
         } else {
           reject(stderr.trim())
         }
-      } else {
-        if (stdout === '') {
+      } else if (stdout === '') {
           resolve(stderr.trim())
         } else {
           resolve(stdout.trim())
         }
-      }
     })
   })
 }
@@ -477,9 +477,9 @@ export function readMicroserviceFile(): string {
 export function getMicroserviceFilePath(): string {
   if (fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
     return path.join(process.cwd(), 'microservice.yml')
-  } else if (fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) {
+  } if (fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) {
     return path.join(process.cwd(), 'microservice.yaml')
-  } else {
+  } 
     return null
-  }
+  
 }
