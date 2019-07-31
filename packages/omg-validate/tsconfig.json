@@ -1,11 +1,23 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
+    "baseUrl": "./",
+    "jsx": "preserve",
+    "noEmit": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "strictNullChecks": false,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
-    "outDir": "dist",
-    "sourceMap": true
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "paths": {
+      "~/*": ["./src/*"]
+    },
+    "lib": ["es2015", "es2016", "es2017", "es2018", "esnext"]
   },
-  "include": ["src/**/*.ts", "index.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src", "index.ts"],
+  "exclude": [
+    "node_modules"
+  ]
 }
