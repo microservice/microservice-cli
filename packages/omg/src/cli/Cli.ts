@@ -25,7 +25,7 @@ export default class Cli {
   /**
    * Build an {@link Cli}.
    */
-  constructor() {
+  public constructor() {
     if (
       ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) &&
         !fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) ||
@@ -45,7 +45,7 @@ export default class Cli {
   /**
    * Checks if Docker is running by running `docker ps`.
    */
-  static async checkDocker() {
+  public static async checkDocker() {
     try {
       await utils.docker.ping()
     } catch (e) {
@@ -58,7 +58,7 @@ export default class Cli {
    * Builds a {@link Microservice} based ton the `microservice.yml` file. If the build throws an error the user
    * will be directed to run `omg validate`.
    */
-  buildMicroservice(): void {
+  public buildMicroservice(): void {
     try {
       const json = YAML.parse(utils.readMicroserviceFile())
       this.microservice = new Microservice(json)
@@ -198,7 +198,7 @@ export default class Cli {
    *
    * @param {Object} options The given options (json, silent, or text)
    */
-  static validate(options: any): void {
+  public static validate(options: any): void {
     try {
       utils.log(new OMGValidate(utils.readMicroserviceFile(), options).validate())
       process.exit(0)
@@ -213,7 +213,7 @@ export default class Cli {
    *
    * @param {Object} options The given name
    */
-  static async build(options: any): Promise<string> {
+  public static async build(options: any): Promise<string> {
     await Cli.checkDocker()
     if (!options.raw) {
       ora.start().info('Building Docker image')
@@ -240,7 +240,7 @@ export default class Cli {
    * @param {String} action The command to run
    * @param {Object} options The given object holding the command, arguments, and environment variables
    */
-  async run(action: string, options: any): Promise<void> {
+  public async run(action: string, options: any): Promise<void> {
     await Cli.checkDocker()
     const { image } = options
     if (!options.args || !options.envs) {
@@ -425,7 +425,7 @@ export default class Cli {
    * @param {String} event The given event
    * @param {Object} options The given object holding the arguments
    */
-  async subscribe(action: string, event: string, options: any) {
+  public async subscribe(action: string, event: string, options: any) {
     await Cli.checkDocker()
     this.raw = options.raw
     await this.run(action, { args: [], envs: options.envs, raw: options.raw })
@@ -474,7 +474,7 @@ export default class Cli {
    *
    * @param {Object} options The options to start the UI, such as port mapping
    */
-  async ui(options: any): Promise<any> {
+  public async ui(options: any): Promise<any> {
     await Cli.checkDocker()
     try {
       this.uiServer = new UIServer(options, Cli.readYAML(utils.getMicroserviceFilePath(), true))
@@ -521,7 +521,7 @@ export default class Cli {
   /**
    * @param  {any} options Provided options for 'list' action
    */
-  list(options: any): void {
+  public list(options: any): void {
     const json = Cli.readYAML(utils.getMicroserviceFilePath())
     try {
       utils.checkActionInterface(json)
@@ -559,7 +559,7 @@ export default class Cli {
   /**
    * Catch the `CtrlC` command to stop running containers.
    */
-  async controlC() {
+  public async controlC() {
     if (this.uiServer !== null) {
       await this.uiServer.removeListeners()
       await this.uiServer.stopContainer()

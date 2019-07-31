@@ -18,26 +18,26 @@ const LineUp = require('lineup')
 const lineup = new LineUp()
 
 interface ISocketNotif {
-  notif: any;
-  status: boolean;
-  log?: string;
+  notif: any
+  status: boolean
+  log?: string
 }
 
 interface IDataBuild {
-  name?: string;
+  name?: string
 }
 
 interface IStartContainer {
-  image: string;
-  envs: any;
+  image: string
+  envs: any
 }
 
 interface IDataAction {
-  image: string;
-  action: string;
-  args: {};
-  envs: {};
-  event?: string;
+  image: string
+  action: string
+  args: {}
+  envs: {}
+  event?: string
 }
 
 /**
@@ -66,7 +66,7 @@ export default class UIServer {
    * @param  {any} options
    * @param  {any} microservice
    */
-  constructor(options: any, microservice: any) {
+  public constructor(options: any, microservice: any) {
     this.port = options.port
     this.app = app()
     this.http = new http.Server(this.app)
@@ -81,7 +81,7 @@ export default class UIServer {
    * Starts the UI server
    * @param {Boolean} [doOpen=false]
    */
-  async startUI(doOpen = false) {
+  public async startUI(doOpen = false) {
     this.io.on('connection', socket => {
       if (!this.isClientConnected) {
         this.isClientConnected = true
@@ -176,7 +176,7 @@ export default class UIServer {
    * @param  {Boolean} [bak=false]
    * @param  {string} appPath
    */
-  async rebuild(data?: any, microservice?: string, bak = false, appPath?: string) {
+  public async rebuild(data?: any, microservice?: string, bak = false, appPath?: string) {
     if (this.rebuildToggle) {
       if (appPath) {
         utils.log(`${appPath.substr(appPath.lastIndexOf('/') + 1)} changed. Rebuilding.`)
@@ -202,7 +202,7 @@ export default class UIServer {
    *
    * @param  {string} file
    */
-  sendFile(file: string) {
+  public sendFile(file: string) {
     fs.readFile(file, 'utf8', (err: any, data: any) => {
       if (err) throw err
       this.socket.emit('microservice.yml', data)
@@ -225,7 +225,7 @@ export default class UIServer {
    *
    * @return {Promise} a promise when listeners have been removed
    */
-  removeListeners(): Promise<any> {
+  public removeListeners(): Promise<any> {
     return this.socket.removeAllListeners()
   }
 
@@ -265,7 +265,7 @@ export default class UIServer {
    *
    * @param  {IDataBuild} data image name
    */
-  async buildImage(data: IDataBuild) {
+  public async buildImage(data: IDataBuild) {
     await Cli.checkDocker()
 
     this.emit('build', { notif: 'Building Docker image', status: true })
@@ -402,7 +402,7 @@ export default class UIServer {
    *
    * @return {Promise}
    */
-  stopContainer(): Promise<any> {
+  public stopContainer(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let output
       if (this.dockerContainer !== null && (await this.dockerContainer.isRunning())) {
@@ -421,7 +421,7 @@ export default class UIServer {
    *
    * @return {Promise}
    */
-  removeContainer(): Promise<any> {
+  public removeContainer(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let output
       if (this.dockerContainer !== null && !(await this.dockerContainer.isRunning())) {

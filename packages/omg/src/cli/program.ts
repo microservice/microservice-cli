@@ -29,7 +29,7 @@ program
   .description(
     'Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a random string will be used',
   )
-  .action(async options => await Cli.build(options))
+  .action(async options => Cli.build(options))
 
 program
   .command('run <action>')
@@ -134,7 +134,7 @@ if (theArgs.includes('subscribe') && theArgs.includes('--help') && theArgs[1] !=
   }
 }
 
-process.on('SIGINT', async function() {
+process.on('SIGINT', async () => {
   try {
     await cli.controlC()
   } catch (e) {

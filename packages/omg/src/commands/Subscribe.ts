@@ -27,7 +27,7 @@ export default class Subscribe {
    * @param {Object} _arguments The given arguments
    * @param {Run} run The {@link Run} object that started the event
    */
-  constructor(microservice: Microservice, _arguments: any, run: Run) {
+  public constructor(microservice: Microservice, _arguments: any, run: Run) {
     this.microservice = microservice
     this._arguments = _arguments
     this.run = run
@@ -40,7 +40,7 @@ export default class Subscribe {
    * @param {String} event The given event
    * @param  {string} ip The given IP address
    */
-  async go(action: string, event: string) {
+  public async go(action: string, event: string) {
     this.omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'))
     this.action = this.microservice.getAction(action)
     this.event = this.action.getEvent(event)
@@ -122,7 +122,7 @@ export default class Subscribe {
   /**
    * Unsubscribe this {@link Subscribe}'s {@link Event}.
    */
-  async unsubscribe() {
+  public async unsubscribe() {
     if (this.event.unsubscribe === null) {
       return
     }

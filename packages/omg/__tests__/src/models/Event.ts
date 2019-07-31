@@ -337,8 +337,8 @@ describe('Event.ts', () => {
 
       try {
         e.getArgument('argo')
-      } catch (e) {
-        expect(e).toBe('Argument `argo` does not exist')
+      } catch (error) {
+        expect(error).toBe('Argument `argo` does not exist')
       }
     })
   })

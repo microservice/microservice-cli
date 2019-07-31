@@ -13,7 +13,7 @@ export default class Build {
    *
    * @param {String} name The given name
    */
-  constructor(name: string) {
+  public constructor(name: string) {
     this.name = name
   }
 
@@ -24,7 +24,7 @@ export default class Build {
    * @param  {boolean} [ui=false] The given boolean if ui mode is enabled or not
    * @return {String} The name of the docker container that was build
    */
-  async go(silent = false, ui = false): Promise<any> {
+  public async go(silent = false, ui = false): Promise<any> {
     if (ui) {
       const stream = await utils.docker.buildImage(
         {

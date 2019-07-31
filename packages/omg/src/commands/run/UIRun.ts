@@ -21,7 +21,7 @@ export default class UIRun extends Run {
    * @param  {Microservice} microservice
    * @param  {any} envs
    */
-  constructor(dockerImage: string, microservice: Microservice, envs: any) {
+  public constructor(dockerImage: string, microservice: Microservice, envs: any) {
     super(dockerImage, microservice, null, envs)
   }
 
