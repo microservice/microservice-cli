@@ -1,3 +1,6 @@
+/* eslint-disable class-methods-use-this */
+// TODO: ^ disable this
+
 import yamljs from './wrapper/yamljs'
 import * as utils from './utils'
 import Microservice from './models/Microservice'
@@ -52,6 +55,9 @@ export default class OMGValidate {
     } catch (e) {
       utils.error(`Issue with microservice.yml:\n${e}`)
       process.exit(1)
+      throw new Error('Pasing failed')
+      // ^ Pure cosmetic since we called process.exit() earlier
+      // Just to suppress type checker
     }
   }
 

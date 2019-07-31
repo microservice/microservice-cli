@@ -49,5 +49,7 @@ export default class RunFactory {
     if (action.events !== null) {
       return new EventRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables)
     }
+
+    return null
   }
 }

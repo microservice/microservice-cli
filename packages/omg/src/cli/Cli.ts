@@ -107,11 +107,11 @@ export default class Cli {
     this.helpForActionHeader(action, stringBuffer)
     stringBuffer.push(`\n    Events: (run in the form of \`omg subscribe ${action.name} \`event\`\`)\n`)
     const padding = '          '
-    for (const event of action.events) {
+    action.events.forEach(event => {
       stringBuffer.push(`      - ${action.name}`)
       this.helpForArguments(event.arguments, stringBuffer, padding)
       this.helpForActionFooter(event, stringBuffer, padding)
-    }
+    })
 
     utils.error(stringBuffer.join(''))
     process.exit()
@@ -154,11 +154,11 @@ export default class Cli {
     if (_arguments.length !== 0) {
       stringBuffer.push(`\n${padding}Arguments: (use in the form of \`-a 'foo=bar' -a 'veggie=carrot'\`)\n`)
     }
-    for (const argument of _arguments) {
+    _arguments.forEach(argument => {
       stringBuffer.push(
         `${padding}  - ${argument.name}        ${argument.type}${argument.help ? `, ${argument.help}` : ''}\n`,
       )
-    }
+    })
   }
 
   /**
@@ -231,6 +231,8 @@ export default class Cli {
         ora.start().fail(`Failed to build: ${e}`)
       }
       process.exit(1)
+      throw new Error('Build failed')
+      // ^ Purely cosmetic for typechecker
     }
   }
 
@@ -240,7 +242,9 @@ export default class Cli {
    * @param {String} action The command to run
    * @param {Object} options The given object holding the command, arguments, and environment variables
    */
-  public async run(action: string, options: any): Promise<void> {
+  public async run(action: string, givenOptions: any): Promise<void> {
+    const options = { ...givenOptions }
+
     await Cli.checkDocker()
     const { image } = options
     if (!options.args || !options.envs) {
@@ -333,17 +337,18 @@ export default class Cli {
         }
         await utils.sleep(10)
         output = await new Promise<string>(async (resolve, reject) => {
-          for (let i = 100; i > 0; i--) {
+          for (let i = 100; i > 0; i -= 1) {
             const attempt = () => {
-              return new Promise<string>((resolve, reject) => {
+              return new Promise<string>(resolveInner => {
                 this._run
                   .exec(action, tmpRetryExec)
                   .then(response => {
                     switch (response.statusCode / 100) {
                       case 2:
                       case 3:
-                        resolve(response.body)
+                        resolveInner(response.body)
                         break
+                      default:
                     }
                   })
                   .catch(e => {
@@ -591,15 +596,17 @@ export default class Cli {
    * @param {boolean} [ui=false] The given boolean if ui mode is enabled or not
    * @return {String} Returns file in string form
    */
-  private static readYAML(path: string, ui = false): string {
+  private static readYAML(yamlPath: string, ui = false): string {
     try {
-      return YAML.parse(fs.readFileSync(path).toString())
+      return YAML.parse(fs.readFileSync(yamlPath).toString())
     } catch (e) {
       if (ui) {
         return 'ERROR_PARSING'
       }
       utils.error(`Issue with microservice.yml: ${e.message}`)
       process.exit(1)
+      throw new Error('Parsing failed')
+      // ^ Purely cosmetic for typechecker
     }
   }
 }

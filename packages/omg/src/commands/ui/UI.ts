@@ -1,4 +1,5 @@
 import { app } from 'omg-ui'
+import LineUp from 'lineup'
 import { Microservice } from 'omg-validate'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -12,8 +13,6 @@ import Cli from '../../cli/Cli'
 import RunFactory from '../run/RunFactory'
 import open from './wrappers/open'
 import Dockerode from './wrappers/dockerode'
-
-const LineUp = require('lineup')
 
 const lineup = new LineUp()
 
@@ -275,15 +274,15 @@ export default class UIServer {
       const log: any = await new Promise((resolve, reject) => {
         dockerode.modem.followProgress(stream, (err, res) => (err ? reject(err) : resolve(res)))
       })
-      for (const line in log) {
-        if (log[line].stream) {
+      Object.values(log).forEach((logLine: any) => {
+        if (logLine.stream) {
           this.socket.emit('build', {
             status: true,
-            notif: log[line].stream.trim(),
+            notif: logLine.stream.trim(),
             build: true,
           })
         }
-      }
+      })
       this.socket.emit('build', {
         status: true,
         built: true,
@@ -294,6 +293,7 @@ export default class UIServer {
         status: false,
         notif: `Failed to build: ${e}`,
       })
+      return null
     }
   }
 
@@ -351,9 +351,7 @@ export default class UIServer {
     await Cli.checkDocker()
 
     if (data && data.image.length > 0) {
-      try {
-        !utils.doesContainerExist(data.image, await utils.docker.listImages())
-      } catch (e) {
+      if (!utils.doesContainerExist(data.image, await utils.docker.listImages())) {
         this.emit('start', {
           notif: `Image for microservice is not built. Run \`omg build\` to build the image.`,
           status: false,

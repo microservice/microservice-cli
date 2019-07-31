@@ -3,7 +3,6 @@ import * as rp from 'request-promise'
 import * as _ from 'underscore'
 import * as querystring from 'querystring'
 import * as fs from 'fs'
-import { verifyOutputType } from '../../verify'
 import Run from './Run'
 import * as utils from '../../utils'
 import * as verify from '../../verify'
@@ -45,7 +44,7 @@ export default class UIRun extends Run {
       return ''
     }
     const output = await this.httpCommand(this.portMap[this.action.http.port])
-    verifyOutputType(this.action, output.trim())
+    verify.verifyOutputType(this.action, output.trim())
     if (
       this.action.output &&
       this.action.output.type &&
@@ -117,6 +116,7 @@ export default class UIRun extends Run {
       case 'delete':
         data = await rp.delete(httpData.url)
         break
+      default:
     }
     return data
   }
@@ -145,6 +145,7 @@ export default class UIRun extends Run {
         case 'requestBody':
           jsonData[argument.name] = this._arguments[argument.name]
           break
+        default:
       }
     }
     if (querystring.stringify(queryParams) !== '') {

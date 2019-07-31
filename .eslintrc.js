@@ -26,6 +26,9 @@ module.exports = {
 
     // TODO: Eventually re-enable these after codebase is migrated
     'no-throw-literal': 'warn',
+    '@typescript-eslint/interface-name-prefix': 'warn',
+    'no-await-in-loop': 'warn',
+    'class-methods-use-this': 'warn',
   },
   env: {
     jest: true,

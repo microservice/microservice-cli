@@ -1,6 +1,5 @@
+import Dockerode from 'dockerode'
 import * as utils from '../utils'
-
-const Dockerode = require('dockerode')
 
 /**
  * Describes a way to build a microservice.
@@ -45,11 +44,11 @@ export default class Build {
       dockerode.modem.followProgress(stream, (err, res) => (err ? reject(err) : resolve(res)))
     })
     if (!silent) {
-      for (const line in log) {
-        if (log[line].stream && log[line].stream.length > 1) {
-          utils.log(log[line].stream.trim())
+      Object.values(log).forEach((logLine: any) => {
+        if (logLine.stream && logLine.stream.length > 1) {
+          utils.log(logLine.stream.trim())
         }
-      }
+      })
     }
     return this.name
   }

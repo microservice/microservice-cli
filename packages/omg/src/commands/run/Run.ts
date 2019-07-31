@@ -134,6 +134,8 @@ export default abstract class Run {
    *
    * @return {Boolean} True if a Docker process is running, otherwise false
    */
+  // TODO: WUT? 😅
+  // eslint-disable-next-line
   public isDockerProcessRunning(): boolean {
     return false
   }
@@ -178,11 +180,14 @@ export default abstract class Run {
     this.setDefaultEnvironmentVariables(inheritEnv)
     const neededPorts = utils.getNeededPorts(this.microservice)
     const openPorts = []
+
+    let portOffset = 0
     while (neededPorts.length !== openPorts.length) {
-      const possiblePort = await utils.getOpenPort()
+      const possiblePort = await utils.getOpenPort(portOffset)
       if (!openPorts.includes(possiblePort)) {
         openPorts.push(possiblePort)
       }
+      portOffset += 1
     }
 
     for (let i = 0; i < neededPorts.length; i += 1) {
@@ -246,7 +251,7 @@ export default abstract class Run {
    */
   public async getInspect(): Promise<any> {
     const container = utils.docker.getContainer(this.containerID)
-    return await container.inspect()
+    return container.inspect()
   }
 
   /**
@@ -256,7 +261,7 @@ export default abstract class Run {
    */
   public async getStats(): Promise<any> {
     const container = utils.docker.getContainer(this.containerID)
-    return await container.stats({ stream: false })
+    return container.stats({ stream: false })
   }
 
   /**
@@ -301,12 +306,12 @@ export default abstract class Run {
   public get forwardPortsBindings(): any {
     const bindings = {}
     const ports = utils.getForwardPorts(this.microservice)
-    for (const forward of this.microservice.forwards) {
+    this.microservice.forwards.forEach(forward => {
       bindings[forward.name] = {
         host: this.portBindings[`${forward.port}/tcp`],
         container: forward.port,
       }
-    }
+    })
     return bindings
   }
 
@@ -367,7 +372,7 @@ export default abstract class Run {
 
     return new Promise(async (resolve, reject) => {
       await utils.sleep(10)
-      for (let i = retries; i > 0; i--) {
+      for (let i = retries; i > 0; i -= 1) {
         if (this.microservice.health) {
           await this.isHealthy(boundPort, timeout)
             .then(() => {
@@ -379,6 +384,8 @@ export default abstract class Run {
             })
         }
       }
+      // TODO: Fix this
+      // eslint-disable-next-line prefer-promise-reject-errors
       reject(false)
     })
   }

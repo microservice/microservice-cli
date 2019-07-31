@@ -1,9 +1,6 @@
-import { Microservice } from 'omg-validate'
 import Run from './Run'
 import * as utils from '../../utils'
 import * as verify from '../../verify'
-
-const fs = require('fs')
 
 /**
  * Represents a docker exec execution of an {@link Action}.
@@ -17,9 +14,6 @@ export default class FormatRun extends Run {
    * @param {Object} _arguments The given argument map
    * @param {Object} environmentVariables the given environment  map
    */
-  constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
-    super(dockerImage, microservice, _arguments, environmentVariables)
-  }
 
   /** @inheritdoc */
   public async exec(action: string): Promise<string> {
@@ -89,16 +83,16 @@ export default class FormatRun extends Run {
 
     const data = await new Promise((resolve, reject) => {
       exec.start({ stdin: true, stdout: true }, (err, stream) => {
-        const data = []
+        const chunks = []
         if (err) {
           throw err
         } else {
           stream.on('data', chunk => {
-            data.push(chunk)
+            chunks.push(chunk)
           })
           stream.on('end', () => {
             resolve(
-              Buffer.concat(data)
+              Buffer.concat(chunks)
                 .toString()
                 .trim()
                 .substring(8),

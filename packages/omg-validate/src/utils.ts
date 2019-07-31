@@ -44,7 +44,7 @@ export function setVal(val: any, _else: any): any {
 export function checkActionInterface(microserviceJson: any): void {
   if (microserviceJson.actions) {
     const actionMap = microserviceJson.actions
-    for (const actionName of Object.keys(actionMap)) {
+    Object.keys(actionMap).forEach(actionName => {
       const action = actionMap[actionName]
       const bools = [!!action.http, !!action.format, !!action.rpc, !!action.events].filter(b => b)
       if (bools.length !== 1) {
@@ -52,7 +52,7 @@ export function checkActionInterface(microserviceJson: any): void {
           text: `actions.${actionName} should have one of required property: 'http' 'format' 'rpc' or 'events'`,
         }
       }
-    }
+    })
   }
 }
 

@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as http from 'http'
+import uuidv4 from 'uuid/v4'
 import { Action, Event, Microservice } from 'omg-validate'
 import * as utils from '../utils'
 import * as verify from '../verify'
@@ -7,7 +8,6 @@ import * as rp from '../request'
 import Run from './run/Run'
 
 const homedir = require('os').homedir()
-const uuidv4 = require('uuid/v4')
 
 /**
  * Describes a way to subscribe to an event.

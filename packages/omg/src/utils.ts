@@ -191,13 +191,13 @@ export function parse(list: string[], errorMessage: string): any {
  */
 export function matchEnvironmentCases(env: any, environmentVariables: EnvironmentVariable[]): any {
   const result = {}
-  for (const key of Object.keys(env)) {
-    for (const cap of environmentVariables) {
+  Object.keys(env).forEach(key => {
+    environmentVariables.forEach(cap => {
       if (cap.name.toLowerCase() === key.toLowerCase()) {
         result[cap.name] = env[key]
       }
-    }
-  }
+    })
+  })
   return result
 }
 
@@ -314,8 +314,8 @@ export const dataTypes = {
  *
  * @return {Promise<Number>} The open port
  */
-export function getOpenPort(): Promise<number> {
-  return getPort({ port: getPort.makeRange(8000, 9000) })
+export function getOpenPort(increment: number = 0): Promise<number> {
+  return getPort({ port: getPort.makeRange(8000 + increment, 9000) })
 }
 
 /**
@@ -324,7 +324,7 @@ export function getOpenPort(): Promise<number> {
  * @param {Array} xs
  * @return {function(*=): (*|Array)}
  */
-export function appender(givenXs: any[]): Function {
+export function appender(givenXs: any[] = []): (...args: any) => any {
   const xs = givenXs || []
   return x => {
     xs.push(x)
@@ -343,7 +343,8 @@ export function appender(givenXs: any[]): Function {
 export function checkActionInterface(microserviceJson: any): void {
   if (microserviceJson.actions) {
     const actionMap = microserviceJson.actions
-    for (const actionName of Object.keys(actionMap)) {
+
+    Object.keys(actionMap).forEach(actionName => {
       const action = actionMap[actionName]
       const bools = [!!action.http, !!action.format, !!action.rpc, !!action.events].filter(b => b)
       if (bools.length !== 1) {
@@ -351,7 +352,7 @@ export function checkActionInterface(microserviceJson: any): void {
           text: `actions.${actionName} should have one of required property: 'http' 'format' 'rpc' or 'events'`,
         }
       }
-    }
+    })
   }
 }
 

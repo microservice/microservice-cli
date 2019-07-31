@@ -1,10 +1,8 @@
 import * as _ from 'underscore'
 import * as rp from 'request-promise'
 import * as querystring from 'querystring'
-import { Microservice } from 'omg-validate'
 import Run from './Run'
 import * as verify from '../../verify'
-import http from '../ui/wrappers/http'
 
 /**
  * Represents a http execution of an {@link Action}.
@@ -18,9 +16,6 @@ export default class HttpRun extends Run {
    * @param {Object} _arguments The given argument map
    * @param {Object} environmentVariables the given environment  map
    */
-  constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
-    super(dockerImage, microservice, _arguments, environmentVariables)
-  }
 
   /** @inheritdoc */
   public async exec(action: string, tmpRetryExec: boolean = false): Promise<string> {
@@ -57,11 +52,11 @@ export default class HttpRun extends Run {
     // Temporary, remove when health is mandatory (put <string> back too)
     const httpData = this.formatHttp(port)
     const opts: {
-      method: string;
-      resolveWithFullResponse: boolean;
-      uri: string;
-      body?: string;
-      headers?: any;
+      method: string
+      resolveWithFullResponse: boolean
+      uri: string
+      body?: string
+      headers?: any
     } = {
       method: this.action.http.method.toUpperCase(),
       resolveWithFullResponse: tmpRetryExec,
@@ -81,7 +76,7 @@ export default class HttpRun extends Run {
      * resolveWithFullResponse, I must keep the switchCase for now
      */
     if (tmpRetryExec) {
-      return await rp(opts)
+      return rp(opts)
     }
     let data = {}
     switch (this.action.http.method) {
@@ -103,6 +98,7 @@ export default class HttpRun extends Run {
       case 'delete':
         data = await rp.delete(opts.uri)
         break
+      default:
     }
     return data
   }
@@ -131,6 +127,7 @@ export default class HttpRun extends Run {
         case 'requestBody':
           jsonData[argument.name] = this._arguments[argument.name]
           break
+        default:
       }
     }
     if (querystring.stringify(queryParams) !== '') {
@@ -144,5 +141,7 @@ export default class HttpRun extends Run {
   /**
    * @param  {any} args
    */
-  public setArgs(args: any) {}
+  public setArgs() {
+    /* No op */
+  }
 }
