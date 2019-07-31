@@ -198,7 +198,7 @@ export default class HttpRun extends Run {
    * @return {FormData} FormData
    */
   private jsonToFormData(json: any): FormData {
-    let form: FormData = new FormData()
+    const form: FormData = new FormData()
     Object.keys(json).forEach(key => {
       form.append(key, json[key])
     })

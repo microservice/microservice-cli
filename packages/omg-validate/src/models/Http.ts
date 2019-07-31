@@ -47,7 +47,7 @@ export default class Http {
   }
 
   /**
-   * Get's the port of this {@link Http}.
+   * Gets the port of this {@link Http}.
    *
    * @return {Integer} The port
    */
@@ -56,7 +56,7 @@ export default class Http {
   }
 
   /**
-   * Get's the path of this {@link Http}.
+   * Gets the path of this {@link Http}.
    *
    * @return {String} The endpoint
    */
@@ -64,6 +64,11 @@ export default class Http {
     return this._path
   }
 
+  /**
+   * Gets the content type of this {@link Http}.
+   *
+   * @return {String} The content type
+   */
   public get contentType(): string {
     return this._contentType
   }
