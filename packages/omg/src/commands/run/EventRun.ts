@@ -16,12 +16,7 @@ export default class EventRun extends Run {
    * @param {Object} _arguments The given argument map
    * @param {Object} environmentVariables The given environment map
    */
-  constructor(
-    dockerImage: string,
-    microservice: Microservice,
-    _arguments: any,
-    environmentVariables: any
-  ) {
+  constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     super(dockerImage, microservice, _arguments, environmentVariables)
   }
 
@@ -45,7 +40,7 @@ export default class EventRun extends Run {
 
     data[process.cwd()] = {
       container_id: this.containerID,
-      ports: {}
+      ports: {},
     }
 
     const neededPorts = Object.keys(this.portMap)

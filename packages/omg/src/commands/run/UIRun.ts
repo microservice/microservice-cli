@@ -43,22 +43,20 @@ export default class UIRun extends Run {
     if (this.action.http === null) {
       this.omgJsonFileHandler()
       return ''
-    } 
-      const output = await this.httpCommand(this.portMap[this.action.http.port])
-      verifyOutputType(this.action, output.trim())
-      if (
-        this.action.output &&
-        this.action.output.type &&
-        (this.action.output.type === 'map' ||
-          this.action.output.type === 'object')
-      ) {
-        if (this.action.output.properties) {
-          verify.verifyProperties(this.action, output)
-        }
-        return JSON.stringify(JSON.parse(output.trim()), null, 2)
+    }
+    const output = await this.httpCommand(this.portMap[this.action.http.port])
+    verifyOutputType(this.action, output.trim())
+    if (
+      this.action.output &&
+      this.action.output.type &&
+      (this.action.output.type === 'map' || this.action.output.type === 'object')
+    ) {
+      if (this.action.output.properties) {
+        verify.verifyProperties(this.action, output)
       }
-      return output.trim()
-    
+      return JSON.stringify(JSON.parse(output.trim()), null, 2)
+    }
+    return output.trim()
   }
 
   /**
@@ -72,7 +70,7 @@ export default class UIRun extends Run {
 
     data[process.cwd()] = {
       container_id: this.containerID,
-      ports: {}
+      ports: {},
     }
 
     const neededPorts = Object.keys(this.portMap)
@@ -103,17 +101,17 @@ export default class UIRun extends Run {
       case 'post':
         data = await rp.post(httpData.url, {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(httpData.jsonData)
+          body: JSON.stringify(httpData.jsonData),
         })
         break
       case 'put':
         data = await rp.put(httpData.url, {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(httpData.jsonData)
+          body: JSON.stringify(httpData.jsonData),
         })
         break
       case 'delete':
@@ -142,10 +140,7 @@ export default class UIRun extends Run {
           }
           break
         case 'path':
-          url = url.replace(
-            `{${argument.name}}`,
-            this._arguments[argument.name]
-          )
+          url = url.replace(`{${argument.name}}`, this._arguments[argument.name])
           break
         case 'requestBody':
           jsonData[argument.name] = this._arguments[argument.name]
@@ -157,7 +152,7 @@ export default class UIRun extends Run {
     }
     return {
       url,
-      jsonData
+      jsonData,
     }
   }
   /**

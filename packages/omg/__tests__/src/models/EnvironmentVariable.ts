@@ -11,14 +11,14 @@ describe('EnvironmentVariable.ts', () => {
             {
               dataPath: '',
               keyword: 'required',
-              message: 'should have required property \'type\'',
+              message: "should have required property 'type'",
               params: { missingProperty: 'type' },
-              schemaPath: '#/required'
-            }
+              schemaPath: '#/required',
+            },
           ],
           issue: {},
-          text: 'environment.name should have required property \'type\'',
-          valid: false
+          text: "environment.name should have required property 'type'",
+          valid: false,
         })
       }
     })
@@ -26,7 +26,7 @@ describe('EnvironmentVariable.ts', () => {
     test('throws an exception because the json is not valid', () => {
       try {
         new EnvironmentVariable('name', {
-          type: 'bob'
+          type: 'bob',
         })
       } catch (e) {
         expect(e).toEqual({
@@ -34,19 +34,17 @@ describe('EnvironmentVariable.ts', () => {
             {
               dataPath: '.type',
               keyword: 'pattern',
-              message:
-                'should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|any|object)$"',
+              message: 'should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|any|object)$"',
               params: {
-                pattern:
-                  '^(number|int|float|string|uuid|list|map|boolean|path|any|object)$'
+                pattern: '^(number|int|float|string|uuid|list|map|boolean|path|any|object)$',
               },
-              schemaPath: '#/properties/type/pattern'
-            }
+              schemaPath: '#/properties/type/pattern',
+            },
           ],
           issue: { type: 'bob' },
           text:
             'environment.name.type should match pattern "^(number|int|float|string|uuid|list|map|boolean|path|any|object)$"',
-          valid: false
+          valid: false,
         })
       }
     })
@@ -72,7 +70,7 @@ describe('EnvironmentVariable.ts', () => {
     test('gets the pattern', () => {
       const e = new EnvironmentVariable('TOKEN', {
         type: 'string',
-        pattern: 'w'
+        pattern: 'w',
       })
 
       expect(e.pattern).toBe('w')
@@ -84,7 +82,7 @@ describe('EnvironmentVariable.ts', () => {
       const e1 = new EnvironmentVariable('TOKEN', { type: 'string' })
       const e2 = new EnvironmentVariable('TOKEN', {
         type: 'string',
-        required: true
+        required: true,
       })
 
       expect(e1.isRequired()).toBeFalsy()
@@ -96,7 +94,7 @@ describe('EnvironmentVariable.ts', () => {
     test('gets the pattern', () => {
       const e = new EnvironmentVariable('TOKEN', {
         type: 'string',
-        default: '*****'
+        default: '*****',
       })
 
       expect(e.default).toBe('*****')
@@ -107,7 +105,7 @@ describe('EnvironmentVariable.ts', () => {
     test('gets the help', () => {
       const e = new EnvironmentVariable('TOKEN', {
         type: 'string',
-        help: 'token for stuff'
+        help: 'token for stuff',
       })
 
       expect(e.help).toBe('token for stuff')

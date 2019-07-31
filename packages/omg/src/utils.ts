@@ -54,10 +54,7 @@ export function getNeededPorts(microservice: Microservice): number[] {
         if (!ports.includes(action.events[j].subscribe.port)) {
           ports.push(action.events[j].subscribe.port)
         }
-        if (
-          action.events[j].unsubscribe &&
-          !ports.includes(action.events[j].unsubscribe.port)
-        ) {
+        if (action.events[j].unsubscribe && !ports.includes(action.events[j].unsubscribe.port)) {
           ports.push(action.events[j].unsubscribe.port)
         }
       }
@@ -69,11 +66,7 @@ export function getNeededPorts(microservice: Microservice): number[] {
       ports.push(forward.http.port)
     }
   }
-  if (
-    microservice.health &&
-    microservice.health.port !== null &&
-    !ports.includes(microservice.health.port)
-  ) {
+  if (microservice.health && microservice.health.port !== null && !ports.includes(microservice.health.port)) {
     ports.push(microservice.health.port)
   }
   return ports
@@ -111,28 +104,17 @@ export function getHealthPort(microservice: Microservice): number {
  * @param {boolean} ui Defines if UI mode is enabled or not
  * @return {Promise<String>} The image name
  */
-export async function createImageName(
-  ui: boolean = false
-): Promise<string | any> {
+export async function createImageName(ui: boolean = false): Promise<string | any> {
   try {
     const data = await exec('git remote -v')
     if (data.match(/git@github\.com:(\w+\/[\w|.|-]+).git/)) {
       return ui
-        ? `${data
-            .match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1]
-            .toLowerCase()}`
-        : `omg/${data
-            .match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1]
-            .toLowerCase()}`
-    } 
-      return ui
-        ? `${data
-            .match(/https:\/\/github\.com\/(\w+\/[\w|.|-]+)/)[1]
-            .toLowerCase()}`
-        : `omg/${data
-            .match(/https:\/\/github\.com\/(\w+\/[\w|.|-]+)/)[1]
-            .toLowerCase()}`
-    
+        ? `${data.match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1].toLowerCase()}`
+        : `omg/${data.match(/git@github\.com:(\w+\/[\w|.|-]+).git/)[1].toLowerCase()}`
+    }
+    return ui
+      ? `${data.match(/https:\/\/github\.com\/(\w+\/[\w|.|-]+)/)[1].toLowerCase()}`
+      : `omg/${data.match(/https:\/\/github\.com\/(\w+\/[\w|.|-]+)/)[1].toLowerCase()}`
   } catch (e) {
     if (ui) {
       return {
@@ -140,14 +122,13 @@ export async function createImageName(
           .toString('base64')
           .toLowerCase()
           .replace(/=/g, '')}`,
-        generated: true
+        generated: true,
       }
-    } 
-      return `omg/${Buffer.from(process.cwd())
-        .toString('base64')
-        .toLowerCase()
-        .replace(/=/g, '')}`
-    
+    }
+    return `omg/${Buffer.from(process.cwd())
+      .toString('base64')
+      .toLowerCase()
+      .replace(/=/g, '')}`
   }
 }
 
@@ -164,7 +145,7 @@ export function parse(list: string[], errorMessage: string): any {
     const split = list[i].split(/=(.+)/)
     if (split.length !== 3) {
       throw {
-        message: errorMessage
+        message: errorMessage,
       }
     }
     dictionary[split[0]] = split[1]
@@ -180,10 +161,7 @@ export function parse(list: string[], errorMessage: string): any {
  * @param {Array<EnvironmentVariable>} environmentVariables The given {@link EnvironmentVariable}s
  * @return {Object} The environment mapping with correct cases
  */
-export function matchEnvironmentCases(
-  env: any,
-  environmentVariables: EnvironmentVariable[]
-): any {
+export function matchEnvironmentCases(env: any, environmentVariables: EnvironmentVariable[]): any {
   const result = {}
   for (const key of Object.keys(env)) {
     for (const cap of environmentVariables) {
@@ -212,10 +190,10 @@ export function exec(command: string, silent: boolean = true): Promise<string> {
           reject(stderr.trim())
         }
       } else if (stdout === '') {
-          resolve(stderr.trim())
-        } else {
-          resolve(stdout.trim())
-        }
+        resolve(stderr.trim())
+      } else {
+        resolve(stdout.trim())
+      }
     })
   })
 }
@@ -266,7 +244,7 @@ export const typeCast = {
   object: (object: string): any => JSON.parse(object),
   boolean: (boolean: string): boolean => boolean === 'true',
   path: (path: string): string => path,
-  any: (any: any): any => any
+  any: (any: any): any => any,
 }
 
 export const dataTypes = {
@@ -285,38 +263,25 @@ export const dataTypes = {
     return true
   },
   uuid: (uuid: string): boolean => {
-    return (
-      uuid.match(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
-      ) !== null
-    )
+    return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/) !== null
   },
   list: (list: string): boolean => {
     try {
-      return (
-        (Array.isArray(list) && typeof list === 'object') ||
-        JSON.parse(list).toString() !== '[object Object]'
-      )
+      return (Array.isArray(list) && typeof list === 'object') || JSON.parse(list).toString() !== '[object Object]'
     } catch (e) {
       return false
     }
   },
   map: (map: string): boolean => {
     try {
-      return (
-        (!Array.isArray(map) && typeof map === 'object') ||
-        JSON.parse(map).toString() === '[object Object]'
-      )
+      return (!Array.isArray(map) && typeof map === 'object') || JSON.parse(map).toString() === '[object Object]'
     } catch (e) {
       return false
     }
   },
   object: (object: string): boolean => {
     try {
-      return (
-        (!Array.isArray(object) && typeof object === 'object') ||
-        JSON.parse(object).toString() === '[object Object]'
-      )
+      return (!Array.isArray(object) && typeof object === 'object') || JSON.parse(object).toString() === '[object Object]'
     } catch (e) {
       return false
     }
@@ -338,7 +303,7 @@ export const dataTypes = {
   },
   any: (any: string): boolean => {
     return true
-  }
+  },
 }
 
 /**
@@ -377,15 +342,10 @@ export function checkActionInterface(microserviceJson: any): void {
     const actionMap = microserviceJson.actions
     for (const actionName of Object.keys(actionMap)) {
       const action = actionMap[actionName]
-      const bools = [
-        !!action.http,
-        !!action.format,
-        !!action.rpc,
-        !!action.events
-      ].filter(b => b)
+      const bools = [!!action.http, !!action.format, !!action.rpc, !!action.events].filter(b => b)
       if (bools.length !== 1) {
         throw {
-          text: `actions.${actionName} should have one of required property: 'http' 'format' 'rpc' or 'events'`
+          text: `actions.${actionName} should have one of required property: 'http' 'format' 'rpc' or 'events'`,
         }
       }
     }
@@ -399,7 +359,7 @@ export function checkVersion() {
   execCmd(
     'npm view omg version',
     {
-      encoding: 'utf8'
+      encoding: 'utf8',
     },
     (e, out, err) => {
       if (out) {
@@ -410,31 +370,25 @@ export function checkVersion() {
           distant: out
             .toString()
             .trim()
-            .match(/^(\d+).(\d+).(\d+)/)
+            .match(/^(\d+).(\d+).(\d+)/),
         }
         for (let i = 1; i <= 3; i++) {
           if (versions.distant[i] > versions.local[i]) {
             lineup.sticker.note('')
             lineup.sticker.note(
               `${lineup.colors.yellow(
-                `${
-                  i === 1 ? 'Major' : i === 2 ? 'Minor' : 'Patch'
-                } update available: `
-              )}${lineup.colors.red(versions.local[0])} ${lineup.colors.yellow(
-                '=>'
-              )} ${lineup.colors.green(versions.distant[0])}`
+                `${i === 1 ? 'Major' : i === 2 ? 'Minor' : 'Patch'} update available: `,
+              )}${lineup.colors.red(versions.local[0])} ${lineup.colors.yellow('=>')} ${lineup.colors.green(
+                versions.distant[0],
+              )}`,
             )
-            lineup.sticker.note(
-              `${lineup.colors.yellow(
-                `Run: 'npm i -g omg' or 'yarn global add omg' to update`
-              )}`
-            )
+            lineup.sticker.note(`${lineup.colors.yellow(`Run: 'npm i -g omg' or 'yarn global add omg' to update`)}`)
             lineup.sticker.note('')
             versionAvailable = true
           }
         }
       }
-    }
+    },
   )
 }
 
@@ -445,7 +399,7 @@ export function showVersionCard() {
   if (versionAvailable) {
     lineup.sticker.show({
       align: 'center',
-      color: 'red'
+      color: 'red',
     })
   }
 }
@@ -456,14 +410,10 @@ export function showVersionCard() {
 export function readMicroserviceFile(): string {
   let content = ''
   try {
-    content = fs
-      .readFileSync(path.join(process.cwd(), 'microservice.yml'))
-      .toString()
+    content = fs.readFileSync(path.join(process.cwd(), 'microservice.yml')).toString()
   } catch {
     try {
-      content = fs
-        .readFileSync(path.join(process.cwd(), 'microservice.yaml'))
-        .toString()
+      content = fs.readFileSync(path.join(process.cwd(), 'microservice.yaml')).toString()
     } catch {
       content = ''
     }
@@ -477,9 +427,9 @@ export function readMicroserviceFile(): string {
 export function getMicroserviceFilePath(): string {
   if (fs.existsSync(path.join(process.cwd(), 'microservice.yml'))) {
     return path.join(process.cwd(), 'microservice.yml')
-  } if (fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) {
+  }
+  if (fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) {
     return path.join(process.cwd(), 'microservice.yaml')
-  } 
-    return null
-  
+  }
+  return null
 }

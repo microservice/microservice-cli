@@ -102,24 +102,14 @@ export default class UIServer {
     }
     this.http.listen(this.port, async () => {
       lineup.sticker.note('')
-      lineup.sticker.note(
-        `${lineup.colors.yellow(
-          'OMG UI is currently a work-in-progress product.'
-        )}`
-      )
-      lineup.sticker.note(
-        `${lineup.colors.yellow(
-          'It can have some issues, which you can report here:'
-        )}`
-      )
-      lineup.sticker.note(
-        `${lineup.colors.yellow('https://github.com/microservices/omg/issues')}`
-      )
+      lineup.sticker.note(`${lineup.colors.yellow('OMG UI is currently a work-in-progress product.')}`)
+      lineup.sticker.note(`${lineup.colors.yellow('It can have some issues, which you can report here:')}`)
+      lineup.sticker.note(`${lineup.colors.yellow('https://github.com/microservices/omg/issues')}`)
 
       lineup.sticker.note('')
       lineup.sticker.show({
         align: 'center',
-        color: 'red'
+        color: 'red',
       })
       utils.log(`OMG UI started on http://localhost:${this.port}`)
       if (doOpen) {
@@ -186,17 +176,10 @@ export default class UIServer {
    * @param  {Boolean} [bak=false]
    * @param  {string} appPath
    */
-  async rebuild(
-    data?: any,
-    microservice?: string,
-    bak = false,
-    appPath?: string
-  ) {
+  async rebuild(data?: any, microservice?: string, bak = false, appPath?: string) {
     if (this.rebuildToggle) {
       if (appPath) {
-        utils.log(
-          `${appPath.substr(appPath.lastIndexOf('/') + 1)} changed. Rebuilding.`
-        )
+        utils.log(`${appPath.substr(appPath.lastIndexOf('/') + 1)} changed. Rebuilding.`)
       }
       if (microservice) {
         this.microserviceStr = microservice
@@ -254,27 +237,27 @@ export default class UIServer {
       if (this.microserviceStr === 'ERROR_PARSING') {
         this.emit('validate', {
           notif: this.microserviceStr,
-          status: false
+          status: false,
         })
       } else {
         utils.checkActionInterface(this.microserviceStr)
         this.microservice = new Microservice(this.microserviceStr)
         this.emit('validate', {
           notif: JSON.stringify(this.microservice.rawData, null, 2),
-          status: true
+          status: true,
         })
       }
     } catch (e) {
       this.emit('validate', {
         notif: JSON.stringify(e, null, 2),
-        status: false
+        status: false,
       })
     }
     const owner = await utils.createImageName(true)
     this.socket.emit('owner', {
       notif: typeof owner && owner.generated ? owner.owner : owner,
       generated: typeof owner && owner.generated,
-      status: true
+      status: true,
     })
   }
   /**
@@ -287,33 +270,29 @@ export default class UIServer {
 
     this.emit('build', { notif: 'Building Docker image', status: true })
     try {
-      const stream = await new Build(
-        data.name || (await utils.createImageName())
-      ).go(false, true)
+      const stream = await new Build(data.name || (await utils.createImageName())).go(false, true)
       const dockerode = new Dockerode()
       const log: any = await new Promise((resolve, reject) => {
-        dockerode.modem.followProgress(stream, (err, res) =>
-          err ? reject(err) : resolve(res)
-        )
+        dockerode.modem.followProgress(stream, (err, res) => (err ? reject(err) : resolve(res)))
       })
       for (const line in log) {
         if (log[line].stream) {
           this.socket.emit('build', {
             status: true,
             notif: log[line].stream.trim(),
-            build: true
+            build: true,
           })
         }
       }
       this.socket.emit('build', {
         status: true,
-        built: true
+        built: true,
       })
       return data.name
     } catch (e) {
       this.emit('build', {
         status: false,
-        notif: `Failed to build: ${e}`
+        notif: `Failed to build: ${e}`,
       })
     }
   }
@@ -327,7 +306,7 @@ export default class UIServer {
       this.emit('inspect', {
         notif: 'Docker inspected',
         status: true,
-        log: output
+        log: output,
       })
     } else {
       this.emit('inspect', { status: false, notif: 'Container not running' })
@@ -343,12 +322,12 @@ export default class UIServer {
       this.emit('container-stats', {
         notif: 'Container stats',
         status: true,
-        log: output
+        log: output,
       })
     } else {
       this.emit('container-stats', {
         status: false,
-        notif: 'Container not running'
+        notif: 'Container not running',
       })
     }
   }
@@ -358,10 +337,7 @@ export default class UIServer {
    */
   private async dockerLogs() {
     if (this.dockerContainer) {
-      this.socket.emit(
-        'dockerLogs',
-        await this.dockerContainer.getLogs(this.clogsSince)
-      )
+      this.socket.emit('dockerLogs', await this.dockerContainer.getLogs(this.clogsSince))
     }
   }
 
@@ -380,7 +356,7 @@ export default class UIServer {
       } catch (e) {
         this.emit('start', {
           notif: `Image for microservice is not built. Run \`omg build\` to build the image.`,
-          status: false
+          status: false,
         })
         return
       }
@@ -391,14 +367,11 @@ export default class UIServer {
     let envObj: any
     try {
       envObj = data.envs
-      envObj = utils.matchEnvironmentCases(
-        envObj,
-        this.microservice.environmentVariables
-      )
+      envObj = utils.matchEnvironmentCases(envObj, this.microservice.environmentVariables)
     } catch (e) {
       this.emit('start', {
         status: false,
-        notif: e
+        notif: e,
       })
       return
     }
@@ -406,17 +379,12 @@ export default class UIServer {
     if (this.rebuildBak === undefined) {
       this.rebuildBak = { start: data, build: {} }
     }
-    this.dockerContainer = new RunFactory(
-      data.image,
-      this.microservice,
-      null,
-      envObj
-    ).getRun(null, true)
+    this.dockerContainer = new RunFactory(data.image, this.microservice, null, envObj).getRun(null, true)
 
     // Start container
     this.socket.emit('start', {
       notif: 'Starting Docker container',
-      status: true
+      status: true,
     })
     this.containerID = await this.dockerContainer.startService(this.inheritEnv)
     this.socket.emit('start', {
@@ -424,7 +392,7 @@ export default class UIServer {
       status: true,
       started: true,
       ports: this.dockerContainer.getPortbindings(),
-      forwards: this.dockerContainer.forwardPortsBindings
+      forwards: this.dockerContainer.forwardPortsBindings,
     })
     await new Promise(res => setTimeout(res, 1000))
   }
@@ -437,14 +405,11 @@ export default class UIServer {
   stopContainer(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let output
-      if (
-        this.dockerContainer !== null &&
-        (await this.dockerContainer.isRunning())
-      ) {
+      if (this.dockerContainer !== null && (await this.dockerContainer.isRunning())) {
         output = await this.dockerContainer.stopService()
         this.emit('stop', {
           status: true,
-          notif: `Stoppped Docker container: ${output}`
+          notif: `Stoppped Docker container: ${output}`,
         })
       }
       resolve()
@@ -459,14 +424,11 @@ export default class UIServer {
   removeContainer(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let output
-      if (
-        this.dockerContainer !== null &&
-        !(await this.dockerContainer.isRunning())
-      ) {
+      if (this.dockerContainer !== null && !(await this.dockerContainer.isRunning())) {
         output = await this.dockerContainer.removeContainer()
         this.emit('stop', {
           status: true,
-          notif: `Removed Docker container: ${output}`
+          notif: `Removed Docker container: ${output}`,
         })
       }
       this.dockerContainer = null
@@ -485,7 +447,7 @@ export default class UIServer {
     // Run action
     this.socket.emit('run', {
       notif: `Running action: \`${data.action}\``,
-      status: true
+      status: true,
     })
     let output
     try {
@@ -493,14 +455,14 @@ export default class UIServer {
       output = await this.dockerContainer.exec(data.action)
       this.socket.emit('run', {
         notif: `Ran action: \`${data.action}\` with output: ${output}`,
-        status: true
+        status: true,
       })
     } catch (e) {
       this.socket.emit('run', {
         notif: `Failed action: \`${data.action}\`: ${e}`,
         output: e.error,
         done: true,
-        status: false
+        status: false,
       })
       return
     }
@@ -508,7 +470,7 @@ export default class UIServer {
       output,
       notif: output,
       done: true,
-      status: true
+      status: true,
     })
   }
 
@@ -522,26 +484,20 @@ export default class UIServer {
     await this.runAction({
       action: data.action,
       args: data.args,
-      image: data.image
+      image: data.image,
     })
 
     this.socket.emit('subscribe', {
       notif: `Subscribing to event: \`${data.event}\``,
-      status: true
+      status: true,
     })
 
-    this.subscribe = new Subscribe(
-      this.microservice,
-      data.args,
-      this.dockerContainer
-    )
+    this.subscribe = new Subscribe(this.microservice, data.args, this.dockerContainer)
     try {
       await this.subscribe.go(data.action, data.event)
       this.socket.emit('subscribe', {
-        notif: `Subscribed to event: \`${
-          data.event
-        }\` data will be posted to this terminal window when appropriate`,
-        status: true
+        notif: `Subscribed to event: \`${data.event}\` data will be posted to this terminal window when appropriate`,
+        status: true,
       })
       setInterval(async () => {
         if (!this.dockerContainer) {
@@ -551,18 +507,16 @@ export default class UIServer {
           this.socket.emit('subscribe', {
             notif: 'Container unexpectedly stopped',
             status: false,
-            logs: `${await this.dockerContainer.getStderr()}`
+            logs: `${await this.dockerContainer.getStderr()}`,
           })
-          
         }
       }, 1500)
     } catch (e) {
       this.socket.emit('subscribe', {
         notif: `Failed subscribing to event ${data.event}: ${e}`,
         status: false,
-        logs: `${await this.dockerContainer.getStderr()}`
+        logs: `${await this.dockerContainer.getStderr()}`,
       })
-      
     }
   }
 
@@ -579,32 +533,29 @@ export default class UIServer {
 
     if (!isHealthy) {
       try {
-        if (
-          this.dockerContainer !== null &&
-          (await this.dockerContainer.isRunning())
-        ) {
+        if (this.dockerContainer !== null && (await this.dockerContainer.isRunning())) {
           this.socket.emit('health-check', {
             notif: 'Health check failed',
-            status: 0
+            status: 0,
           })
         } else {
           this.socket.emit('health-check', {
             notif: 'Health check failed',
             status: -1,
-            log: 'Unable to retrieve error logs'
+            log: 'Unable to retrieve error logs',
           })
         }
       } catch {
         this.socket.emit('health-check', {
           notif: 'Health check failed',
           status: -1,
-          log: 'Unable to retrieve error logs'
+          log: 'Unable to retrieve error logs',
         })
       }
     } else {
       this.socket.emit('health-check', {
         notif: 'Health check passed',
-        status: 1
+        status: 1,
       })
     }
   }

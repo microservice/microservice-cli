@@ -23,20 +23,7 @@ module.exports = {
         },
         type: {
           type: 'string',
-          enum: [
-            'int',
-            'number',
-            'float',
-            'string',
-            'uuid',
-            'list',
-            'map',
-            'object',
-            'boolean',
-            'path',
-            'any',
-            'null',
-          ],
+          enum: ['int', 'number', 'float', 'string', 'uuid', 'list', 'map', 'object', 'boolean', 'path', 'any', 'null'],
         },
         contentType: {
           type: 'string',
@@ -84,25 +71,17 @@ module.exports = {
   },
   oneOf: [
     {
-      required: [
-        'http',
-      ],
+      required: ['http'],
     },
     {
-      required: [
-        'format',
-      ],
+      required: ['format'],
     },
     {
-      required: [
-        'rpc',
-      ],
+      required: ['rpc'],
     },
     {
-      required: [
-        'events',
-      ],
+      required: ['events'],
     },
   ],
   additionalProperties: false,
-};
+}

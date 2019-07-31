@@ -1,3 +1,3 @@
-const path = require('path');
+const path = require('path')
 
-export default path;
+export default path

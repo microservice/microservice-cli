@@ -9,4 +9,4 @@ module.exports = {
   },
   additionalProperties: false,
   required: ['command'],
-};
+}

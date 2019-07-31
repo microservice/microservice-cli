@@ -17,12 +17,7 @@ export default class FormatRun extends Run {
    * @param {Object} _arguments The given argument map
    * @param {Object} environmentVariables the given environment  map
    */
-  constructor(
-    dockerImage: string,
-    microservice: Microservice,
-    _arguments: any,
-    environmentVariables: any
-  ) {
+  constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     super(dockerImage, microservice, _arguments, environmentVariables)
   }
 
@@ -36,8 +31,7 @@ export default class FormatRun extends Run {
     if (
       this.action.output &&
       this.action.output.type &&
-      (this.action.output.type === 'map' ||
-        this.action.output.type === 'object')
+      (this.action.output.type === 'map' || this.action.output.type === 'object')
     ) {
       if (this.action.output.properties) {
         verify.verifyProperties(this.action, output)
@@ -55,12 +49,12 @@ export default class FormatRun extends Run {
    */
   public async startService(): Promise<string> {
     this.setDefaultEnvironmentVariables()
-    const {lifecycle} = this.microservice
+    const { lifecycle } = this.microservice
     if (lifecycle !== null && lifecycle.startup !== null) {
       const container = await utils.docker.createContainer({
         Image: this.dockerImage,
         Cmd: lifecycle.startup,
-        Env: this.formatEnvironmentVariables()
+        Env: this.formatEnvironmentVariables(),
       })
       await container.start()
       this.containerID = container.$subject.id
@@ -68,7 +62,7 @@ export default class FormatRun extends Run {
       const container = await utils.docker.createContainer({
         Image: this.dockerImage,
         Cmd: ['tail', '-f', '/dev/null'],
-        Env: this.formatEnvironmentVariables()
+        Env: this.formatEnvironmentVariables(),
       })
       await container.start()
       this.containerID = container.$subject.id
@@ -90,7 +84,7 @@ export default class FormatRun extends Run {
       Cmd: cmd,
       AttachStdin: true,
       AttachStdout: true,
-      Tty: true
+      Tty: true,
     })
 
     const data = await new Promise((resolve, reject) => {
@@ -107,7 +101,7 @@ export default class FormatRun extends Run {
               Buffer.concat(data)
                 .toString()
                 .trim()
-                .substring(8)
+                .substring(8),
             )
           })
         }

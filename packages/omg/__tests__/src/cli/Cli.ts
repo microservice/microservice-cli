@@ -1,12 +1,12 @@
-import * as fs from 'fs';
-import * as sinon from 'sinon';
-import * as utils from '../../../src/utils';
-import ora from '../../../src/ora';
-import Build from '../../../src/commands/Build';
-import Run from '../../../src/commands/run/Run';
-import FormatRun from '../../../src/commands/run/FormatRun';
-import Subscribe from '../../../src/commands/Subscribe';
-import Cli from '../../../src/cli/Cli';
+import * as fs from 'fs'
+import * as sinon from 'sinon'
+import * as utils from '../../../src/utils'
+import ora from '../../../src/ora'
+import Build from '../../../src/commands/Build'
+import Run from '../../../src/commands/run/Run'
+import FormatRun from '../../../src/commands/run/FormatRun'
+import Subscribe from '../../../src/commands/Subscribe'
+import Cli from '../../../src/cli/Cli'
 
 describe('Cli.ts', () => {
   let processExitStub
@@ -20,7 +20,7 @@ describe('Cli.ts', () => {
         succeed: text => {
           successList.push(text)
         },
-        info: text => {}
+        info: text => {},
       }
     })
     processExitStub = sinon.stub(process, 'exit')
@@ -80,7 +80,7 @@ describe('Cli.ts', () => {
     })
 
     test('Cli is not constructed because we are not in a omg directory', () => {
-      (fs.existsSync as any).restore()
+      ;(fs.existsSync as any).restore()
       sinon.stub(fs, 'existsSync').callsFake(() => false)
       const argvStub = sinon.stub(process, 'argv').value([1, 2, 3])
       new Cli()
@@ -101,19 +101,23 @@ describe('Cli.ts', () => {
     })
 
     test('errors out because the `microservice.yml` is not valid', () => {
-      (fs.readFileSync as any).restore();
-      sinon.stub(fs, 'readFileSync').callsFake(() => 'foo: bar');
-      const cli = new Cli();
-      cli.buildMicroservice();
+      ;(fs.readFileSync as any).restore()
+      sinon.stub(fs, 'readFileSync').callsFake(() => 'foo: bar')
+      const cli = new Cli()
+      cli.buildMicroservice()
 
-      expect(errorStub.calledWith('3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property \'omg\'\n  3. root should have required property \'info\'')).toBeTruthy();
-      expect(processExitStub.calledWith(1)).toBeTruthy();
-    });
-  });
+      expect(
+        errorStub.calledWith(
+          "3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property 'omg'\n  3. root should have required property 'info'",
+        ),
+      ).toBeTruthy()
+      expect(processExitStub.calledWith(1)).toBeTruthy()
+    })
+  })
 
   describe('.actionHelp(actionName)', () => {
     test('builds the microservice', () => {
-      (fs.readFileSync as any).restore()
+      ;(fs.readFileSync as any).restore()
       sinon.stub(fs, 'readFileSync').callsFake(() => {
         return (
           'omg: 1\n' +
@@ -135,9 +139,7 @@ describe('Cli.ts', () => {
       cli.buildMicroservice()
       cli.actionHelp('action')
 
-      expect(
-        logStub.args[0][0].startsWith('  Action `action` details:')
-      ).toBeTruthy()
+      expect(logStub.args[0][0].startsWith('  Action `action` details:')).toBeTruthy()
     })
   })
 
@@ -151,57 +153,61 @@ describe('Cli.ts', () => {
       })
 
       test('json option', () => {
-        Cli.validate({json: true});
+        Cli.validate({ json: true })
 
-        expect(logStub.calledWith('{\n' +
-          '  "valid": true,\n' +
-          '  "yaml": {\n' +
-          '    "omg": 1,\n' +
-          '    "info": {\n' +
-          '      "version": "1.0.0",\n' +
-          '      "title": "test",\n' +
-          '      "description": "for tests"\n' +
-          '    },\n' +
-          '    "health": {\n' +
-          '      "http": {\n' +
-          '        "port": 5000,\n' +
-          '        "path": "/health"\n' +
-          '      }\n' +
-          '    },\n' +
-          '    "actions": {\n' +
-          '      "action": {\n' +
-          '        "format": {\n' +
-          '          "command": [\n' +
-          '            "action.sh"\n' +
-          '          ]\n' +
-          '        }\n' +
-          '      },\n' +
-          '      "eventAction": {\n' +
-          '        "events": {\n' +
-          '          "event": {\n' +
-          '            "http": {\n' +
-          '              "port": 5000,\n' +
-          '              "subscribe": {\n' +
-          '                "method": "post",\n' +
-          '                "path": "/subscribe",\n' +
-          '                "port": 5000\n' +
-          '              },\n' +
-          '              "unsubscribe": {\n' +
-          '                "path": "/unsubscribe",\n' +
-          '                "method": "delete",\n' +
-          '                "port": 5000\n' +
-          '              }\n' +
-          '            }\n' +
-          '          }\n' +
-          '        }\n' +
-          '      }\n' +
-          '    }\n' +
-          '  },\n' +
-          '  "errors": null,\n' +
-          '  "text": "No errors"\n' +
-          '}')).toBeTruthy();
-        expect(processExitStub.calledWith(0)).toBeTruthy();
-      });
+        expect(
+          logStub.calledWith(
+            '{\n' +
+              '  "valid": true,\n' +
+              '  "yaml": {\n' +
+              '    "omg": 1,\n' +
+              '    "info": {\n' +
+              '      "version": "1.0.0",\n' +
+              '      "title": "test",\n' +
+              '      "description": "for tests"\n' +
+              '    },\n' +
+              '    "health": {\n' +
+              '      "http": {\n' +
+              '        "port": 5000,\n' +
+              '        "path": "/health"\n' +
+              '      }\n' +
+              '    },\n' +
+              '    "actions": {\n' +
+              '      "action": {\n' +
+              '        "format": {\n' +
+              '          "command": [\n' +
+              '            "action.sh"\n' +
+              '          ]\n' +
+              '        }\n' +
+              '      },\n' +
+              '      "eventAction": {\n' +
+              '        "events": {\n' +
+              '          "event": {\n' +
+              '            "http": {\n' +
+              '              "port": 5000,\n' +
+              '              "subscribe": {\n' +
+              '                "method": "post",\n' +
+              '                "path": "/subscribe",\n' +
+              '                "port": 5000\n' +
+              '              },\n' +
+              '              "unsubscribe": {\n' +
+              '                "path": "/unsubscribe",\n' +
+              '                "method": "delete",\n' +
+              '                "port": 5000\n' +
+              '              }\n' +
+              '            }\n' +
+              '          }\n' +
+              '        }\n' +
+              '      }\n' +
+              '    }\n' +
+              '  },\n' +
+              '  "errors": null,\n' +
+              '  "text": "No errors"\n' +
+              '}',
+          ),
+        ).toBeTruthy()
+        expect(processExitStub.calledWith(0)).toBeTruthy()
+      })
 
       test('no options', () => {
         Cli.validate({})
@@ -215,7 +221,7 @@ describe('Cli.ts', () => {
       // we need to make the return value fail the test, and we already stubbed in the layer above this
       // so we need to restore and re-wrap it, then the next layer will restore
       beforeEach(() => {
-        (fs.readFileSync as any).restore()
+        ;(fs.readFileSync as any).restore()
         sinon.stub(fs, 'readFileSync').callsFake(() => {
           return 'foo: bar'
         })
@@ -229,55 +235,63 @@ describe('Cli.ts', () => {
       })
 
       test('json option', () => {
-        Cli.validate({json: true});
+        Cli.validate({ json: true })
 
-        expect(errorStub.calledWith('{\n' +
-          '  "valid": false,\n' +
-          '  "issue": {\n' +
-          '    "foo": "bar"\n' +
-          '  },\n' +
-          '  "errors": [\n' +
-          '    {\n' +
-          '      "keyword": "additionalProperties",\n' +
-          '      "dataPath": "",\n' +
-          '      "schemaPath": "#/additionalProperties",\n' +
-          '      "params": {\n' +
-          '        "additionalProperty": "foo"\n' +
-          '      },\n' +
-          '      "message": "should NOT have additional properties"\n' +
-          '    },\n' +
-          '    {\n' +
-          '      "keyword": "required",\n' +
-          '      "dataPath": "",\n' +
-          '      "schemaPath": "#/required",\n' +
-          '      "params": {\n' +
-          '        "missingProperty": "omg"\n' +
-          '      },\n' +
-          '      "message": "should have required property \'omg\'"\n' +
-          '    },\n' +
-          '    {\n' +
-          '      "keyword": "required",\n' +
-          '      "dataPath": "",\n' +
-          '      "schemaPath": "#/required",\n' +
-          '      "params": {\n' +
-          '        "missingProperty": "info"\n' +
-          '      },\n' +
-          '      "message": "should have required property \'info\'"\n' +
-          '    }\n' +
-          '  ],\n' +
-          '  "text": "root should NOT have additional properties, root should have required property \'omg\', root should have required property \'info\'"\n' +
-          '}')).toBeTruthy();
-        expect(processExitStub.calledWith(1)).toBeTruthy();
-      });
+        expect(
+          errorStub.calledWith(
+            '{\n' +
+              '  "valid": false,\n' +
+              '  "issue": {\n' +
+              '    "foo": "bar"\n' +
+              '  },\n' +
+              '  "errors": [\n' +
+              '    {\n' +
+              '      "keyword": "additionalProperties",\n' +
+              '      "dataPath": "",\n' +
+              '      "schemaPath": "#/additionalProperties",\n' +
+              '      "params": {\n' +
+              '        "additionalProperty": "foo"\n' +
+              '      },\n' +
+              '      "message": "should NOT have additional properties"\n' +
+              '    },\n' +
+              '    {\n' +
+              '      "keyword": "required",\n' +
+              '      "dataPath": "",\n' +
+              '      "schemaPath": "#/required",\n' +
+              '      "params": {\n' +
+              '        "missingProperty": "omg"\n' +
+              '      },\n' +
+              '      "message": "should have required property \'omg\'"\n' +
+              '    },\n' +
+              '    {\n' +
+              '      "keyword": "required",\n' +
+              '      "dataPath": "",\n' +
+              '      "schemaPath": "#/required",\n' +
+              '      "params": {\n' +
+              '        "missingProperty": "info"\n' +
+              '      },\n' +
+              '      "message": "should have required property \'info\'"\n' +
+              '    }\n' +
+              '  ],\n' +
+              '  "text": "root should NOT have additional properties, root should have required property \'omg\', root should have required property \'info\'"\n' +
+              '}',
+          ),
+        ).toBeTruthy()
+        expect(processExitStub.calledWith(1)).toBeTruthy()
+      })
 
       test('no options', () => {
-        Cli.validate({});
+        Cli.validate({})
 
-        expect(errorStub.calledWith('3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property \'omg\'\n  3. root should have required property \'info\'')).toBeTruthy();
-        expect(processExitStub.calledWith(1)).toBeTruthy();
-      });
-    });
-  });
+        expect(
+          errorStub.calledWith(
+            "3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property 'omg'\n  3. root should have required property 'info'",
+          ),
+        ).toBeTruthy()
+        expect(processExitStub.calledWith(1)).toBeTruthy()
+      })
+    })
+  })
 
   describe('.build(options)', () => {
     let buildGoStub
@@ -287,7 +301,7 @@ describe('Cli.ts', () => {
     })
 
     afterEach(() => {
-      (utils.exec as any).restore()
+      ;(utils.exec as any).restore()
     })
 
     // not able to spy on constructor with sinon yet
@@ -296,7 +310,7 @@ describe('Cli.ts', () => {
     })
 
     afterEach(() => {
-      (Build.prototype.go as any).restore()
+      ;(Build.prototype.go as any).restore()
     })
 
     test('builds with given tag', async () => {
@@ -320,23 +334,15 @@ describe('Cli.ts', () => {
     let formatRunRunStub
 
     beforeEach(() => {
-      sinon
-        .stub(utils.docker, 'listImages')
-        .callsFake(async () => [{ RepoTags: ['image'] }])
-      sinon
-        .stub(FormatRun.prototype, 'startService')
-        .callsFake(async () => 'started_id')
+      sinon.stub(utils.docker, 'listImages').callsFake(async () => [{ RepoTags: ['image'] }])
+      sinon.stub(FormatRun.prototype, 'startService').callsFake(async () => 'started_id')
       sinon.stub(Run.prototype, 'isRunning').callsFake(async () => true)
-      formatRunRunStub = sinon
-        .stub(FormatRun.prototype, 'exec')
-        .callsFake(async action => 'output')
-      sinon
-        .stub(Run.prototype, 'stopService')
-        .callsFake(async () => 'stoped_id')
+      formatRunRunStub = sinon.stub(FormatRun.prototype, 'exec').callsFake(async action => 'output')
+      sinon.stub(Run.prototype, 'stopService').callsFake(async () => 'stoped_id')
     })
 
     afterEach(() => {
-      (utils.docker.listImages as any).restore()
+      ;(utils.docker.listImages as any).restore()
       ;(FormatRun.prototype.startService as any).restore()
       ;(Run.prototype.isRunning as any).restore()
       ;(FormatRun.prototype.exec as any).restore()
@@ -344,14 +350,14 @@ describe('Cli.ts', () => {
     })
 
     test('does not execute action because arguments are not given', async () => {
-      const cli = new Cli();
-      cli.buildMicroservice();
-      await cli.run('action', {});
+      const cli = new Cli()
+      cli.buildMicroservice()
+      await cli.run('action', {})
 
-      expect(errorStub.calledWith('Failed to parse command, run `omg run --help` for more information.')).toBeTruthy();
-      expect(processExitStub.calledWith(1)).toBeTruthy();
-      expect(formatRunRunStub.called).toBeFalsy();
-    });
+      expect(errorStub.calledWith('Failed to parse command, run `omg run --help` for more information.')).toBeTruthy()
+      expect(processExitStub.calledWith(1)).toBeTruthy()
+      expect(formatRunRunStub.called).toBeFalsy()
+    })
 
     // test('image option given and action is executed', async () => {
     //   (utils.docker.listImages as any).restore();
@@ -365,19 +371,13 @@ describe('Cli.ts', () => {
     // });
 
     test('image option given but is not build so action is not executed', async () => {
-      (utils.docker.listImages as any).restore()
-      sinon
-        .stub(utils.docker, 'listImages')
-        .callsFake(async () => [{ RepoTags: ['wrong'] }])
+      ;(utils.docker.listImages as any).restore()
+      sinon.stub(utils.docker, 'listImages').callsFake(async () => [{ RepoTags: ['wrong'] }])
       const cli = new Cli()
       cli.buildMicroservice()
       await cli.run('action', { args: [], envs: [], image: 'does-not-exist' })
 
-      expect(
-        errorStub.calledWith(
-          'Image for microservice is not built. Run `omg build` to build the image.'
-        )
-      ).toBeTruthy()
+      expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy()
       expect(processExitStub.calledWith(1)).toBeTruthy()
       expect(formatRunRunStub.called).toBeFalsy()
     })
@@ -393,7 +393,7 @@ describe('Cli.ts', () => {
     })
 
     afterEach(() => {
-      (Cli.prototype.run as any).restore()
+      ;(Cli.prototype.run as any).restore()
       ;(Subscribe.prototype.go as any).restore()
     })
 

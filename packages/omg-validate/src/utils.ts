@@ -11,11 +11,9 @@ export function getPossibleProperties(scope: string): string[] {
     scope = 'microservice'
   }
   if (scopes.includes(scope)) {
-    Object.keys(require(`./schema/schemas/${scope}`).properties).forEach(
-      key => {
-        arr.push(key)
-      }
-    )
+    Object.keys(require(`./schema/schemas/${scope}`).properties).forEach(key => {
+      arr.push(key)
+    })
   }
   return arr
 }
@@ -45,15 +43,10 @@ export function checkActionInterface(microserviceJson: any): void {
     const actionMap = microserviceJson.actions
     for (const actionName of Object.keys(actionMap)) {
       const action = actionMap[actionName]
-      const bools = [
-        !!action.http,
-        !!action.format,
-        !!action.rpc,
-        !!action.events
-      ].filter(b => b)
+      const bools = [!!action.http, !!action.format, !!action.rpc, !!action.events].filter(b => b)
       if (bools.length !== 1) {
         throw {
-          text: `actions.${actionName} should have one of required property: 'http' 'format' 'rpc' or 'events'`
+          text: `actions.${actionName} should have one of required property: 'http' 'format' 'rpc' or 'events'`,
         }
       }
     }
@@ -76,38 +69,25 @@ export const dataTypes = {
     return true
   },
   uuid: (uuid: string): boolean => {
-    return (
-      uuid.match(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
-      ) !== null
-    )
+    return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/) !== null
   },
   list: (list: string): boolean => {
     try {
-      return (
-        (Array.isArray(list) && typeof list === 'object') ||
-        JSON.parse(list).toString() !== '[object Object]'
-      )
+      return (Array.isArray(list) && typeof list === 'object') || JSON.parse(list).toString() !== '[object Object]'
     } catch (e) {
       return false
     }
   },
   map: (map: string): boolean => {
     try {
-      return (
-        (!Array.isArray(map) && typeof map === 'object') ||
-        JSON.parse(map).toString() === '[object Object]'
-      )
+      return (!Array.isArray(map) && typeof map === 'object') || JSON.parse(map).toString() === '[object Object]'
     } catch (e) {
       return false
     }
   },
   object: (object: string): boolean => {
     try {
-      return (
-        (!Array.isArray(object) && typeof object === 'object') ||
-        JSON.parse(object).toString() === '[object Object]'
-      )
+      return (!Array.isArray(object) && typeof object === 'object') || JSON.parse(object).toString() === '[object Object]'
     } catch (e) {
       return false
     }
@@ -129,7 +109,7 @@ export const dataTypes = {
   },
   any: (any: string): boolean => {
     return true
-  }
+  },
 }
 
 /**

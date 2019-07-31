@@ -20,14 +20,10 @@ export function verifyArgumentConstrains(command: Command, args: any): void {
       }
       if (a.range !== null) {
         if (!_.isUndefined(a.range.min) && argumentValue < a.range.min) {
-          throw `Argument: \`${
-            a.name
-          }\` must be be no smaller than the value: \`${a.range.min}\``
+          throw `Argument: \`${a.name}\` must be be no smaller than the value: \`${a.range.min}\``
         }
         if (!_.isUndefined(a.range.max) && argumentValue > a.range.max) {
-          throw `Argument: \`${
-            a.name
-          }\` must be be no larger than the value: \`${a.range.max}\``
+          throw `Argument: \`${a.name}\` must be be no larger than the value: \`${a.range.max}\``
         }
       }
     }
@@ -56,16 +52,11 @@ export function verifyArgumentTypes(command: Command, args: any): void {
  * @param {Microservice} microservice The given {@link Microservice}
  * @param {Object} envs The given environment variable mapping
  */
-export function verifyEnvironmentVariableTypes(
-  microservice: Microservice,
-  envs: any
-): void {
+export function verifyEnvironmentVariableTypes(microservice: Microservice, envs: any): void {
   microservice.environmentVariables.forEach(e => {
     if (Object.keys(envs).includes(e.name)) {
       if (!dataTypes[e.type](envs[e.name])) {
-        throw `Environment variable: \`${e.name}\` must be of type: \`${
-          e.type
-        }\``
+        throw `Environment variable: \`${e.name}\` must be of type: \`${e.type}\``
       }
     }
   })
@@ -77,16 +68,11 @@ export function verifyEnvironmentVariableTypes(
  * @param {Microservice} microservice The given {@link Microservice}
  * @param {Object} envs The given environment variable mapping
  */
-export function verifyEnvironmentVariablePattern(
-  microservice: Microservice,
-  envs: any
-): void {
+export function verifyEnvironmentVariablePattern(microservice: Microservice, envs: any): void {
   microservice.environmentVariables.forEach(e => {
     if (Object.keys(envs).includes(e.name)) {
       if (e.pattern !== null && envs[e.name].match(e.pattern) === null) {
-        throw `Environment variable: \`${e.name}\` must match regex: \`${
-          e.pattern
-        }\``
+        throw `Environment variable: \`${e.name}\` must match regex: \`${e.pattern}\``
       }
     }
   })
@@ -99,34 +85,21 @@ export function verifyEnvironmentVariablePattern(
  * @param {String} output The given output
  */
 export function verifyOutputType(command: Command, output: string) {
-  if (
-    command.output &&
-    command.output.type &&
-    !dataTypes[command.output.type](output)
-  ) {
+  if (command.output && command.output.type && !dataTypes[command.output.type](output)) {
     throw `Action: \`${command.name}\`` +
       ` must have output type: \`${command.output.type}\`` +
       ` instead got: \`${typeof output}\`` +
       ` ${output}`
-  } else if (
-    command.output &&
-    command.output.type &&
-    command.output.type === 'object'
-  ) {
+  } else if (command.output && command.output.type && command.output.type === 'object') {
     const props = command.output.properties
     const json = JSON.parse(output)
     Object.keys(props).forEach(key => {
-      if (
-        props[key].type in dataTypes &&
-        !dataTypes[props[key].type](JSON.stringify(json[key]))
-      ) {
+      if (props[key].type in dataTypes && !dataTypes[props[key].type](JSON.stringify(json[key]))) {
         const typeFound = (json, key): string => {
-          if (
-            typeof json[key] === 'number' &&
-            dataTypes.int(json[key].toString())
-          ) {
+          if (typeof json[key] === 'number' && dataTypes.int(json[key].toString())) {
             return 'int'
-          } if (dataTypes.float(json[key].toString())) {
+          }
+          if (dataTypes.float(json[key].toString())) {
             return 'float'
           }
           return typeof json[key]
@@ -148,19 +121,13 @@ export function verifyOutputType(command: Command, output: string) {
  */
 export function verifyProperties(command: Command, output: string) {
   const outputObject = JSON.parse(output)
-  const {properties} = command.output
+  const { properties } = command.output
   const outputedProperties = Object.keys(outputObject)
   for (const property of Object.keys(properties)) {
     if (!(property in outputObject)) {
-      throw `Action: \`${
-        command.name
-      }\`'s output does not have expected property: \`${property}\``
+      throw `Action: \`${command.name}\`'s output does not have expected property: \`${property}\``
     }
-    if (
-      !dataTypes[properties[property].type](
-        JSON.stringify(outputObject[property])
-      )
-    ) {
+    if (!dataTypes[properties[property].type](JSON.stringify(outputObject[property]))) {
       throw `Action: \`${command.name}\`'s output property: \`${property}\`` +
         ` must have type: \`${properties[property].type}\`` +
         ` instead got: \`${typeof outputObject[property]}\`:` +
@@ -171,9 +138,7 @@ export function verifyProperties(command: Command, output: string) {
 
   const extraPropertyCount = outputedProperties.length
   if (extraPropertyCount > 0) {
-    throw `Action: \`${
-      command.name
-    }\` outputed ${extraPropertyCount} extra propert${
+    throw `Action: \`${command.name}\` outputed ${extraPropertyCount} extra propert${
       extraPropertyCount === 1 ? 'y' : 'ies'
     }: \`${outputedProperties.toString()}\``
   }

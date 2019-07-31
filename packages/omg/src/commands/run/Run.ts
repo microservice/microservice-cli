@@ -27,12 +27,7 @@ export default abstract class Run {
    * @param {Object} _arguments The argument map
    * @param {Object} environmentVariables The environment map
    */
-  protected constructor(
-    dockerImage: string,
-    microservice: Microservice,
-    _arguments: any,
-    environmentVariables: any
-  ) {
+  protected constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     this.dockerImage = dockerImage
     this.microservice = microservice
     this._arguments = _arguments
@@ -49,11 +44,7 @@ export default abstract class Run {
     if (!this.action.areRequiredArgumentsSupplied(this._arguments)) {
       throw `Need to supply required arguments: \`${this.action.requiredArguments.toString()}\``
     }
-    if (
-      !this.microservice.areRequiredEnvironmentVariablesSupplied(
-        this.environmentVariables
-      )
-    ) {
+    if (!this.microservice.areRequiredEnvironmentVariablesSupplied(this.environmentVariables)) {
       throw `Need to supply required environment variables: \`${this.microservice.requiredEnvironmentVariables.toString()}\``
     }
   }
@@ -66,14 +57,8 @@ export default abstract class Run {
     this.castTypes()
     verify.verifyArgumentConstrains(this.action, this._arguments)
 
-    verify.verifyEnvironmentVariableTypes(
-      this.microservice,
-      this.environmentVariables
-    )
-    verify.verifyEnvironmentVariablePattern(
-      this.microservice,
-      this.environmentVariables
-    )
+    verify.verifyEnvironmentVariableTypes(this.microservice, this.environmentVariables)
+    verify.verifyEnvironmentVariablePattern(this.microservice, this.environmentVariables)
   }
 
   /**
@@ -87,7 +72,7 @@ export default abstract class Run {
           if (typeof argument.default === 'object') {
             this._arguments[argument.name] = JSON.stringify(argument.default)
           } else {
-            this._arguments[argument.name] = `${argument.default  }`
+            this._arguments[argument.name] = `${argument.default}`
           }
         }
       }
@@ -104,8 +89,7 @@ export default abstract class Run {
       const environmentVariable = this.microservice.environmentVariables[i]
       if (!this.environmentVariables[environmentVariable.name]) {
         if (environmentVariable.default !== null) {
-          this.environmentVariables[environmentVariable.name] =
-            environmentVariable.default
+          this.environmentVariables[environmentVariable.name] = environmentVariable.default
         }
       }
     }
@@ -114,8 +98,7 @@ export default abstract class Run {
       for (let i = 0; i < this.microservice.environmentVariables.length; i++) {
         const environmentVariable = this.microservice.environmentVariables[i]
         if (process.env[environmentVariable.name]) {
-          this.environmentVariables[environmentVariable.name] =
-            process.env[environmentVariable.name]
+          this.environmentVariables[environmentVariable.name] = process.env[environmentVariable.name]
         }
       }
     }
@@ -128,9 +111,7 @@ export default abstract class Run {
     const argumentList = Object.keys(this._arguments)
     for (let i = 0; i < argumentList.length; i++) {
       const argument = this.action.getArgument(argumentList[i])
-      this._arguments[argument.name] = utils.typeCast[argument.type](
-        this._arguments[argument.name]
-      )
+      this._arguments[argument.name] = utils.typeCast[argument.type](this._arguments[argument.name])
     }
   }
 
@@ -163,10 +144,7 @@ export default abstract class Run {
    * @param {String} action The given action
    * @return {String} The output
    */
-  public abstract async exec(
-    action: string,
-    tmpRetryExec?: boolean
-  ): Promise<any> // Temporary, remove when health is mandatory
+  public abstract async exec(action: string, tmpRetryExec?: boolean): Promise<any> // Temporary, remove when health is mandatory
 
   /**
    * Sets provided arguments
@@ -182,16 +160,12 @@ export default abstract class Run {
   public static getHostIp(): Promise<string> {
     const hostDomain = 'host.docker.internal'
     return new Promise<string>((resolve, reject) => {
-      $.exec(
-        'ip -4 addr show docker0',
-        { silent: true },
-        (code, stdout, stderr) => {
-          if (code === 0) {
-            resolve(`${hostDomain}:${stdout.match(/inet ([\d.]+)/)[1]}`)
-          }
-          reject()
+      $.exec('ip -4 addr show docker0', { silent: true }, (code, stdout, stderr) => {
+        if (code === 0) {
+          resolve(`${hostDomain}:${stdout.match(/inet ([\d.]+)/)[1]}`)
         }
-      )
+        reject()
+      })
     })
   }
   /**
@@ -214,22 +188,18 @@ export default abstract class Run {
     for (let i = 0; i < neededPorts.length; i += 1) {
       this.portMap[neededPorts[i]] = openPorts[i]
       this.exposedPorts[`${neededPorts[i]}/tcp`] = {}
-      this.portBindings[`${neededPorts[i]}/tcp`] = [
-        { HostPort: openPorts[i].toString() }
-      ]
+      this.portBindings[`${neededPorts[i]}/tcp`] = [{ HostPort: openPorts[i].toString() }]
     }
 
     const container = await utils.docker.createContainer({
       Image: this.dockerImage,
-      Cmd: this.microservice.lifecycle
-        ? this.microservice.lifecycle.startup
-        : null,
+      Cmd: this.microservice.lifecycle ? this.microservice.lifecycle.startup : null,
       Env: this.formatEnvironmentVariables(),
       ExposedPorts: this.exposedPorts,
       HostConfig: {
         PortBindings: this.portBindings,
-        ExtraHosts: !['darwin', 'win32'].includes(process.platform) ? [await Run.getHostIp()] : []
-      }
+        ExtraHosts: !['darwin', 'win32'].includes(process.platform) ? [await Run.getHostIp()] : [],
+      },
     })
     await container.start()
 
@@ -310,7 +280,7 @@ export default abstract class Run {
     const logs = await container.logs({
       stderr: true,
       stdout: true,
-      since: since !== null ? since : 0
+      since: since !== null ? since : 0,
     })
     return logs.toString().trim()
   }
@@ -334,7 +304,7 @@ export default abstract class Run {
     for (const forward of this.microservice.forwards) {
       bindings[forward.name] = {
         host: this.portBindings[`${forward.port}/tcp`],
-        container: forward.port
+        container: forward.port,
       }
     }
     return bindings
@@ -352,7 +322,7 @@ export default abstract class Run {
       const promise = rp.get({
         uri: `http://localhost:${boundPort}${this.microservice.health.path}`,
         method: 'GET',
-        resolveWithFullResponse: true
+        resolveWithFullResponse: true,
       })
       if (timeout) {
         setTimeout(() => {

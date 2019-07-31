@@ -3,13 +3,7 @@ module.exports = {
   properties: {
     method: {
       type: 'string',
-      enum: [
-        'get',
-        'post',
-        'put',
-        'delete',
-        'patch',
-      ],
+      enum: ['get', 'post', 'put', 'delete', 'patch'],
     },
     port: {
       type: 'integer',
@@ -22,10 +16,6 @@ module.exports = {
       type: 'string',
     },
   },
-  required: [
-    'method',
-    'port',
-    'path',
-  ],
+  required: ['method', 'port', 'path'],
   additionalProperties: false,
-};
+}

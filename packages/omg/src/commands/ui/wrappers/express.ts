@@ -1,4 +1,3 @@
-const express = require('express');
+const express = require('express')
 
-
-export default express;
+export default express

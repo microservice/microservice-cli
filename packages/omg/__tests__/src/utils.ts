@@ -20,14 +20,14 @@ describe('utils.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         health: {
           http: {
             port: 5000,
-            path: '/health'
-          }
-        }
+            path: '/health',
+          },
+        },
       })
 
       expect(utils.getNeededPorts(m)).toEqual([5000])
@@ -39,26 +39,26 @@ describe('utils.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         lifecycle: {
           startup: {
-            command: 'server.sh'
-          }
+            command: 'server.sh',
+          },
         },
         health: {
           http: {
             path: '/health',
-            port: 5050
-          }
+            port: 5050,
+          },
         },
         actions: {
           foo: {
             http: {
               method: 'get',
               port: 5050,
-              path: '/c'
-            }
+              path: '/c',
+            },
           },
           baz: {
             events: {
@@ -67,23 +67,23 @@ describe('utils.ts', () => {
                   subscribe: {
                     port: 6060,
                     path: '/sub',
-                    method: 'post'
+                    method: 'post',
                   },
                   unsubscribe: {
                     port: 6061,
                     path: '/unsub',
-                    method: 'post'
-                  }
-                }
-              }
-            }
+                    method: 'post',
+                  },
+                },
+              },
+            },
           },
           bar: {
             format: {
-              command: 'bar.sh'
-            }
-          }
-        }
+              command: 'bar.sh',
+            },
+          },
+        },
       })
 
       expect(utils.getNeededPorts(m)).toEqual([5050, 6060, 6061])
@@ -95,27 +95,27 @@ describe('utils.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         lifecycle: {
           startup: {
-            command: 'server.sh'
-          }
+            command: 'server.sh',
+          },
         },
         health: {
           http: {
             path: '/health',
-            port: 5050
-          }
+            port: 5050,
+          },
         },
         forward: {
           ui: {
             http: {
               path: '/ui',
-              port: 8080
-            }
-          }
-        }
+              port: 8080,
+            },
+          },
+        },
       })
       expect(utils.getNeededPorts(m)).toEqual([8080, 5050])
     })
@@ -123,15 +123,12 @@ describe('utils.ts', () => {
 
   describe('parse(list, errorMessage)', () => {
     test('parses the list', () => {
-      const result = utils.parse(
-        ['key=val', 'foo=bar', 'fizz=buzz'],
-        'Error message.'
-      )
+      const result = utils.parse(['key=val', 'foo=bar', 'fizz=buzz'], 'Error message.')
 
       expect(result).toEqual({
         key: 'val',
         foo: 'bar',
-        fizz: 'buzz'
+        fizz: 'buzz',
       })
     })
 
@@ -149,18 +146,18 @@ describe('utils.ts', () => {
       const environmentVariables = [
         new EnvironmentVariable('nAme', { type: 'string' }),
         new EnvironmentVariable('name2', { type: 'string' }),
-        new EnvironmentVariable('NAME3', { type: 'string' })
+        new EnvironmentVariable('NAME3', { type: 'string' }),
       ]
       const env = {
         name: 1,
         name2: 2,
-        name3: 3
+        name3: 3,
       }
 
       expect(utils.matchEnvironmentCases(env, environmentVariables)).toEqual({
         nAme: 1,
         name2: 2,
-        NAME3: 3
+        NAME3: 3,
       })
     })
   })
@@ -199,9 +196,7 @@ describe('utils.ts', () => {
     })
 
     test('casts a uuid', () => {
-      expect(
-        typeof utils.typeCast.uuid('2d9eb156-d047-428a-b5c1-b1b6c55e56ab')
-      ).toBe('string')
+      expect(typeof utils.typeCast.uuid('2d9eb156-d047-428a-b5c1-b1b6c55e56ab')).toBe('string')
     })
 
     test('casts a list', () => {
@@ -243,9 +238,7 @@ describe('utils.ts', () => {
     })
 
     test('type checks a stringified uuid', () => {
-      expect(
-        utils.dataTypes.uuid('db3a6ed8-5419-4c35-8640-1e46ef27f94d')
-      ).toBeTruthy()
+      expect(utils.dataTypes.uuid('db3a6ed8-5419-4c35-8640-1e46ef27f94d')).toBeTruthy()
       expect(utils.dataTypes.uuid('db3a6')).toBeFalsy()
     })
 
@@ -309,27 +302,27 @@ describe('utils.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         lifecycle: {
           startup: {
-            command: 'server.sh'
-          }
+            command: 'server.sh',
+          },
         },
         health: {
           http: {
             path: '/health',
-            port: 5050
-          }
+            port: 5050,
+          },
         },
         forward: {
           ui: {
             http: {
               path: '/ui',
-              port: 8080
-            }
-          }
-        }
+              port: 8080,
+            },
+          },
+        },
       })
       expect(utils.getForwardPorts(m)).toEqual([8080])
     })
@@ -342,19 +335,19 @@ describe('utils.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         lifecycle: {
           startup: {
-            command: 'server.sh'
-          }
+            command: 'server.sh',
+          },
         },
         health: {
           http: {
             path: '/health',
-            port: 5050
-          }
-        }
+            port: 5050,
+          },
+        },
       })
       expect(utils.getHealthPort(m)).toEqual(5050)
     })
@@ -364,7 +357,7 @@ describe('utils.ts', () => {
     let utilsExecRemote
 
     afterEach(() => {
-      (utils.exec as any).restore()
+      ;(utils.exec as any).restore()
     })
 
     test('returns the git remote', async () => {

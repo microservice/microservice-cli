@@ -1,4 +1,4 @@
-import * as rp from 'request-promise';
+import * as rp from 'request-promise'
 
 /**
  * Thin wrapper over rp so it can be mocked in tests.
@@ -7,5 +7,5 @@ import * as rp from 'request-promise';
  * @return {Promise<void>} The data after request
  */
 export async function makeRequest(data: any): Promise<any> {
-  return await rp(data);
+  return await rp(data)
 }

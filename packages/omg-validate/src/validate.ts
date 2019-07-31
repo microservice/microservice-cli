@@ -65,40 +65,35 @@ export default class OMGValidate {
   private processValidateOutput(data: any, options: any): string {
     if (options.json) {
       return JSON.stringify(data, null, 2)
-    } if (options.silent) {
+    }
+    if (options.silent) {
       return ''
-    } 
-      let errorString
-      if (!data.text) {
-        errorString = `${data.context} has an issue. ${data.message}`
-      } else {
-        errorString = data.text
+    }
+    let errorString
+    if (!data.text) {
+      errorString = `${data.context} has an issue. ${data.message}`
+    } else {
+      errorString = data.text
+    }
+    if (errorString === 'No errors') {
+      return errorString
+    }
+    const errors = errorString.split(', ')
+    const errorCount = errors.length
+    const formattedError = [`${errorCount} error${errorCount === 1 ? '' : 's'} found:`]
+    for (let i = 0; i < errors.length; i += 1) {
+      const generalScope = errors[i].split(' ')[0].split('.')
+      const scope = generalScope[generalScope.length - 1]
+      let error = errors[i]
+      if (scopes.includes(scope)) {
+        let str = `should only have theses properties:`
+        utils.getPossibleProperties(scope).forEach(prop => {
+          str = `${str}\n    '${prop}'`
+        })
+        error = errors[i].replace('should NOT have additional properties', str)
       }
-      if (errorString === 'No errors') {
-        return errorString
-      }
-      const errors = errorString.split(', ')
-      const errorCount = errors.length
-      const formattedError = [
-        `${errorCount} error${errorCount === 1 ? '' : 's'} found:`
-      ]
-      for (let i = 0; i < errors.length; i += 1) {
-        const generalScope = errors[i].split(' ')[0].split('.')
-        const scope = generalScope[generalScope.length - 1]
-        let error = errors[i]
-        if (scopes.includes(scope)) {
-          let str = `should only have theses properties:`
-          utils.getPossibleProperties(scope).forEach(prop => {
-            str = `${str}\n    '${prop}'`
-          })
-          error = errors[i].replace(
-            'should NOT have additional properties',
-            str
-          )
-        }
-        formattedError.push(`\n  ${i + 1}. ${error}`)
-      }
-      return formattedError.join('')
-    
+      formattedError.push(`\n  ${i + 1}. ${error}`)
+    }
+    return formattedError.join('')
   }
 }

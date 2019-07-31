@@ -8,8 +8,6 @@ module.exports = {
       type: 'boolean',
     },
   },
-  required: [
-    'target',
-  ],
+  required: ['target'],
   additionalProperties: false,
-};
+}

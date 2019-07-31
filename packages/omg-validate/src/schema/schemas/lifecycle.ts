@@ -1,4 +1,4 @@
-module.exports= {
+module.exports = {
   type: 'object',
   properties: {
     startup: {
@@ -32,15 +32,11 @@ module.exports= {
   },
   oneOf: [
     {
-      required: [
-        'startup',
-      ],
+      required: ['startup'],
     },
     {
-      required: [
-        'shutdown',
-      ],
+      required: ['shutdown'],
     },
   ],
   additionalProperties: false,
-};
+}

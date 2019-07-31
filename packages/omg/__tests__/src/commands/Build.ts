@@ -1,18 +1,18 @@
-import * as sinon from 'sinon';
-import * as utils from '../../../src/utils';
-import Build from '../../../src/commands/Build';
+import * as sinon from 'sinon'
+import * as utils from '../../../src/utils'
+import Build from '../../../src/commands/Build'
 
 describe('Build.ts', () => {
   describe('.go()', () => {
-    let execStub;
+    let execStub
 
     beforeEach(() => {
-      execStub = sinon.stub(utils, 'exec');
-    });
+      execStub = sinon.stub(utils, 'exec')
+    })
 
     afterEach(() => {
-      (utils.exec as any).restore();
-    });
+      ;(utils.exec as any).restore()
+    })
 
     test('constructor', () => {
       const obj = new Build('image')
@@ -36,5 +36,5 @@ describe('Build.ts', () => {
     //     expect(e).toBe('Unable to build Docker image');
     //   }
     // });
-  });
-});
+  })
+})

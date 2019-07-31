@@ -22,12 +22,7 @@ export default class RunFactory {
    * @param {Object} _arguments The given argument map
    * @param {Object} environmentVariables the given environment  map
    */
-  constructor(
-    dockerImage: string,
-    microservice: Microservice,
-    _arguments: any,
-    environmentVariables: any
-  ) {
+  constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     this.dockerImage = dockerImage
     this.microservice = microservice
     this._arguments = _arguments
@@ -43,32 +38,16 @@ export default class RunFactory {
    */
   getRun(action: Action, ui = false): Run {
     if (ui === true) {
-      return new UIRun(
-        this.dockerImage,
-        this.microservice,
-        this.environmentVariables
-      )
-    } if (action.format !== null) {
-      return new FormatRun(
-        this.dockerImage,
-        this.microservice,
-        this._arguments,
-        this.environmentVariables
-      )
-    } if (action.http !== null) {
-      return new HttpRun(
-        this.dockerImage,
-        this.microservice,
-        this._arguments,
-        this.environmentVariables
-      )
-    } if (action.events !== null) {
-      return new EventRun(
-        this.dockerImage,
-        this.microservice,
-        this._arguments,
-        this.environmentVariables
-      )
+      return new UIRun(this.dockerImage, this.microservice, this.environmentVariables)
+    }
+    if (action.format !== null) {
+      return new FormatRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables)
+    }
+    if (action.http !== null) {
+      return new HttpRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables)
+    }
+    if (action.events !== null) {
+      return new EventRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables)
     }
   }
 }

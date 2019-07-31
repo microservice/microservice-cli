@@ -18,45 +18,32 @@ export default class HttpRun extends Run {
    * @param {Object} _arguments The given argument map
    * @param {Object} environmentVariables the given environment  map
    */
-  constructor(
-    dockerImage: string,
-    microservice: Microservice,
-    _arguments: any,
-    environmentVariables: any
-  ) {
+  constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     super(dockerImage, microservice, _arguments, environmentVariables)
   }
 
   /** @inheritdoc */
-  public async exec(
-    action: string,
-    tmpRetryExec: boolean = false
-  ): Promise<string> {
+  public async exec(action: string, tmpRetryExec: boolean = false): Promise<string> {
     this.action = this.microservice.getAction(action)
     this.preChecks()
     this.verification()
-    const output = await this.httpCommand(
-      this.portMap[this.action.http.port],
-      tmpRetryExec
-    )
+    const output = await this.httpCommand(this.portMap[this.action.http.port], tmpRetryExec)
     if (tmpRetryExec) {
       verify.verifyOutputType(this.action, output.body.trim())
       return output
-    } 
-      verify.verifyOutputType(this.action, output.trim())
-      if (
-        this.action.output &&
-        this.action.output.type &&
-        (this.action.output.type === 'map' ||
-          this.action.output.type === 'object')
-      ) {
-        if (this.action.output.properties) {
-          verify.verifyProperties(this.action, output)
-        }
-        return JSON.stringify(JSON.parse(output.trim()), null, 2)
+    }
+    verify.verifyOutputType(this.action, output.trim())
+    if (
+      this.action.output &&
+      this.action.output.type &&
+      (this.action.output.type === 'map' || this.action.output.type === 'object')
+    ) {
+      if (this.action.output.properties) {
+        verify.verifyProperties(this.action, output)
       }
-      return output.trim()
-    
+      return JSON.stringify(JSON.parse(output.trim()), null, 2)
+    }
+    return output.trim()
   }
 
   /**
@@ -66,10 +53,7 @@ export default class HttpRun extends Run {
    * @param {boolean} tmpRetryExec Temporary boolean
    * @return {Promise<String>} The response of the Http request
    */
-  private async httpCommand(
-    port: number,
-    tmpRetryExec: boolean = false
-  ): Promise<any> {
+  private async httpCommand(port: number, tmpRetryExec: boolean = false): Promise<any> {
     // Temporary, remove when health is mandatory (put <string> back too)
     const httpData = this.formatHttp(port)
     const opts: {
@@ -81,15 +65,12 @@ export default class HttpRun extends Run {
     } = {
       method: this.action.http.method.toUpperCase(),
       resolveWithFullResponse: tmpRetryExec,
-      uri: httpData.uri
+      uri: httpData.uri,
     }
-    if (
-      this.action.http.method === 'post' ||
-      this.action.http.method === 'put'
-    ) {
+    if (this.action.http.method === 'post' || this.action.http.method === 'put') {
       opts.body = JSON.stringify(httpData.jsonData)
       opts.headers = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       }
     }
     /**
@@ -110,13 +91,13 @@ export default class HttpRun extends Run {
       case 'post':
         data = await rp.post(opts.uri, {
           headers: opts.headers,
-          body: opts.body
+          body: opts.body,
         })
         break
       case 'put':
         data = await rp.put(opts.uri, {
           headers: opts.headers,
-          body: opts.body
+          body: opts.body,
         })
         break
       case 'delete':
@@ -145,10 +126,7 @@ export default class HttpRun extends Run {
           }
           break
         case 'path':
-          uri = uri.replace(
-            `{${argument.name}}`,
-            this._arguments[argument.name]
-          )
+          uri = uri.replace(`{${argument.name}}`, this._arguments[argument.name])
           break
         case 'requestBody':
           jsonData[argument.name] = this._arguments[argument.name]
@@ -160,7 +138,7 @@ export default class HttpRun extends Run {
     }
     return {
       uri,
-      jsonData
+      jsonData,
     }
   }
   /**

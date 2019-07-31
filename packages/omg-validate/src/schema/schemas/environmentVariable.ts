@@ -2,25 +2,10 @@ module.exports = {
   type: 'object',
   properties: {
     type: {
-      type: [
-        'array',
-        'string',
-      ],
+      type: ['array', 'string'],
       items: {
         type: 'string',
-        enum: [
-          'int',
-          'number',
-          'float',
-          'string',
-          'uuid',
-          'list',
-          'map',
-          'boolean',
-          'object',
-          'path',
-          'any',
-        ],
+        enum: ['int', 'number', 'float', 'string', 'uuid', 'list', 'map', 'boolean', 'object', 'path', 'any'],
       },
       pattern: '^(number|int|float|string|uuid|list|map|boolean|path|any|object)$',
     },
@@ -31,20 +16,12 @@ module.exports = {
       type: 'boolean',
     },
     default: {
-      type: [
-        'boolean',
-        'integer',
-        'number',
-        'array',
-        'string',
-      ],
+      type: ['boolean', 'integer', 'number', 'array', 'string'],
     },
     help: {
       type: 'string',
     },
   },
-  required: [
-    'type',
-  ],
+  required: ['type'],
   additionalProperties: false,
-};
+}
