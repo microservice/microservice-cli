@@ -7,7 +7,7 @@
     "microservice",
     "microservices"
   ],
-  "version": "0.13.12",
+  "version": "0.14.0",
   "main": "omg",
   "scripts": {
     "build": "tsc",
@@ -32,8 +32,8 @@
     "dockerode-promise": "^0.1.0",
     "lineup": "^0.0.7",
     "log-symbols": "^2.2.0",
-    "omg-ui": "^0.13.7",
-    "omg-validate": "^0.13.11",
+    "omg-ui": "^0.14.0",
+    "omg-validate": "^0.14.0",
     "open": "^6.1.0",
     "ora": "^3.0.0",
     "request": "^2.87.0",
