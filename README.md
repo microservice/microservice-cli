@@ -11,10 +11,13 @@ Thanks to lerna you can run commands available in all packages using `lerna run 
 
 ```bash
 # Install lerna
-$> npm install
+$> yarn
 
 # Install the packages dependencies
-$> npm run bootstrap
+$> yarn bootstrap
+
+# Builds package sources for when you execute
+$> yarn build
 ```
 
 ## Compiles and minifies all packages for production
@@ -44,7 +47,7 @@ $> lerna run coverage
 ## Publish all packages that need to be published
 
 ```
-$> npm run publish
+$> yarn run publish
 ```
 
 ## Automatic version bump
@@ -61,6 +64,5 @@ If you want to manually bump the packages version, you can use `lerna version`.
 ## Make an alias
 
 ```bash
-# Making an alias is usefull to prevent using the real `omg` package when installed locally
-$> alias omg=~/path/to/omg/omg
+$> yarn link-bin
 ```
