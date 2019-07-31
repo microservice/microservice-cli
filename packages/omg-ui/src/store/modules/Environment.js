@@ -1,4 +1,4 @@
-const state = {
+const defaultState = {
   envs: {},
 }
 
@@ -18,7 +18,7 @@ const mutations = {
 const actions = {}
 
 export default {
-  state,
+  state: defaultState,
   getters,
   mutations,
   actions,

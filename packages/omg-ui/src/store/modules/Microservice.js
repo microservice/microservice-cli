@@ -1,4 +1,4 @@
-const state = {
+const defaultState = {
   microservice: '',
   rawMicroservice: '',
   status: false,
@@ -51,7 +51,7 @@ const mutations = {
 const actions = {}
 
 export default {
-  state,
+  state: defaultState,
   getters,
   mutations,
   actions,

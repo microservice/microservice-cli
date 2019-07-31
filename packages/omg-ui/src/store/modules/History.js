@@ -1,4 +1,4 @@
-const state = {
+const defaultState = {
   history: [],
 }
 
@@ -15,7 +15,7 @@ const mutations = {
 const actions = {}
 
 export default {
-  state,
+  state: defaultState,
   getters,
   mutations,
   actions,
