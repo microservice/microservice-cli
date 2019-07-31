@@ -6,9 +6,13 @@
     "packages/*"
   ],
   "dependencies": {
-    "lerna": "^3.16.4"
+    "eslint-plugin-prettier": "^3.1.0",
+    "lerna": "^3.16.4",
+    "prettier-cli": "^0.1.0"
   },
   "scripts": {
+    "prettier:fix": "prettier --write packages/*/src/**/*.ts",
+    "lint:prettier": "prettier --list-different packages/*/src/**/*.ts",
     "bootstrap": "lerna bootstrap --npm-client=yarn",
     "lint": "lerna run --parallel lint",
     "test": "lerna run --parallel test",
