@@ -95,14 +95,14 @@ export function verifyOutputType(command: Command, output: string) {
     const json = JSON.parse(output)
     Object.keys(props).forEach(key => {
       if (props[key].type in dataTypes && !dataTypes[props[key].type](JSON.stringify(json[key]))) {
-        const typeFound = (json, key): string => {
-          if (typeof json[key] === 'number' && dataTypes.int(json[key].toString())) {
+        const typeFound = (typeJson, typeKey): string => {
+          if (typeof typeJson[typeKey] === 'number' && dataTypes.int(typeJson[typeKey].toString())) {
             return 'int'
           }
-          if (dataTypes.float(json[key].toString())) {
+          if (dataTypes.float(typeJson[typeKey].toString())) {
             return 'float'
           }
-          return typeof json[key]
+          return typeof typeJson[typeKey]
         }
         throw `Action: \`${command.name}\`` +
           ` property \`${key}\` must have output type: \`${props[key].type}\`` +
@@ -123,7 +123,7 @@ export function verifyProperties(command: Command, output: string) {
   const outputObject = JSON.parse(output)
   const { properties } = command.output
   const outputedProperties = Object.keys(outputObject)
-  for (const property of Object.keys(properties)) {
+  Object.keys(properties).forEach(property => {
     if (!(property in outputObject)) {
       throw `Action: \`${command.name}\`'s output does not have expected property: \`${property}\``
     }
@@ -134,7 +134,7 @@ export function verifyProperties(command: Command, output: string) {
         ` ${JSON.stringify(outputObject[property])}`
     }
     outputedProperties.splice(outputedProperties.indexOf(property), 1)
-  }
+  })
 
   const extraPropertyCount = outputedProperties.length
   if (extraPropertyCount > 0) {

@@ -2,16 +2,43 @@ import * as _ from 'underscore'
 import * as $ from 'shelljs'
 import * as fs from 'fs'
 import * as path from 'path'
-import * as getPort from 'get-port'
+import getPort from 'get-port'
 import { EnvironmentVariable, Microservice } from 'omg-validate'
 
-const Docker = require('dockerode-promise')
-const LineUp = require('lineup')
-const execCmd = require('child_process').exec
+import LineUp from 'lineup'
+import Docker from 'dockerode-promise'
+import { exec as execCmd } from 'child_process'
+
+import manifest from '../package.json'
 
 const lineup = new LineUp()
 export const docker = new Docker()
 let versionAvailable = false
+
+/**
+ * Promise wrapper for the `exec`.
+ *
+ * @param {String} command The command to run
+ * @param {Boolean} [silent=true] True if silent, otherwise false
+ * @return {Promise<String>} The stdout if resolved, otherwise stderror unless stderror is empty
+ */
+export function exec(command: string, silent: boolean = true): Promise<string> {
+  return new Promise((resolve, reject) => {
+    $.exec(command, { silent }, (code, stdout, stderr) => {
+      if (code !== 0) {
+        if (stderr === '') {
+          reject(stdout.trim())
+        } else {
+          reject(stderr.trim())
+        }
+      } else if (stdout === '') {
+        resolve(stderr.trim())
+      } else {
+        resolve(stdout.trim())
+      }
+    })
+  })
+}
 
 /**
  * Used to set values in the constructors of the microservice classes.
@@ -148,7 +175,8 @@ export function parse(list: string[], errorMessage: string): any {
         message: errorMessage,
       }
     }
-    dictionary[split[0]] = split[1]
+    const [k, v] = split
+    dictionary[k] = v
   }
   return dictionary
 }
@@ -171,31 +199,6 @@ export function matchEnvironmentCases(env: any, environmentVariables: Environmen
     }
   }
   return result
-}
-
-/**
- * Promise wrapper for the `exec`.
- *
- * @param {String} command The command to run
- * @param {Boolean} [silent=true] True if silent, otherwise false
- * @return {Promise<String>} The stdout if resolved, otherwise stderror unless stderror is empty
- */
-export function exec(command: string, silent: boolean = true): Promise<string> {
-  return new Promise(function(resolve, reject) {
-    $.exec(command, { silent }, function(code, stdout, stderr) {
-      if (code !== 0) {
-        if (stderr === '') {
-          reject(stdout.trim())
-        } else {
-          reject(stderr.trim())
-        }
-      } else if (stdout === '') {
-        resolve(stderr.trim())
-      } else {
-        resolve(stdout.trim())
-      }
-    })
-  })
 }
 
 /**
@@ -235,7 +238,7 @@ export function error(string) {
 }
 
 export const typeCast = {
-  int: (int: string): number => parseInt(int),
+  int: (int: string): number => parseInt(int, 10),
   float: (float: string): number => parseFloat(float),
   string: (string: string): string => string,
   uuid: (uuid: string): string => uuid,
@@ -243,7 +246,7 @@ export const typeCast = {
   map: (map: string): any => JSON.parse(map),
   object: (object: string): any => JSON.parse(object),
   boolean: (boolean: string): boolean => boolean === 'true',
-  path: (path: string): string => path,
+  path: (entryPath: string): string => entryPath,
   any: (any: any): any => any,
 }
 
@@ -253,7 +256,7 @@ export const dataTypes = {
   },
   float: (float: string): boolean => {
     return (
-      !isNaN(parseFloat(float)) &&
+      !Number.isNaN(parseFloat(float)) &&
       parseFloat(float)
         .toString()
         .indexOf('.') !== -1
@@ -289,16 +292,16 @@ export const dataTypes = {
   boolean: (boolean: string): boolean => {
     return boolean === 'false' || boolean === 'true'
   },
-  path: (path: string): boolean => {
+  path: (entryPath: string): boolean => {
     try {
-      JSON.parse(path)
+      JSON.parse(entryPath)
       return false
     } catch (e) {
-      const lastChar = path.substr(path.length - 1)
+      const lastChar = entryPath.substr(entryPath.length - 1)
       if (lastChar === '/') {
         return false
       }
-      return typeof path === 'string'
+      return typeof entryPath === 'string'
     }
   },
   any: (any: string): boolean => {
@@ -321,9 +324,9 @@ export function getOpenPort(): Promise<number> {
  * @param {Array} xs
  * @return {function(*=): (*|Array)}
  */
-export function appender(xs: any[]): Function {
-  xs = xs || []
-  return function(x) {
+export function appender(givenXs: any[]): Function {
+  const xs = givenXs || []
+  return x => {
     xs.push(x)
     return xs
   }
@@ -364,9 +367,7 @@ export function checkVersion() {
     (e, out, err) => {
       if (out) {
         const versions = {
-          local: require('../package.json')
-            .version.trim()
-            .match(/^(\d+).(\d+).(\d+)/),
+          local: manifest.version.trim().match(/^(\d+).(\d+).(\d+)/),
           distant: out
             .toString()
             .trim()
@@ -374,13 +375,18 @@ export function checkVersion() {
         }
         for (let i = 1; i <= 3; i += 1) {
           if (versions.distant[i] > versions.local[i]) {
+            let updateLabel = 'Patch'
+            if (i === 1) {
+              updateLabel = 'Major'
+            } else if (i === 2) {
+              updateLabel = 'Minor'
+            }
+
             lineup.sticker.note('')
             lineup.sticker.note(
-              `${lineup.colors.yellow(
-                `${i === 1 ? 'Major' : i === 2 ? 'Minor' : 'Patch'} update available: `,
-              )}${lineup.colors.red(versions.local[0])} ${lineup.colors.yellow('=>')} ${lineup.colors.green(
-                versions.distant[0],
-              )}`,
+              `${lineup.colors.yellow(`${updateLabel} update available: `)}${lineup.colors.red(
+                versions.local[0],
+              )} ${lineup.colors.yellow('=>')} ${lineup.colors.green(versions.distant[0])}`,
             )
             lineup.sticker.note(`${lineup.colors.yellow(`Run: 'npm i -g omg' or 'yarn global add omg' to update`)}`)
             lineup.sticker.note('')

@@ -5,12 +5,15 @@ import { scopes } from './schema/schemas'
  * @param  {string} scope scope of the microservice.yml
  * @return {string} array of properties
  */
-export function getPossibleProperties(scope: string): string[] {
+export function getPossibleProperties(givenScope: string): string[] {
+  let scope = givenScope
+
   const arr = []
   if (scope === 'root') {
     scope = 'microservice'
   }
   if (scopes.includes(scope)) {
+    // eslint-disable-next-line global-require,import/no-dynamic-require
     Object.keys(require(`./schema/schemas/${scope}`).properties).forEach(key => {
       arr.push(key)
     })

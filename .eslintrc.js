@@ -14,8 +14,9 @@ module.exports = {
     '@typescript-eslint/indent': 'off',
     // ^ Conflicts with Prettier
     '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/member-delimiter-style': 'off',
     'import/no-unresolved': 'off',
-    // ^ Let the IDE handle shaming for these two
+    // ^ Let the IDE handle shaming for these three
     'import/prefer-default-export': 'off',
     // ^ Noisy and not particularly useful
     'lines-between-class-members': 'off',

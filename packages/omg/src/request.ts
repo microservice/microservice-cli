@@ -7,5 +7,5 @@ import * as rp from 'request-promise'
  * @return {Promise<void>} The data after request
  */
 export async function makeRequest(data: any): Promise<any> {
-  return await rp(data)
+  return rp(data)
 }

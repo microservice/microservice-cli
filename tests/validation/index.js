@@ -1,6 +1,6 @@
-const {OMGValidate} = require('omg-validate')
-const path = require('path')
-const fs = require('fs')
+import fs from 'fs'
+import path from 'path'
+import { OMGValidate } from 'omg-validate'
 
 const FILES_PATH = path.join(__dirname, 'files')
 const EXPECT_PATH = path.join(__dirname, 'expectations')
@@ -18,7 +18,7 @@ const loading = () => {
       files.forEach(file => {
         if (file !== 'microservice.txt') {
           const content = fs.readFileSync(path.join(EXPECT_PATH, file), {
-            encoding: 'utf8'
+            encoding: 'utf8',
           })
           const key = file.replace('.txt', '')
           tests[key] = { expect: '', content: '' }
@@ -37,7 +37,7 @@ const loading = () => {
       files.forEach(file => {
         if (file !== 'Dockerfile' && file !== 'microservice.yml') {
           const content = fs.readFileSync(path.join(FILES_PATH, file), {
-            encoding: 'utf8'
+            encoding: 'utf8',
           })
           const key = file.replace('.yml', '')
           tests[key].content = content
@@ -62,9 +62,7 @@ const start = async () => {
           output = e
         }
         if (output !== tests[test].expect) {
-          console.log(
-            `FAILED: GOT \n${output}\nINSTEAD OF \n${tests[test].expect}\n`
-          )
+          console.log(`FAILED: GOT \n${output}\nINSTEAD OF \n${tests[test].expect}\n`)
           process.exit(1)
         }
       })

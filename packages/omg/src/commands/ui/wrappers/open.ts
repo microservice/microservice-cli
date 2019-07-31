@@ -1,3 +1,3 @@
-const open = require('open')
+import open from 'open'
 
 export default open
