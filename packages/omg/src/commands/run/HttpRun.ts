@@ -1,6 +1,7 @@
 import _ from 'underscore'
 import rp from 'request-promise'
 import querystring from 'querystring'
+import FormData from 'form-data'
 import Run from './Run'
 import * as verify from '../../verify'
 
@@ -57,12 +58,36 @@ export default class HttpRun extends Run {
       uri: string
       body?: string
       headers?: any
+      formData?: FormData
     } = {
       method: this.action.http.method.toUpperCase(),
       resolveWithFullResponse: tmpRetryExec,
       uri: httpData.uri,
     }
     if (this.action.http.method === 'post' || this.action.http.method === 'put') {
+      switch (this.action.http.contentType) {
+        case 'multipart/form-data': {
+          opts.formData = this.jsonToFormData(httpData.jsonData)
+          opts.headers = opts.formData.getHeaders()
+          break
+        }
+        case 'application/x-www-form-urlencoded':
+          opts.body = Object.entries(httpData.jsonData)
+            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as any)}`)
+            .join('&')
+          opts.headers = {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          }
+          break
+        case 'application/json':
+        default: {
+          opts.body = JSON.stringify(httpData.jsonData)
+          opts.headers = {
+            'Content-Type': 'application/json',
+          }
+        }
+      }
+
       opts.body = JSON.stringify(httpData.jsonData)
       opts.headers = {
         'Content-Type': 'application/json',
@@ -138,6 +163,24 @@ export default class HttpRun extends Run {
       jsonData,
     }
   }
+
+  /**
+   * Makes a FormData out of a JSON object
+   * Not used yet
+   *
+   * @param  {any} json JSON input
+   * @return {FormData} FormData
+   */
+  // eslint-disable-next-line class-methods-use-this
+  private jsonToFormData(json: any): FormData {
+    const form: FormData = new FormData()
+
+    Object.entries(json).forEach(([key, value]) => {
+      form.append(key, value)
+    })
+    return form
+  }
+
   /**
    * @param  {any} args
    */
