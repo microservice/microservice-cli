@@ -3,6 +3,7 @@
   "version": "0.14.0",
   "description": "OMG microservice.yml validation library",
   "main": "dist/index.js",
+  "typings": "src/index.ts",
   "scripts": {
     "build": "sb-babel-cli src -o dist --typescript",
     "watch": "yarn build -w"
