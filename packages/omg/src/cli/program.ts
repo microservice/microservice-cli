@@ -6,9 +6,12 @@ import path from 'path'
 import * as utils from '../utils'
 import Cli from './Cli'
 
+let updateAvailable = false
 const cli = new Cli()
 
-utils.checkVersion()
+utils.checkVersion().then(updateAvailableResponse => {
+  updateAvailable = updateAvailableResponse
+})
 
 program
   .description('For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`')
@@ -142,7 +145,9 @@ process.on('SIGINT', async () => {
 })
 
 process.on('exit', () => {
-  utils.showVersionCard()
+  if (updateAvailable) {
+    utils.showVersionCard()
+  }
 })
 
 module.exports = program
