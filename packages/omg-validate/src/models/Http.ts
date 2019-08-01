@@ -17,10 +17,9 @@ export default class Http {
    * @param {String} pathToHttp Path in the `microservice.yml` file to this {@link Http}
    * @param {Integer} [port] If no port given on rawHttp, this port will be used
    */
-  public constructor(commandName: string, givenRawHttp: any, pathToHttp: string, port: number = null) {
-    const rawHttp = { ...givenRawHttp }
-
+  public constructor(commandName: string, rawHttp: any, pathToHttp: string, port: number = null) {
     if (!rawHttp.port && port) {
+      // eslint-disable-next-line no-param-reassign
       rawHttp.port = port
     }
     const isValid = validateHttp(rawHttp)

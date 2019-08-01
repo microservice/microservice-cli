@@ -1,10 +1,9 @@
-import Docker from 'dockerode-promise'
-
 export { default as appender } from './appender'
 export { default as checkActionInterface } from './checkActionInterface'
 export { default as checkVersion } from './checkVersion'
 export { default as createImageName } from './createImageName'
 export { default as dataTypes } from './dataTypes'
+export { default as docker } from './docker'
 export { default as doesContainerExist } from './doesContainerExist'
 export { default as error } from './error'
 export { default as exec } from './exec'
@@ -20,5 +19,3 @@ export { default as setVal } from './setVal'
 export { default as showVersionCard } from './showVersionCard'
 export { default as sleep } from './sleep'
 export { default as typeCast } from './typeCast'
-
-export const docker = new Docker()

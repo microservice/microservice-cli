@@ -7,7 +7,7 @@ const exec = jest.requireActual('../../src/utils/exec').default
 
 describe('utils.ts', () => {
   afterEach(() => {
-    jest.clearAllMocks()
+    jest.resetAllMocks()
   })
 
   describe('setVal(val, _else)', () => {

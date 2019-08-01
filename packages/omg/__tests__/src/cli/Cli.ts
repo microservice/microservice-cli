@@ -1,34 +1,41 @@
 import * as fs from 'fs'
-import * as sinon from 'sinon'
+import ora from 'ora'
+
 import * as utils from '~/utils'
-import ora from '~/ora'
 import Build from '~/commands/Build'
 import Run from '~/commands/run/Run'
 import FormatRun from '~/commands/run/FormatRun'
 import Subscribe from '~/commands/Subscribe'
 import Cli from '~/cli/Cli'
 
+jest.mock('fs')
+jest.mock('ora')
+jest.mock('~/utils/createImageName')
+jest.mock('~/utils/docker')
+jest.mock('~/utils/error')
+jest.mock('~/utils/log')
+
 describe('Cli.ts', () => {
-  let processExitStub
-  let errorStub
-  let successList = []
-  let logStub
+  const origArgv = process.argv
 
   beforeEach(() => {
-    sinon.stub(ora, 'start').callsFake(() => {
-      return {
-        succeed: text => {
-          successList.push(text)
-        },
-        info: text => {},
-      }
+    jest.spyOn(ora, 'default').mockImplementation(
+      () =>
+        ({
+          start: () => ({
+            succeed: text => {},
+            info: text => {},
+          }),
+        } as any),
+    )
+
+    // @ts-ignore
+    jest.spyOn(process, 'exit').mockImplementation(() => {
+      /* No op */
     })
-    processExitStub = sinon.stub(process, 'exit')
-    errorStub = sinon.stub(utils, 'error')
-    logStub = sinon.stub(utils, 'log')
-    sinon.stub(fs, 'existsSync').callsFake(() => true)
-    sinon.stub(fs, 'readFileSync').callsFake(() => {
-      return (
+    ;(fs.existsSync as jest.Mock).mockImplementation(() => true)
+    ;(fs.readFileSync as jest.Mock).mockImplementation(
+      () =>
         'omg: 1\n' +
         'info:\n' +
         '  version: 1.0.0\n' +
@@ -52,42 +59,31 @@ describe('Cli.ts', () => {
         '            path: /subscribe\n' +
         '          unsubscribe:\n' +
         '            path: /unsubscribe\n' +
-        '            method: delete'
-      )
-    })
-    sinon.stub(utils, 'createImageName').callsFake(async () => 'image-name')
-    sinon.stub(utils.docker, 'ping')
+        '            method: delete',
+    )
+    ;(utils.createImageName as jest.Mock).mockImplementation(async () => 'image-name')
   })
 
   afterEach(() => {
-    successList = []
-    ;(ora.start as any).restore()
-    ;(process.exit as any).restore()
-    ;(utils.error as any).restore()
-    ;(utils.log as any).restore()
-    ;(fs.existsSync as any).restore()
-    ;(fs.readFileSync as any).restore()
-    ;(utils.createImageName as any).restore()
-    ;(utils.docker.ping as any).restore()
+    jest.resetAllMocks()
+    process.argv = origArgv.slice()
   })
 
   describe('constructor', () => {
     test('Cli is constructed and the process does not exit', () => {
       new Cli()
 
-      expect(errorStub.called).toBeFalsy()
-      expect(processExitStub.called).toBeFalsy()
+      expect(utils.error).not.toBeCalled()
+      expect(process.exit).not.toBeCalled()
     })
 
     test('Cli is not constructed because we are not in a omg directory', () => {
-      ;(fs.existsSync as any).restore()
-      sinon.stub(fs, 'existsSync').callsFake(() => false)
-      const argvStub = sinon.stub(process, 'argv').value([1, 2, 3])
+      ;(fs.existsSync as jest.Mock).mockReturnValue(false)
+      process.argv = ['1', '2', '3']
       new Cli()
 
-      // expect(errorStub.calledWith('Must be run in a directory with a `Dockerfile` and a `microservice.yml`')).toBeTruthy();
-      expect(processExitStub.calledWith(1)).toBeTruthy()
-      argvStub.restore()
+      // expect(utils.error.calledWith('Must be run in a directory with a `Dockerfile` and a `microservice.yml`')).toBeTruthy();
+      expect(process.exit).toHaveBeenCalledWith(1)
     })
   })
 
@@ -96,30 +92,26 @@ describe('Cli.ts', () => {
       const cli = new Cli()
       cli.buildMicroservice()
 
-      expect(errorStub.called).toBeFalsy()
-      expect(processExitStub.called).toBeFalsy()
+      expect(utils.error).not.toBeCalled()
+      expect(process.exit).not.toBeCalled()
     })
 
     test('errors out because the `microservice.yml` is not valid', () => {
-      ;(fs.readFileSync as any).restore()
-      sinon.stub(fs, 'readFileSync').callsFake(() => 'foo: bar')
+      ;(fs.readFileSync as jest.Mock).mockImplementation(() => 'foo: bar')
       const cli = new Cli()
       cli.buildMicroservice()
 
-      expect(
-        errorStub.calledWith(
-          "3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property 'omg'\n  3. root should have required property 'info'",
-        ),
-      ).toBeTruthy()
-      expect(processExitStub.calledWith(1)).toBeTruthy()
+      expect(utils.error).toBeCalledWith(
+        "3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property 'omg'\n  3. root should have required property 'info'",
+      )
+      expect(process.exit).toBeCalledWith(1)
     })
   })
 
   describe('.actionHelp(actionName)', () => {
     test('builds the microservice', () => {
-      ;(fs.readFileSync as any).restore()
-      sinon.stub(fs, 'readFileSync').callsFake(() => {
-        return (
+      ;(fs.readFileSync as jest.Mock).mockImplementation(
+        () =>
           'omg: 1\n' +
           'info:\n' +
           '  version: 1.0.0\n' +
@@ -132,14 +124,12 @@ describe('Cli.ts', () => {
           'actions:\n' +
           '  action:\n' +
           '    format:\n' +
-          '      command: ["action.sh"]'
-        )
-      })
+          '      command: ["action.sh"]',
+      )
       const cli = new Cli()
       cli.buildMicroservice()
       cli.actionHelp('action')
-
-      expect(logStub.args[0][0].startsWith('  Action `action` details:')).toBeTruthy()
+      expect((utils.log as jest.Mock).mock.calls[0][0]).toContain('Action `action` details:')
     })
   })
 
@@ -148,15 +138,15 @@ describe('Cli.ts', () => {
       test('silent option', () => {
         Cli.validate({ silent: true })
 
-        expect(logStub.calledWith('')).toBeTruthy()
-        expect(processExitStub.calledWith(0)).toBeTruthy()
+        expect(utils.log.calledWith('')).toBeTruthy()
+        expect(process.exit.calledWith(0)).toBeTruthy()
       })
 
       test('json option', () => {
         Cli.validate({ json: true })
 
         expect(
-          logStub.calledWith(
+          utils.log.calledWith(
             '{\n' +
               '  "valid": true,\n' +
               '  "yaml": {\n' +
@@ -206,14 +196,14 @@ describe('Cli.ts', () => {
               '}',
           ),
         ).toBeTruthy()
-        expect(processExitStub.calledWith(0)).toBeTruthy()
+        expect(process.exit.calledWith(0)).toBeTruthy()
       })
 
       test('no options', () => {
         Cli.validate({})
 
-        expect(logStub.calledWith('No errors')).toBeTruthy()
-        expect(processExitStub.calledWith(0)).toBeTruthy()
+        expect(utils.log.calledWith('No errors')).toBeTruthy()
+        expect(process.exit.calledWith(0)).toBeTruthy()
       })
     })
 
@@ -221,8 +211,7 @@ describe('Cli.ts', () => {
       // we need to make the return value fail the test, and we already stubbed in the layer above this
       // so we need to restore and re-wrap it, then the next layer will restore
       beforeEach(() => {
-        ;(fs.readFileSync as any).restore()
-        sinon.stub(fs, 'readFileSync').callsFake(() => {
+        ;(fs.readFileSync as jest.Mock).mockImplementation(() => {
           return 'foo: bar'
         })
       })
@@ -230,15 +219,15 @@ describe('Cli.ts', () => {
       test('silent option', () => {
         Cli.validate({ silent: true })
 
-        expect(errorStub.calledWith('')).toBeTruthy()
-        expect(processExitStub.calledWith(1)).toBeTruthy()
+        expect(utils.error.calledWith('')).toBeTruthy()
+        expect(process.exit.calledWith(1)).toBeTruthy()
       })
 
       test('json option', () => {
         Cli.validate({ json: true })
 
         expect(
-          errorStub.calledWith(
+          utils.error.calledWith(
             '{\n' +
               '  "valid": false,\n' +
               '  "issue": {\n' +
@@ -277,18 +266,18 @@ describe('Cli.ts', () => {
               '}',
           ),
         ).toBeTruthy()
-        expect(processExitStub.calledWith(1)).toBeTruthy()
+        expect(process.exit.calledWith(1)).toBeTruthy()
       })
 
       test('no options', () => {
         Cli.validate({})
 
         expect(
-          errorStub.calledWith(
+          utils.error.calledWith(
             "3 errors found:\n  1. root should NOT have additional properties\n  2. root should have required property 'omg'\n  3. root should have required property 'info'",
           ),
         ).toBeTruthy()
-        expect(processExitStub.calledWith(1)).toBeTruthy()
+        expect(process.exit.calledWith(1)).toBeTruthy()
       })
     })
   })
@@ -297,7 +286,7 @@ describe('Cli.ts', () => {
     let buildGoStub
 
     beforeEach(() => {
-      sinon.stub(utils, 'exec')
+      utils.exec as jest.Mock
     })
 
     afterEach(() => {
@@ -306,7 +295,7 @@ describe('Cli.ts', () => {
 
     // not able to spy on constructor with sinon yet
     beforeEach(() => {
-      buildGoStub = sinon.stub(Build.prototype, 'go')
+      buildGoStub = Build.prototype.go as jest.Mock
     })
 
     afterEach(() => {
@@ -317,16 +306,16 @@ describe('Cli.ts', () => {
       await Cli.build({ tag: 'tag' })
 
       expect(buildGoStub.called).toBeTruthy()
-      expect(errorStub.called).toBeFalsy()
-      expect(processExitStub.called).toBeFalsy()
+      expect(utils.error.called).toBeFalsy()
+      expect(process.exit.called).toBeFalsy()
     })
 
     test('builds with git remote name', async () => {
       await Cli.build({})
 
       expect(buildGoStub.called).toBeTruthy()
-      expect(errorStub.called).toBeFalsy()
-      expect(processExitStub.called).toBeFalsy()
+      expect(utils.error.called).toBeFalsy()
+      expect(process.exit.called).toBeFalsy()
     })
   })
 
@@ -334,11 +323,11 @@ describe('Cli.ts', () => {
     let formatRunRunStub
 
     beforeEach(() => {
-      sinon.stub(utils.docker, 'listImages').callsFake(async () => [{ RepoTags: ['image'] }])
-      sinon.stub(FormatRun.prototype, 'startService').callsFake(async () => 'started_id')
-      sinon.stub(Run.prototype, 'isRunning').callsFake(async () => true)
-      formatRunRunStub = sinon.stub(FormatRun.prototype, 'exec').callsFake(async action => 'output')
-      sinon.stub(Run.prototype, 'stopService').callsFake(async () => 'stoped_id')
+      ;(utils.docker.listImages as jest.Mock).mockImplementation(async () => [{ RepoTags: ['image'] }])
+      ;(FormatRun.prototype.startService as jest.Mock).mockImplementation(async () => 'started_id')
+      ;(Run.prototype.isRunning as jest.Mock).mockImplementation(async () => true)
+      formatRunRunStub = (FormatRun.prototype.exec as jest.Mock).mockImplementation(async action => 'output')
+      ;(Run.prototype.stopService as jest.Mock).mockImplementation(async () => 'stoped_id')
     })
 
     afterEach(() => {
@@ -354,14 +343,14 @@ describe('Cli.ts', () => {
       cli.buildMicroservice()
       await cli.run('action', {})
 
-      expect(errorStub.calledWith('Failed to parse command, run `omg run --help` for more information.')).toBeTruthy()
-      expect(processExitStub.calledWith(1)).toBeTruthy()
+      expect(utils.error.calledWith('Failed to parse command, run `omg run --help` for more information.')).toBeTruthy()
+      expect(process.exit.calledWith(1)).toBeTruthy()
       expect(formatRunRunStub.called).toBeFalsy()
     })
 
     // test('image option given and action is executed', async () => {
     //   (utils.docker.listImages as any).restore();
-    //   sinon.stub(utils.docker, 'listImages').callsFake(async () => [{RepoTags: ['image']}]);
+    //   ;(utils.docker.listImages as jest.Mock).mockImplementation(async () => [{RepoTags: ['image']}]);
     //   const cli = new Cli();
     //   cli.buildMicroservice();
     //   await cli.run('action', {args: [], envs: [], image: 'image'});
@@ -372,13 +361,13 @@ describe('Cli.ts', () => {
 
     test('image option given but is not build so action is not executed', async () => {
       ;(utils.docker.listImages as any).restore()
-      sinon.stub(utils.docker, 'listImages').callsFake(async () => [{ RepoTags: ['wrong'] }])
+      ;(utils.docker.listImages as jest.Mock).mockImplementation(async () => [{ RepoTags: ['wrong'] }])
       const cli = new Cli()
       cli.buildMicroservice()
       await cli.run('action', { args: [], envs: [], image: 'does-not-exist' })
 
-      expect(errorStub.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy()
-      expect(processExitStub.calledWith(1)).toBeTruthy()
+      expect(utils.error.calledWith('Image for microservice is not built. Run `omg build` to build the image.')).toBeTruthy()
+      expect(process.exit.calledWith(1)).toBeTruthy()
       expect(formatRunRunStub.called).toBeFalsy()
     })
   })
@@ -388,8 +377,8 @@ describe('Cli.ts', () => {
     let subscribeGoStub
 
     beforeEach(() => {
-      cliRunStub = sinon.stub(Cli.prototype, 'run')
-      subscribeGoStub = sinon.stub(Subscribe.prototype, 'go')
+      cliRunStub = Cli.prototype.run as jest.Mock
+      subscribeGoStub = Subscribe.prototype.go as jest.Mock
     })
 
     afterEach(() => {

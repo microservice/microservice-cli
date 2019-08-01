@@ -3,13 +3,15 @@ import path from 'path'
 import YAML from 'yamljs'
 import chokidar from 'chokidar'
 import { OMGValidate, Microservice, Action, Command, Argument } from 'omg-validate'
+import oraFactory from 'ora'
 import * as utils from '../utils'
-import ora from '../ora'
 import Build from '../commands/Build'
 import Subscribe from '../commands/Subscribe'
 import Run from '../commands/run/Run'
 import RunFactory from '../commands/run/RunFactory'
 import UIServer from '../commands/ui/UI'
+
+const ora = oraFactory()
 
 /**
  * Describes the cli.

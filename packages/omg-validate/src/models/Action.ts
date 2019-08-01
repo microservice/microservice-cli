@@ -12,7 +12,6 @@ export default class Action extends Command {
   private readonly eventMap: object
   private readonly _http: Http
   private readonly _format: Format
-  protected readonly _name: string
 
   /**
    * Build a {@link Action}.

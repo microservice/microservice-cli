@@ -51,7 +51,6 @@
     "@types/node": "^12.6.8",
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
-    "sinon": "^7.3.2",
     "typescript": "^3.1.6"
   },
   "gitHead": "fcbefab45c0c4991a98ca3eccde9b196e41863e7"
