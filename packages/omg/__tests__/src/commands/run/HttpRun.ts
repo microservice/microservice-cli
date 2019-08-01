@@ -15,7 +15,7 @@ describe('HttpRun.js', () => {
     jest.spyOn(rp, 'put').mockImplementation(async () => 'put_data')
     jest.spyOn(rp, 'delete').mockImplementation(async () => 'delete_data')
     jest.spyOn(Run, 'getHostIp').mockImplementation(async () => 'host.docker.internal toto')
-    jest.spyOn(utils.docker, 'createContainer').mockImplementation(async () => ({
+    ;(utils.docker.createContainer as jest.Mock).mockImplementation(async () => ({
       start: () => {},
       $subject: {
         id: 'fake_docker_id',

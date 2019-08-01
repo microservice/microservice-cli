@@ -16,7 +16,7 @@ describe('FormatRun.ts', () => {
 
   describe('.startService()', () => {
     beforeEach(() => {
-      jest.spyOn(utils.docker, 'createContainer').mockImplementation(async data => ({
+      ;(utils.docker.createContainer as jest.Mock).mockImplementation(async data => ({
         $subject: {
           id: 'fake_docker_id',
         },
@@ -106,7 +106,7 @@ describe('FormatRun.ts', () => {
 
   describe('.isRunning()', () => {
     beforeEach(() => {
-      jest.spyOn(utils.docker, 'getContainer').mockImplementation(container => ({
+      ;(utils.docker.getContainer as jest.Mock).mockImplementation(container => ({
         inspect: async () => ({
           State: {
             Running: false,
