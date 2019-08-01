@@ -4,7 +4,6 @@ import * as utils from '~/utils'
 import Build from '~/commands/Build'
 import Run from '~/commands/run/Run'
 import FormatRun from '~/commands/run/FormatRun'
-import Subscribe from '~/commands/Subscribe'
 import Cli from '~/cli/Cli'
 import ora from '~/utils/ora'
 

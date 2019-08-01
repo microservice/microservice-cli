@@ -1,33 +1,27 @@
-import * as sinon from 'sinon'
 import { Microservice } from 'omg-validate'
 import FormatRun from '~/commands/run/FormatRun'
 import * as utils from '~/utils'
 
+jest.mock('~/utils/docker')
+jest.mock('~/utils/getOpenPort')
+
 describe('FormatRun.ts', () => {
   beforeEach(() => {
-    sinon.stub(utils, 'getOpenPort').callsFake(async () => 5555)
+    ;(utils.getOpenPort as jest.Mock).mockImplementation(async () => 5555)
   })
 
   afterEach(() => {
-    ;(utils.getOpenPort as any).restore()
+    jest.resetAllMocks()
   })
 
   describe('.startService()', () => {
-    let utilsDockerCreateContainer
-
     beforeEach(() => {
-      utilsDockerCreateContainer = sinon.stub(utils.docker, 'createContainer').callsFake(async data => {
-        return {
-          $subject: {
-            id: 'fake_docker_id',
-          },
-          start: () => {},
-        }
-      })
-    })
-
-    afterEach(() => {
-      ;(utils.docker.createContainer as any).restore()
+      jest.spyOn(utils.docker, 'createContainer').mockImplementation(async data => ({
+        $subject: {
+          id: 'fake_docker_id',
+        },
+        start: () => {},
+      }))
     })
 
     test('starts service with dev null default', async () => {
@@ -59,13 +53,11 @@ describe('FormatRun.ts', () => {
         {},
       ).startService()
 
-      expect(
-        utilsDockerCreateContainer.calledWith({
-          Image: 'fake_docker_id',
-          Cmd: ['tail', '-f', '/dev/null'],
-          Env: [],
-        }),
-      ).toBeTruthy()
+      expect(utils.docker.createContainer).toHaveBeenCalledWith({
+        Image: 'fake_docker_id',
+        Cmd: ['tail', '-f', '/dev/null'],
+        Env: [],
+      })
       expect(containerID).toBe('fake_docker_id')
     })
 
@@ -103,36 +95,24 @@ describe('FormatRun.ts', () => {
         {},
       ).startService()
 
-      expect(
-        utilsDockerCreateContainer.calledWith({
-          Image: 'fake_docker_id',
-          Cmd: ['node', 'start.js'],
-          Env: [],
-        }),
-      ).toBeTruthy()
+      expect(utils.docker.createContainer).toHaveBeenCalledWith({
+        Image: 'fake_docker_id',
+        Cmd: ['node', 'start.js'],
+        Env: [],
+      })
       expect(containerID).toBe('fake_docker_id')
     })
   })
 
   describe('.isRunning()', () => {
-    let utilsDockerGetContainer
-
     beforeEach(() => {
-      utilsDockerGetContainer = sinon.stub(utils.docker, 'getContainer').callsFake(container => {
-        return {
-          inspect: async () => {
-            return {
-              State: {
-                Running: false,
-              },
-            }
+      jest.spyOn(utils.docker, 'getContainer').mockImplementation(container => ({
+        inspect: async () => ({
+          State: {
+            Running: false,
           },
-        }
-      })
-    })
-
-    afterEach(() => {
-      ;(utils.docker.getContainer as any).restore()
+        }),
+      }))
     })
 
     test('not running', async () => {
@@ -173,18 +153,13 @@ describe('FormatRun.ts', () => {
     })
 
     test('running', async () => {
-      ;(utils.docker.getContainer as any).restore()
-      utilsDockerGetContainer = sinon.stub(utils.docker, 'getContainer').callsFake(container => {
-        return {
-          inspect: async () => {
-            return {
-              State: {
-                Running: true,
-              },
-            }
+      ;(utils.docker.getContainer as jest.Mock).mockImplementation(container => ({
+        inspect: async () => ({
+          State: {
+            Running: true,
           },
-        }
-      })
+        }),
+      }))
 
       expect(
         await new FormatRun(

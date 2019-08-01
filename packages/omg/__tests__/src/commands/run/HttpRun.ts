@@ -1,4 +1,3 @@
-import * as sinon from 'sinon'
 import * as rp from 'request-promise'
 import { Microservice } from 'omg-validate'
 import HttpRun from '~/commands/run/HttpRun'

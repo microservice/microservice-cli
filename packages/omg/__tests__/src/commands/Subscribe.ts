@@ -1,40 +1,39 @@
-import * as fs from 'fs'
-import * as sinon from 'sinon'
+import fs from 'fs'
 import { Microservice } from 'omg-validate'
 import * as rp from '~/request'
 import * as utils from '~/utils'
 import Subscribe from '~/commands/Subscribe'
 import HttpRun from '~/commands/run/HttpRun'
 
-describe('Subscribe.ts', () => {
-  let rpMakeRequestStub
+jest.mock('fs')
+jest.mock('~/utils/getOpenPort')
 
+describe('Subscribe.ts', () => {
   beforeEach(() => {
-    rpMakeRequestStub = sinon.stub(rp, 'makeRequest').callsFake(async () => {
-      return {}
-    })
-    sinon.stub(fs, 'existsSync').callsFake(() => true)
-    sinon.stub(fs, 'readFileSync')
-    sinon.stub(JSON, 'parse').callsFake(() => {
+    ;(fs.existsSync as jest.Mock).mockImplementation(() => true)
+    ;(utils.getOpenPort as jest.Mock).mockImplementation(async () => 4444)
+
+    jest.spyOn(rp, 'makeRequest').mockImplementation(async () => ({}))
+    jest.spyOn(process, 'cwd').mockImplementation(() => 'path/to/omg/directory')
+    jest.spyOn(JSON, 'parse').mockImplementation(() => ({
+      'path/to/omg/directory': {
+        ports: {
+          5000: 4444,
+        },
+      },
+    }))
+    // @ts-ignore
+    jest.spyOn(Subscribe.prototype, 'startOMGServer').mockImplementation(() => {
       return {
-        'path/to/omg/directory': {
-          ports: {
-            5000: 4444,
-          },
+        listen() {
+          /* No op */
         },
       }
     })
-    sinon.stub(process, 'cwd').callsFake(() => 'path/to/omg/directory')
-    sinon.stub(utils, 'getOpenPort').callsFake(async () => 4444)
   })
 
   afterEach(() => {
-    ;(fs.existsSync as any).restore()
-    ;(fs.readFileSync as any).restore()
-    ;(JSON.parse as any).restore()
-    ;(process.cwd as any).restore()
-    ;(rp.makeRequest as any).restore()
-    ;(utils.getOpenPort as any).restore()
+    jest.resetAllMocks()
   })
 
   describe('.go(event)', () => {
@@ -90,11 +89,17 @@ describe('Subscribe.ts', () => {
     test('subscribes to the event', async () => {
       await new Subscribe(m, { x: '1' }, new HttpRun('docker_image', m, {}, {})).go('foo', 'bar')
 
-      expect(rpMakeRequestStub.args[0][0].body.data).toEqual({ x: 1 })
-      expect(rpMakeRequestStub.args[0][0].body.endpoint).toEqual('http://host.docker.internal:4444')
-      expect(rpMakeRequestStub.args[0][0].json).toBeTruthy()
-      expect(rpMakeRequestStub.args[0][0].method).toEqual('post')
-      expect(rpMakeRequestStub.args[0][0].uri).toEqual('http://localhost:4444/sub')
+      expect((rp.makeRequest as jest.Mock).mock.calls[0][0]).toMatchObject({
+        body: {
+          data: {
+            x: 1,
+          },
+          endpoint: 'http://host.docker.internal:4444',
+        },
+        json: true,
+        method: 'post',
+        uri: 'http://localhost:4444/sub',
+      })
     })
   })
 })

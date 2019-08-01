@@ -1,17 +1,18 @@
-import * as sinon from 'sinon'
 import * as utils from '~/utils'
 import Build from '~/commands/Build'
 
+jest.mock('~/utils/exec')
+
 describe('Build.ts', () => {
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
   describe('.go()', () => {
-    let execStub
-
     beforeEach(() => {
-      execStub = sinon.stub(utils, 'exec')
-    })
-
-    afterEach(() => {
-      ;(utils.exec as any).restore()
+      ;(utils.exec as jest.Mock).mockImplementation(() => {
+        /* No Op */
+      })
     })
 
     test('constructor', () => {
