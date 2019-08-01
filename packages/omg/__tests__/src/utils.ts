@@ -1,8 +1,15 @@
 import { EnvironmentVariable, Microservice } from 'omg-validate'
-import * as sinon from 'sinon'
 import * as utils from '~/utils'
 
+jest.mock('~/utils/exec')
+
+const exec = jest.requireActual('../../src/utils/exec').default
+
 describe('utils.ts', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   describe('setVal(val, _else)', () => {
     test(`sets the value to val because it's given`, () => {
       expect(utils.setVal(1, 3)).toBe(1)
@@ -164,7 +171,7 @@ describe('utils.ts', () => {
 
   describe('exec(command)', () => {
     test('runs a command', async done => {
-      const result = await utils.exec('echo skrt')
+      const result = await exec('echo skrt')
 
       expect(result).toBe('skrt')
       done()
@@ -172,7 +179,7 @@ describe('utils.ts', () => {
 
     test('errors a command', async done => {
       try {
-        await utils.exec('skrt')
+        await exec('skrt')
       } catch (e) {
         expect(e.includes('/bin/sh:')).toBeTruthy() // the stderror differs
         expect(e.includes('skrt')).toBeTruthy() // on different oses so test
@@ -354,14 +361,8 @@ describe('utils.ts', () => {
   })
 
   describe('createImageName()', () => {
-    let utilsExecRemote
-
-    afterEach(() => {
-      ;(utils.exec as any).restore()
-    })
-
     test('returns the git remote', async () => {
-      utilsExecRemote = sinon.stub(utils, 'exec').callsFake(async () => {
+      ;(utils.exec as jest.Mock).mockImplementation(async () => {
         return 'origin  git@github.com:microservices/omg.git (fetch)\norigin  git@github.com:microservices/omg.git (push)'
       })
 
@@ -369,7 +370,7 @@ describe('utils.ts', () => {
     })
 
     test('returns the git remote for UI', async () => {
-      utilsExecRemote = sinon.stub(utils, 'exec').callsFake(async () => {
+      ;(utils.exec as jest.Mock).mockImplementation(async () => {
         return 'origin  git@github.com:microservices/omg.git (fetch)\norigin  git@github.com:microservices/omg.git (push)'
       })
 
@@ -377,19 +378,19 @@ describe('utils.ts', () => {
     })
 
     test('returns the http', async () => {
-      utilsExecRemote = sinon.stub(utils, 'exec').callsFake(async () => {
+      ;(utils.exec as jest.Mock).mockImplementation(async () => {
         return 'origin  https://github.com/microservice/machinebox-classificationbox (fetch)\norigin  https://github.com/microservice/machinebox-classificationbox (push)'
       })
 
-      expect(await utils.createImageName()).toBe('omg/microservices/omg')
+      expect(await utils.createImageName()).toBe('omg/microservice/machinebox-classificationbox')
     })
 
     test('returns the http for UI', async () => {
-      utilsExecRemote = sinon.stub(utils, 'exec').callsFake(async () => {
+      ;(utils.exec as jest.Mock).mockImplementation(async () => {
         return 'origin  https://github.com/microservice/machinebox-classificationbox (fetch)\norigin  https://github.com/microservice/machinebox-classificationbox (push)'
       })
 
-      expect(await utils.createImageName(true)).toBe('microservices/omg')
+      expect(await utils.createImageName(true)).toBe('microservice/machinebox-classificationbox')
     })
   })
 })
