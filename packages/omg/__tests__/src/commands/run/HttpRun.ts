@@ -4,37 +4,28 @@ import HttpRun from '~/commands/run/HttpRun'
 import * as utils from '~/utils'
 import Run from '~/commands/run/Run'
 
-describe('HttpRun.js', () => {
-  let rpGetStub
-  let rpPostStub
-  let rpPutStub
-  let rpDeleteStub
-  let utilsDockerCreateContainer
+jest.mock('request-promise')
+jest.mock('~/utils/docker')
+jest.mock('~/utils/getOpenPort')
 
+describe('HttpRun.js', () => {
   beforeEach(() => {
-    rpGetStub = sinon.stub(rp, 'get').callsFake(async () => 'get_data')
-    rpPostStub = sinon.stub(rp, 'post').callsFake(async () => 'post_data')
-    rpPutStub = sinon.stub(rp, 'put').callsFake(async () => 'put_data')
-    rpDeleteStub = sinon.stub(rp, 'delete').callsFake(async () => 'delete_data')
-    utilsDockerCreateContainer = sinon.stub(utils.docker, 'createContainer').callsFake(async () => {
-      return {
-        start: () => {},
-        $subject: {
-          id: 'fake_docker_id',
-        },
-      }
-    })
-    Run.getHostIp = jest.fn().mockImplementation(async () => 'host.docker.internal toto')
-    sinon.stub(utils, 'getOpenPort').callsFake(async () => 5555)
+    jest.spyOn(rp, 'get').mockImplementation(async () => 'get_data')
+    jest.spyOn(rp, 'post').mockImplementation(async () => 'post_data')
+    jest.spyOn(rp, 'put').mockImplementation(async () => 'put_data')
+    jest.spyOn(rp, 'delete').mockImplementation(async () => 'delete_data')
+    jest.spyOn(Run, 'getHostIp').mockImplementation(async () => 'host.docker.internal toto')
+    jest.spyOn(utils.docker, 'createContainer').mockImplementation(async () => ({
+      start: () => {},
+      $subject: {
+        id: 'fake_docker_id',
+      },
+    }))
+    ;(utils.getOpenPort as jest.Mock).mockImplementation(async () => 5555)
   })
 
   afterEach(() => {
-    ;(rp.get as any).restore()
-    ;(rp.post as any).restore()
-    ;(rp.put as any).restore()
-    ;(rp.delete as any).restore()
-    ;(utils.docker.createContainer as any).restore()
-    ;(utils.getOpenPort as any).restore()
+    jest.resetAllMocks()
   })
 
   describe('.startService()', () => {
@@ -75,74 +66,58 @@ describe('HttpRun.js', () => {
       ).startService()
 
       if (!['darwin', 'win32'].includes(process.platform)) {
-        expect(
-          utilsDockerCreateContainer.calledWith({
-            Image: 'fake_docker_id',
-            Cmd: ['node', 'app.js'],
-            Env: [],
-            ExposedPorts: {
-              '5555/tcp': {},
+        expect(utils.docker.createContainer).toHaveBeenCalledWith({
+          Image: 'fake_docker_id',
+          Cmd: ['node', 'app.js'],
+          Env: [],
+          ExposedPorts: {
+            '5555/tcp': {},
+          },
+          HostConfig: {
+            PortBindings: {
+              '5555/tcp': [
+                {
+                  HostPort: '5555',
+                },
+              ],
             },
-            HostConfig: {
-              PortBindings: {
-                '5555/tcp': [
-                  {
-                    HostPort: '5555',
-                  },
-                ],
-              },
-              ExtraHosts: ['host.docker.internal toto'],
-            },
-          }),
-        ).toBeTruthy()
+            ExtraHosts: ['host.docker.internal toto'],
+          },
+        })
       } else {
-        expect(
-          utilsDockerCreateContainer.calledWith({
-            Image: 'fake_docker_id',
-            Cmd: ['node', 'app.js'],
-            Env: [],
-            ExposedPorts: {
-              '5555/tcp': {},
+        expect(utils.docker.createContainer).toHaveBeenCalledWith({
+          Image: 'fake_docker_id',
+          Cmd: ['node', 'app.js'],
+          Env: [],
+          ExposedPorts: {
+            '5555/tcp': {},
+          },
+          HostConfig: {
+            PortBindings: {
+              '5555/tcp': [
+                {
+                  HostPort: '5555',
+                },
+              ],
             },
-            HostConfig: {
-              PortBindings: {
-                '5555/tcp': [
-                  {
-                    HostPort: '5555',
-                  },
-                ],
-              },
-              ExtraHosts: [],
-            },
-          }),
-        ).toBeTruthy()
+            ExtraHosts: [],
+          },
+        })
       }
       expect(containerID).toBe('fake_docker_id')
     })
   })
 
   describe('.isRunning()', () => {
-    let utilsDockerGetContainer
-
-    beforeEach(() => {
-      utilsDockerGetContainer = sinon.stub(utils.docker, 'getContainer').callsFake(container => {
-        return {
-          inspect: async () => {
-            return {
-              State: {
-                Running: false,
-              },
-            }
-          },
-        }
-      })
-    })
-
-    afterEach(() => {
-      ;(utils.docker.getContainer as any).restore()
-    })
-
     test('not running', async () => {
+      ;(utils.docker.getContainer as jest.Mock).mockImplementation(container => ({
+        inspect: async () => ({
+          State: {
+            Running: false,
+          },
+        }),
+      }))
+
       expect(
         await new HttpRun(
           'fake_docker_id',
@@ -178,22 +153,17 @@ describe('HttpRun.js', () => {
           {},
           {},
         ).isRunning(),
-      ).toBeFalsy()
+      ).toBe(false)
     })
 
     test('running', async () => {
-      ;(utils.docker.getContainer as any).restore()
-      utilsDockerGetContainer = sinon.stub(utils.docker, 'getContainer').callsFake(container => {
-        return {
-          inspect: async () => {
-            return {
-              State: {
-                Running: true,
-              },
-            }
+      ;(utils.docker.getContainer as jest.Mock).mockImplementation(container => ({
+        inspect: async () => ({
+          State: {
+            Running: true,
           },
-        }
-      })
+        }),
+      }))
 
       expect(
         await new HttpRun(
@@ -268,7 +238,7 @@ describe('HttpRun.js', () => {
 
       const data = await httpRun.exec('get')
       expect(data).toBe('get_data')
-      expect(rpGetStub.calledWith('http://localhost:5555/get')).toBeTruthy()
+      expect(rp.get).toHaveBeenCalledWith('http://localhost:5555/get')
     })
 
     test('action that posts', async () => {
@@ -331,14 +301,12 @@ describe('HttpRun.js', () => {
 
       const data = await httpRun.exec('post')
       expect(data).toBe('post_data')
-      expect(
-        rpPostStub.calledWith('http://localhost:5555/person/2?isMale=true', {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: '{"data":"data"}',
-        }),
-      ).toBeTruthy()
+      expect(rp.post).toHaveBeenCalledWith('http://localhost:5555/person/2?isMale=true', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: '{"data":"data"}',
+      })
     })
 
     test('action that puts', async () => {
@@ -380,14 +348,12 @@ describe('HttpRun.js', () => {
 
       const data = await httpRun.exec('put')
       expect(data).toBe('put_data')
-      expect(
-        rpPutStub.calledWith('http://localhost:5555/cheese', {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: '{}',
-        }),
-      ).toBeTruthy()
+      expect(rp.put).toHaveBeenCalledWith('http://localhost:5555/cheese', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: '{}',
+      })
     })
 
     test('action that deletes', async () => {
@@ -438,7 +404,7 @@ describe('HttpRun.js', () => {
 
       const data = await httpRun.exec('delete')
       expect(data).toBe('delete_data')
-      expect(rpDeleteStub.calledWith('http://localhost:5555/user/2')).toBeTruthy()
+      expect(rp.delete).toHaveBeenCalledWith('http://localhost:5555/user/2')
     })
   })
 })
