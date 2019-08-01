@@ -25,6 +25,7 @@
   "scripts": {
     "link-bin": "(cd packages/omg; yarn link)",
     "prettier:fix": "prettier --write packages/*/{src,__tests__}/**/*.{js,ts}",
+    "lint": "yarn lint:prettier && yarn lint:eslint",
     "lint:prettier": "prettier --list-different packages/*/{src,__tests__}/**/*.{js,ts}",
     "lint:eslint": "eslint . --ext .js,.ts --quiet",
     "bootstrap": "lerna bootstrap --npm-client=yarn",
