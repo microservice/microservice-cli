@@ -3,15 +3,12 @@ import path from 'path'
 import YAML from 'yamljs'
 import chokidar from 'chokidar'
 import { OMGValidate, Microservice, Action, Command, Argument } from 'omg-validate'
-import oraFactory from 'ora'
 import * as utils from '../utils'
 import Build from '../commands/Build'
 import Subscribe from '../commands/Subscribe'
 import Run from '../commands/run/Run'
 import RunFactory from '../commands/run/RunFactory'
 import UIServer from '../commands/ui/UI'
-
-const ora = oraFactory()
 
 /**
  * Describes the cli.
@@ -218,19 +215,19 @@ export default class Cli {
   public static async build(options: any): Promise<string> {
     await Cli.checkDocker()
     if (!options.raw) {
-      ora.start().info('Building Docker image')
+      utils.ora.start().info('Building Docker image')
     }
     try {
       const name = await new Build(options.tag || (await utils.createImageName())).go(!!options.raw)
       if (!options.raw) {
-        ora.start().succeed(`Built Docker image with name: ${name}`)
+        utils.ora.start().succeed(`Built Docker image with name: ${name}`)
       }
       return name
     } catch (e) {
       if (options.raw) {
         utils.error(e)
       } else {
-        ora.start().fail(`Failed to build: ${e}`)
+        utils.ora.start().fail(`Failed to build: ${e}`)
       }
       process.exit(1)
       throw new Error('Build failed')
@@ -285,12 +282,12 @@ export default class Cli {
     }
     let spinner
     if (!options.raw) {
-      spinner = ora.start(`Starting Docker container`)
+      spinner = utils.ora.start(`Starting Docker container`)
     }
     this.startedID = await this._run.startService() // 1. start service
     if (!options.raw) {
       spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`)
-      spinner = ora.start(`Health check`)
+      spinner = utils.ora.start(`Health check`)
     }
 
     let isHealthy: boolean
@@ -316,7 +313,7 @@ export default class Cli {
         if (this._run.constructor.name !== 'EventRun') {
           if (await this._run.isRunning()) {
             if (!options.raw) {
-              spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`)
+              spinner = utils.ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`)
             }
             const stoppedID = await this._run.stopService()
             if (!options.raw) {
@@ -329,13 +326,13 @@ export default class Cli {
     }
     if (!options.raw && !tmpRetryExec) {
       spinner.succeed(`Health check passed`)
-      spinner = ora.start(`Running action: \`${action}\``)
+      spinner = utils.ora.start(`Running action: \`${action}\``)
     }
     let output
     try {
       if (tmpRetryExec) {
         if (!options.raw) {
-          ora.start('Executing default health check')
+          utils.ora.start('Executing default health check')
         }
         await utils.sleep(10)
         output = await new Promise<string>(async (resolve, reject) => {
@@ -362,14 +359,14 @@ export default class Cli {
               .then(res => {
                 i = 0
                 if (!options.raw) {
-                  ora.succeed('Default health check passed')
+                  utils.ora.succeed('Default health check passed')
                 }
                 resolve(res)
               })
               .catch(async e => {
                 if (i === 1) {
                   if (!options.raw) {
-                    ora.fail('Default health check failed')
+                    utils.ora.fail('Default health check failed')
                   }
                   reject(e)
                 }
@@ -406,7 +403,7 @@ export default class Cli {
 
     if (this._run.constructor.name !== 'EventRun') {
       if (!options.raw) {
-        spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`)
+        spinner = utils.ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`)
       }
       const stoppedID = await this._run.stopService()
       if (!options.raw) {
@@ -438,7 +435,7 @@ export default class Cli {
     await this.run(action, { args: [], envs: options.envs, raw: options.raw })
     let spinner
     if (!options.raw) {
-      spinner = ora.start(`Subscribing to event: \`${event}\``)
+      spinner = utils.ora.start(`Subscribing to event: \`${event}\``)
     }
     let argsObj
     try {
@@ -577,7 +574,7 @@ export default class Cli {
     }
     let spinner
     if (!this.raw) {
-      spinner = ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`)
+      spinner = utils.ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`)
     }
     if (this._subscribe) {
       await this._subscribe.unsubscribe()
