@@ -7,6 +7,7 @@ export default class Http {
   private readonly _method: string
   private readonly _port: number
   private readonly _path: string
+  private readonly _contentType: string
 
   /**
    * Builds an {@link Http} setup.
@@ -30,6 +31,7 @@ export default class Http {
     this._method = rawHttp.method
     this._port = rawHttp.port
     this._path = rawHttp.path
+    this._contentType = rawHttp.contentType
   }
 
   /**
@@ -42,7 +44,7 @@ export default class Http {
   }
 
   /**
-   * Get's the port of this {@link Http}.
+   * Gets the port of this {@link Http}.
    *
    * @return {Integer} The port
    */
@@ -51,11 +53,20 @@ export default class Http {
   }
 
   /**
-   * Get's the path of this {@link Http}.
+   * Gets the path of this {@link Http}.
    *
    * @return {String} The endpoint
    */
   public get path(): string {
     return this._path
+  }
+
+  /**
+   * Gets the content type of this {@link Http}.
+   *
+   * @return {String} The content type
+   */
+  public get contentType(): string {
+    return this._contentType
   }
 }
