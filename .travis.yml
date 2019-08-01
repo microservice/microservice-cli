@@ -6,7 +6,7 @@ services:
   - docker
 
 before_install:
-  - yarn link-bin && yarn install && yarn build
+  - npm install yarn; yarn link-bin && yarn install && yarn build
 
 script:
   - cd tests/regression && ./travis.sh
