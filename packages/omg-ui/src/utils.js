@@ -7,7 +7,8 @@ export const isEnvRequired = microservice => {
     const env = microservice.environment
     const requiredEnv = Object.values(env).find(entry => entry.required)
     if (requiredEnv) {
-      return true
+      // TODO: This breaks OMG UI expectations
+      // return true
     }
   }
   return false
@@ -18,7 +19,8 @@ export const isRequiredEnvFilled = (microservice, filledEnv) => {
     const env = microservice.environment
     const requiredUnfilledEnv = Object.keys(env).find(key => env[key].required && filledEnv[key] == null)
     if (requiredUnfilledEnv) {
-      return false
+      // TODO: This breaks OMG UI expectations
+      // return false
     }
   }
   return true
