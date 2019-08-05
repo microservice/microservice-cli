@@ -87,11 +87,6 @@ export default class HttpRun extends Run {
           }
         }
       }
-
-      opts.body = JSON.stringify(httpData.jsonData)
-      opts.headers = {
-        'Content-Type': 'application/json',
-      }
     }
     /**
      * Since rp(opts) doesn't pass the tests, I use this
