@@ -41,6 +41,11 @@ export function setVal(val: any, _else: any): any {
  * @return {void} no return value
  */
 export function checkActionInterface(microserviceJson: any): void {
+  if (typeof microserviceJson !== 'object' || !microserviceJson) {
+    throw {
+      text: 'Malformed microservice configuration file',
+    }
+  }
   if (microserviceJson.actions) {
     const actionMap = microserviceJson.actions
     for (const actionName of Object.keys(actionMap)) {
