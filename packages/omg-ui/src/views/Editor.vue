@@ -32,6 +32,7 @@
 import Monaco from 'monaco-editor-forvue'
 import { mapGetters } from 'vuex'
 import * as yaml from 'js-yaml'
+import * as rpc from '@/rpc/cli'
 
 export default {
   name: 'editor',
@@ -48,7 +49,7 @@ export default {
     lines: {},
     len: -1
   }),
-  computed: { ...mapGetters(['getMicroserviceRaw', 'getSocket', 'getMicroserviceNotif', 'getMicroserviceStatus']) },
+  computed: { ...mapGetters(['getMicroserviceRaw', 'getMicroserviceNotif', 'getMicroserviceStatus']) },
   components: {
     Monaco
   },
@@ -73,7 +74,7 @@ export default {
     }
   },
   mounted () {
-    this.socket = this.getSocket
+    this.socket = rpc.getSocket()
   },
   methods: {
     onMounted (editor) {

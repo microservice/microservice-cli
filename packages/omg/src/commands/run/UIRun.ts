@@ -1,10 +1,9 @@
 import { Microservice } from 'omg-validate'
+import rp from 'request-promise'
+import _ from 'underscore'
+import querystring from 'querystring'
+import fs from 'fs'
 import Run from './Run'
-import { verifyOutputType } from '../../verify'
-import * as rp from 'request-promise'
-import * as _ from 'underscore'
-import * as querystring from 'querystring'
-import * as fs from 'fs'
 import * as utils from '../../utils'
 import * as verify from '../../verify'
 
@@ -21,7 +20,7 @@ export default class UIRun extends Run {
    * @param  {Microservice} microservice
    * @param  {any} envs
    */
-  constructor(dockerImage: string, microservice: Microservice, envs: any) {
+  public constructor(dockerImage: string, microservice: Microservice, envs: any) {
     super(dockerImage, microservice, null, envs)
   }
 
@@ -43,22 +42,20 @@ export default class UIRun extends Run {
     if (this.action.http === null) {
       this.omgJsonFileHandler()
       return ''
-    } else {
-      const output = await this.httpCommand(this.portMap[this.action.http.port])
-      verifyOutputType(this.action, output.trim())
-      if (
-        this.action.output &&
-        this.action.output.type &&
-        (this.action.output.type === 'map' ||
-          this.action.output.type === 'object')
-      ) {
-        if (this.action.output.properties) {
-          verify.verifyProperties(this.action, output)
-        }
-        return JSON.stringify(JSON.parse(output.trim()), null, 2)
-      }
-      return output.trim()
     }
+    const output = await this.httpCommand(this.portMap[this.action.http.port])
+    verify.verifyOutputType(this.action, output.trim())
+    if (
+      this.action.output &&
+      this.action.output.type &&
+      (this.action.output.type === 'map' || this.action.output.type === 'object')
+    ) {
+      if (this.action.output.properties) {
+        verify.verifyProperties(this.action, output)
+      }
+      return JSON.stringify(JSON.parse(output.trim()), null, 2)
+    }
+    return output.trim()
   }
 
   /**
@@ -72,7 +69,7 @@ export default class UIRun extends Run {
 
     data[process.cwd()] = {
       container_id: this.containerID,
-      ports: {}
+      ports: {},
     }
 
     const neededPorts = Object.keys(this.portMap)
@@ -103,22 +100,23 @@ export default class UIRun extends Run {
       case 'post':
         data = await rp.post(httpData.url, {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(httpData.jsonData)
+          body: JSON.stringify(httpData.jsonData),
         })
         break
       case 'put':
         data = await rp.put(httpData.url, {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(httpData.jsonData)
+          body: JSON.stringify(httpData.jsonData),
         })
         break
       case 'delete':
         data = await rp.delete(httpData.url)
         break
+      default:
     }
     return data
   }
@@ -142,14 +140,12 @@ export default class UIRun extends Run {
           }
           break
         case 'path':
-          url = url.replace(
-            `{${argument.name}}`,
-            this._arguments[argument.name]
-          )
+          url = url.replace(`{${argument.name}}`, this._arguments[argument.name])
           break
         case 'requestBody':
           jsonData[argument.name] = this._arguments[argument.name]
           break
+        default:
       }
     }
     if (querystring.stringify(queryParams) !== '') {
@@ -157,7 +153,7 @@ export default class UIRun extends Run {
     }
     return {
       url,
-      jsonData
+      jsonData,
     }
   }
   /**

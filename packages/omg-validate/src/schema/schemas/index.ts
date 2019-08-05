@@ -9,5 +9,5 @@ export const scopes: any[] = [
   'http',
   'lifecycle',
   'microservice',
-  'volume'
+  'volume',
 ]

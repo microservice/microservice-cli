@@ -14,7 +14,7 @@ export default class Forward {
    * @param  {any} actionMap actionMap to compares available ports
    * @param  {any} forwardMap forwardMap to compares available ports
    */
-  constructor(name: string, rawForward: any, actionMap: any, forwardMap: any) {
+  public constructor(name: string, rawForward: any, actionMap: any, forwardMap: any) {
     const isValid = validateForward(rawForward)
     if (!isValid.valid) {
       isValid.text = isValid.text.replace(/data/g, `forward.${name}`)
@@ -24,9 +24,7 @@ export default class Forward {
       Object.keys(actionMap).forEach(actionName => {
         if (actionMap[actionName].http.port === rawForward.http.port) {
           throw {
-            text: `Foward \`${name}\`: port ${
-              rawForward.http.port
-            } already used by action ${actionMap[actionName].name}`
+            text: `Foward \`${name}\`: port ${rawForward.http.port} already used by action ${actionMap[actionName].name}`,
           }
         }
       })
@@ -34,9 +32,7 @@ export default class Forward {
     Object.keys(forwardMap).forEach(forwardName => {
       if (forwardMap[forwardName].http.port === rawForward.http.port) {
         throw {
-          text: `Foward \`${name}\`: port ${
-            rawForward.http.port
-          } already used by forward ${forwardMap[forwardName].name}`
+          text: `Foward \`${name}\`: port ${rawForward.http.port} already used by forward ${forwardMap[forwardName].name}`,
         }
       }
     })

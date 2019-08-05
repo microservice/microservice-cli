@@ -26,11 +26,7 @@ export default abstract class Command {
       this.argumentsMap = {}
       const _arguments = Object.keys(rawCommand.arguments)
       for (let i = 0; i < _arguments.length; i += 1) {
-        this.argumentsMap[_arguments[i]] = new Argument(
-          _arguments[i],
-          argumentPath,
-          rawCommand.arguments[_arguments[i]]
-        )
+        this.argumentsMap[_arguments[i]] = new Argument(_arguments[i], argumentPath, rawCommand.arguments[_arguments[i]])
       }
     }
   }
@@ -42,42 +38,30 @@ export default abstract class Command {
    * @param {String} commandType 'event' or 'action'
    * @param {String} commandTypeUpper 'Event' or 'Action'
    */
-  protected checkHttpArguments(
-    http: Http,
-    commandType: string,
-    commandTypeUpper: string
-  ): void {
+  protected checkHttpArguments(http: Http, commandType: string, commandTypeUpper: string): void {
     let _path = http.path
 
     for (let i = 0; i < this.arguments.length; i += 1) {
       const argument = this.arguments[i]
       if (argument.in === null) {
         throw {
-          context: `Argument: \`${argument.name}\` for ${commandType}: \`${
-            this.name
-          }\``,
-          message: `${commandTypeUpper}s' arguments that interface via http must provide an in`
+          context: `Argument: \`${argument.name}\` for ${commandType}: \`${this.name}\``,
+          message: `${commandTypeUpper}s' arguments that interface via http must provide an in`,
         }
       }
       if (argument.in === 'path') {
         if (!http.path.includes(`{${argument.name}}`)) {
           throw {
-            context: `Argument: \`${argument.name}\` for ${commandType}: \`${
-              this.name
-            }\``,
-            message:
-              'Path parameters must be defined in the http path of the form `{argument}`'
+            context: `Argument: \`${argument.name}\` for ${commandType}: \`${this.name}\``,
+            message: 'Path parameters must be defined in the http path of the form `{argument}`',
           }
         } else {
           _path = _path.replace(`{${argument.name}}`, argument.name)
         }
         if (!argument.isRequired() && argument.default === null) {
           throw {
-            context: `Argument: \`${argument.name}\` for ${commandType}: \`${
-              this.name
-            }\``,
-            message:
-              'Path parameters must be marked as required or be provided a default variable'
+            context: `Argument: \`${argument.name}\` for ${commandType}: \`${this.name}\``,
+            message: 'Path parameters must be marked as required or be provided a default variable',
           }
         }
       }
@@ -85,10 +69,8 @@ export default abstract class Command {
     const extraPathParams = _path.match(/({[a-zA-Z]+})/g)
     if (extraPathParams !== null) {
       throw {
-        context: `Path parameter(s): \`${extraPathParams.toString()}\` for ${commandType}: \`${
-          this.name
-        }\``,
-        message: `If a url specifies a path parameter i.e. \`{argument}\` the argument must be defined in the ${commandType}`
+        context: `Path parameter(s): \`${extraPathParams.toString()}\` for ${commandType}: \`${this.name}\``,
+        message: `If a url specifies a path parameter i.e. \`{argument}\` the argument must be defined in the ${commandType}`,
       }
     }
   }
@@ -127,7 +109,7 @@ export default abstract class Command {
    * @return {Boolean} True if all required arguments are supplied, otherwise false
    */
   public areRequiredArgumentsSupplied(_arguments: any): boolean {
-    const requiredArguments = this.requiredArguments
+    const { requiredArguments } = this
     for (let i = 0; i < requiredArguments.length; i += 1) {
       if (!Object.keys(_arguments).includes(requiredArguments[i])) {
         return false
@@ -154,7 +136,7 @@ export default abstract class Command {
     if (this.argumentsMap === null) {
       return []
     }
-    return (<any>Object).values(this.argumentsMap)
+    return Object.values(this.argumentsMap)
   }
 
   /**

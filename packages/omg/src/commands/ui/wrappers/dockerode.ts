@@ -1,3 +1,3 @@
-const Dockerode = require('dockerode')
+import Dockerode from 'dockerode'
 
 export default Dockerode

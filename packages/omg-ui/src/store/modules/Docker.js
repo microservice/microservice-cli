@@ -1,4 +1,4 @@
-const state = {
+const defaultState = {
   starting: false,
   running: false,
   building: false,
@@ -14,7 +14,7 @@ const state = {
   stats: [],
   portBindings: {},
   fowardBindings: {},
-  healthCheck: {}
+  healthCheck: {},
 }
 
 const getters = {
@@ -33,38 +33,72 @@ const getters = {
   getDockerStats: state => state.stats,
   getDockerPortBindings: state => state.portBindings,
   getDockerForwardBindings: state => state.fowardBindings,
-  getDockerHealthCheck: state => state.healthCheck
+  getDockerHealthCheck: state => state.healthCheck,
 }
 
 const mutations = {
-  setDockerStarting: (state, value) => (state.starting = value),
-  setDockerBuilding: (state, value) => (state.building = value),
-  setDockerBuilt: (state, value) => (state.built = value),
-  setDockerRunning: (state, value) => (state.running = value),
-  setDockerLogs: (state, value) => (state.logs = value),
-  setDockerRunStat: (state, value) => (state.runStat = value),
-  addLineDockerRunStat: (state, line) => (state.runStat += `\n${line}`),
-  setDockerInspect: (state, value) => (state.inspect = value),
-  setDockerRebuild: (state, value) => (state.rebuild = value),
+  setDockerStarting: (state, value) => {
+    state.starting = value
+  },
+  setDockerBuilding: (state, value) => {
+    state.building = value
+  },
+  setDockerBuilt: (state, value) => {
+    state.built = value
+  },
+  setDockerRunning: (state, value) => {
+    state.running = value
+  },
+  setDockerLogs: (state, value) => {
+    state.logs = value
+  },
+  setDockerRunStat: (state, value) => {
+    state.runStat = value
+  },
+  addLineDockerRunStat: (state, line) => {
+    state.runStat += `\n${line}`
+  },
+  setDockerInspect: (state, value) => {
+    state.inspect = value
+  },
+  setDockerRebuild: (state, value) => {
+    state.rebuild = value
+  },
 
-  toggleDockerRebuild: state => (state.rebuild = !state.rebuild),
-  setContainerLogs: (state, log) => (state.containerLogs = log),
-  appendDockerLogs: (state, line) => (state.dockerLogs += `${line}\n`),
-  clearDockerLogs: state => (state.dockerLogs = ''),
-  setDockerState: (state, value) => (state.state = value),
-  addDockerStatsEntry: (state, entry) => state.stats.push(entry),
-  setDockerPortBindings: (state, bindings) => (state.portBindings = bindings),
-  setDockerForwardBindings: (state, bindings) =>
-    (state.fowardBindings = bindings),
-  setDockerHealthCheck: (state, healthCheck) =>
-    (state.healthCheck = healthCheck)
+  toggleDockerRebuild: state => {
+    state.rebuild = !state.rebuild
+  },
+  setContainerLogs: (state, log) => {
+    state.containerLogs = log
+  },
+  appendDockerLogs: (state, line) => {
+    state.dockerLogs += `${line}\n`
+  },
+  clearDockerLogs: state => {
+    state.dockerLogs = ''
+  },
+  setDockerState: (state, value) => {
+    state.state = value
+  },
+  addDockerStatsEntry: (state, entry) => {
+    state.stats.push(entry)
+  },
+  setDockerPortBindings: (state, bindings) => {
+    state.portBindings = bindings
+  },
+  setDockerForwardBindings: (state, bindings) => {
+    state.fowardBindings = bindings
+  },
+  setDockerHealthCheck: (state, healthCheck) => {
+    state.healthCheck = healthCheck
+  },
 }
 
 const actions = {}
 
 export default {
-  state,
+  state: defaultState,
   getters,
   mutations,
-  actions
+  actions,
 }

@@ -150,18 +150,18 @@ workflows:
               only: /.*/
           requires:
             - install
-      - test:
-          filters:
-            tags:
-              only: /.*/
-          requires:
-            - install
       - build:
           filters:
             tags:
               only: /.*/
           requires:
             - install
+      - test:
+          filters:
+            tags:
+              only: /.*/
+          requires:
+            - build
       - test-post-build:
           filters:
             tags:

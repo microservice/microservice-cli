@@ -12,7 +12,7 @@ export default class Health {
   /**
    * @param  {any} rawHealth Health json object from microservice.yml
    */
-  constructor(rawHealth: any) {
+  public constructor(rawHealth: any) {
     const isValid = validateHealth(rawHealth)
 
     if (!isValid.valid) {

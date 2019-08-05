@@ -1,5 +1,5 @@
-import * as verify from '../../src/verify'
 import { Action, Microservice } from 'omg-validate'
+import * as verify from '~/verify'
 
 describe('verify.ts', () => {
   describe('verifyArgumentConstrains(command, args)', () => {
@@ -9,18 +9,18 @@ describe('verify.ts', () => {
           new Action('name', {
             output: { type: 'string' },
             format: {
-              command: 'name.sh'
+              command: 'name.sh',
             },
             arguments: {
               foo: {
                 type: 'string',
-                pattern: 'word'
-              }
-            }
+                pattern: 'word',
+              },
+            },
           }),
           {
-            foo: 'letter'
-          }
+            foo: 'letter',
+          },
         )
       } catch (e) {
         expect(e).toBe('Argument: `foo` must match regex: `word`')
@@ -33,18 +33,18 @@ describe('verify.ts', () => {
           new Action('name', {
             output: { type: 'string' },
             format: {
-              command: 'name.sh'
+              command: 'name.sh',
             },
             arguments: {
               foo: {
                 type: 'string',
-                enum: ['one', 'two', 'three']
-              }
-            }
+                enum: ['one', 'two', 'three'],
+              },
+            },
           }),
           {
-            foo: 'four'
-          }
+            foo: 'four',
+          },
         )
       } catch (e) {
         expect(e).toBe('Argument: `foo` must be one of: `one,two,three`')
@@ -57,25 +57,23 @@ describe('verify.ts', () => {
           new Action('name', {
             output: { type: 'string' },
             format: {
-              command: 'name.sh'
+              command: 'name.sh',
             },
             arguments: {
               foo: {
                 type: 'string',
                 range: {
-                  min: 0
-                }
-              }
-            }
+                  min: 0,
+                },
+              },
+            },
           }),
           {
-            foo: -1
-          }
+            foo: -1,
+          },
         )
       } catch (e) {
-        expect(e).toBe(
-          'Argument: `foo` must be be no smaller than the value: `0`'
-        )
+        expect(e).toBe('Argument: `foo` must be be no smaller than the value: `0`')
       }
     })
 
@@ -85,25 +83,23 @@ describe('verify.ts', () => {
           new Action('name', {
             output: { type: 'string' },
             format: {
-              command: 'name.sh'
+              command: 'name.sh',
             },
             arguments: {
               foo: {
                 type: 'string',
                 range: {
-                  max: 100
-                }
-              }
-            }
+                  max: 100,
+                },
+              },
+            },
           }),
           {
-            foo: 101
-          }
+            foo: 101,
+          },
         )
       } catch (e) {
-        expect(e).toBe(
-          'Argument: `foo` must be be no larger than the value: `100`'
-        )
+        expect(e).toBe('Argument: `foo` must be be no larger than the value: `100`')
       }
     })
   })
@@ -115,21 +111,21 @@ describe('verify.ts', () => {
           new Action('name', {
             output: { type: 'map' },
             format: {
-              command: 'name.sh'
+              command: 'name.sh',
             },
             arguments: {
               foo: {
-                type: 'string'
+                type: 'string',
               },
               bar: {
-                type: 'int'
-              }
-            }
+                type: 'int',
+              },
+            },
           }),
           {
             foo: 'data',
-            bar: '12.12'
-          }
+            bar: '12.12',
+          },
         )
       } catch (e) {
         expect(e).toBe('Argument: `bar` must be of type: `int`')
@@ -146,23 +142,23 @@ describe('verify.ts', () => {
             info: {
               version: '1.0.0',
               title: 'test',
-              description: 'for tests'
+              description: 'for tests',
             },
             health: {
               http: {
                 path: '/health',
-                port: 5000
-              }
+                port: 5000,
+              },
             },
             environment: {
               foo: {
-                type: 'int'
-              }
-            }
+                type: 'int',
+              },
+            },
           }),
           {
-            foo: 'skrt'
-          }
+            foo: 'skrt',
+          },
         )
       } catch (e) {
         expect(e).toBe('Environment variable: `foo` must be of type: `int`')
@@ -179,24 +175,24 @@ describe('verify.ts', () => {
             info: {
               version: '1.0.0',
               title: 'test',
-              description: 'for tests'
+              description: 'for tests',
             },
             health: {
               http: {
                 path: '/health',
-                port: 5000
-              }
+                port: 5000,
+              },
             },
             environment: {
               foo: {
                 type: 'string',
-                pattern: 'word'
-              }
-            }
+                pattern: 'word',
+              },
+            },
           }),
           {
-            foo: 'letter'
-          }
+            foo: 'letter',
+          },
         )
       } catch (e) {
         expect(e).toBe('Environment variable: `foo` must match regex: `word`')
@@ -210,16 +206,14 @@ describe('verify.ts', () => {
         verify.verifyOutputType(
           new Action('name', {
             format: {
-              command: 'name.sh'
+              command: 'name.sh',
             },
-            output: { type: 'map' }
+            output: { type: 'map' },
           }),
-          'bob'
+          'bob',
         )
       } catch (e) {
-        expect(e).toBe(
-          'Action: `name` must have output type: `map` instead got: `string` bob'
-        )
+        expect(e).toBe('Action: `name` must have output type: `map` instead got: `string` bob')
       }
     })
   })
@@ -230,19 +224,19 @@ describe('verify.ts', () => {
         verify.verifyProperties(
           new Action('name', {
             format: {
-              command: 'name.sh'
+              command: 'name.sh',
             },
             output: {
               type: 'object',
               properties: {
                 falsey: {
-                  type: 'boolean'
-                }
-              }
-            }
+                  type: 'boolean',
+                },
+              },
+            },
           }),
-          '{"falsey": false}'
-        )
+          '{"falsey": false}',
+        ),
       ).toBeUndefined() // i.e. not to throw
     })
   })

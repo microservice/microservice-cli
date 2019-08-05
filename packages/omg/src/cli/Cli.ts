@@ -1,21 +1,14 @@
-import * as fs from 'fs'
-import * as path from 'path'
-import * as YAML from 'yamljs'
+import fs from 'fs'
+import path from 'path'
+import YAML from 'yamljs'
+import chokidar from 'chokidar'
+import { OMGValidate, Microservice, Action, Command, Argument } from 'omg-validate'
 import * as utils from '../utils'
-import ora from '../ora'
 import Build from '../commands/Build'
 import Subscribe from '../commands/Subscribe'
 import Run from '../commands/run/Run'
 import RunFactory from '../commands/run/RunFactory'
 import UIServer from '../commands/ui/UI'
-import * as chokidar from 'chokidar'
-import {
-  OMGValidate,
-  Microservice,
-  Action,
-  Command,
-  Argument
-} from 'omg-validate'
 
 /**
  * Describes the cli.
@@ -31,7 +24,7 @@ export default class Cli {
   /**
    * Build an {@link Cli}.
    */
-  constructor() {
+  public constructor() {
     if (
       ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) &&
         !fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) ||
@@ -43,9 +36,7 @@ export default class Cli {
       !process.argv.includes('-v') &&
       process.argv.length > 2
     ) {
-      utils.error(
-        'Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`'
-      )
+      utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`')
       process.exit(1)
     }
   }
@@ -53,7 +44,7 @@ export default class Cli {
   /**
    * Checks if Docker is running by running `docker ps`.
    */
-  static async checkDocker() {
+  public static async checkDocker() {
     try {
       await utils.docker.ping()
     } catch (e) {
@@ -66,7 +57,7 @@ export default class Cli {
    * Builds a {@link Microservice} based ton the `microservice.yml` file. If the build throws an error the user
    * will be directed to run `omg validate`.
    */
-  buildMicroservice(): void {
+  public buildMicroservice(): void {
     try {
       const json = YAML.parse(utils.readMicroserviceFile())
       this.microservice = new Microservice(json)
@@ -88,7 +79,7 @@ export default class Cli {
           action.name
         }\` is an event action and must be called using \`omg subscribe\`. Try running \`omg subscribe ${
           action.name
-        } --help\``
+        } --help\``,
       )
       process.exit(1)
     }
@@ -113,17 +104,13 @@ export default class Cli {
     const stringBuffer = []
 
     this.helpForActionHeader(action, stringBuffer)
-    stringBuffer.push(
-      `\n    Events: (run in the form of \`omg subscribe ${
-        action.name
-      } \`event\`\`)\n`
-    )
+    stringBuffer.push(`\n    Events: (run in the form of \`omg subscribe ${action.name} \`event\`\`)\n`)
     const padding = '          '
-    for (const event of action.events) {
+    action.events.forEach(event => {
       stringBuffer.push(`      - ${action.name}`)
       this.helpForArguments(event.arguments, stringBuffer, padding)
       this.helpForActionFooter(event, stringBuffer, padding)
-    }
+    })
 
     utils.error(stringBuffer.join(''))
     process.exit()
@@ -149,15 +136,9 @@ export default class Cli {
    * @param {Array<String>} stringBuffer The givens string buffer
    * @param {String} padding The given padding
    */
-  private helpForActionFooter(
-    command: Command,
-    stringBuffer: string[],
-    padding: string
-  ) {
+  private helpForActionFooter(command: Command, stringBuffer: string[], padding: string) {
     if (command.output && command.output.type) {
-      stringBuffer.push(
-        `${padding}Output:\n${padding}  type: ${command.output.type}`
-      )
+      stringBuffer.push(`${padding}Output:\n${padding}  type: ${command.output.type}`)
     }
   }
 
@@ -168,23 +149,15 @@ export default class Cli {
    * @param {Array<String>} stringBuffer The given string buffer
    * @param {String} padding The given padding
    */
-  private helpForArguments(
-    _arguments: Argument[],
-    stringBuffer: string[],
-    padding: string
-  ) {
+  private helpForArguments(_arguments: Argument[], stringBuffer: string[], padding: string) {
     if (_arguments.length !== 0) {
-      stringBuffer.push(
-        `\n${padding}Arguments: (use in the form of \`-a 'foo=bar' -a 'veggie=carrot'\`)\n`
-      )
+      stringBuffer.push(`\n${padding}Arguments: (use in the form of \`-a 'foo=bar' -a 'veggie=carrot'\`)\n`)
     }
-    for (const argument of _arguments) {
+    _arguments.forEach(argument => {
       stringBuffer.push(
-        `${padding}  - ${argument.name}        ${argument.type}${
-          argument.help ? `, ${argument.help}` : ''
-        }\n`
+        `${padding}  - ${argument.name}        ${argument.type}${argument.help ? `, ${argument.help}` : ''}\n`,
       )
-    }
+    })
   }
 
   /**
@@ -197,28 +170,26 @@ export default class Cli {
   private static processValidateOutput(data: any, options: any): string {
     if (options.json) {
       return JSON.stringify(data, null, 2)
-    } else if (options.silent) {
-      return ''
-    } else {
-      let errorString
-      if (!data.text) {
-        errorString = `${data.context} has an issue. ${data.message}`
-      } else {
-        errorString = data.text
-      }
-      if (errorString === 'No errors') {
-        return errorString
-      }
-      const errors = errorString.split(', ')
-      const errorCount = errors.length
-      const formattedError = [
-        `${errorCount} error${errorCount === 1 ? '' : 's'} found:`
-      ]
-      for (let i = 0; i < errors.length; i += 1) {
-        formattedError.push(`\n  ${i + 1}. ${errors[i]}`)
-      }
-      return formattedError.join('')
     }
+    if (options.silent) {
+      return ''
+    }
+    let errorString
+    if (!data.text) {
+      errorString = `${data.context} has an issue. ${data.message}`
+    } else {
+      errorString = data.text
+    }
+    if (errorString === 'No errors') {
+      return errorString
+    }
+    const errors = errorString.split(', ')
+    const errorCount = errors.length
+    const formattedError = [`${errorCount} error${errorCount === 1 ? '' : 's'} found:`]
+    for (let i = 0; i < errors.length; i += 1) {
+      formattedError.push(`\n  ${i + 1}. ${errors[i]}`)
+    }
+    return formattedError.join('')
   }
 
   /**
@@ -226,11 +197,9 @@ export default class Cli {
    *
    * @param {Object} options The given options (json, silent, or text)
    */
-  static validate(options: any): void {
+  public static validate(options: any): void {
     try {
-      utils.log(
-        new OMGValidate(utils.readMicroserviceFile(), options).validate()
-      )
+      utils.log(new OMGValidate(utils.readMicroserviceFile(), options).validate())
       process.exit(0)
     } catch (e) {
       utils.error(e)
@@ -243,26 +212,26 @@ export default class Cli {
    *
    * @param {Object} options The given name
    */
-  static async build(options: any): Promise<string> {
+  public static async build(options: any): Promise<string> {
     await Cli.checkDocker()
     if (!options.raw) {
-      ora.start().info('Building Docker image')
+      utils.ora.start().info('Building Docker image')
     }
     try {
-      const name = await new Build(
-        options.tag || (await utils.createImageName())
-      ).go(!!options.raw)
+      const name = await new Build(options.tag || (await utils.createImageName())).go(!!options.raw)
       if (!options.raw) {
-        ora.start().succeed(`Built Docker image with name: ${name}`)
+        utils.ora.start().succeed(`Built Docker image with name: ${name}`)
       }
       return name
     } catch (e) {
       if (options.raw) {
         utils.error(e)
       } else {
-        ora.start().fail(`Failed to build: ${e}`)
+        utils.ora.start().fail(`Failed to build: ${e}`)
       }
       process.exit(1)
+      throw new Error('Build failed')
+      // ^ Purely cosmetic for typechecker
     }
   }
 
@@ -272,27 +241,20 @@ export default class Cli {
    * @param {String} action The command to run
    * @param {Object} options The given object holding the command, arguments, and environment variables
    */
-  async run(action: string, options: any): Promise<void> {
+  public async run(action: string, givenOptions: any): Promise<void> {
+    const options = { ...givenOptions }
+
     await Cli.checkDocker()
-    const image = options.image
+    const { image } = options
     if (!options.args || !options.envs) {
-      utils.error(
-        'Failed to parse command, run `omg run --help` for more information.'
-      )
+      utils.error('Failed to parse command, run `omg run --help` for more information.')
       process.exit(1)
       return
     }
 
     if (options.image) {
-      if (
-        !utils.doesContainerExist(
-          options.image,
-          await utils.docker.listImages()
-        )
-      ) {
-        utils.error(
-          `Image for microservice is not built. Run \`omg build\` to build the image.`
-        )
+      if (!utils.doesContainerExist(options.image, await utils.docker.listImages())) {
+        utils.error(`Image for microservice is not built. Run \`omg build\` to build the image.`)
         process.exit(1)
         return
       }
@@ -305,50 +267,31 @@ export default class Cli {
     let envObj
     try {
       _action = this.microservice.getAction(action)
-      argsObj = utils.parse(
-        options.args,
-        'Unable to parse arguments. Must be of form: `-a key="val"`'
-      )
-      envObj = utils.parse(
-        options.envs,
-        'Unable to parse environment variables. Must be of form: `-e key="val"`'
-      )
-      envObj = utils.matchEnvironmentCases(
-        envObj,
-        this.microservice.environmentVariables
-      )
+      argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`')
+      envObj = utils.parse(options.envs, 'Unable to parse environment variables. Must be of form: `-e key="val"`')
+      envObj = utils.matchEnvironmentCases(envObj, this.microservice.environmentVariables)
     } catch (e) {
       utils.error(e)
       process.exit(1)
     }
 
-    this._run = new RunFactory(
-      options.image,
-      this.microservice,
-      argsObj,
-      envObj
-    ).getRun(_action)
-    if (
-      process.argv[2] === 'run' &&
-      this._run.constructor.name === 'EventRun'
-    ) {
+    this._run = new RunFactory(options.image, this.microservice, argsObj, envObj).getRun(_action)
+    if (process.argv[2] === 'run' && this._run.constructor.name === 'EventRun') {
       utils.error(`Action \`${action}\` is and event. Use \`omg subscribe\``)
       process.exit(1)
     }
     let spinner
     if (!options.raw) {
-      spinner = ora.start(`Starting Docker container`)
+      spinner = utils.ora.start(`Starting Docker container`)
     }
     this.startedID = await this._run.startService() // 1. start service
     if (!options.raw) {
-      spinner.succeed(
-        `Started Docker container: ${this.startedID.substring(0, 12)}`
-      )
-      spinner = ora.start(`Health check`)
+      spinner.succeed(`Started Docker container: ${this.startedID.substring(0, 12)}`)
+      spinner = utils.ora.start(`Health check`)
     }
 
-    let isHealthy: boolean = undefined
-    let tmpRetryExec: boolean = true // Temporary, remove when health is mandatory
+    let isHealthy: boolean
+    let tmpRetryExec = true // Temporary, remove when health is mandatory
     if (this.microservice.health) {
       try {
         isHealthy = await this._run.healthCheck()
@@ -370,15 +313,11 @@ export default class Cli {
         if (this._run.constructor.name !== 'EventRun') {
           if (await this._run.isRunning()) {
             if (!options.raw) {
-              spinner = ora.start(
-                `Stopping Docker container: ${this.startedID.substring(0, 12)}`
-              )
+              spinner = utils.ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`)
             }
             const stoppedID = await this._run.stopService()
             if (!options.raw) {
-              spinner.succeed(
-                `Stopped Docker container: ${stoppedID.substring(0, 12)}`
-              )
+              spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`)
             }
           }
         }
@@ -387,27 +326,28 @@ export default class Cli {
     }
     if (!options.raw && !tmpRetryExec) {
       spinner.succeed(`Health check passed`)
-      spinner = ora.start(`Running action: \`${action}\``)
+      spinner = utils.ora.start(`Running action: \`${action}\``)
     }
     let output
     try {
       if (tmpRetryExec) {
         if (!options.raw) {
-          ora.start('Executing default health check')
+          utils.ora.start('Executing default health check')
         }
         await utils.sleep(10)
         output = await new Promise<string>(async (resolve, reject) => {
-          for (let i = 100; i > 0; i--) {
+          for (let i = 100; i > 0; i -= 1) {
             const attempt = () => {
-              return new Promise<string>((resolve, reject) => {
+              return new Promise<string>(resolveInner => {
                 this._run
                   .exec(action, tmpRetryExec)
                   .then(response => {
                     switch (response.statusCode / 100) {
                       case 2:
                       case 3:
-                        resolve(response.body)
+                        resolveInner(response.body)
                         break
+                      default:
                     }
                   })
                   .catch(e => {
@@ -419,14 +359,14 @@ export default class Cli {
               .then(res => {
                 i = 0
                 if (!options.raw) {
-                  ora.succeed('Default health check passed')
+                  utils.ora.succeed('Default health check passed')
                 }
                 resolve(res)
               })
               .catch(async e => {
                 if (i === 1) {
                   if (!options.raw) {
-                    ora.fail('Default health check failed')
+                    utils.ora.fail('Default health check failed')
                   }
                   reject(e)
                 }
@@ -438,8 +378,7 @@ export default class Cli {
         if (
           tmpAction.output &&
           tmpAction.output.type &&
-          (tmpAction.output.type === 'map' ||
-            tmpAction.output.type === 'object')
+          (tmpAction.output.type === 'map' || tmpAction.output.type === 'object')
         ) {
           output = JSON.stringify(JSON.parse(output.trim()), null, 2)
         }
@@ -464,15 +403,11 @@ export default class Cli {
 
     if (this._run.constructor.name !== 'EventRun') {
       if (!options.raw) {
-        spinner = ora.start(
-          `Stopping Docker container: ${this.startedID.substring(0, 12)}`
-        )
+        spinner = utils.ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`)
       }
       const stoppedID = await this._run.stopService()
       if (!options.raw) {
-        spinner.succeed(
-          `Stopped Docker container: ${stoppedID.substring(0, 12)}`
-        )
+        spinner.succeed(`Stopped Docker container: ${stoppedID.substring(0, 12)}`)
       }
     }
 
@@ -494,20 +429,17 @@ export default class Cli {
    * @param {String} event The given event
    * @param {Object} options The given object holding the arguments
    */
-  async subscribe(action: string, event: string, options: any) {
+  public async subscribe(action: string, event: string, options: any) {
     await Cli.checkDocker()
     this.raw = options.raw
     await this.run(action, { args: [], envs: options.envs, raw: options.raw })
     let spinner
     if (!options.raw) {
-      spinner = ora.start(`Subscribing to event: \`${event}\``)
+      spinner = utils.ora.start(`Subscribing to event: \`${event}\``)
     }
     let argsObj
     try {
-      argsObj = utils.parse(
-        options.args,
-        'Unable to parse arguments. Must be of form: `-a key="val"`'
-      )
+      argsObj = utils.parse(options.args, 'Unable to parse arguments. Must be of form: `-a key="val"`')
     } catch (e) {
       if (!options.raw) {
         spinner.fail(`Failed action: \`${action}\`: ${e}`)
@@ -518,15 +450,11 @@ export default class Cli {
     try {
       await this._subscribe.go(action, event)
       if (!options.raw) {
-        spinner.succeed(
-          `Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`
-        )
+        spinner.succeed(`Subscribed to event: \`${event}\` data will be posted to this terminal window when appropriate`)
       }
       setInterval(async () => {
         if (!(await this._run.isRunning())) {
-          utils.error(
-            `\n\nContainer unexpectedly stopped\nDocker logs:\n${await this._run.getStderr()}`
-          )
+          utils.error(`\n\nContainer unexpectedly stopped\nDocker logs:\n${await this._run.getStderr()}`)
           process.exit(1)
         }
       }, 1500)
@@ -550,27 +478,19 @@ export default class Cli {
    *
    * @param {Object} options The options to start the UI, such as port mapping
    */
-  async ui(options: any): Promise<any> {
+  public async ui(options: any): Promise<any> {
     await Cli.checkDocker()
     try {
-      this.uiServer = new UIServer(
-        options,
-        Cli.readYAML(utils.getMicroserviceFilePath(), true)
-      )
-      this.uiServer.startUI(options.open ? true : false)
+      this.uiServer = new UIServer(options, Cli.readYAML(utils.getMicroserviceFilePath(), true))
+      this.uiServer.startUI(!!options.open)
 
       chokidar
         .watch(process.cwd(), {
-          ignored: /(^|[/\\])\../
+          ignored: /(^|[/\\])\../,
         })
         .on('all', (event, appPath) => {
           if (event === 'change') {
-            this.uiServer.rebuild(
-              {},
-              Cli.readYAML(utils.getMicroserviceFilePath(), true),
-              true,
-              appPath
-            )
+            this.uiServer.rebuild({}, Cli.readYAML(utils.getMicroserviceFilePath(), true), true, appPath)
           }
         })
     } catch (e) {
@@ -605,7 +525,7 @@ export default class Cli {
   /**
    * @param  {any} options Provided options for 'list' action
    */
-  list(options: any): void {
+  public list(options: any): void {
     const json = Cli.readYAML(utils.getMicroserviceFilePath())
     try {
       utils.checkActionInterface(json)
@@ -622,16 +542,8 @@ export default class Cli {
           } else if (a.events) {
             a.events.forEach(e => {
               utils.log(`  ${e.name}: ${e.help ? e.help : 'No help provided'}`)
-              utils.log(
-                `    ${e.subscribe.method.toUpperCase()} :${e.subscribe.port}${
-                  e.subscribe.path
-                }`
-              )
-              utils.log(
-                `    ${e.unsubscribe.method.toUpperCase()} :${
-                  e.unsubscribe.port
-                }${e.unsubscribe.path}`
-              )
+              utils.log(`    ${e.subscribe.method.toUpperCase()} :${e.subscribe.port}${e.subscribe.path}`)
+              utils.log(`    ${e.unsubscribe.method.toUpperCase()} :${e.unsubscribe.port}${e.unsubscribe.path}`)
             })
           }
           utils.log('')
@@ -651,7 +563,7 @@ export default class Cli {
   /**
    * Catch the `CtrlC` command to stop running containers.
    */
-  async controlC() {
+  public async controlC() {
     if (this.uiServer !== null) {
       await this.uiServer.removeListeners()
       await this.uiServer.stopContainer()
@@ -662,9 +574,7 @@ export default class Cli {
     }
     let spinner
     if (!this.raw) {
-      spinner = ora.start(
-        `Stopping Docker container: ${this.startedID.substring(0, 12)}`
-      )
+      spinner = utils.ora.start(`Stopping Docker container: ${this.startedID.substring(0, 12)}`)
     }
     if (this._subscribe) {
       await this._subscribe.unsubscribe()
@@ -673,9 +583,7 @@ export default class Cli {
       await this._run.stopService()
     }
     if (!this.raw) {
-      spinner.succeed(
-        `Stopped Docker container: ${this.startedID.substring(0, 12)}`
-      )
+      spinner.succeed(`Stopped Docker container: ${this.startedID.substring(0, 12)}`)
     }
     process.exit()
   }
@@ -687,16 +595,17 @@ export default class Cli {
    * @param {boolean} [ui=false] The given boolean if ui mode is enabled or not
    * @return {String} Returns file in string form
    */
-  private static readYAML(path: string, ui = false): string {
+  private static readYAML(yamlPath: string, ui = false): string {
     try {
-      return YAML.parse(fs.readFileSync(path).toString())
+      return YAML.parse(fs.readFileSync(yamlPath).toString())
     } catch (e) {
       if (ui) {
         return 'ERROR_PARSING'
-      } else {
-        utils.error(`Issue with microservice.yml: ${e.message}`)
-        process.exit(1)
       }
+      utils.error(`Issue with microservice.yml: ${e.message}`)
+      process.exit(1)
+      throw new Error('Parsing failed')
+      // ^ Purely cosmetic for typechecker
     }
   }
 }

@@ -1,66 +1,53 @@
-module.exports = {
+export default {
   properties: {
     help: {
-      type: 'string'
+      type: 'string',
     },
     http: {
       type: 'object',
       properties: {
         port: {
-          type: 'integer'
+          type: 'integer',
         },
         subscribe: {
-          type: 'object'
+          type: 'object',
         },
         unsubscribe: {
-          type: 'object'
-        }
+          type: 'object',
+        },
       },
       required: ['subscribe'],
-      additionalProperties: false
+      additionalProperties: false,
     },
     output: {
       type: 'object',
       properties: {
         actions: {
-          type: 'object'
+          type: 'object',
         },
         type: {
           type: 'string',
-          enum: [
-            'int',
-            'number',
-            'float',
-            'string',
-            'uuid',
-            'list',
-            'map',
-            'object',
-            'boolean',
-            'path',
-            'any',
-            'null'
-          ]
+          enum: ['int', 'number', 'float', 'string', 'uuid', 'list', 'map', 'object', 'boolean', 'path', 'any', 'null'],
         },
         contentType: {
-          type: 'string'
+          type: 'string',
         },
         properties: {
-          type: 'object'
-        }
+          type: 'object',
+        },
       },
-      additionalProperties: false
+      additionalProperties: false,
     },
     arguments: {
       type: 'object',
       patternProperties: {
         '^\\w+$': {
-          type: 'object'
-        }
+          type: 'object',
+        },
       },
-      additionalProperties: false
-    }
+      additionalProperties: false,
+    },
   },
   required: ['http'],
-  additionalProperties: false
+  additionalProperties: false,
 }

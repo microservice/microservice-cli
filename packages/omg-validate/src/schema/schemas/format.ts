@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   properties: {
     command: {
       type: ['array', 'string'],
@@ -9,4 +9,4 @@ module.exports = {
   },
   additionalProperties: false,
   required: ['command'],
-};
+}

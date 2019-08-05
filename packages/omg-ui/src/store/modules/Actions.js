@@ -1,9 +1,9 @@
-const state = {
+const defaultState = {
   action: '',
   args: {},
   output: 'No output available.\nExecute an action to view its output.',
   curlArgs: {},
-  sendRaw: false
+  sendRaw: false,
 }
 
 const getters = {
@@ -11,28 +11,38 @@ const getters = {
   getActionArgs: state => state.args,
   getActionOutput: state => state.output,
   getActionCurlArgs: state => state.curlArgs,
-  getActionSendRaw: state => state.sendRaw
+  getActionSendRaw: state => state.sendRaw,
 }
 
 const mutations = {
-  setAction: (state, action) => (state.action = action),
-  addActionArg: (state, arg) => (state.args[arg.key] = arg.value),
-  addActionCurlArgs: (state, arg) => (state.curlArgs[arg.key] = arg.value),
+  setAction: (state, action) => {
+    state.action = action
+  },
+  addActionArg: (state, arg) => {
+    state.args[arg.key] = arg.value
+  },
+  addActionCurlArgs: (state, arg) => {
+    state.curlArgs[arg.key] = arg.value
+  },
   deleteActionArg: (state, key) => {
     delete state.args[key]
   },
-  setActionOutput: (state, output) => (state.output = output),
-  resetActionOutput: state =>
-    (state.output =
-      'No output available.\nExecute an action to view its output.'),
-  toggleActionSendRaw: state => (state.sendRaw = !state.sendRaw)
+  setActionOutput: (state, output) => {
+    state.output = output
+  },
+  resetActionOutput: state => {
+    state.output = 'No output available.\nExecute an action to view its output.'
+  },
+  toggleActionSendRaw: state => {
+    state.sendRaw = !state.sendRaw
+  },
 }
 
 const actions = {}
 
 export default {
-  state,
+  state: defaultState,
   getters,
   mutations,
-  actions
+  actions,
 }

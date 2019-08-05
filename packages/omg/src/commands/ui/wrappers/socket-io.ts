@@ -1,3 +1,3 @@
-const socketIO = require('socket.io');
+import socketIO from 'socket.io'
 
-export default socketIO;
+export default socketIO

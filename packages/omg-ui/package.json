@@ -10,6 +10,7 @@
     "connect-history-api-fallback": "^1.6.0",
     "express": "^4.16.4",
     "path": "^0.12.7",
+    "socket.io-client": "^2.2.0",
     "vue": "^2.6.6",
     "vue-router": "^3.0.1",
     "vue-spinner": "^1.0.3",
@@ -17,9 +18,9 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
-    "@vue/cli-plugin-eslint": "^3.5.0",
     "@vue/cli-service": "^3.5.0",
     "@vue/eslint-config-standard": "^4.0.0",
+    "babel-eslint": "^10.0.2",
     "css-loader": "^2.1.1",
     "eslint-plugin-vue": "^5.2.2",
     "js-yaml": "^3.13.1",
@@ -39,25 +40,6 @@
     "dist"
   ],
   "main": "index.js",
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "@vue/standard"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
   "browserslist": [
     "> 1%",
     "last 2 versions",

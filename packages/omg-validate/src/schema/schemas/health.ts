@@ -1,20 +1,20 @@
-module.exports = {
+export default {
   type: 'object',
   properties: {
     http: {
       properties: {
         path: {
           type: 'string',
-          pattern: '^/.*'
+          pattern: '^/.*',
         },
         port: {
-          type: 'integer'
-        }
+          type: 'integer',
+        },
       },
       required: ['path', 'port'],
-      additionalProperties: false
-    }
+      additionalProperties: false,
+    },
   },
   required: ['http'],
-  additionalProperties: false
+  additionalProperties: false,
 }

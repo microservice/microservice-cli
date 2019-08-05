@@ -1,6 +1,7 @@
 import Http from './Http'
 import Command from './Command'
 import { dataTypes } from '../utils'
+
 const validateEvent = require('../schema/schema').event
 
 /**
@@ -17,31 +18,30 @@ export default class Event extends Command {
    * @param {String} actionName The name of this {@link Event}'s {@link Action}
    * @param {Object} rawEvent The raw data
    */
-  constructor(name: string, actionName: string, rawEvent: any) {
+  public constructor(name: string, actionName: string, givenEvent: any) {
+    let rawEvent = givenEvent
+
     super(name, rawEvent, `${actionName}.events.${name}`)
-    if (!dataTypes['map'](rawEvent)) {
+    if (!dataTypes.map(rawEvent)) {
       rawEvent = {}
     }
     const isValid = validateEvent(rawEvent)
     if (!isValid.valid) {
-      isValid.text = isValid.text.replace(
-        'data',
-        `actions.${actionName}.events.${name}`
-      )
+      isValid.text = isValid.text.replace('data', `actions.${actionName}.events.${name}`)
       throw isValid
     }
     this._subscribe = new Http(
       name,
       rawEvent.http.subscribe,
       `actions.${actionName}.events.${name}.http.subscribe`,
-      rawEvent.http.port
+      rawEvent.http.port,
     )
     if (rawEvent.http.unsubscribe) {
       this._unsubscribe = new Http(
         name,
         rawEvent.http.unsubscribe,
         `actions.${actionName}.events.${name}.http.unsubscribe`,
-        rawEvent.http.port
+        rawEvent.http.port,
       )
     } else {
       this._unsubscribe = null

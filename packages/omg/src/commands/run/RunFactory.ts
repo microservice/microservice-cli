@@ -1,8 +1,8 @@
+import { Action, Microservice } from 'omg-validate'
 import Run from './Run'
 import FormatRun from './FormatRun'
 import HttpRun from './HttpRun'
 import EventRun from './EventRun'
-import { Action, Microservice } from 'omg-validate'
 import UIRun from './UIRun'
 
 /**
@@ -22,12 +22,7 @@ export default class RunFactory {
    * @param {Object} _arguments The given argument map
    * @param {Object} environmentVariables the given environment  map
    */
-  constructor(
-    dockerImage: string,
-    microservice: Microservice,
-    _arguments: any,
-    environmentVariables: any
-  ) {
+  public constructor(dockerImage: string, microservice: Microservice, _arguments: any, environmentVariables: any) {
     this.dockerImage = dockerImage
     this.microservice = microservice
     this._arguments = _arguments
@@ -41,34 +36,20 @@ export default class RunFactory {
    * @param {ui} [ui=false] The given boolean wich defines if running in ui mode or not
    * @return {Run} The {@link FormatRun}, {@link HttpRun}, or {@link EventRun}
    */
-  getRun(action: Action, ui = false): Run {
+  public getRun(action: Action, ui = false): Run {
     if (ui === true) {
-      return new UIRun(
-        this.dockerImage,
-        this.microservice,
-        this.environmentVariables
-      )
-    } else if (action.format !== null) {
-      return new FormatRun(
-        this.dockerImage,
-        this.microservice,
-        this._arguments,
-        this.environmentVariables
-      )
-    } else if (action.http !== null) {
-      return new HttpRun(
-        this.dockerImage,
-        this.microservice,
-        this._arguments,
-        this.environmentVariables
-      )
-    } else if (action.events !== null) {
-      return new EventRun(
-        this.dockerImage,
-        this.microservice,
-        this._arguments,
-        this.environmentVariables
-      )
+      return new UIRun(this.dockerImage, this.microservice, this.environmentVariables)
     }
+    if (action.format !== null) {
+      return new FormatRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables)
+    }
+    if (action.http !== null) {
+      return new HttpRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables)
+    }
+    if (action.events !== null) {
+      return new EventRun(this.dockerImage, this.microservice, this._arguments, this.environmentVariables)
+    }
+
+    return null
   }
 }

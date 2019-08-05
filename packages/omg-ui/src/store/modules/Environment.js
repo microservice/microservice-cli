@@ -1,9 +1,9 @@
-const state = {
-  envs: {}
+const defaultState = {
+  envs: {},
 }
 
 const getters = {
-  getEnvs: state => state.envs
+  getEnvs: state => state.envs,
 }
 
 const mutations = {
@@ -12,14 +12,14 @@ const mutations = {
   },
   removeEnv: (state, key) => {
     delete state.envs[key]
-  }
+  },
 }
 
 const actions = {}
 
 export default {
-  state,
+  state: defaultState,
   getters,
   mutations,
-  actions
+  actions,
 }
