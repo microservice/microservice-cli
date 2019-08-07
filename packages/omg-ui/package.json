@@ -2,6 +2,7 @@
   "name": "omg-ui",
   "version": "0.14.0",
   "scripts": {
+    "watch": "yarn build --watch",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
