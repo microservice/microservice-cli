@@ -19,7 +19,7 @@ const loading = () => {
         if (file !== 'microservice.txt') {
           const content = fs.readFileSync(path.join(EXPECT_PATH, file), {
             encoding: 'utf8'
-          })
+          }).trim()
           const key = file.replace('.txt', '')
           tests[key] = { expect: '', content: '' }
           tests[key]['expect'] = content
