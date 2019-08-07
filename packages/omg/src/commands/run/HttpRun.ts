@@ -58,7 +58,6 @@ export default class HttpRun extends Run {
       uri: string
       body?: string
       headers?: any
-      formData?: FormData
     } = {
       method: this.action.http.method.toUpperCase(),
       resolveWithFullResponse: tmpRetryExec,
@@ -67,8 +66,9 @@ export default class HttpRun extends Run {
     if (this.action.http.method === 'post' || this.action.http.method === 'put') {
       switch (this.action.http.contentType) {
         case 'multipart/form-data': {
-          opts.formData = this.jsonToFormData(httpData.jsonData)
-          opts.headers = opts.formData.getHeaders()
+          const formData = this.jsonToFormData(httpData.jsonData)
+          opts.body = formData.getBuffer()
+          opts.headers = formData.getHeaders()
           break
         }
         case 'application/x-www-form-urlencoded':
