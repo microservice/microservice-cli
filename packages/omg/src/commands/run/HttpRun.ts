@@ -68,7 +68,10 @@ export default class HttpRun extends Run {
         case 'multipart/form-data': {
           const formData = this.jsonToFormData(httpData.jsonData)
           opts.body = formData.getBuffer()
-          opts.headers = formData.getHeaders()
+          opts.headers = {
+            ...formData.getHeaders(),
+            'content-length': opts.body.length,
+          }
           break
         }
         case 'application/x-www-form-urlencoded':
