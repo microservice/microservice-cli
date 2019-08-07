@@ -1,4 +1,4 @@
-import { makeRequest } from '../../src/request'
+import { makeRequest } from '~/request'
 
 describe('request.ts', () => {
   describe('makeRequest(data)', () => {

@@ -22,12 +22,8 @@ export default new Router({
       name: 'Environment Variables',
       component: Environment,
       beforeEnter: (to, from, next) => {
-        next(
-          !store.getters.getMicroserviceStatus
-            ? false
-            : !!store.getters.getDockerHealthCheck
-        )
-      }
+        next(!store.getters.getMicroserviceStatus ? false : !!store.getters.getDockerHealthCheck)
+      },
     },
     {
       path: '/actions/:action',
@@ -42,13 +38,9 @@ export default new Router({
           next(false)
         }
         setTimeout(() => {
-          next(
-            store.getters.getMicroserviceActionList.includes(to.params.action)
-              ? true
-              : { name: 'Home' }
-          )
+          next(store.getters.getMicroserviceActionList.includes(to.params.action) ? true : { name: 'Home' })
         }, 500)
-      }
+      },
     },
     // {
     //   path: '/editor',
@@ -60,24 +52,16 @@ export default new Router({
       name: 'Forward',
       component: Forward,
       beforeEnter: (to, from, next) => {
-        next(
-          !store.getters.getMicroserviceStatus
-            ? false
-            : !!store.getters.getDockerHealthCheck
-        )
-      }
+        next(!store.getters.getMicroserviceStatus ? false : !!store.getters.getDockerHealthCheck)
+      },
     },
     {
       path: '/home',
       name: 'Home',
       component: Home,
       beforeEnter: (to, from, next) => {
-        next(
-          !store.getters.getMicroserviceStatus
-            ? false
-            : !!store.getters.getDockerHealthCheck
-        )
-      }
+        next(!store.getters.getMicroserviceStatus ? false : !!store.getters.getDockerHealthCheck)
+      },
     },
     {
       path: '/validation-error',
@@ -85,17 +69,17 @@ export default new Router({
       component: ValidationError,
       beforeEnter: (to, from, next) => {
         next(store.getters.getMicroserviceStatus ? { name: 'Home' } : true)
-      }
+      },
     },
     {
       path: '/container-error',
       name: 'Unexpected container error',
-      component: ContainerError
+      component: ContainerError,
     },
     {
       path: '/socket-disconnected',
       name: 'Socket Disconnected',
-      component: SocketDisconnected
-    }
-  ]
+      component: SocketDisconnected,
+    },
+  ],
 })

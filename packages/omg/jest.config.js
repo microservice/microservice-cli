@@ -1,26 +1,11 @@
 module.exports = {
-  collectCoverageFrom: [
-    'src/**/*.ts',
-  ],
-  coverageReporters: [
-    'lcov',
-    'html',
-  ],
+  collectCoverageFrom: ['src/**/*.ts'],
+  coverageReporters: ['lcov', 'html'],
   testURL: 'http://localhost',
-  globals: {
-    'ts-jest': {
-      tsConfig: 'tsconfig.json',
-    },
-  },
-  moduleFileExtensions: [
-    'ts',
-    'js',
-  ],
+  moduleFileExtensions: ['ts', 'js'],
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': 'babel-jest',
   },
-  testMatch: [
-    '<rootDir>/__tests__/**/*.(ts|js)',
-  ],
+  testMatch: ['<rootDir>/__tests__/**/*.(ts|js)'],
   testEnvironment: 'node',
-};
+}

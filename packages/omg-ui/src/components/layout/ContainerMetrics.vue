@@ -74,6 +74,7 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
+import * as rpc from '@/rpc/cli'
 import ArrowForward from '@/components/ArrowForward'
 import Graph from '@/components/Graph'
 
@@ -91,7 +92,7 @@ export default {
     netArr: []
   }),
   computed: {
-    ...mapGetters(['getDockerStats', 'getSocket']),
+    ...mapGetters(['getDockerStats']),
     cpuPercentage: function () {
       const stats = this.getDockerStats
       if (stats && stats.length > 4) {
@@ -164,14 +165,15 @@ export default {
     }
   },
   mounted () {
-    this.getSocket.on('container-stats', res => {
+    this.socket = rpc.getSocket()
+    this.socket.on('container-stats', res => {
       if (typeof res.log !== 'string') {
         this.addDockerStatsEntry(res.log)
       }
     })
   },
   beforeDestroy () {
-    this.getSocket.removeListener('container-stats')
+    this.socket.removeListener('container-stats')
   },
   methods: {
     ...mapMutations(['addDockerStatsEntry']),

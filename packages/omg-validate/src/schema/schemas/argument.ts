@@ -1,25 +1,11 @@
-module.exports = {
+export default {
   type: 'object',
   properties: {
     type: {
-      type: [
-        'array',
-        'string',
-      ],
+      type: ['array', 'string'],
       items: {
         type: 'string',
-        enum: [
-          'int',
-          'number',
-          'float',
-          'string',
-          'uuid',
-          'list',
-          'object',
-          'boolean',
-          'path',
-          'any',
-        ],
+        enum: ['int', 'number', 'float', 'string', 'uuid', 'list', 'object', 'boolean', 'path', 'any'],
       },
       pattern: '^(number|int|float|string|uuid|list|map|boolean|path|object|any)$',
     },
@@ -28,11 +14,7 @@ module.exports = {
     },
     in: {
       type: 'string',
-      enum: [
-        'query',
-        'path',
-        'requestBody',
-      ],
+      enum: ['query', 'path', 'requestBody'],
     },
     pattern: {
       type: 'string',
@@ -56,18 +38,9 @@ module.exports = {
       type: 'boolean',
     },
     default: {
-      type: [
-        'boolean',
-        'integer',
-        'number',
-        'array',
-        'string',
-        'object',
-      ],
+      type: ['boolean', 'integer', 'number', 'array', 'string', 'object'],
     },
   },
-  required: [
-    'type',
-  ],
+  required: ['type'],
   additionalProperties: false,
-};
+}

@@ -1,12 +1,13 @@
-import * as fs from 'fs'
-import * as http from 'http'
+import fs from 'fs'
+import http from 'http'
+import uuidv4 from 'uuid/v4'
+import { Action, Event, Microservice } from 'omg-validate'
 import * as utils from '../utils'
 import * as verify from '../verify'
-import { Action, Event, Microservice } from 'omg-validate'
-const homedir = require('os').homedir()
-const uuidv4 = require('uuid/v4')
 import * as rp from '../request'
 import Run from './run/Run'
+
+const homedir = require('os').homedir()
 
 /**
  * Describes a way to subscribe to an event.
@@ -26,7 +27,7 @@ export default class Subscribe {
    * @param {Object} _arguments The given arguments
    * @param {Run} run The {@link Run} object that started the event
    */
-  constructor(microservice: Microservice, _arguments: any, run: Run) {
+  public constructor(microservice: Microservice, _arguments: any, run: Run) {
     this.microservice = microservice
     this._arguments = _arguments
     this.run = run
@@ -39,7 +40,7 @@ export default class Subscribe {
    * @param {String} event The given event
    * @param  {string} ip The given IP address
    */
-  async go(action: string, event: string) {
+  public async go(action: string, event: string) {
     this.omgJson = JSON.parse(fs.readFileSync(`${homedir}/.omg.json`, 'utf8'))
     this.action = this.microservice.getAction(action)
     this.event = this.action.getEvent(event)
@@ -67,16 +68,14 @@ export default class Subscribe {
   private async subscribe(port: number): Promise<void> {
     await rp.makeRequest({
       method: this.event.subscribe.method,
-      uri: `http://localhost:${
-        this.omgJson[process.cwd()].ports[this.event.subscribe.port]
-      }${this.event.subscribe.path}`,
+      uri: `http://localhost:${this.omgJson[process.cwd()].ports[this.event.subscribe.port]}${this.event.subscribe.path}`,
       body: {
         id: this.id,
         endpoint: `http://host.docker.internal:${port}`,
         event: this.event.name,
-        data: this._arguments
+        data: this._arguments,
       },
-      json: true
+      json: true,
     })
   }
 
@@ -94,8 +93,7 @@ export default class Subscribe {
             if (
               this.event.output &&
               this.event.output.type &&
-              (this.event.output.type === 'map' ||
-                this.event.output.type === 'object')
+              (this.event.output.type === 'map' || this.event.output.type === 'object')
             ) {
               utils.log(JSON.stringify(JSON.parse(data), null, 2))
             } else {
@@ -117,28 +115,26 @@ export default class Subscribe {
     const argumentList = Object.keys(this._arguments)
     for (let i = 0; i < argumentList.length; i += 1) {
       const argument = this.event.getArgument(argumentList[i])
-      this._arguments[argument.name] = utils.typeCast[argument.type](
-        this._arguments[argument.name]
-      )
+      this._arguments[argument.name] = utils.typeCast[argument.type](this._arguments[argument.name])
     }
   }
 
   /**
    * Unsubscribe this {@link Subscribe}'s {@link Event}.
    */
-  async unsubscribe() {
+  public async unsubscribe() {
     if (this.event.unsubscribe === null) {
       return
     }
     await rp.makeRequest({
       method: this.event.unsubscribe.method,
-      uri: `http://localhost:${
-        this.omgJson[process.cwd()].ports[this.event.unsubscribe.port]
-      }${this.event.unsubscribe.path}`,
+      uri: `http://localhost:${this.omgJson[process.cwd()].ports[this.event.unsubscribe.port]}${
+        this.event.unsubscribe.path
+      }`,
       body: {
-        id: this.id
+        id: this.id,
       },
-      json: true
+      json: true,
     })
   }
 }

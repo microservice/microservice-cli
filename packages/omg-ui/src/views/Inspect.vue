@@ -7,14 +7,14 @@
 
 <script>
 import { mapMutations, mapGetters } from 'vuex'
+import * as rpc from '@/rpc/cli'
 
 export default {
   name: 'inspect',
   data: () => ({
-    socket: null,
     isContainerUp: false
   }),
-  computed: { ...mapGetters(['getDockerInspect', 'getSocket']) },
+  computed: { ...mapGetters(['getDockerInspect']) },
   methods: {
     ...mapMutations(['setDockerInspect']),
     refresh () {
@@ -22,7 +22,7 @@ export default {
     }
   },
   mounted () {
-    this.socket = this.getSocket
+    this.socket = rpc.getSocket()
     this.socket.emit('inspect')
     this.socket.on('inspect', res => {
       this.isContainerUp = res.status

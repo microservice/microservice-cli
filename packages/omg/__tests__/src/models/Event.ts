@@ -1,24 +1,29 @@
-import { Argument, Event, Http } from 'omg-validate';
+import { Argument, Event, Http } from 'omg-validate'
 
 describe('Event.ts', () => {
   describe('constructor', () => {
     test('throws an exception because the json is not valid', () => {
       try {
-        new Event('name', 'action', {});
+        new Event('name', 'action', {})
       } catch (e) {
         expect(e).toEqual({
-          errors: [{
-            dataPath: '',
-            keyword: 'required',
-            message: 'should have required property \'http\'',
-            params: {missingProperty: 'http'},
-            schemaPath: '#/required',
-          }], issue: {}, text: 'actions.action.events.name should have required property \'http\'', valid: false,
-        });
+          errors: [
+            {
+              dataPath: '',
+              keyword: 'required',
+              message: "should have required property 'http'",
+              params: { missingProperty: 'http' },
+              schemaPath: '#/required',
+            },
+          ],
+          issue: {},
+          text: "actions.action.events.name should have required property 'http'",
+          valid: false,
+        })
       }
-    });
+    })
 
-    test('throws an exception because a http action\'s argument does not provide a location for the arguments', () => {
+    test("throws an exception because a http action's argument does not provide a location for the arguments", () => {
       try {
         new Event('name', 'action', {
           http: {
@@ -38,16 +43,16 @@ describe('Event.ts', () => {
               type: 'string',
             },
           },
-        });
+        })
       } catch (e) {
         expect(e).toEqual({
           context: 'Argument: `foo` for event: `name`',
-          message: 'Events\' arguments that interface via http must provide an in',
-        });
+          message: "Events' arguments that interface via http must provide an in",
+        })
       }
-    });
+    })
 
-    test('throws an exception because a http action\'s path argument is not defined in the endpoint for the http call', () => {
+    test("throws an exception because a http action's path argument is not defined in the endpoint for the http call", () => {
       try {
         new Event('name', 'action', {
           http: {
@@ -68,16 +73,16 @@ describe('Event.ts', () => {
               in: 'path',
             },
           },
-        });
+        })
       } catch (e) {
         expect(e).toEqual({
           context: 'Argument: `foo` for event: `name`',
           message: 'Path parameters must be defined in the http path of the form `{argument}`',
-        });
+        })
       }
-    });
+    })
 
-    test('throws an exception because a http action\'s path argument is not marked required or given a default value', () => {
+    test("throws an exception because a http action's path argument is not marked required or given a default value", () => {
       try {
         new Event('name', 'action', {
           http: {
@@ -98,16 +103,16 @@ describe('Event.ts', () => {
               in: 'path',
             },
           },
-        });
+        })
       } catch (e) {
         expect(e).toEqual({
           context: 'Argument: `foo` for event: `name`',
           message: 'Path parameters must be marked as required or be provided a default variable',
-        });
+        })
       }
-    });
+    })
 
-    test('throws an exception because a http action has path parameters in endpoint that aren\'t defined as arguments', () => {
+    test("throws an exception because a http action has path parameters in endpoint that aren't defined as arguments", () => {
       try {
         new Event('name', 'action', {
           http: {
@@ -129,43 +134,44 @@ describe('Event.ts', () => {
               in: 'path',
             },
           },
-        });
+        })
       } catch (e) {
         expect(e).toEqual({
           context: 'Path parameter(s): `{bar}` for event: `name`',
           message: 'If a url specifies a path parameter i.e. `{argument}` the argument must be defined in the event',
-        });
+        })
       }
-    });
-  });
+    })
+  })
 
   describe('.name', () => {
     test('gets the name', () => {
       const e = new Event('foo', 'action', {
         http: {
           port: 5000,
-          subscribe: {path: '/sub', method: 'post'},
-          unsubscribe: {path: '/unsub', method: 'post'},
+          subscribe: { path: '/sub', method: 'post' },
+          unsubscribe: { path: '/unsub', method: 'post' },
         },
-      });
+      })
 
-      expect(e.name).toBe('foo');
-    });
-  });
+      expect(e.name).toBe('foo')
+    })
+  })
 
   describe('.help', () => {
     test('gets the help', () => {
       const e = new Event('foo', 'action', {
         http: {
           port: 5000,
-          subscribe: {path: '/sub', method: 'post'},
-          unsubscribe: {path: '/unsub', method: 'post'},
-        }, help: 'FOO ME',
-      });
+          subscribe: { path: '/sub', method: 'post' },
+          unsubscribe: { path: '/unsub', method: 'post' },
+        },
+        help: 'FOO ME',
+      })
 
-      expect(e.help).toBe('FOO ME');
-    });
-  });
+      expect(e.help).toBe('FOO ME')
+    })
+  })
 
   describe('.areRequiredArgumentsSupplied(_arguments)', () => {
     test('returns true because all required arguments are supplied', () => {
@@ -180,7 +186,8 @@ describe('Event.ts', () => {
         http: {
           port: 5000,
           subscribe: {
-            path: '/sub', method: 'post',
+            path: '/sub',
+            method: 'post',
           },
           unsubscribe: {
             path: '/unsub',
@@ -188,12 +195,14 @@ describe('Event.ts', () => {
           },
         },
         help: 'FOO ME',
-      });
+      })
 
-      expect(e.areRequiredArgumentsSupplied({
-        bar: 1,
-      })).toBeTruthy();
-    });
+      expect(
+        e.areRequiredArgumentsSupplied({
+          bar: 1,
+        }),
+      ).toBeTruthy()
+    })
 
     test('returns false because required argument(s) are not supplied', () => {
       const e = new Event('foo', 'action', {
@@ -207,20 +216,23 @@ describe('Event.ts', () => {
         http: {
           port: 5000,
           subscribe: {
-            path: '/sub', method: 'post',
+            path: '/sub',
+            method: 'post',
           },
           unsubscribe: {
             path: '/unsub',
             method: 'post',
           },
         },
-      });
+      })
 
-      expect(e.areRequiredArgumentsSupplied({
-        foo: 1,
-      })).toBeFalsy();
-    });
-  });
+      expect(
+        e.areRequiredArgumentsSupplied({
+          foo: 1,
+        }),
+      ).toBeFalsy()
+    })
+  })
 
   describe('.arguments', () => {
     test('get the arguments', () => {
@@ -228,14 +240,15 @@ describe('Event.ts', () => {
         http: {
           port: 5000,
           subscribe: {
-            path: '/sub', method: 'post',
+            path: '/sub',
+            method: 'post',
           },
           unsubscribe: {
             path: '/unsub',
             method: 'post',
           },
         },
-      });
+      })
       const e2 = new Event('foo', 'action', {
         arguments: {
           bar: {
@@ -247,23 +260,26 @@ describe('Event.ts', () => {
         http: {
           port: 5000,
           subscribe: {
-            path: '/sub', method: 'post',
+            path: '/sub',
+            method: 'post',
           },
           unsubscribe: {
             path: '/unsub',
             method: 'post',
           },
         },
-      });
+      })
 
-      expect(e1.arguments).toEqual([]);
-      expect(e2.arguments).toEqual([new Argument('bar', 'action.events.foo', {
-        type: 'int',
-        required: true,
-        in: 'requestBody',
-      })]);
-    });
-  });
+      expect(e1.arguments).toEqual([])
+      expect(e2.arguments).toEqual([
+        new Argument('bar', 'action.events.foo', {
+          type: 'int',
+          required: true,
+          in: 'requestBody',
+        }),
+      ])
+    })
+  })
 
   describe('.getArgument(argument)', () => {
     test('gets the argument', () => {
@@ -278,21 +294,24 @@ describe('Event.ts', () => {
         http: {
           port: 5000,
           subscribe: {
-            path: '/sub', method: 'post',
+            path: '/sub',
+            method: 'post',
           },
           unsubscribe: {
             path: '/unsub',
             method: 'post',
           },
         },
-      });
+      })
 
-      expect(e.getArgument('bar')).toEqual(new Argument('bar', 'action.events.foo', {
-        type: 'int',
-        required: true,
-        in: 'requestBody',
-      }));
-    });
+      expect(e.getArgument('bar')).toEqual(
+        new Argument('bar', 'action.events.foo', {
+          type: 'int',
+          required: true,
+          in: 'requestBody',
+        }),
+      )
+    })
 
     test('throws an error because the argument does not exist', () => {
       const e = new Event('foo', 'action', {
@@ -306,22 +325,23 @@ describe('Event.ts', () => {
         http: {
           port: 5000,
           subscribe: {
-            path: '/sub', method: 'post',
+            path: '/sub',
+            method: 'post',
           },
           unsubscribe: {
             path: '/unsub',
             method: 'post',
           },
         },
-      });
+      })
 
       try {
-        e.getArgument('argo');
-      } catch (e) {
-        expect(e).toBe('Argument `argo` does not exist');
+        e.getArgument('argo')
+      } catch (error) {
+        expect(error).toBe('Argument `argo` does not exist')
       }
-    });
-  });
+    })
+  })
 
   describe('.subscribe', () => {
     test('get the subscribe', () => {
@@ -336,22 +356,29 @@ describe('Event.ts', () => {
         http: {
           port: 5000,
           subscribe: {
-            path: '/sub', method: 'post',
+            path: '/sub',
+            method: 'post',
           },
           unsubscribe: {
             path: '/unsub',
             method: 'post',
           },
         },
-      });
+      })
 
-      expect(e.subscribe).toEqual(new Http('foo', {
-        method: 'post',
-        port: 5000,
-        path: '/sub',
-      }, 'action.actionName.http'));
-    });
-  });
+      expect(e.subscribe).toEqual(
+        new Http(
+          'foo',
+          {
+            method: 'post',
+            port: 5000,
+            path: '/sub',
+          },
+          'action.actionName.http',
+        ),
+      )
+    })
+  })
 
   describe('.unsubscribe', () => {
     test('get the unsubscribe', () => {
@@ -366,20 +393,27 @@ describe('Event.ts', () => {
         http: {
           port: 5000,
           subscribe: {
-            path: '/sub', method: 'post',
+            path: '/sub',
+            method: 'post',
           },
           unsubscribe: {
             path: '/unsub',
             method: 'post',
           },
         },
-      });
+      })
 
-      expect(e.unsubscribe).toEqual(new Http('foo', {
-        method: 'post',
-        port: 5000,
-        path: '/unsub',
-      }, 'action.actionName.http'));
-    });
-  });
-});
+      expect(e.unsubscribe).toEqual(
+        new Http(
+          'foo',
+          {
+            method: 'post',
+            port: 5000,
+            path: '/unsub',
+          },
+          'action.actionName.http',
+        ),
+      )
+    })
+  })
+})

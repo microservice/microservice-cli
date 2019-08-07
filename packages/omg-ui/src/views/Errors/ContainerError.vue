@@ -35,7 +35,7 @@ export default {
     ClipLoader
   },
   computed: {
-    ...mapGetters(['getDockerHealthCheck'])
+    ...mapGetters(['getDockerHealthCheck', 'getDockerState'])
   },
   methods: {
     build () {

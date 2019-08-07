@@ -9,14 +9,14 @@ describe('Microservice.ts', () => {
           info: {
             version: '1.0.0',
             title: 'test',
-            description: 'for tests'
+            description: 'for tests',
           },
           health: {
             http: {
               path: '/health',
-              port: 5000
-            }
-          }
+              port: 5000,
+            },
+          },
         })
       } catch (e) {
         expect(e).toEqual({
@@ -26,12 +26,12 @@ describe('Microservice.ts', () => {
               keyword: 'minProperties',
               message: 'should NOT have less than 1 properties',
               params: { limit: 1 },
-              schemaPath: '#/minProperties'
-            }
+              schemaPath: '#/minProperties',
+            },
           ],
           issue: {},
           text: 'data should NOT have less than 1 properties',
-          valid: false
+          valid: false,
         })
       }
     })
@@ -43,13 +43,13 @@ describe('Microservice.ts', () => {
           info: {
             version: '1.0.0',
             title: 'test',
-            description: 'for tests'
+            description: 'for tests',
           },
           health: {
             http: {
               path: '/health',
-              port: 5000
-            }
+              port: 5000,
+            },
           },
           actions: {
             foo: {
@@ -57,16 +57,15 @@ describe('Microservice.ts', () => {
               http: {
                 method: 'post',
                 port: 5000,
-                path: '/data'
-              }
-            }
-          }
+                path: '/data',
+              },
+            },
+          },
         })
       } catch (e) {
         expect(e).toEqual({
           context: 'Action with name: `foo`',
-          message:
-            'If an action interfaces with http then a lifecycle must be provided'
+          message: 'If an action interfaces with http then a lifecycle must be provided',
         })
       }
     })
@@ -79,24 +78,24 @@ describe('Microservice.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         health: {
           http: {
             path: '/health',
-            port: 5000
-          }
+            port: 5000,
+          },
         },
         actions: {
           foo: {
             format: {
-              command: 'foo.sh'
+              command: 'foo.sh',
             },
             output: {
-              type: 'boolean'
-            }
-          }
-        }
+              type: 'boolean',
+            },
+          },
+        },
       })
 
       expect(m.rawData).toEqual({
@@ -105,12 +104,12 @@ describe('Microservice.ts', () => {
         valid: true,
         yaml: {
           actions: {
-            foo: { format: { command: 'foo.sh' }, output: { type: 'boolean' } }
+            foo: { format: { command: 'foo.sh' }, output: { type: 'boolean' } },
           },
           health: { http: { path: '/health', port: 5000 } },
           omg: 1,
-          info: { description: 'for tests', title: 'test', version: '1.0.0' }
-        }
+          info: { description: 'for tests', title: 'test', version: '1.0.0' },
+        },
       })
     })
   })
@@ -122,14 +121,14 @@ describe('Microservice.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         health: {
           http: {
             path: '/health',
-            port: 5000
-          }
-        }
+            port: 5000,
+          },
+        },
       })
 
       expect(m.actions).toEqual([])
@@ -141,39 +140,39 @@ describe('Microservice.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         health: {
           http: {
             path: '/health',
-            port: 5000
-          }
+            port: 5000,
+          },
         },
         actions: {
           foo: {
             format: {
-              command: 'foo.sh'
+              command: 'foo.sh',
             },
-            output: { type: 'boolean' }
+            output: { type: 'boolean' },
           },
           bar: {
             format: {
-              command: 'bar.sh'
+              command: 'bar.sh',
             },
-            output: { type: 'int' }
-          }
-        }
+            output: { type: 'int' },
+          },
+        },
       })
 
       expect(m.actions).toEqual([
         new Action('foo', {
           format: { command: 'foo.sh' },
-          output: { type: 'boolean' }
+          output: { type: 'boolean' },
         }),
         new Action('bar', {
           format: { command: 'bar.sh' },
-          output: { type: 'int' }
-        })
+          output: { type: 'int' },
+        }),
       ])
     })
   })
@@ -184,22 +183,22 @@ describe('Microservice.ts', () => {
       info: {
         version: '1.0.0',
         title: 'test',
-        description: 'for tests'
+        description: 'for tests',
       },
       health: {
         http: {
           path: '/health',
-          port: 5000
-        }
+          port: 5000,
+        },
       },
       actions: {
         foo: {
           format: {
-            command: 'foo.sh'
+            command: 'foo.sh',
           },
-          output: { type: 'list' }
-        }
-      }
+          output: { type: 'list' },
+        },
+      },
     })
     test('throws and exception because the command does not exist', () => {
       try {
@@ -213,8 +212,8 @@ describe('Microservice.ts', () => {
       expect(m.getAction('foo')).toEqual(
         new Action('foo', {
           format: { command: 'foo.sh' },
-          output: { type: 'list' }
-        })
+          output: { type: 'list' },
+        }),
       )
     })
   })
@@ -226,14 +225,14 @@ describe('Microservice.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         health: {
           http: {
             path: '/health',
-            port: 5000
-          }
-        }
+            port: 5000,
+          },
+        },
       })
 
       expect(m.environmentVariables).toEqual([])
@@ -245,27 +244,27 @@ describe('Microservice.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         health: {
           http: {
             path: '/health',
-            port: 5000
-          }
+            port: 5000,
+          },
         },
         environment: {
           foo: {
-            type: 'boolean'
+            type: 'boolean',
           },
           bar: {
-            type: 'string'
-          }
-        }
+            type: 'string',
+          },
+        },
       })
 
       expect(m.environmentVariables).toEqual([
         new EnvironmentVariable('foo', { type: 'boolean' }),
-        new EnvironmentVariable('bar', { type: 'string' })
+        new EnvironmentVariable('bar', { type: 'string' }),
       ])
     })
   })
@@ -276,29 +275,29 @@ describe('Microservice.ts', () => {
       info: {
         version: '1.0.0',
         title: 'test',
-        description: 'for tests'
+        description: 'for tests',
       },
       health: {
         http: {
           path: '/health',
-          port: 5000
-        }
+          port: 5000,
+        },
       },
       environment: {
         foo: {
           type: 'boolean',
-          required: true
+          required: true,
         },
         bar: {
-          type: 'string'
-        }
-      }
+          type: 'string',
+        },
+      },
     })
     test('returns true because all required environment variables are supplied', () => {
       expect(
         m.areRequiredEnvironmentVariablesSupplied({
-          foo: false
-        })
+          foo: false,
+        }),
       ).toBeTruthy()
     })
 
@@ -314,23 +313,23 @@ describe('Microservice.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         health: {
           http: {
             path: '/health',
-            port: 5000
-          }
+            port: 5000,
+          },
         },
         environment: {
           foo: {
             type: 'boolean',
-            required: true
+            required: true,
           },
           bar: {
-            type: 'string'
-          }
-        }
+            type: 'string',
+          },
+        },
       })
 
       expect(m.requiredEnvironmentVariables).toEqual(['foo'])
@@ -344,14 +343,14 @@ describe('Microservice.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         health: {
           http: {
             path: '/health',
-            port: 5000
-          }
-        }
+            port: 5000,
+          },
+        },
       })
 
       expect(m.volumes).toEqual([])
@@ -363,31 +362,31 @@ describe('Microservice.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         health: {
           http: {
             path: '/health',
-            port: 5000
-          }
+            port: 5000,
+          },
         },
         volumes: {
           foo: {
-            target: '/foo'
+            target: '/foo',
           },
           bar: {
             target: '/bar',
-            persist: true
-          }
-        }
+            persist: true,
+          },
+        },
       })
 
       expect(m.volumes).toEqual([
         new Volume('foo', { target: '/foo' }),
         new Volume('bar', {
           target: '/bar',
-          persist: true
-        })
+          persist: true,
+        }),
       ])
     })
   })
@@ -398,19 +397,19 @@ describe('Microservice.ts', () => {
       info: {
         version: '1.0.0',
         title: 'test',
-        description: 'for tests'
+        description: 'for tests',
       },
       health: {
         http: {
           path: '/health',
-          port: 5000
-        }
+          port: 5000,
+        },
       },
       volumes: {
         foo: {
-          target: '/foo'
-        }
-      }
+          target: '/foo',
+        },
+      },
     })
     test('throws and exception because the volume does not exist', () => {
       try {
@@ -432,27 +431,27 @@ describe('Microservice.ts', () => {
         info: {
           version: '1.0.0',
           title: 'test',
-          description: 'for tests'
+          description: 'for tests',
         },
         lifecycle: {
           startup: {
-            command: ['node', 'app.js', 'foo']
-          }
+            command: ['node', 'app.js', 'foo'],
+          },
         },
         health: {
           http: {
             path: '/health',
-            port: 5000
-          }
-        }
+            port: 5000,
+          },
+        },
       })
 
       expect(m.lifecycle).toEqual(
         new Lifecycle({
           startup: {
-            command: ['node', 'app.js', 'foo']
-          }
-        })
+            command: ['node', 'app.js', 'foo'],
+          },
+        }),
       )
     })
   })

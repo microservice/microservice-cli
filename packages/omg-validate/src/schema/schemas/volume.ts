@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   type: 'object',
   properties: {
     target: {
@@ -8,8 +8,6 @@ module.exports = {
       type: 'boolean',
     },
   },
-  required: [
-    'target',
-  ],
+  required: ['target'],
   additionalProperties: false,
-};
+}
