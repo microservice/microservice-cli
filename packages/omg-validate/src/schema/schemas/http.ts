@@ -14,7 +14,7 @@ export default {
     },
     contentType: {
       type: 'string',
-      enum: ['application/json', 'application/x-www-form-urlencoded'],
+      enum: ['application/json', 'application/x-www-form-urlencoded', 'multipart/form-data'],
     },
   },
   required: ['method', 'port', 'path'],
