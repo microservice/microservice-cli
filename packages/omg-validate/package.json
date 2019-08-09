@@ -1,6 +1,6 @@
 {
   "name": "omg-validate",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "OMG microservice.yml validation library",
   "main": "dist/index.js",
   "typings": "src/index.ts",
