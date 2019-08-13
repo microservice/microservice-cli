@@ -11,12 +11,13 @@ export default async function main() {
     .version(manifest.version)
     .description('For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`')
     .option('-v --version', 'Show OMG CLI version')
+    .option('-d --directory', 'Directory to use as root')
 
   program
     .command('validate')
     .option('-j --json', 'Formats output to JSON')
     .option('-s --silent', 'Only feedback is the status exit code')
-    .description('Validate the structure of a `microservice.yml` in the current directory')
+    .description('Validate the structure of a `microservice.yml` in the working directory')
     .action(options => {
       actionPromise = actions.validate({
         options,
@@ -47,7 +48,7 @@ export default async function main() {
     .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', [])
     .option('-r --raw', 'All logging is suppressed expect for the output of the action.')
     .description(
-      'Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`',
+      'Run actions defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
     )
     .action(async (action, options) => {
       actionPromise = actions.run({
@@ -62,7 +63,7 @@ export default async function main() {
     .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', [])
     .option('-r --raw', 'All logging is suppressed expect for the output of the action.')
     .description(
-      'Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`',
+      'Subscribe to an event defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
     )
     .action(async (action, event, options) => {
       actionPromise = actions.subscribe({

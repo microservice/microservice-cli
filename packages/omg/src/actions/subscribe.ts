@@ -1,6 +1,6 @@
-import { ActionPayload } from '~/types'
+import { ActionPayload, ActionOptionsDefault } from '~/types'
 
-interface ActionOptions {
+interface ActionOptions extends ActionOptionsDefault {
   args?: string[]
   envs?: string[]
   raw?: boolean
