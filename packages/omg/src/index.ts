@@ -28,6 +28,7 @@ export default async function main() {
   program
     .command('build')
     .option('-t --tag, <t>', 'The tag name of the image')
+    .option('-r --raw', 'Show raw Docker build logs')
     .description(
       'Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a random string will be used',
     )
@@ -97,12 +98,6 @@ export default async function main() {
       })
     })
 
-  // Handle invalid commands
-  program.command('*').action(() => {
-    program.help()
-    process.exit(1)
-  })
-
   // The order is important, this has to be before the args length check.
   program.parse(process.argv)
 
@@ -111,7 +106,7 @@ export default async function main() {
     process.exit(0)
   }
 
-  if (program.args.length < 1) {
+  if (!actionPromise) {
     program.help()
     process.exit(1)
   }

@@ -24,13 +24,18 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@types/event-kit": "^2.4.0",
     "commander": "^3.0.0",
+    "dockerode": "^2.5.8",
     "event-kit": "^2.5.3",
+    "execa": "^2.0.3",
+    "git-url-parse": "^11.1.2",
     "omg-ui": "^0.14.1",
-    "omg-validate": "^0.14.1"
+    "omg-validate": "^0.14.1",
+    "sb-fs": "^4.0.0"
   },
   "devDependencies": {
+    "@types/event-kit": "^2.4.0",
+    "@types/git-url-parse": "^9.0.0",
     "typescript": "^3.1.6"
   }
 }
