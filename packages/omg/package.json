@@ -11,7 +11,8 @@
   "main": "omg",
   "scripts": {
     "build": "sb-babel-cli src -o lib --typescript",
-    "watch": "yarn build -w"
+    "watch": "yarn build -w",
+    "dev": "yarn watch -x lib/cli"
   },
   "bin": {
     "omg": "./lib/cli.js"
@@ -23,6 +24,9 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@types/event-kit": "^2.4.0",
+    "commander": "^3.0.0",
+    "event-kit": "^2.5.3",
     "omg-ui": "^0.14.1",
     "omg-validate": "^0.14.1"
   },

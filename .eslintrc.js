@@ -28,8 +28,6 @@ module.exports = {
     'no-throw-literal': 'warn',
     '@typescript-eslint/interface-name-prefix': 'warn',
     'no-await-in-loop': 'warn',
-    'comma-dangle': 'off',
-    'no-plusplus': 'off',
     'class-methods-use-this': 'warn',
   },
   env: {
