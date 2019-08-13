@@ -1,5 +1,10 @@
 import { ActionPayload } from '~/types'
 
-export default async function list({ options }: ActionPayload<any>) {
+interface ActionOptions {
+  json?: boolean
+  details?: boolean
+}
+
+export default async function list({ options }: ActionPayload<ActionOptions>) {
   console.log('List command')
 }

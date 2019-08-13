@@ -1,5 +1,9 @@
 import { ActionPayload } from '~/types'
 
-export default async function build({ options }: ActionPayload<any>) {
+interface ActionOptions {
+  tag?: string
+}
+
+export default async function build({ options }: ActionPayload<ActionOptions>) {
   console.log('Build command')
 }

@@ -1,5 +1,11 @@
 import { ActionPayload } from '~/types'
 
-export default async function ui({ options }: ActionPayload<any>) {
+interface ActionOptions {
+  port?: string
+  open: boolean
+  inheritEnv?: boolean
+}
+
+export default async function ui({ options }: ActionPayload<ActionOptions>) {
   console.log('UI command')
 }
