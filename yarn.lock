@@ -1652,6 +1652,13 @@
     error-stack-parser "^2.0.0"
     string-width "^2.0.0"
 
+"@types/dockerode@^2.5.20":
+  version "2.5.20"
+  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-2.5.20.tgz#d37a3c6cd0651d9cc49e51b3769124e956d075b4"
+  integrity sha512-g2eM9q+pur7iZc897K/OSq8sCL7VdVcCPzNkdeTukUokfvgl3TaP+nT7G8BMpnSSojrJFKl7VdTciP7hbVgfKA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"

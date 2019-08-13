@@ -14,9 +14,16 @@ export default async function build({ options }: ActionPayload<ActionOptions>) {
   if (!configPaths) {
     logger.fatal('Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`')
   }
+  const tagName = options.tag || (await getImageName({ configPath: configPaths.docker })).name
+
   await buildImage({
     raw: !!options.raw,
     configPath: configPaths.docker,
-    tagName: options.tag || (await getImageName({ configPath: configPaths.docker })).name,
+    tagName,
+    onLog(line) {
+      if (options.raw) {
+        logger.info(line)
+      }
+    },
   })
 }
