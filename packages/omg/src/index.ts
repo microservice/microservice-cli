@@ -6,6 +6,7 @@ export default async function main() {
   program
     .version(manifest.version)
     .description('For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`')
+    .option('-v --version', 'Show OMG CLI version')
 
   program
     .command('validate')
@@ -67,15 +68,22 @@ export default async function main() {
     .description('Lists all actions available in microservice.')
     .action(options => cli.list(options))
 
+  // Handle invalid commands
   program.command('*').action(() => {
-    console.log('Default action')
+    program.help()
+    process.exit(1)
   })
 
   // The order is important, this has to be before the args length check.
   program.parse(process.argv)
 
+  if (program.v) {
+    console.log(program.version)
+    process.exit(0)
+  }
+
   if (program.args.length < 1) {
-    // No action specified
-    console.log('No action')
+    program.help()
+    process.exit(1)
   }
 }
