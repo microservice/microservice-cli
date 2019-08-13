@@ -1,8 +1,12 @@
 import program from 'commander'
 
 import manifest from '../package.json'
+import * as actions from './actions'
+import * as logger from './logger'
 
 export default async function main() {
+  let actionPromise
+
   program
     .version(manifest.version)
     .description('For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`')
@@ -13,7 +17,12 @@ export default async function main() {
     .option('-j --json', 'Formats output to JSON')
     .option('-s --silent', 'Only feedback is the status exit code')
     .description('Validate the structure of a `microservice.yml` in the current directory')
-    .action(options => Cli.validate(options))
+    .action(options => {
+      actionPromise = actions.validate({
+        options,
+        parameters: [],
+      })
+    })
 
   program
     .command('build')
@@ -21,7 +30,12 @@ export default async function main() {
     .description(
       'Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a random string will be used',
     )
-    .action(async options => Cli.build(options))
+    .action(options => {
+      actionPromise = actions.build({
+        options,
+        parameters: [],
+      })
+    })
 
   program
     .command('run <action>')
@@ -36,8 +50,10 @@ export default async function main() {
       'Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`',
     )
     .action(async (action, options) => {
-      cli.buildMicroservice()
-      await cli.run(action, options)
+      actionPromise = actions.run({
+        options,
+        parameters: [action],
+      })
     })
 
   program
@@ -49,8 +65,10 @@ export default async function main() {
       'Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`',
     )
     .action(async (action, event, options) => {
-      cli.buildMicroservice()
-      await cli.subscribe(action, event, options)
+      actionPromise = actions.subscribe({
+        options,
+        parameters: [action, event],
+      })
     })
 
   program
@@ -59,14 +77,24 @@ export default async function main() {
     .option('--no-open', 'Do not open in browser')
     .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
     .description('Starts to omg-app which monitors your microservice.')
-    .action(async options => cli.ui(options))
+    .action(options => {
+      actionPromise = actions.ui({
+        options,
+        parameters: [],
+      })
+    })
 
   program
     .command('list')
     .option('-j --json', 'Returns actions in json format')
     .option('-d --details', 'Returns detailed actions')
     .description('Lists all actions available in microservice.')
-    .action(options => cli.list(options))
+    .action(options => {
+      actionPromise = actions.list({
+        options,
+        parameters: [],
+      })
+    })
 
   // Handle invalid commands
   program.command('*').action(() => {
@@ -78,7 +106,7 @@ export default async function main() {
   program.parse(process.argv)
 
   if (program.v) {
-    console.log(program.version)
+    logger.info(program.version)
     process.exit(0)
   }
 
@@ -86,4 +114,6 @@ export default async function main() {
     program.help()
     process.exit(1)
   }
+
+  await actionPromise
 }
