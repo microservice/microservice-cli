@@ -16,14 +16,29 @@ export default async function build({ options }: ActionPayload<ActionOptions>) {
   }
   const tagName = options.tag || (await getImageName({ configPath: configPaths.docker })).name
 
-  await buildImage({
-    raw: !!options.raw,
-    configPath: configPaths.docker,
-    tagName,
-    onLog(line) {
-      if (options.raw) {
-        logger.info(line)
-      }
-    },
-  })
+  if (!options.raw) {
+    logger.spinnerStart('Building Docker image')
+  }
+  try {
+    await buildImage({
+      raw: !!options.raw,
+      configPath: configPaths.docker,
+      tagName,
+      onLog(line) {
+        if (options.raw) {
+          logger.info(line)
+        }
+      },
+    })
+    if (!options.raw) {
+      logger.spinnerSucceed(`Built Docker image with name: ${tagName}`)
+    }
+  } catch (error) {
+    if (!options.raw) {
+      logger.spinnerFail('Error building Docker image')
+      logger.error(error)
+    } else {
+      logger.error(error)
+    }
+  }
 }

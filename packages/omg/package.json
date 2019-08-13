@@ -31,6 +31,7 @@
     "git-url-parse": "^11.1.2",
     "omg-ui": "^0.14.1",
     "omg-validate": "^0.14.1",
+    "ora": "^3.4.0",
     "sb-fs": "^4.0.0"
   },
   "devDependencies": {
