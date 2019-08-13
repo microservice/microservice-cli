@@ -1,16 +1,3 @@
-.idea/
-node_modules/
-__tests__/
-.circleci/
-coverage/
-.npmignore
-.gitignore
 .DS_Store
-docs/
 src/
-.eslintignore
-.eslintrc.js
-jest.config.js
-tsconfig.js
-package-lock.json
-.circleci/
+docs/
