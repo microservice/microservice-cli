@@ -9,11 +9,8 @@ interface ActionOptions extends ActionOptionsDefault {
 }
 
 export default async function build({ options }: ActionPayload<ActionOptions>) {
-  const configPaths = await getConfigPaths(options)
+  const configPaths = await getConfigPaths(options, true)
 
-  if (!configPaths) {
-    logger.fatal('Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`')
-  }
   const tagName = options.tag || (await getImageName({ configPath: configPaths.docker })).name
 
   if (!options.raw) {

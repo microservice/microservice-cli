@@ -32,7 +32,7 @@ export function error(err: string | Error) {
   }
 }
 
-export function fatal(message: string) {
+export function fatal(message: string): never {
   if (spinner) {
     spinner.stop()
   }
