@@ -1,3 +1,4 @@
+import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 import { ActionPayload, ActionOptionsDefault } from '~/types'
 
 interface ActionOptions extends ActionOptionsDefault {
@@ -6,5 +7,10 @@ interface ActionOptions extends ActionOptionsDefault {
 }
 
 export default async function list({ options }: ActionPayload<ActionOptions>) {
-  console.log('List command')
+  const configPaths = await getConfigPaths(options, true)
+  const microserviceConfig = await parseMicroserviceConfig({
+    configPath: configPaths.microservice,
+  })
+
+  console.log('List command', microserviceConfig)
 }
