@@ -11,6 +11,7 @@ export default async function validate({ options }: ActionPayload<ActionOptions>
   const configPaths = await getConfigPaths(options, true)
   const microserviceConfig = await parseMicroserviceConfig({
     configPath: configPaths.microservice,
+    validate: false,
   })
   const validationErrors = getValidationErrors(microserviceConfig)
   if (!validationErrors.length) {

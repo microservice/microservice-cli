@@ -2,7 +2,6 @@ import program from 'commander'
 
 import manifest from '../package.json'
 import * as actions from './actions'
-import * as logger from './logger'
 
 export default async function main() {
   let actionPromise
@@ -100,11 +99,6 @@ export default async function main() {
 
   // The order is important, this has to be before the args length check.
   program.parse(process.argv)
-
-  if (program.v) {
-    logger.info(program.version)
-    process.exit(0)
-  }
 
   if (!actionPromise) {
     program.help()
