@@ -2,7 +2,7 @@
 
 import * as v from './validators'
 import validatorFactory from './validatorFactory'
-import { ConfigSchema, INPUT_TYPES } from '../../types'
+import { ConfigSchema, INPUT_TYPES, OUTPUT_TYPES, CONTENT_TYPES, HTTP_METHODS } from '../../types'
 import { State, ErrorCallback } from './types'
 
 export default function validateConfig(config: ConfigSchema, rootError: ErrorCallback): void {
@@ -16,6 +16,29 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   }
 
   const root: State = { path: [], value: config }
+  // +Local validator mixins
+  function validateTOutput({ state }: { state: State }) {
+    validateWith(state, 'type', true, v.enumValues(OUTPUT_TYPES))
+    validateWith(state, 'contentType', false, v.enumValues(CONTENT_TYPES))
+    validateAssocObject(state, 'properties', false, ({ state }) => {
+      validateWith(state, 'type', true, v.enumValues(OUTPUT_TYPES))
+      validateWith(state, 'help', false, v.string)
+    })
+  }
+  function validateTArgument({ state }: { state: State }) {
+    validateWith(state, 'help', false, v.string)
+    validateWith(state, 'type', true, v.oneOf(v.enumValues(INPUT_TYPES), v.array(v.enumValues(INPUT_TYPES))))
+    validateWith(state, 'in', false, v.enumValues(['query', 'path', 'requestBody']))
+    validateWith(state, 'pattern', false, v.string)
+    validateWith(state, 'enum', false, v.array(v.string))
+    validateObject(state, 'range', false, ({ state }) => {
+      validateWith(state, 'min', false, v.number)
+      validateWith(state, 'max', false, v.number)
+    })
+    validateWith(state, 'required', false, v.boolean)
+    validateWith(state, 'default', true, v.any)
+  }
+  // -Local validator mixins
 
   validate(root, 'omg', true, ({ state, error }) => {
     if (typeof state.value !== 'number') {
@@ -50,11 +73,76 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   })
 
   validateAssocObject(root, 'actions', true, ({ state }) => {
-    // TODO
+    validateWith(state, 'help', false, v.string)
+    validateObject(state, 'format', false, ({ state }) => {
+      validateWith(state, 'command', true, v.oneOf(v.string, v.array(v.string)))
+    })
+    validateAssocObject(state, 'events', false, ({ state }) => {
+      validateWith(state, 'help', false, v.string)
+      validateObject(state, 'http', true, ({ state }) => {
+        validateWith(state, 'port', true, v.number)
+        validateWith(state, 'subscribe', true, v.any)
+        validateWith(state, 'unsubscribe', false, v.any)
+      })
+      validateObject(state, 'output', false, ({ state }) => {
+        validateWith(state, 'actions', false, v.any)
+        validateTOutput({ state })
+      })
+      validateAssocObject(state, 'arguments', false, validateTArgument)
+    })
+    // TODO: Type this
+    validateWith(state, 'rpc', false, v.any)
+    validateObject(state, 'http', false, ({ state }) => {
+      validateWith(state, 'path', true, v.string)
+      validateWith(state, 'method', true, v.enumValues(HTTP_METHODS))
+      validateWith(state, 'port', true, v.number)
+      validateWith(state, 'contentType', false, v.enumValues(CONTENT_TYPES))
+    })
+    validateAssocObject(state, 'arguments', true, validateTArgument)
+    validateAssocObject(state, 'output', false, validateTArgument)
   })
 
   validateAssocObject(root, 'environment', false, ({ state }) => {
     validateWith(state, 'type', true, v.oneOf(v.enumValues(INPUT_TYPES), v.array(v.enumValues(INPUT_TYPES))))
     validateWith(state, 'pattern', false, v.string)
+    validateWith(state, 'required', false, v.boolean)
+    validateWith(state, 'help', false, v.string)
+    validateWith(state, 'help', false, v.any)
+  })
+
+  validateAssocObject(root, 'volumes', false, ({ state }) => {
+    validateWith(state, 'target', true, v.string)
+    validateWith(state, 'persist', false, v.boolean)
+  })
+
+  validateObject(root, 'metrics', false, ({ state }) => {
+    validateWith(state, 'ssl', false, v.boolean)
+    validateWith(state, 'port', true, v.number)
+    validateWith(state, 'uri', true, v.string)
+  })
+
+  validateObject(root, 'scale', false, ({ state }) => {
+    validateWith(state, 'metric_type', false, v.enumValues(['cpu', 'mem']))
+    validateWith(state, 'metric_agg', false, v.enumValues(['avg', 'min', 'max', 'mean', 'mode']))
+    validateWith(state, 'metric_interval', false, v.number)
+    validateWith(state, 'metric_target', false, v.number)
+    validateWith(state, 'min', false, v.number)
+    validateWith(state, 'max', false, v.number)
+    validateWith(state, 'desired', false, v.number)
+    validateWith(state, 'cooldown', false, v.number)
+  })
+
+  validateAssocObject(root, 'forward', false, ({ state }) => {
+    validateObject(state, 'http', true, ({ state }) => {
+      validateWith(state, 'path', true, v.string)
+      validateWith(state, 'port', true, v.number)
+    })
+  })
+
+  validateAssocObject(root, 'health', false, ({ state }) => {
+    validateObject(state, 'http', true, ({ state }) => {
+      validateWith(state, 'path', true, v.string)
+      validateWith(state, 'port', true, v.number)
+    })
   })
 }

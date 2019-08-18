@@ -40,7 +40,10 @@ export const OUTPUT_TYPES: OutputType[] = [
 ]
 
 export type ContentType = 'application/json' | 'application/x-www-form-urlencoded' | 'multipart/form-data'
-export const CONTENT_TYPES = ['application/json', 'application/x-www-form-urlencoded', 'multipart/form-data']
+export const CONTENT_TYPES: ContentType[] = ['application/json', 'application/x-www-form-urlencoded', 'multipart/form-data']
+
+export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
+export const HTTP_METHODS: HttpMethod[] = ['get', 'post', 'put', 'delete', 'patch']
 
 export interface Action {
   help?: string
@@ -50,7 +53,6 @@ export interface Action {
       command: string | string[]
     }
   >
-  rpc?: Record<string, any> // TODO: Type this properly
   events?: Record<
     string,
     {
@@ -61,7 +63,7 @@ export interface Action {
         unsubscribe?: Record<string, any> // TODO: Type this properly
       }
       output?: {
-        actions?: Record<string, Action> // TODO: Is this type correct?
+        actions?: Record<string, any> // TODO: Type this properly
         type?: OutputType
         contentType?: ContentType
         properties?: Record<
@@ -75,9 +77,10 @@ export interface Action {
       arguments?: Record<string, any> // TODO: Type this properly
     }
   >
+  rpc?: Record<string, any> // TODO: Type this properly
   http?: {
     path: string
-    method: 'get' | 'post' | 'put' | 'delete' | 'patch'
+    method: HttpMethod
     port: number
     contentType?: ContentType
   }

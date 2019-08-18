@@ -11,6 +11,16 @@ export const number: Validator = {
   validate: item => !!(typeof item === 'number' && item),
 }
 
+export const boolean: Validator = {
+  message: 'a valid boolean',
+  validate: item => !!(typeof item === 'boolean' && item),
+}
+
+export const any: Validator = {
+  message: 'defined',
+  validate: () => true,
+}
+
 export function array(validator: Validator): Validator {
   const validate = (value: any): boolean => {
     if (!Array.isArray(value) || !value.every(validator.validate)) {
