@@ -1,7 +1,7 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
 import * as v from './validators'
-import { validate, validateWith, validateObject, validateAssocObject } from './validatorFactory'
+import { validate, validateWith, validateObject, validateAssocObject } from './validatorsBase'
 import { ConfigSchema, INPUT_TYPES, OUTPUT_TYPES, CONTENT_TYPES, HTTP_METHODS } from '../types'
 import { State, ErrorCallback } from './types'
 
@@ -97,7 +97,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       validateWith(state, 'contentType', false, v.enumValues(CONTENT_TYPES))
     })
     validateAssocObject(state, 'arguments', true, validateTArgument)
-    validateObject(state, 'output', false, validateTArgument)
+    validateObject(state, 'output', false, validateTOutput)
   })
 
   validateAssocObject(root, 'environment', false, ({ state }) => {

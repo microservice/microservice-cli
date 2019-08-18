@@ -35,6 +35,9 @@ function validateObject(
   required: boolean,
   callback: (params: { state: State; error: ErrorCallback }) => void,
 ) {
+  // Since we're overwriting state visited, mark current prop as visited
+  state.visited.push(prop)
+
   const newState: State = { ...state, visited: [] }
   validate(newState, prop, required, ({ state, error }) => {
     if (typeof state.value !== 'object' || !state.value) {
@@ -42,7 +45,13 @@ function validateObject(
     } else {
       callback({ state, error })
     }
-    // console.log(newState.visited)
+    const currentKeys = Object.keys(state.value)
+    const unknownKeys = currentKeys.filter(item => !newState.visited.includes(item))
+    if (unknownKeys.length) {
+      unknownKeys.forEach(key => {
+        state.onError(`.${state.path.concat([key]).join('.')} is unrecognized`)
+      })
+    }
   })
 }
 // Associative object validation
