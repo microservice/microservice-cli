@@ -1,35 +1,16 @@
-import OMGValidate from './validate'
-import {
-  Action,
-  Argument,
-  Command,
-  EnvironmentVariable,
-  Event,
-  Format,
-  Forward,
-  Health,
-  Http,
-  Item,
-  Lifecycle,
-  Microservice,
-  Volume,
-} from './models'
-import { getPossibleProperties } from './utils'
+import validateConfig from './validateConfig'
+import { ConfigSchema } from './types'
 
-export {
-  OMGValidate,
-  Action,
-  Argument,
-  Command,
-  EnvironmentVariable,
-  Event,
-  Format,
-  Forward,
-  Health,
-  Http,
-  Item,
-  Lifecycle,
-  Microservice,
-  Volume,
-  getPossibleProperties,
+export default function validate(config: ConfigSchema): string[] {
+  const errors = []
+
+  try {
+    validateConfig(config, message => errors.push(message))
+  } catch (error) {
+    errors.push(`Error validating config: ${error.stack}`)
+  }
+
+  return errors
 }
+
+export { ConfigSchema }

@@ -40,7 +40,7 @@ export function array(validator: Validator): Validator {
 
 export function oneOf(...validators: Validator[]): Validator {
   const validate = (value: any): boolean => {
-    if (validators.some(value)) {
+    if (validators.some((validator: Validator) => validator.validate(value))) {
       return true
     }
 

@@ -1,13 +1,11 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
 import * as v from './validators'
-import validatorFactory from './validatorFactory'
-import { ConfigSchema, INPUT_TYPES, OUTPUT_TYPES, CONTENT_TYPES, HTTP_METHODS } from '../../types'
+import { validate, validateWith, validateObject, validateAssocObject } from './validatorFactory'
+import { ConfigSchema, INPUT_TYPES, OUTPUT_TYPES, CONTENT_TYPES, HTTP_METHODS } from '../types'
 import { State, ErrorCallback } from './types'
 
 export default function validateConfig(config: ConfigSchema, rootError: ErrorCallback): void {
-  const { validate, validateWith, validateObject, validateAssocObject } = validatorFactory(rootError)
-
   if (typeof config !== 'object' || !config) {
     rootError('Config is malformed')
     // Cannot perform any other checks when confirm is malformed
@@ -15,7 +13,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     return
   }
 
-  const root: State = { path: [], value: config }
+  const root: State = { path: [], value: config, visited: [], onError: rootError }
   // +Local validator mixins
   function validateTOutput({ state }: { state: State }) {
     validateWith(state, 'type', true, v.enumValues(OUTPUT_TYPES))
@@ -36,7 +34,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       validateWith(state, 'max', false, v.number)
     })
     validateWith(state, 'required', false, v.boolean)
-    validateWith(state, 'default', true, v.any)
+    validateWith(state, 'default', false, v.any)
   }
   // -Local validator mixins
 
@@ -99,7 +97,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       validateWith(state, 'contentType', false, v.enumValues(CONTENT_TYPES))
     })
     validateAssocObject(state, 'arguments', true, validateTArgument)
-    validateAssocObject(state, 'output', false, validateTArgument)
+    validateObject(state, 'output', false, validateTArgument)
   })
 
   validateAssocObject(root, 'environment', false, ({ state }) => {

@@ -29,8 +29,7 @@
   },
   "homepage": "https://github.com/microservices/omg#readme",
   "dependencies": {
-    "ajv": "^6.10.0",
-    "underscore": "^1.9.1",
-    "yaml-js": "^0.2.3"
+    "array-to-sentence": "^2.0.0",
+    "lodash": "^4.17.15"
   }
 }
