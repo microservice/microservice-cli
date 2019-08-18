@@ -6,7 +6,7 @@ import { dockerode } from './common'
 
 interface BuildImageOptions {
   raw: boolean
-  tagName: string | null
+  name: string | null
   configPath: string
   onLog(line: string): void
 }
@@ -21,7 +21,7 @@ export default async function buildImage(options: BuildImageOptions): Promise<vo
     {
       context: path.dirname(options.configPath),
     },
-    { t: options.tagName },
+    { t: options.name },
   )
 
   const lineInterface = readline.createInterface({

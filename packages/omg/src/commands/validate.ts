@@ -1,13 +1,13 @@
 import * as logger from '~/logger'
 import { getConfigPaths, getValidationErrors, parseMicroserviceConfig } from '~/services/config'
-import { ActionPayload, ActionOptionsDefault } from '~/types'
+import { CommandPayload, CommandOptionsDefault } from '~/types'
 
-interface ActionOptions extends ActionOptionsDefault {
+interface ActionOptions extends CommandOptionsDefault {
   json?: boolean
   silent?: boolean
 }
 
-export default async function validate({ options }: ActionPayload<ActionOptions>) {
+export default async function validate({ options }: CommandPayload<ActionOptions>) {
   const configPaths = await getConfigPaths(options, true)
   const microserviceConfig = await parseMicroserviceConfig({
     configPath: configPaths.microservice,

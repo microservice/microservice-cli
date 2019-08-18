@@ -46,6 +46,7 @@ export function fatal(message: string): never {
   }
 
   process.exit(1)
+  throw new Error('Never should reach here.')
 }
 
 export function spinnerStart(message: string) {
@@ -63,11 +64,13 @@ export function spinnerStart(message: string) {
 export function spinnerSucceed(message?: string) {
   if (spinner) {
     spinner.succeed(message)
+    spinner = null
   }
 }
 
 export function spinnerFail(message?: string) {
   if (spinner) {
     spinner.fail(message)
+    spinner = null
   }
 }

@@ -1,7 +1,21 @@
 import program from 'commander'
 
 import manifest from '../package.json'
-import * as actions from './actions'
+import * as commands from './commands'
+import * as logger from './logger'
+
+function getCollector(name: string) {
+  return (val: string, memo: [string, string][]) => {
+    const eqIdx = val.indexOf('=')
+    if (eqIdx === -1) {
+      logger.fatal(`Invalid value for ${name}'s expected format of key=val: ${val}`)
+    }
+    const key = val.slice(0, eqIdx)
+    const value = val.slice(eqIdx + 1)
+    memo.push([key, value])
+    return memo
+  }
+}
 
 export default async function main() {
   let actionPromise
@@ -18,7 +32,7 @@ export default async function main() {
     .option('-s --silent', 'Only feedback is the status exit code')
     .description('Validate the structure of a `microservice.yml` in the working directory')
     .action(options => {
-      actionPromise = actions.validate({
+      actionPromise = commands.validate({
         options,
         parameters: [],
       })
@@ -32,7 +46,7 @@ export default async function main() {
       'Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a random string will be used',
     )
     .action(options => {
-      actionPromise = actions.build({
+      actionPromise = commands.build({
         options,
         parameters: [],
       })
@@ -44,14 +58,24 @@ export default async function main() {
       '-i --image <i>',
       'The name of the image to spin up the microservice, if not provided a fresh image will be build based of the `Dockerfile`',
     )
-    .option('-a --args <a>', 'Arguments to be passed to the command, must be of the form `key="val"`', [])
-    .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', [])
+    .option(
+      '-a --args <a>',
+      'Arguments to be passed to the command, must be of the form `key="val"`',
+      getCollector('args'),
+      [],
+    )
+    .option(
+      '-e --envs <e>',
+      'Environment variables to be passed to run environment, must be of the form `key="val"`',
+      getCollector('envs'),
+      [],
+    )
     .option('-r --raw', 'All logging is suppressed expect for the output of the action.')
     .description(
       'Run actions defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
     )
     .action(async (action, options) => {
-      actionPromise = actions.run({
+      actionPromise = commands.run({
         options,
         parameters: [action],
       })
@@ -59,14 +83,24 @@ export default async function main() {
 
   program
     .command('subscribe <action> <event>')
-    .option('-a --args <a>', 'Arguments to be passed to the event, must be of the form `key="val"`', [])
-    .option('-e --envs <e>', 'Environment variables to be passed to run environment, must be of the form `key="val"`', [])
+    .option(
+      '-a --args <a>',
+      'Arguments to be passed to the event, must be of the form `key="val"`',
+      getCollector('args'),
+      [],
+    )
+    .option(
+      '-e --envs <e>',
+      'Environment variables to be passed to run environment, must be of the form `key="val"`',
+      getCollector('envs'),
+      [],
+    )
     .option('-r --raw', 'All logging is suppressed expect for the output of the action.')
     .description(
       'Subscribe to an event defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
     )
     .action(async (action, event, options) => {
-      actionPromise = actions.subscribe({
+      actionPromise = commands.subscribe({
         options,
         parameters: [action, event],
       })
@@ -79,7 +113,7 @@ export default async function main() {
     .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
     .description('Starts to omg-app which monitors your microservice.')
     .action(options => {
-      actionPromise = actions.ui({
+      actionPromise = commands.ui({
         options,
         parameters: [],
       })
@@ -91,7 +125,7 @@ export default async function main() {
     .option('-d --details', 'Returns detailed actions')
     .description('Lists all actions available in microservice.')
     .action(options => {
-      actionPromise = actions.list({
+      actionPromise = commands.list({
         options,
         parameters: [],
       })
