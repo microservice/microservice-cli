@@ -142,5 +142,8 @@ export default async function main() {
     process.exit(1)
   }
 
-  await actionPromise
+  await actionPromise.catch(error => {
+    logger.spinnerStop()
+    throw error
+  })
 }

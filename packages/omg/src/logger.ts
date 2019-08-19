@@ -69,6 +69,13 @@ export function spinnerStart(message: string) {
   }
 }
 
+export function spinnerStop() {
+  if (spinner) {
+    spinner.stop()
+    spinner = null
+  }
+}
+
 export function spinnerSucceed(message?: string) {
   if (spinner) {
     spinner.succeed(message)

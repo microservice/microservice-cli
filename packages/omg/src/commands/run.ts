@@ -31,4 +31,15 @@ export default async function run({ options, parameters }: CommandPayload<Action
     image: options.image,
     raw: !!options.raw,
   })
+  logger.spinnerStart('Performing Healthcheck')
+  const status = await daemon.ping()
+  if (!status) {
+    logger.spinnerFail('Healthcheck failed')
+    if (options.raw) {
+      logger.error('Healthcheck failed')
+    }
+    process.exitCode = 1
+    return
+  }
+  logger.spinnerSucceed('Healthcheck successful')
 }

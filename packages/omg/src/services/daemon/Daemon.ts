@@ -5,7 +5,7 @@ import * as logger from '~/logger'
 import { ConfigSchema } from '~/types'
 import { ConfigPaths } from '~/services/config'
 import { lifecycleDisposables } from '~/common'
-import { getImageName, getContainer } from '~/services/docker'
+import { getImageName, getContainer, pingContainer } from '~/services/docker'
 
 import buildForDaemon from './buildForDaemon'
 
@@ -69,6 +69,25 @@ export default class Daemon {
       logger.spinnerFail('Starting Docker container failed')
       throw error
     }
+  }
+
+  public async ping(): Promise<boolean> {
+    const { containerState } = this
+
+    if (!containerState) {
+      return false
+    }
+
+    const status = await pingContainer({
+      config: this.microserviceConfig,
+      container: containerState.container.id,
+      portsMap: containerState.portsMap,
+    })
+    if (!status) {
+      this.containerState = null
+    }
+
+    return status
   }
 
   // Stops gracefully (presumably.)
