@@ -13,9 +13,7 @@ export default async function build({ options }: CommandPayload<ActionOptions>) 
 
   const tagName = options.tag || (await getImageName({ configPath: configPaths.docker })).name
 
-  if (!options.raw) {
-    logger.spinnerStart('Building Docker image')
-  }
+  logger.spinnerStart('Building Docker image')
 
   try {
     await buildImage({
@@ -28,15 +26,11 @@ export default async function build({ options }: CommandPayload<ActionOptions>) 
         }
       },
     })
-    if (!options.raw) {
-      logger.spinnerSucceed(`Built Docker image with name: ${tagName}`)
-    }
+    logger.spinnerSucceed(`Built Docker image with name: ${tagName}`)
   } catch (error) {
-    if (!options.raw) {
-      logger.spinnerFail('Error building Docker image')
-      logger.error(error)
-    } else {
-      logger.error(error)
-    }
+    process.exitCode = 1
+
+    logger.spinnerFail('Error building Docker image')
+    logger.error(error)
   }
 }

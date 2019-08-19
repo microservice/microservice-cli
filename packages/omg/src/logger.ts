@@ -49,6 +49,12 @@ export function fatal(message: string): never {
   throw new Error('Never should reach here.')
 }
 
+let spinnerAllowed = true
+
+export function setSpinnerAllowed(status: boolean) {
+  spinnerAllowed = status
+}
+
 export function spinnerStart(message: string) {
   if (spinner) {
     const err = new Error('Cannot start new spinner when one is already running')
@@ -58,7 +64,9 @@ export function spinnerStart(message: string) {
     err._newSpinnerMessage = message
     throw err
   }
-  spinner = ora(message).start()
+  if (spinnerAllowed) {
+    spinner = ora(message).start()
+  }
 }
 
 export function spinnerSucceed(message?: string) {

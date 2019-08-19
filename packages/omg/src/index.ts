@@ -46,6 +46,7 @@ export default async function main() {
       'Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a random string will be used',
     )
     .action(options => {
+      logger.setSpinnerAllowed(!options.raw)
       actionPromise = commands.build({
         options,
         parameters: [],
@@ -75,6 +76,7 @@ export default async function main() {
       'Run actions defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
     )
     .action(async (action, options) => {
+      logger.setSpinnerAllowed(!options.raw)
       actionPromise = commands.run({
         options,
         parameters: [action],
@@ -100,6 +102,7 @@ export default async function main() {
       'Subscribe to an event defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
     )
     .action(async (action, event, options) => {
+      logger.setSpinnerAllowed(!options.raw)
       actionPromise = commands.subscribe({
         options,
         parameters: [action, event],
