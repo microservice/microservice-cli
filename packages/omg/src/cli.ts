@@ -18,6 +18,17 @@ mainPromise.catch(error => {
   process.exit(1)
 })
 
+function disposeDisposables() {
+  try {
+    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+    const { lifecycleDisposables } = require('./common')
+    lifecycleDisposables.dispose()
+  } catch (_) {
+    /* No Op */
+  }
+  // ^ Disposing all "handles" should exit server by itself
+}
+
 // If CTRL-C was called before or not.
 let triedToDispose = false
 process.on('SIGINT', () => {
@@ -27,14 +38,7 @@ process.on('SIGINT', () => {
   }
   triedToDispose = true
 
-  // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-  const { lifecycleDisposables } = require('./common')
-  lifecycleDisposables.dispose()
-  // ^ Disposing all "handles" should exit server by itself
+  disposeDisposables()
 })
-process.on('SIGHUP', () => {
-  // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-  const { lifecycleDisposables } = require('./common')
-  lifecycleDisposables.dispose()
-  // ^ Garbage collect sync stuff before process exit
-})
+process.on('SIGHUP', disposeDisposables)
+process.on('exit', disposeDisposables)

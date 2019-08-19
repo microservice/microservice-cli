@@ -1,3 +1,4 @@
+import execa from 'execa'
 import Dockerode from 'dockerode'
 
 import * as logger from '~/logger'
@@ -51,7 +52,9 @@ export default class Daemon {
         raw,
       })
     }
+
     logger.spinnerStart('Starting Docker container')
+
     try {
       const { container, portsMap } = await getContainer({
         envs,
@@ -69,7 +72,7 @@ export default class Daemon {
   }
 
   // Stops gracefully (presumably.)
-  public stop(): void {
+  public async stop(): Promise<void> {
     const { containerState } = this
 
     if (!containerState) {
@@ -77,9 +80,10 @@ export default class Daemon {
     }
 
     this.containerState = null
-    containerState.container.stop()
+    await containerState.container.stop()
   }
 
+  // Terminate is synchronous
   public terminate(): void {
     const { containerState } = this
 
@@ -88,7 +92,13 @@ export default class Daemon {
     }
 
     this.containerState = null
-    containerState.container.kill()
+    try {
+      execa.sync('docker', ['kill', containerState.container.id], {
+        stdio: 'ignore',
+      })
+    } catch (_) {
+      /* Ignore kill errors - If this fails, God save us. */
+    }
   }
 
   public dispose(): void {
