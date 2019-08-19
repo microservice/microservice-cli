@@ -1,8 +1,8 @@
 import validateConfig from './validateConfig'
-import { ConfigSchema } from './types'
+import { ConfigSchema, Action } from './types'
 
 export default function validate(config: ConfigSchema): string[] {
-  const errors = []
+  const errors: string[] = []
 
   try {
     validateConfig(config, message => errors.push(message))
@@ -13,4 +13,4 @@ export default function validate(config: ConfigSchema): string[] {
   return errors
 }
 
-export { ConfigSchema }
+export { ConfigSchema, Action }

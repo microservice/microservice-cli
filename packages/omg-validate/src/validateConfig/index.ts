@@ -137,7 +137,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     })
   })
 
-  validateAssocObject(root, 'health', false, ({ state }) => {
+  validateObject(root, 'health', false, ({ state }) => {
     validateObject(state, 'http', true, ({ state }) => {
       validateWith(state, 'path', true, v.string)
       validateWith(state, 'port', true, v.number)

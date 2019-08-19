@@ -1,4 +1,4 @@
-import { ConfigSchema } from 'omg-validate'
+import { Action, ConfigSchema } from 'omg-validate'
 
 export type RecordVal<T> = T extends Record<any, infer T> ? T : never
 
@@ -12,4 +12,4 @@ export interface CommandPayload<T extends CommandOptionsDefault> {
   parameters: string[]
 }
 
-export { ConfigSchema }
+export { ConfigSchema, Action as ConfigSchemaAction }

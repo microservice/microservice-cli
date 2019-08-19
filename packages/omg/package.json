@@ -28,8 +28,10 @@
     "dockerode": "^2.5.8",
     "event-kit": "^2.5.3",
     "execa": "^2.0.3",
+    "get-port": "^5.0.0",
     "git-url-parse": "^11.1.2",
     "js-yaml": "^3.13.1",
+    "lodash": "^4.17.15",
     "omg-ui": "^0.14.1",
     "omg-validate": "^0.14.1",
     "ora": "^3.4.0",
@@ -40,6 +42,7 @@
     "@types/event-kit": "^2.4.0",
     "@types/git-url-parse": "^9.0.0",
     "@types/js-yaml": "^3.12.1",
+    "@types/lodash": "^4.14.137",
     "typescript": "^3.1.6"
   }
 }

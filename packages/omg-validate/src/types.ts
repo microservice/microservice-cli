@@ -179,13 +179,10 @@ export interface ConfigSchema {
       }
     }
   >
-  health?: Record<
-    string,
-    {
-      http: {
-        path: string
-        port: number
-      }
+  health?: {
+    http: {
+      path: string
+      port: number
     }
-  >
+  }
 }

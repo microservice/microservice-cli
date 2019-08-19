@@ -1,5 +1,8 @@
+import _get from 'lodash/get'
+import * as logger from '~/logger'
 import { CommandPayload, CommandOptionsDefault } from '~/types'
 import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
+import { Daemon } from '~/services/daemon'
 
 interface ActionOptions extends CommandOptionsDefault {
   image?: string
@@ -14,5 +17,18 @@ export default async function run({ options, parameters }: CommandPayload<Action
     configPath: configPaths.microservice,
     validate: true,
   })
-  console.log('microserviceConfig', microserviceConfig)
+  const [actionName] = parameters
+  if (!actionName) {
+    logger.fatal(`No action name specified`)
+  }
+  if (!_get(microserviceConfig, ['actions', actionName])) {
+    logger.fatal(`Action '${actionName}' not found. Try 'omg list' to get a list of available actions`)
+  }
+
+  const daemon = new Daemon({ configPaths, microserviceConfig })
+  await daemon.start({
+    envs: options.envs || [],
+    image: options.image,
+    raw: !!options.raw,
+  })
 }

@@ -8,7 +8,7 @@ interface ConfigOptions {
   directory?: string
 }
 
-interface ConfigPaths {
+export interface ConfigPaths {
   docker: string
   microservice: string
 }
