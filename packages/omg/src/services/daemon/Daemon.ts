@@ -52,13 +52,13 @@ export default class Daemon {
       })
     }
     logger.spinnerStart('Starting Docker container')
-    const { container, portsMap } = await getContainer({
-      envs,
-      image: imageName,
-      config: this.microserviceConfig,
-    })
-    this.containerState = { container, portsMap }
     try {
+      const { container, portsMap } = await getContainer({
+        envs,
+        image: imageName,
+        config: this.microserviceConfig,
+      })
+      this.containerState = { container, portsMap }
       await container.start()
       logger.spinnerSucceed('Successfully started Docker container')
     } catch (error) {

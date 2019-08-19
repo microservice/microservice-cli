@@ -27,17 +27,26 @@ export default async function getContainer({ config, envs, image }: GetContainer
   }
 
   const envObj = {}
-
-  if (config.environment) {
-    Object.entries(config.environment).forEach(([name, env]) => {
-      if (env.default) {
-        envObj[name] = env.default
-      }
-    })
-  }
   envs.forEach(([name, value]) => {
     envObj[name] = value
   })
+
+  if (config.environment) {
+    const missingEnvs: string[] = []
+    Object.entries(config.environment).forEach(([name, env]) => {
+      if (env.default && !envObj[name]) {
+        envObj[name] = env.default
+      }
+      if (env.required && !envObj[name]) {
+        missingEnvs.push(name)
+      }
+    })
+
+    if (missingEnvs.length) {
+      throw new Error(`Missing environment variables: ${missingEnvs.join(', ')}`)
+    }
+  }
+
   const portsMap: Map</* container port */ number, /* host port */ number> = new Map()
   const portsExposed = {}
   const portBindings = {}
