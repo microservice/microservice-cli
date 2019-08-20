@@ -1,13 +1,14 @@
 import _get from 'lodash/get'
 import * as logger from '~/logger'
-import { CommandPayload, CommandOptionsDefault } from '~/types'
+import { Args, CommandPayload, CommandOptionsDefault } from '~/types'
 import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
+import { executeAction } from '~/services/action'
 import { Daemon } from '~/services/daemon'
 
 interface ActionOptions extends CommandOptionsDefault {
   image?: string
-  args?: [string, string][]
-  envs?: [string, string][]
+  args?: Args
+  envs?: Args
   raw?: boolean
 }
 
@@ -42,4 +43,13 @@ export default async function run({ options, parameters }: CommandPayload<Action
     return
   }
   logger.spinnerSucceed('Healthcheck successful')
+  logger.spinnerStart(`Running action '${actionName}'`)
+
+  const response = await executeAction({
+    config: microserviceConfig,
+    daemon,
+    actionName,
+    args: options.args || [],
+  })
+  console.log('response', response)
 }

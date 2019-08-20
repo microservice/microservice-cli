@@ -2,7 +2,7 @@ import execa from 'execa'
 import Dockerode from 'dockerode'
 
 import * as logger from '~/logger'
-import { ConfigSchema } from '~/types'
+import { Args, ConfigSchema } from '~/types'
 import { ConfigPaths } from '~/services/config'
 import { lifecycleDisposables } from '~/common'
 import { getImageName, getContainer, pingContainer } from '~/services/docker'
@@ -15,7 +15,7 @@ interface DaemonOptions {
 }
 
 interface DaemonStartOptions {
-  envs: [string, string][]
+  envs: Args
   image?: string | null
   raw: boolean
 }
@@ -88,6 +88,19 @@ export default class Daemon {
     }
 
     return status
+  }
+
+  public getContainerPort(sourcePort: number): number {
+    const { containerState } = this
+
+    if (!containerState) {
+      throw new Error(`Failed to getContainerPort#${sourcePort} while the container is not running`)
+    }
+    const mappedPort = containerState.portsMap.get(sourcePort)
+    if (!mappedPort) {
+      throw new Error(`Mapped port for port '${sourcePort}' not found`)
+    }
+    return mappedPort
   }
 
   // Stops gracefully (presumably.)

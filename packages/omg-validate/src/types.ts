@@ -89,7 +89,7 @@ export interface Action {
     {
       type: InputType | InputType[]
       help?: string
-      in?: 'query' | 'path' | 'requestBody'
+      in: 'query' | 'path' | 'requestBody'
       pattern?: string
       enum?: string[]
       range?: {

@@ -1,5 +1,6 @@
 import { Action, ConfigSchema } from 'omg-validate'
 
+export type Args = [string, string][]
 export type RecordVal<T> = T extends Record<any, infer T> ? T : never
 
 export interface CommandOptionsDefault {

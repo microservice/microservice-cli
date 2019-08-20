@@ -1,8 +1,8 @@
-import { CommandPayload, CommandOptionsDefault } from '~/types'
+import { Args, CommandPayload, CommandOptionsDefault } from '~/types'
 
 interface ActionOptions extends CommandOptionsDefault {
-  args?: [string, string][]
-  envs?: [string, string][]
+  args?: Args
+  envs?: Args
   raw?: boolean
 }
 

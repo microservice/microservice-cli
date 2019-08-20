@@ -28,6 +28,7 @@
     "dockerode": "^2.5.8",
     "event-kit": "^2.5.3",
     "execa": "^2.0.3",
+    "form-data": "^2.5.0",
     "get-port": "^5.0.0",
     "git-url-parse": "^11.1.2",
     "got": "^9.6.0",

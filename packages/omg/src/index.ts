@@ -3,9 +3,10 @@ import program from 'commander'
 import manifest from '../package.json'
 import * as commands from './commands'
 import * as logger from './logger'
+import { Args } from '~/types'
 
 function getCollector(name: string) {
-  return (val: string, memo: [string, string][]) => {
+  return (val: string, memo: Args) => {
     const eqIdx = val.indexOf('=')
     if (eqIdx === -1) {
       logger.fatal(`Invalid value for ${name}'s expected format of key=val: ${val}`)

@@ -2,15 +2,15 @@ import _get from 'lodash/get'
 import getPort from 'get-port'
 import Dockerode from 'dockerode'
 
-import { getHostIp } from '~/common'
-import { ConfigSchema } from '~/types'
+import { getHostIp, argsToMap } from '~/common'
+import { Args, ConfigSchema } from '~/types'
 import { getContainerPorts } from '~/services/config'
 
 import { dockerode } from './common'
 
 interface GetContainerOptions {
   config: ConfigSchema
-  envs: [string, string][]
+  envs: Args
   image: string
 }
 
@@ -28,10 +28,7 @@ export default async function getContainer({ config, envs, image }: GetContainer
     throw new Error(`Docker Image '${image}' not found with latest tag`)
   }
 
-  const envObj = {}
-  envs.forEach(([name, value]) => {
-    envObj[name] = value
-  })
+  const envObj = argsToMap(envs)
 
   if (config.environment) {
     const missingEnvs: string[] = []
