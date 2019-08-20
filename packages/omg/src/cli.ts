@@ -18,15 +18,23 @@ mainPromise.catch(error => {
   process.exit(1)
 })
 
+function spinnerStop() {
+  try {
+    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+    require('./logger').spinnerStop()
+  } catch (_) {
+    /* No Op */
+  }
+}
 function disposeDisposables() {
   try {
     // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
     const { lifecycleDisposables } = require('./common')
     lifecycleDisposables.dispose()
+    // ^ Disposing all "handles" should exit server by itself
   } catch (_) {
     /* No Op */
   }
-  // ^ Disposing all "handles" should exit server by itself
 }
 
 // If CTRL-C was called before or not.
@@ -38,6 +46,7 @@ process.on('SIGINT', () => {
   }
   triedToDispose = true
 
+  spinnerStop()
   disposeDisposables()
 })
 process.on('SIGHUP', disposeDisposables)
