@@ -51,5 +51,6 @@ export default async function run({ options, parameters }: CommandPayload<Action
     actionName,
     args: options.args || [],
   })
-  console.log('response', response)
+  logger.spinnerSucceed(`Running action '${actionName}' successfully`)
+  logger.info(`Output: ${JSON.stringify(response, null, 2)}`)
 }

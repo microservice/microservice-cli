@@ -33,7 +33,6 @@ export default async function executeAction({ daemon, config, actionName, args }
   if (action.http != null) {
     return executeHttpAction({
       daemon,
-      config,
       action,
       actionName,
       args,

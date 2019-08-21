@@ -1,3 +1,18 @@
-export default async function validateActionOutput() {
-  return false
+import { validateArgout } from 'omg-validate'
+import { ConfigSchemaAction } from '~/types'
+
+interface ValidateActionOutputOptions {
+  action: ConfigSchemaAction
+  actionName: string
+  output: any
+}
+
+export default async function validateActionOutput({ action, actionName, output }: ValidateActionOutputOptions) {
+  const errors = validateArgout(action.output as any, output)
+  if (errors.length) {
+    const error = new Error(`Output validation failed for Action#${actionName}`)
+    // @ts-ignore
+    error.messages = errors
+    throw error
+  }
 }

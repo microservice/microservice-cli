@@ -2,14 +2,14 @@ import got from 'got'
 import FormData from 'form-data'
 import querystring from 'querystring'
 
-import * as logger from '~/logger'
 import { Daemon } from '~/services/daemon'
 import { argsToMap } from '~/common'
-import { Args, ConfigSchema, ConfigSchemaAction } from '~/types'
+import { Args, ConfigSchemaAction } from '~/types'
+
+import validateActionOutput from './validateActionOutput'
 
 interface ExecuteHttpActionOptions {
   daemon: Daemon
-  config: ConfigSchema
   action: ConfigSchemaAction
   actionName: string
   args: Args
@@ -17,11 +17,10 @@ interface ExecuteHttpActionOptions {
 
 export default async function executeHttpAction({
   daemon,
-  config,
   action,
   actionName,
   args,
-}: ExecuteHttpActionOptions): Promise<void> {
+}: ExecuteHttpActionOptions): Promise<any> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { path, method, port, contentType } = action.http!
   const containerPort = daemon.getContainerPort(port)
@@ -54,7 +53,9 @@ export default async function executeHttpAction({
   }
 
   let payload: any
-  const headers: Record<string, string> = {}
+  const headers: Record<string, string> = {
+    Accept: 'application/json,text/plain,*/*',
+  }
   if (contentType === 'application/x-www-form-urlencoded') {
     payload = querystring.stringify(bodyArgs)
     headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -88,5 +89,18 @@ export default async function executeHttpAction({
     throw error
   }
 
-  logger.info('hi ' + response.body)
+  let parsed = response.body
+  try {
+    parsed = JSON.parse(parsed)
+  } catch (_) {
+    /* No Op */
+  }
+
+  validateActionOutput({
+    action,
+    actionName,
+    output: parsed,
+  })
+
+  return parsed
 }
