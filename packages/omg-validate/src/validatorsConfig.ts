@@ -1,4 +1,3 @@
-import arrayToSentence from 'array-to-sentence'
 import { Validator } from './types'
 
 export const string: Validator = {
@@ -19,44 +18,4 @@ export const boolean: Validator = {
 export const any: Validator = {
   message: 'defined',
   validate: () => true,
-}
-
-export function array(validator: Validator): Validator {
-  const validate = (value: any): boolean => {
-    if (!Array.isArray(value) || !value.every(validator.validate)) {
-      return false
-    }
-    return true
-  }
-
-  let origMessage = validator.message
-  if (origMessage.startsWith('a ')) {
-    origMessage = origMessage.slice(2)
-  }
-  const message = `an array of ${origMessage}`
-
-  return { message, validate }
-}
-
-export function oneOf(...validators: Validator[]): Validator {
-  const validate = (value: any): boolean => {
-    if (validators.some((validator: Validator) => validator.validate(value))) {
-      return true
-    }
-
-    return false
-  }
-  const messagesCombined = arrayToSentence(validators.map(item => item.message), {
-    lastSeparator: ' or ',
-  })
-  const message = `one of ${messagesCombined}`
-
-  return { message, validate }
-}
-
-export function enumValues(values: string[]): Validator {
-  const validate = (value: any): boolean => values.includes(value)
-  const message = `one of ${values}`
-
-  return { validate, message }
 }

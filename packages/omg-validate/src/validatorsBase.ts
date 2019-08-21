@@ -1,6 +1,7 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
 import _get from 'lodash/get'
+import arrayToSentence from 'array-to-sentence'
 import { State, Validator, ErrorCallback } from './types'
 
 function validate(
@@ -42,9 +43,9 @@ function validateObject(
   validate(newState, prop, required, ({ state, error }) => {
     if (typeof state.value !== 'object' || !state.value) {
       error('must be a valid object')
-    } else {
-      callback({ state, error })
+      return
     }
+    callback({ state, error })
     const currentKeys = Object.keys(state.value)
     const unknownKeys = currentKeys.filter(item => !newState.visited.includes(item))
     if (unknownKeys.length) {
@@ -76,4 +77,44 @@ function validateWith(state: State, prop: string, required: boolean, validator: 
   })
 }
 
-export { validate, validateWith, validateObject, validateAssocObject }
+function array(validator: Validator): Validator {
+  const callback = (value: any): boolean => {
+    if (!Array.isArray(value) || !value.every(validator.validate)) {
+      return false
+    }
+    return true
+  }
+
+  let origMessage = validator.message
+  if (origMessage.startsWith('a ')) {
+    origMessage = origMessage.slice(2)
+  }
+  const message = `an array of ${origMessage}`
+
+  return { message, validate: callback }
+}
+
+function oneOf(...validators: Validator[]): Validator {
+  const callback = (value: any): boolean => {
+    if (validators.some((validator: Validator) => validator.validate(value))) {
+      return true
+    }
+
+    return false
+  }
+  const messagesCombined = arrayToSentence(validators.map(item => item.message), {
+    lastSeparator: ' or ',
+  })
+  const message = `one of ${messagesCombined}`
+
+  return { message, validate: callback }
+}
+
+function enumValues(values: string[]): Validator {
+  const callback = (value: any): boolean => values.includes(value)
+  const message = `one of ${values}`
+
+  return { message, validate: callback }
+}
+
+export { validate, validateWith, validateObject, validateAssocObject, array, enumValues, oneOf }

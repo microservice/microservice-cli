@@ -9,6 +9,7 @@ export type InputType =
   | 'object'
   | 'boolean'
   | 'path'
+  | 'enum'
   | 'any'
 export const INPUT_TYPES: InputType[] = [
   'int',

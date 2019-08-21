@@ -1,7 +1,7 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
 import * as v from './validatorsConfig'
-import { validate, validateWith, validateObject, validateAssocObject } from './validatorsBase'
+import { validate, validateWith, validateObject, validateAssocObject, enumValues, oneOf, array } from './validatorsBase'
 import { ConfigSchema, INPUT_TYPES, OUTPUT_TYPES, CONTENT_TYPES, HTTP_METHODS, State, ErrorCallback } from './types'
 
 export default function validateConfig(config: ConfigSchema, rootError: ErrorCallback): void {
@@ -15,19 +15,19 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   const root: State = { path: [], value: config, visited: [], onError: rootError }
   // +Local validator mixins
   function validateTOutput({ state }: { state: State }) {
-    validateWith(state, 'type', true, v.enumValues(OUTPUT_TYPES))
-    validateWith(state, 'contentType', false, v.enumValues(CONTENT_TYPES))
+    validateWith(state, 'type', true, enumValues(OUTPUT_TYPES))
+    validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
     validateAssocObject(state, 'properties', false, ({ state }) => {
-      validateWith(state, 'type', true, v.enumValues(OUTPUT_TYPES))
+      validateWith(state, 'type', true, enumValues(OUTPUT_TYPES))
       validateWith(state, 'help', false, v.string)
     })
   }
   function validateTArgument({ state }: { state: State }) {
     validateWith(state, 'help', false, v.string)
-    validateWith(state, 'type', true, v.oneOf(v.enumValues(INPUT_TYPES), v.array(v.enumValues(INPUT_TYPES))))
-    validateWith(state, 'in', true, v.enumValues(['query', 'path', 'requestBody']))
+    validateWith(state, 'type', true, oneOf(enumValues(INPUT_TYPES), array(enumValues(INPUT_TYPES))))
+    validateWith(state, 'in', true, enumValues(['query', 'path', 'requestBody']))
     validateWith(state, 'pattern', false, v.string)
-    validateWith(state, 'enum', false, v.array(v.string))
+    validateWith(state, 'enum', false, array(v.string))
     validateObject(state, 'range', false, ({ state }) => {
       validateWith(state, 'min', false, v.number)
       validateWith(state, 'max', false, v.number)
@@ -64,7 +64,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   validate(root, 'lifecycle', false, ({ state }) => {
     ;['startup', 'shutdown'].forEach(lifeCycle => {
       validate(state, lifeCycle, false, ({ state }) => {
-        validateWith(state, 'command', true, v.oneOf(v.string, v.array(v.string)))
+        validateWith(state, 'command', true, oneOf(v.string, array(v.string)))
       })
     })
   })
@@ -72,7 +72,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   validateAssocObject(root, 'actions', true, ({ state }) => {
     validateWith(state, 'help', false, v.string)
     validateObject(state, 'format', false, ({ state }) => {
-      validateWith(state, 'command', true, v.oneOf(v.string, v.array(v.string)))
+      validateWith(state, 'command', true, oneOf(v.string, array(v.string)))
     })
     validateAssocObject(state, 'events', false, ({ state }) => {
       validateWith(state, 'help', false, v.string)
@@ -91,16 +91,16 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     validateWith(state, 'rpc', false, v.any)
     validateObject(state, 'http', false, ({ state }) => {
       validateWith(state, 'path', true, v.string)
-      validateWith(state, 'method', true, v.enumValues(HTTP_METHODS))
+      validateWith(state, 'method', true, enumValues(HTTP_METHODS))
       validateWith(state, 'port', true, v.number)
-      validateWith(state, 'contentType', false, v.enumValues(CONTENT_TYPES))
+      validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
     })
     validateAssocObject(state, 'arguments', false, validateTArgument)
     validateObject(state, 'output', false, validateTOutput)
   })
 
   validateAssocObject(root, 'environment', false, ({ state }) => {
-    validateWith(state, 'type', true, v.oneOf(v.enumValues(INPUT_TYPES), v.array(v.enumValues(INPUT_TYPES))))
+    validateWith(state, 'type', true, oneOf(enumValues(INPUT_TYPES), array(enumValues(INPUT_TYPES))))
     validateWith(state, 'pattern', false, v.string)
     validateWith(state, 'required', false, v.boolean)
     validateWith(state, 'help', false, v.string)
@@ -119,8 +119,8 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   })
 
   validateObject(root, 'scale', false, ({ state }) => {
-    validateWith(state, 'metric_type', false, v.enumValues(['cpu', 'mem']))
-    validateWith(state, 'metric_agg', false, v.enumValues(['avg', 'min', 'max', 'mean', 'mode']))
+    validateWith(state, 'metric_type', false, enumValues(['cpu', 'mem']))
+    validateWith(state, 'metric_agg', false, enumValues(['avg', 'min', 'max', 'mean', 'mode']))
     validateWith(state, 'metric_interval', false, v.number)
     validateWith(state, 'metric_target', false, v.number)
     validateWith(state, 'min', false, v.number)
