@@ -7,7 +7,7 @@ interface ValidateActionOutputOptions {
   output: any
 }
 
-export default async function validateActionOutput({ action, actionName, output }: ValidateActionOutputOptions) {
+export default function validateActionOutput({ action, actionName, output }: ValidateActionOutputOptions) {
   const errors = validateArgout(action.output as any, output)
   if (errors.length) {
     const error = new Error(`Output validation failed for Action#${actionName}`)
