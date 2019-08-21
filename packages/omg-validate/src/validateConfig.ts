@@ -1,9 +1,8 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
-import * as v from './validators'
+import * as v from './validatorsConfig'
 import { validate, validateWith, validateObject, validateAssocObject } from './validatorsBase'
-import { ConfigSchema, INPUT_TYPES, OUTPUT_TYPES, CONTENT_TYPES, HTTP_METHODS } from '../types'
-import { State, ErrorCallback } from './types'
+import { ConfigSchema, INPUT_TYPES, OUTPUT_TYPES, CONTENT_TYPES, HTTP_METHODS, State, ErrorCallback } from './types'
 
 export default function validateConfig(config: ConfigSchema, rootError: ErrorCallback): void {
   if (typeof config !== 'object' || !config) {
