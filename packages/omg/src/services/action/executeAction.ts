@@ -18,7 +18,7 @@ export default async function executeAction({ daemon, config, actionName, args }
   // Validate all actions have requested arguments
   const argsMap = argsToMap(args)
   const missingArgs: string[] = []
-  Object.entries(action.arguments).forEach(([argName, arg]) => {
+  Object.entries(action.arguments || {}).forEach(([argName, arg]) => {
     if (!arg.default && arg.required && !argsMap[argName]) {
       missingArgs.push(argName)
     }

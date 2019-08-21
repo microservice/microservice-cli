@@ -96,7 +96,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       validateWith(state, 'port', true, v.number)
       validateWith(state, 'contentType', false, v.enumValues(CONTENT_TYPES))
     })
-    validateAssocObject(state, 'arguments', true, validateTArgument)
+    validateAssocObject(state, 'arguments', false, validateTArgument)
     validateObject(state, 'output', false, validateTOutput)
   })
 

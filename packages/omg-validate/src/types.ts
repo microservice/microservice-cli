@@ -84,7 +84,7 @@ export interface Action {
     port: number
     contentType?: ContentType
   }
-  arguments: Record<
+  arguments?: Record<
     string,
     {
       type: InputType | InputType[]

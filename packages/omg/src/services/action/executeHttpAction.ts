@@ -1,7 +1,8 @@
 import got from 'got'
-import _omit from 'lodash/omit'
 import FormData from 'form-data'
 import querystring from 'querystring'
+
+import * as logger from '~/logger'
 import { Daemon } from '~/services/daemon'
 import { argsToMap } from '~/common'
 import { Args, ConfigSchema, ConfigSchemaAction } from '~/types'
@@ -32,7 +33,7 @@ export default async function executeHttpAction({
 
   let uri = `http://localhost:${containerPort}${path}`
 
-  Object.entries(action.arguments).forEach(([argName, arg]) => {
+  Object.entries(action.arguments || {}).forEach(([argName, arg]) => {
     const argValue = argsMap[argName] || arg.default
     if (arg.in === 'query' && argValue) {
       hasQueryArgs = true
@@ -74,18 +75,18 @@ export default async function executeHttpAction({
       method,
       headers,
       body: payload,
-      // retry: 0,
-      // ^ Disable retry?
+      retry: 0,
+      // ^ Disable retry
       followRedirect: false,
       throwHttpErrors: false,
     })
   } catch (error) {
     if (error && typeof error === 'object') {
       // Strip any sensitive info from error message
-      throw _omit(error, 'gotOptions')
+      error.gotOptions = undefined
     }
     throw error
   }
 
-  console.log(response.body)
+  logger.info('hi ' + response.body)
 }

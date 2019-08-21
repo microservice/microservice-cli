@@ -29,7 +29,7 @@ export default async function list({ options }: CommandPayload<ActionOptions>) {
       logger.info(`${i === 0 ? '' : '\n'}${actionName}: ${action.help ? action.help.trim() : 'No help provided'}`)
       const { events, http } = action
       if (http) {
-        const args = Object.entries(action.arguments)
+        const args = Object.entries(action.arguments || {})
         let uri = `:${http.port}${http.path}`
         const query = args
           .filter(([_, arg]) => arg.in === 'query')
