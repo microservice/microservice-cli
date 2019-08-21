@@ -21,7 +21,9 @@ export default async function pingContainer({ container, config, portsMap }: Pin
 
   const { health } = config
   if (!health || !health.http) {
-    // Assume it works I guess...
+    // Assume it works I guess
+    // Wait 2 seconds, just in case...
+    await new Promise(resolve => setTimeout(resolve, 2000))
     return true
   }
 
