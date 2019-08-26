@@ -89,11 +89,21 @@ export default async function executeHttpAction({
     throw error
   }
 
+  // Non 2XX Response
+  if (response.statusCode < 200 || response.statusCode > 299) {
+    const err = new Error(`Action#${actionName} returned non-OK Http Status ${response.statusCode}`)
+    // @ts-ignore
+    err.response = response.body
+    throw err
+  }
+
   let parsed = response.body
-  try {
-    parsed = JSON.parse(parsed)
-  } catch (_) {
-    /* No Op */
+  if (['map', 'object'].includes(action.output.type as any)) {
+    try {
+      parsed = JSON.parse(parsed)
+    } catch (_) {
+      throw new Error(`Action#${actionName} returned non-JSON output`)
+    }
   }
 
   validateActionOutput({

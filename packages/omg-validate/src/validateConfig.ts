@@ -17,7 +17,6 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   function validateTOutput({ state }: { state: State }) {
     validateWith(state, 'help', false, v.string)
     validateWith(state, 'type', true, enumValues(OUTPUT_TYPES))
-    validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
     validateAssocObject(state, 'properties', state.value.type === 'object', ({ state }) => {
       validateTOutput({ state })
     })
@@ -84,11 +83,19 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       validateWith(state, 'help', false, v.string)
       validateObject(state, 'http', true, ({ state }) => {
         validateWith(state, 'port', true, v.number)
-        validateWith(state, 'subscribe', true, v.any)
-        validateWith(state, 'unsubscribe', false, v.any)
+        validateObject(state, 'subscribe', true, ({ state }) => {
+          validateWith(state, 'path', true, v.string)
+          validateWith(state, 'method', true, enumValues(HTTP_METHODS))
+          validateWith(state, 'contentType', true, enumValues(CONTENT_TYPES))
+        })
+        validateObject(state, 'subscribe', false, ({ state }) => {
+          validateWith(state, 'path', true, v.string)
+          validateWith(state, 'method', true, enumValues(HTTP_METHODS))
+        })
       })
       validateObject(state, 'output', false, ({ state }) => {
         validateWith(state, 'actions', false, v.any)
+        validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
         validateTOutput({ state })
       })
       validateAssocObject(state, 'arguments', false, validateTArgument)
@@ -116,7 +123,10 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
     })
     validateAssocObject(state, 'arguments', false, validateTArgument)
-    validateObject(state, 'output', false, validateTOutput)
+    validateObject(state, 'output', false, ({ state }) => {
+      validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
+      validateTOutput({ state })
+    })
   })
 
   validateAssocObject(root, 'environment', false, ({ state }) => {

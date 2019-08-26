@@ -46,24 +46,42 @@ export const CONTENT_TYPES: ContentType[] = ['application/json', 'application/x-
 export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 export const HTTP_METHODS: HttpMethod[] = ['get', 'post', 'put', 'delete', 'patch']
 
+export interface Argument {
+  type: InputType | InputType[]
+  help?: string
+  in: 'query' | 'path' | 'requestBody'
+  pattern?: string
+  enum?: string[]
+  range?: {
+    min?: number
+    max?: number
+  }
+  required?: boolean
+  default: any // <== default value for the argument
+}
+
 export interface Action {
   help?: string
-  format?: Record<
-    string,
-    {
-      command: string | string[]
-    }
-  >
+  format?: {
+    command: string | string[]
+  }
   events?: Record<
     string,
     {
       help?: string
       http: {
         port: number
-        subscribe: Record<string, any> // TODO: Type this properly
-        unsubscribe?: Record<string, any> // TODO: Type this properly
+        subscribe: {
+          path: string
+          method: HttpMethod
+          contentType: ContentType
+        }
+        unsubscribe?: {
+          path: string
+          method: HttpMethod
+        }
       }
-      output?: {
+      output: {
         actions?: Record<string, any> // TODO: Type this properly
         type?: OutputType
         contentType?: ContentType
@@ -75,33 +93,33 @@ export interface Action {
           }
         >
       }
-      arguments?: Record<string, any> // TODO: Type this properly
+      arguments?: Record<string, Argument> // TODO: Type this properly
     }
   >
-  rpc?: Record<string, any> // TODO: Type this properly
+  rpc?: {
+    port: number
+    framework: {
+      grpc: {
+        version: number
+        proto: {
+          path: string
+        }
+      }
+    }
+    client: {
+      endpoint: string
+      port: number
+      tls: boolean
+    }
+  }
   http?: {
     path: string
     method: HttpMethod
     port: number
     contentType?: ContentType
   }
-  arguments?: Record<
-    string,
-    {
-      type: InputType | InputType[]
-      help?: string
-      in: 'query' | 'path' | 'requestBody'
-      pattern?: string
-      enum?: string[]
-      range?: {
-        min?: number
-        max?: number
-      }
-      required?: boolean
-      default: any // <== default value for the argument
-    }
-  >
-  output?: {
+  arguments?: Record<string, Argument>
+  output: {
     type?: OutputType
     contentType?: ContentType
     properties?: Record<
