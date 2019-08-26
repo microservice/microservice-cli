@@ -27,9 +27,6 @@ export default async function executeAction({ daemon, config, actionName, args }
     throw new Error(`Missing arguments for Action: ${missingArgs.join(', ')}`)
   }
 
-  if (action.format != null) {
-    console.log(action.format)
-  }
   if (action.http != null) {
     return executeHttpAction({
       daemon,
