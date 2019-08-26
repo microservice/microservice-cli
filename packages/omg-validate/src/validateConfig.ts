@@ -15,18 +15,18 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   const root: State = { path: [], value: config, visited: [], onError: rootError }
   // +Local validator mixins
   function validateTOutput({ state }: { state: State }) {
+    validateWith(state, 'help', false, v.string)
     validateWith(state, 'type', true, enumValues(OUTPUT_TYPES))
     validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
-    validateAssocObject(state, 'properties', false, ({ state }) => {
-      validateWith(state, 'type', true, enumValues(OUTPUT_TYPES))
-      validateWith(state, 'help', false, v.string)
+    validateAssocObject(state, 'properties', state.value.type === 'object', ({ state }) => {
+      validateTOutput({ state })
     })
   }
   function validateTArgument({ state }: { state: State }) {
     validateWith(state, 'help', false, v.string)
     validateWith(state, 'type', true, oneOf(enumValues(INPUT_TYPES), array(enumValues(INPUT_TYPES))))
     validateWith(state, 'in', true, enumValues(['query', 'path', 'requestBody']))
-    validateWith(state, 'pattern', false, v.string)
+
     validateWith(state, 'enum', false, array(v.string))
     validateObject(state, 'range', false, ({ state }) => {
       validateWith(state, 'min', false, v.number)
@@ -34,6 +34,10 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     })
     validateWith(state, 'required', false, v.boolean)
     validateWith(state, 'default', false, v.any)
+
+    validateAssocObject(state, 'properties', state.value.type === 'object', ({ state }) => {
+      validateTArgument({ state })
+    })
   }
   // -Local validator mixins
 
@@ -62,10 +66,12 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   })
 
   validate(root, 'lifecycle', false, ({ state }) => {
-    ;['startup', 'shutdown'].forEach(lifeCycle => {
-      validate(state, lifeCycle, false, ({ state }) => {
-        validateWith(state, 'command', true, oneOf(v.string, array(v.string)))
-      })
+    validate(state, 'startup', false, ({ state }) => {
+      validateWith(state, 'command', true, oneOf(v.string, array(v.string)))
+    })
+    validate(state, 'shutdown', false, ({ state }) => {
+      validateWith(state, 'command', true, oneOf(v.string, array(v.string)))
+      validateWith(state, 'timeout', false, v.number)
     })
   })
 
@@ -87,8 +93,22 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       })
       validateAssocObject(state, 'arguments', false, validateTArgument)
     })
-    // TODO: Type this
-    validateWith(state, 'rpc', false, v.any)
+    validateObject(state, 'rpc', false, ({ state }) => {
+      validateWith(state, 'port', true, v.number)
+      validateObject(state, 'framework', true, ({ state }) => {
+        validateObject(state, 'grpc', true, ({ state }) => {
+          validateWith(state, 'version', true, v.number)
+          validateObject(state, 'proto', true, ({ state }) => {
+            validateWith(state, 'path', true, v.string)
+          })
+        })
+      })
+      validateObject(state, 'client', true, ({ state }) => {
+        validateWith(state, 'endpoint', true, v.string)
+        validateWith(state, 'port', true, v.number)
+        validateWith(state, 'tls', true, v.boolean)
+      })
+    })
     validateObject(state, 'http', false, ({ state }) => {
       validateWith(state, 'path', true, v.string)
       validateWith(state, 'method', true, enumValues(HTTP_METHODS))
@@ -103,8 +123,8 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     validateWith(state, 'type', true, oneOf(enumValues(INPUT_TYPES), array(enumValues(INPUT_TYPES))))
     validateWith(state, 'pattern', false, v.string)
     validateWith(state, 'required', false, v.boolean)
+    validateWith(state, 'sensitive', false, v.boolean)
     validateWith(state, 'help', false, v.string)
-    validateWith(state, 'help', false, v.any)
   })
 
   validateAssocObject(root, 'volumes', false, ({ state }) => {
@@ -129,7 +149,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     validateWith(state, 'cooldown', false, v.number)
   })
 
-  validateAssocObject(root, 'forward', false, ({ state }) => {
+  validateAssocObject(root, 'forwards', false, ({ state }) => {
     validateObject(state, 'http', true, ({ state }) => {
       validateWith(state, 'path', true, v.string)
       validateWith(state, 'port', true, v.number)
