@@ -1,4 +1,6 @@
 import got from 'got'
+
+import waitForHttpPortOpen from '~/helpers/waitForHttpPortOpen'
 import { ConfigSchema } from '~/types'
 import { dockerode } from './common'
 
@@ -21,6 +23,15 @@ export default async function pingContainer({ container, config, portsMap }: Pin
 
   const { health } = config
   if (!health || !health.http) {
+    const firstPort = Array.from(portsMap.values())[0]
+    if (firstPort) {
+      const status = await waitForHttpPortOpen(firstPort, 10)
+      if (status) {
+        // Port opened up
+        return true
+      }
+    }
+
     // Assume it works I guess
     // Wait 2 seconds, just in case...
     await new Promise(resolve => setTimeout(resolve, 2000))
