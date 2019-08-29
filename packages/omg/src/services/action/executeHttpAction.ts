@@ -3,8 +3,8 @@ import FormData from 'form-data'
 import querystring from 'querystring'
 
 import { Daemon } from '~/services/daemon'
-import { argsToMap } from '~/common'
 import { Args, ConfigSchemaAction } from '~/types'
+import argsToMap from '~/helpers/argsToMap'
 
 import validateActionOutput from './validateActionOutput'
 

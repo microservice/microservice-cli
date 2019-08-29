@@ -2,7 +2,8 @@ import _get from 'lodash/get'
 import getPort from 'get-port'
 import Dockerode from 'dockerode'
 
-import { getHostIp, argsToMap } from '~/common'
+import getHostIp from '~/helpers/getHostIp'
+import argsToMap from '~/helpers/argsToMap'
 import { Args, ConfigSchema } from '~/types'
 import { getContainerPorts } from '~/services/config'
 

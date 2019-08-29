@@ -1,6 +1,6 @@
 import { Daemon } from '~/services/daemon'
-import { argsToMap } from '~/common'
 import { Args, ConfigSchema } from '~/types'
+import argsToMap from '~/helpers/argsToMap'
 import executeHttpAction from './executeHttpAction'
 
 interface ExecuteActionOptions {
