@@ -1,6 +1,6 @@
 import * as logger from '~/logger'
-import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 import { CommandPayload, CommandOptionsDefault } from '~/types'
+import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 
 interface ActionOptions extends CommandOptionsDefault {
   json?: boolean

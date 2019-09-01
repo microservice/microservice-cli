@@ -20,8 +20,7 @@ export default async function executeHttpAction({
   action,
   actionName,
   args,
-}: ExecuteHttpActionOptions): Promise<any> {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+}: ExecuteHttpActionOptions): Promise<{ response: any; disposable: null }> {
   const { path, method, port, contentType } = action.http!
   const containerPort = daemon.getContainerPort(port)
 
@@ -112,5 +111,8 @@ export default async function executeHttpAction({
     output: parsed,
   })
 
-  return parsed
+  return {
+    response: parsed,
+    disposable: null,
+  }
 }

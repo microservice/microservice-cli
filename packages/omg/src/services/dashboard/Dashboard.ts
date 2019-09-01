@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+// TODO: Remove ^ suppression when class is implemented
 import { ConfigSchema } from '~/types'
 import { ConfigPaths } from '~/services/config'
 import { lifecycleDisposables } from '~/common'

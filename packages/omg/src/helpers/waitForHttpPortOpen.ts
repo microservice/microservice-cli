@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+
 import http from 'http'
 
 const WAIT_MS = 250

@@ -23,12 +23,7 @@ module.exports = {
     'no-underscore-dangle': 'warn',
     '@typescript-eslint/explicit-member-accessibility': 'warn',
     '@typescript-eslint/camelcase': 'warn',
-
-    // TODO: Eventually re-enable these after codebase is migrated
-    'no-throw-literal': 'warn',
-    '@typescript-eslint/interface-name-prefix': 'warn',
-    'no-await-in-loop': 'warn',
-    'class-methods-use-this': 'warn',
+    '@typescript-eslint/no-non-null-assertion': 'warn',
   },
   env: {
     jest: true,

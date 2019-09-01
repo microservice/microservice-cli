@@ -1,9 +1,9 @@
 import _get from 'lodash/get'
 import * as logger from '~/logger'
-import { Args, CommandPayload, CommandOptionsDefault } from '~/types'
-import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 import { executeAction } from '~/services/action'
 import { Daemon } from '~/services/daemon'
+import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
+import { Args, CommandPayload, CommandOptionsDefault, ConfigSchemaAction } from '~/types'
 
 interface ActionOptions extends CommandOptionsDefault {
   image?: string
@@ -22,8 +22,11 @@ export default async function run({ options, parameters }: CommandPayload<Action
   if (!actionName) {
     logger.fatal(`No action name specified`)
   }
-  if (!_get(microserviceConfig, ['actions', actionName])) {
+  const actionConfig: ConfigSchemaAction = _get(microserviceConfig, ['actions', actionName])
+  if (!actionConfig) {
     logger.fatal(`Action '${actionName}' not found. Try 'omg list' to get a list of available actions`)
+  } else if (actionConfig.events) {
+    logger.fatal(`Action '${actionName}' is an event action. Try 'omg subscribe ${actionName} [event]' instead.`)
   }
 
   const daemon = new Daemon({ configPaths, microserviceConfig })
@@ -33,8 +36,7 @@ export default async function run({ options, parameters }: CommandPayload<Action
     raw: !!options.raw,
   })
   logger.spinnerStart('Performing Healthcheck')
-  const status = await daemon.ping()
-  if (!status) {
+  if (!(await daemon.ping())) {
     logger.spinnerFail('Healthcheck failed')
     if (options.raw) {
       logger.error('Healthcheck failed')
@@ -45,12 +47,14 @@ export default async function run({ options, parameters }: CommandPayload<Action
   logger.spinnerSucceed('Healthcheck successful')
   logger.spinnerStart(`Running action '${actionName}'`)
 
-  const response = await executeAction({
+  await executeAction({
     config: microserviceConfig,
     daemon,
     actionName,
     args: options.args || [],
+    callback(response) {
+      logger.info(`Output: ${JSON.stringify(response, null, 2)}`)
+    },
   })
   logger.spinnerSucceed(`Running action '${actionName}' successfully`)
-  logger.info(`Output: ${JSON.stringify(response, null, 2)}`)
 }
