@@ -23,13 +23,15 @@ export default class DashboardHttpServer {
 
     this.subscriptions.add(this.emitter)
   }
+  public getPort(): number {
+    return this.port
+  }
   public async start(): Promise<void> {
     const app = express()
 
     await new Promise(resolve => {
       this.serverRef = app.listen({ port: this.port, hostname: '127.0.0.1' }, resolve)
     })
-    logger.info(`Server is running at http://localhost:${this.port}/`)
   }
   public onDidDestroy(callback: () => void): void {
     this.emitter.on('did-destroy', callback)

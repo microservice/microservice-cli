@@ -38,7 +38,7 @@ export default class Dashboard {
     lifecycleDisposables.add(this)
   }
 
-  public async start(options: DashboardStartOptions): Promise<void> {
+  public async start(options: DashboardStartOptions): Promise<{ port: number }> {
     const httpServer = new DashboardHttpServer({
       port: options.port || (await getPort({ port: 9000 })),
     })
@@ -52,6 +52,8 @@ export default class Dashboard {
 
     this.httpServer = httpServer
     this.subscriptions = subscriptions
+
+    return { port: httpServer.getPort() }
   }
 
   public async stop(): Promise<void> {

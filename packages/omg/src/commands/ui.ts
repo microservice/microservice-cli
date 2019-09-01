@@ -1,3 +1,6 @@
+import open from 'open'
+
+import * as logger from '~/logger'
 import { Dashboard } from '~/services/dashboard'
 import { CommandPayload, CommandOptionsDefault } from '~/types'
 import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
@@ -15,12 +18,19 @@ export default async function ui({ options }: CommandPayload<ActionOptions>) {
     validate: true,
   })
 
+  logger.spinnerStart('Booting up UI')
   const dashboard = new Dashboard({
     inheritEnv: !!options.inheritEnv,
     configPaths,
     microserviceConfig,
   })
-  dashboard.start({
+  const { port } = await dashboard.start({
     port: parseInt(options.port || '', 10) || null,
   })
+
+  const serverUrl = `http://localhost:${port}/`
+  logger.spinnerSucceed(`Server is running at ${serverUrl}`)
+  if (options.open) {
+    await open(serverUrl)
+  }
 }
