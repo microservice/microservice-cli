@@ -13,7 +13,7 @@ interface ExecuteActionOptions {
   actionName: string
   eventName?: string
   args: Args
-  callback: (payload: any) => void
+  callback: (payload: any) => void | Promise<void>
 }
 
 export default async function executeAction({
