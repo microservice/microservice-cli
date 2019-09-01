@@ -3,13 +3,9 @@
   "version": "0.14.1",
   "scripts": {
     "build": "parcel build src/index.html --out-dir lib",
-    "watch": "parcel watch src/index.html --out-dir lib",
-    "prepare": "yarn build"
+    "watch": "parcel watch src/index.html --out-dir lib --no-hmr"
   },
-  "dependencies": {
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
@@ -19,7 +15,10 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^1.7.0",
-    "parcel-bundler": "^1.12.3"
+    "normalize.css": "^8.0.1",
+    "parcel-bundler": "^1.12.3",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   },
   "repository": {
     "type": "git",

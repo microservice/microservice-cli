@@ -56,5 +56,5 @@ export default async function run({ options, parameters }: CommandPayload<Action
       logger.info(`Output: ${JSON.stringify(response, null, 2)}`)
     },
   })
-  logger.spinnerSucceed(`Running action '${actionName}' successfully`)
+  logger.spinnerSucceed(`Ran action '${actionName}' successfully`)
 }
