@@ -27,6 +27,9 @@ export default async function executeHttpAction({
   let hasQueryArgs = false
   const bodyArgs: Record<string, any> = {}
   const queryArgs: Record<string, any> = {}
+  const headers: Record<string, string> = {
+    Accept: 'application/json,text/plain,*/*',
+  }
   const argsMap = argsToMap(args)
 
   let uri = `http://localhost:${containerPort}${path}`
@@ -44,6 +47,9 @@ export default async function executeHttpAction({
       // Replace arg with empty value if non-existent
       uri.replace(`{${argName}}`, argValue || '')
     }
+    if (arg.in === 'header') {
+      headers[argName] = String(argValue)
+    }
   })
 
   if (hasQueryArgs) {
@@ -52,9 +58,6 @@ export default async function executeHttpAction({
   }
 
   let payload: any
-  const headers: Record<string, string> = {
-    Accept: 'application/json,text/plain,*/*',
-  }
   if (contentType === 'application/x-www-form-urlencoded') {
     payload = querystring.stringify(bodyArgs)
     headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'

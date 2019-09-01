@@ -24,7 +24,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   function validateTArgument({ state }: { state: State }) {
     validateWith(state, 'help', false, v.string)
     validateWith(state, 'type', true, oneOf(enumValues(INPUT_TYPES), array(enumValues(INPUT_TYPES))))
-    validateWith(state, 'in', true, enumValues(['query', 'path', 'requestBody']))
+    validateWith(state, 'in', true, enumValues(['query', 'path', 'requestBody', 'header']))
 
     validateWith(state, 'enum', false, array(v.string))
     validateObject(state, 'range', false, ({ state }) => {

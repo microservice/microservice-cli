@@ -49,7 +49,7 @@ export const HTTP_METHODS: HttpMethod[] = ['get', 'post', 'put', 'delete', 'patc
 export interface Argument {
   type: InputType | InputType[]
   help?: string
-  in: 'query' | 'path' | 'requestBody'
+  in: 'query' | 'path' | 'requestBody' | 'header'
   pattern?: string
   enum?: string[]
   range?: {
