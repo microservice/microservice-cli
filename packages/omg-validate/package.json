@@ -2,10 +2,10 @@
   "name": "omg-validate",
   "version": "0.14.1",
   "description": "OMG microservice.yml validation library",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "typings": "src/index.ts",
   "scripts": {
-    "build": "sb-babel-cli src -o dist --typescript",
+    "build": "sb-babel-cli src -o lib --typescript",
     "watch": "yarn build -w"
   },
   "repository": {
@@ -18,8 +18,7 @@
     "validation",
     "yaml"
   ],
-  "author": "Aurelien ARINO <aurelien@storyscript.io>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^12.0.8",
     "typescript": "^3.5.2"

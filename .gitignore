@@ -88,4 +88,4 @@ dist/
 .vscode/
 
 # package stuff
-packages/omg/lib
+packages/*/lib

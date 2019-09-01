@@ -1,8 +1,7 @@
 import http from 'http'
 import express from 'express'
 import { CompositeDisposable, Emitter } from 'event-kit'
-
-import * as logger from '~/logger'
+import OmgUiPath from 'omg-ui'
 
 interface DashboardHttpServerOptions {
   port: number
@@ -28,6 +27,7 @@ export default class DashboardHttpServer {
   }
   public async start(): Promise<void> {
     const app = express()
+    app.use(express.static(OmgUiPath))
 
     await new Promise(resolve => {
       this.serverRef = app.listen({ port: this.port, hostname: '127.0.0.1' }, resolve)

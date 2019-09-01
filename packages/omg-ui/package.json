@@ -1,0 +1,41 @@
+{
+  "name": "omg-ui",
+  "version": "0.14.1",
+  "scripts": {
+    "build": "parcel build src/index.html --out-dir lib",
+    "watch": "parcel watch src/index.html --out-dir lib",
+    "prepare": "yarn build"
+  },
+  "dependencies": {
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "eslint": "^5.16.0 || ^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "parcel-bundler": "^1.12.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microservices/omg.git",
+    "directory": "packages/omg-ui"
+  },
+  "main": "./index.js",
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "description": "UI used in the cli with the command 'omg ui'",
+  "bugs": {
+    "url": "https://github.com/microservices/omg/issues"
+  },
+  "homepage": "https://github.com/microservices/omg#readme",
+  "license": "MIT"
+}
