@@ -16,11 +16,11 @@ export default async function ui({ options }: CommandPayload<ActionOptions>) {
   })
 
   const dashboard = new Dashboard({
+    inheritEnv: !!options.inheritEnv,
     configPaths,
     microserviceConfig,
   })
   dashboard.start({
     port: parseInt(options.port || '', 10) || null,
-    inheritEnv: !!options.inheritEnv,
   })
 }

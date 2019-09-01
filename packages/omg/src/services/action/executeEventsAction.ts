@@ -1,7 +1,7 @@
 import got from 'got'
+import express from 'express'
 import getPort from 'get-port'
 import generateUUID from 'uuid/v4'
-import { createServer } from 'http'
 import { Disposable } from 'event-kit'
 
 import * as logger from '~/logger'
@@ -31,32 +31,18 @@ export default async function executeEventsAction({
     throw new Error(`Action '${actionName}' has no event named '${eventName}'`)
   }
 
-  const httpServer = createServer((req, res) => {
-    let data: Buffer[] | null = []
-
-    req.on('error', () => {
-      data = null
-    })
-    req.on('data', chunk => {
-      if (data) {
-        data.push(chunk)
+  const httpServer = express()
+  httpServer.post('*', (req, res) => {
+    try {
+      const parsed = JSON.parse(req.body.join(''))
+      const retval = callback(parsed)
+      if (retval && typeof retval.then === 'function') {
+        retval.catch(logger.error)
       }
-    })
-
-    req.on('end', () => {
-      if (Array.isArray(data)) {
-        // TODO: Validate
-        try {
-          const parsed = JSON.parse(data.join(''))
-          const retval = callback(parsed)
-          if (retval && typeof retval.then === 'function') {
-            retval.catch(logger.error)
-          }
-        } catch (error) {
-          logger.error(error)
-        }
-      }
-    })
+    } catch (error) {
+      logger.error(error)
+    }
+    res.end('Done')
   })
 
   const httpServerPort = await getPort()
