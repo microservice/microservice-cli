@@ -117,10 +117,18 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       })
     })
     validateObject(state, 'http', false, ({ state }) => {
-      validateWith(state, 'path', true, v.string)
       validateWith(state, 'method', true, enumValues(HTTP_METHODS))
-      validateWith(state, 'port', true, v.number)
       validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
+
+      if (state.value.port) {
+        validateWith(state, 'path', true, v.string)
+        validateWith(state, 'port', true, v.number)
+        validateWith(state, 'url', false, v.notDefined)
+      } else {
+        validateWith(state, 'path', false, v.notDefined)
+        validateWith(state, 'port', false, v.notDefined)
+        validateWith(state, 'url', true, v.string)
+      }
     })
     validateAssocObject(state, 'arguments', false, validateTArgument)
     validateObject(state, 'output', false, ({ state }) => {

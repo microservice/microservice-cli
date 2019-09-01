@@ -113,11 +113,19 @@ export interface Action {
     }
   }
   http?: {
-    path: string
-    method: HttpMethod
-    port: number
     contentType?: ContentType
-  }
+    method: HttpMethod
+  } & (
+    | {
+        path: string
+        port: number
+        url?: undefined
+      }
+    | {
+        path?: undefined
+        port?: undefined
+        url: string
+      })
   arguments?: Record<string, Argument>
   output: {
     type?: OutputType

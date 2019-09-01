@@ -21,8 +21,19 @@ export default async function executeHttpAction({
   actionName,
   args,
 }: ExecuteHttpActionOptions): Promise<{ response: any; disposable: null }> {
-  const { path, method, port, contentType } = action.http!
-  const containerPort = daemon.getContainerPort(port)
+  const { path, method, port, url, contentType } = action.http!
+
+  let uri: string
+
+  if (port) {
+    const containerPort = daemon.getContainerPort(port)
+
+    uri = `http://localhost:${containerPort}${path}`
+  } else if (url) {
+    uri = url
+  } else {
+    throw new Error(`Action#${actionName} has neither port+path nor url specified in config`)
+  }
 
   let hasQueryArgs = false
   const bodyArgs: Record<string, any> = {}
@@ -31,8 +42,6 @@ export default async function executeHttpAction({
     Accept: 'application/json,text/plain,*/*',
   }
   const argsMap = argsToMap(args)
-
-  let uri = `http://localhost:${containerPort}${path}`
 
   Object.entries(action.arguments || {}).forEach(([argName, arg]) => {
     const argValue = argsMap[argName] || arg.default

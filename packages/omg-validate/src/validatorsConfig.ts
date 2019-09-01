@@ -15,6 +15,11 @@ export const boolean: Validator = {
   validate: item => !!(typeof item === 'boolean' && item),
 }
 
+export const notDefined: Validator = {
+  message: 'not defined',
+  validate: () => false,
+}
+
 export const any: Validator = {
   message: 'defined',
   validate: () => true,
