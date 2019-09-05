@@ -72,7 +72,8 @@ export default async function main() {
       getCollector('envs'),
       [],
     )
-    .option('-r --raw', 'All logging is suppressed expect for the output of the action.')
+    .option('-r --raw', 'All logging is suppressed except for the output of the action.')
+    .option('--debug', 'Show container logs in CLI (for debugging purpose)')
     .description(
       'Run actions defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
     )
@@ -87,6 +88,10 @@ export default async function main() {
   program
     .command('subscribe <action> <event>')
     .option(
+      '-i --image <i>',
+      'The name of the image to spin up the microservice, if not provided a fresh image will be build based of the `Dockerfile`',
+    )
+    .option(
       '-a --args <a>',
       'Arguments to be passed to the event, must be of the form `key="val"`',
       getCollector('args'),
@@ -98,7 +103,8 @@ export default async function main() {
       getCollector('envs'),
       [],
     )
-    .option('-r --raw', 'All logging is suppressed expect for the output of the action.')
+    .option('-r --raw', 'All logging is suppressed except for the output of the action.')
+    .option('--debug', 'Show container logs in CLI (for debugging purpose)')
     .description(
       'Subscribe to an event defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
     )

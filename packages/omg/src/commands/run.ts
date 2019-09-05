@@ -10,6 +10,7 @@ interface ActionOptions extends CommandOptionsDefault {
   args?: Args
   envs?: Args
   raw?: boolean
+  debug?: boolean
 }
 
 export default async function run({ options, parameters }: CommandPayload<ActionOptions>) {
@@ -35,6 +36,16 @@ export default async function run({ options, parameters }: CommandPayload<Action
     image: options.image,
     raw: !!options.raw,
   })
+  if (options.debug) {
+    const daemonLogger = await daemon.getLogs()
+    daemonLogger.onLogLine(line => {
+      logger.info(line)
+    })
+    daemonLogger.onErrorLine(line => {
+      logger.error(line)
+    })
+  }
+
   logger.spinnerStart('Performing Healthcheck')
   if (!(await daemon.ping())) {
     logger.spinnerFail('Healthcheck failed')

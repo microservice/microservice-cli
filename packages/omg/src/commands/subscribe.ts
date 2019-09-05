@@ -8,9 +8,11 @@ import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 import { Args, CommandPayload, CommandOptionsDefault, ConfigSchemaAction } from '~/types'
 
 interface ActionOptions extends CommandOptionsDefault {
+  image?: string
   args?: Args
   envs?: Args
   raw?: boolean
+  debug?: boolean
 }
 
 export default async function subscribe({ options, parameters }: CommandPayload<ActionOptions>) {
@@ -38,9 +40,19 @@ export default async function subscribe({ options, parameters }: CommandPayload<
   const daemon = new Daemon({ configPaths, microserviceConfig })
   await daemon.start({
     envs: options.envs || [],
-    image: null,
+    image: options.image,
     raw: !!options.raw,
   })
+  if (options.debug) {
+    const daemonLogger = await daemon.getLogs()
+    daemonLogger.onLogLine(line => {
+      logger.info(line)
+    })
+    daemonLogger.onErrorLine(line => {
+      logger.error(line)
+    })
+  }
+
   logger.spinnerStart('Performing Healthcheck')
   if (!(await daemon.ping())) {
     logger.spinnerFail('Healthcheck failed')

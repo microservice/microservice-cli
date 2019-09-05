@@ -1,5 +1,6 @@
 import execa from 'execa'
 import Dockerode from 'dockerode'
+import { CompositeDisposable } from 'event-kit'
 
 import * as logger from '~/logger'
 import { Args, ConfigSchema } from '~/types'
@@ -7,6 +8,7 @@ import { ConfigPaths } from '~/services/config'
 import { lifecycleDisposables } from '~/common'
 import { getImageName, getContainer, pingContainer } from '~/services/docker'
 
+import DaemonLogs from './DaemonLogs'
 import buildForDaemon from './buildForDaemon'
 
 interface DaemonOptions {
@@ -21,6 +23,7 @@ interface DaemonStartOptions {
 }
 
 interface ContainerState {
+  subscriptions: CompositeDisposable
   container: Dockerode.Container
   portsMap: Map<number, number>
 }
@@ -61,7 +64,7 @@ export default class Daemon {
         image: imageName,
         config: this.microserviceConfig,
       })
-      this.containerState = { container, portsMap }
+      this.containerState = { container, portsMap, subscriptions: new CompositeDisposable() }
       await container.start()
       logger.spinnerSucceed('Successfully started Docker container')
     } catch (error) {
@@ -69,6 +72,24 @@ export default class Daemon {
       logger.spinnerFail('Starting Docker container failed')
       throw error
     }
+  }
+
+  public async getLogs(): Promise<DaemonLogs> {
+    const { containerState } = this
+
+    if (!containerState) {
+      throw new Error('Failed to get logs on a stopped Daemon')
+    }
+
+    const daemonLogger = new DaemonLogs(containerState.container)
+    await daemonLogger.start()
+
+    containerState.subscriptions.add(daemonLogger)
+    daemonLogger.onDidDestroy(() => {
+      containerState.subscriptions.delete(daemonLogger)
+    })
+
+    return daemonLogger
   }
 
   public async ping(): Promise<boolean> {
@@ -112,6 +133,7 @@ export default class Daemon {
     }
 
     this.containerState = null
+    containerState.subscriptions.dispose()
     await containerState.container.stop()
     await containerState.container.remove()
   }
@@ -126,6 +148,7 @@ export default class Daemon {
 
     this.containerState = null
     try {
+      containerState.subscriptions.dispose()
       execa.sync('docker', ['kill', containerState.container.id], {
         stdio: 'ignore',
       })
