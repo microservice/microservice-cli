@@ -1,10 +1,12 @@
 import got from 'got'
 import express from 'express'
+import bodyParser from 'body-parser'
 import getPort from 'get-port'
 import generateUUID from 'uuid/v4'
 import { Disposable } from 'event-kit'
 
 import * as logger from '~/logger'
+import argsToMap from '~/helpers/argsToMap'
 import { Daemon } from '~/services/daemon'
 import { lifecycleDisposables } from '~/common'
 import { Args, ConfigSchemaAction } from '~/types'
@@ -32,10 +34,16 @@ export default async function executeEventsAction({
   }
 
   const httpServer = express()
-  httpServer.post('*', (req, res) => {
+  httpServer.use(bodyParser.json())
+  httpServer.use(bodyParser.text())
+  httpServer.use(
+    bodyParser.urlencoded({
+      extended: false,
+    }),
+  )
+  httpServer.post('/', (req, res) => {
     try {
-      const parsed = JSON.parse(req.body.join(''))
-      const retval = callback(parsed)
+      const retval = callback(req.body)
       if (retval && typeof retval.then === 'function') {
         retval.catch(logger.error)
       }
@@ -60,18 +68,22 @@ export default async function executeEventsAction({
 
   const id = generateUUID()
   const containerEventPort = daemon.getContainerPort(event.http.port)
+
+  const argsMap = argsToMap(args)
   const subscribePath = event.http.subscribe.path
 
   // Subscribe to events
   await got(`http://localhost:${containerEventPort}${subscribePath}`, {
-    json: true,
     method: event.http.subscribe.method,
-    body: {
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
       id,
       endpoint: `http://host.docker.internal:${httpServerPort}`,
       event: eventName,
-      data: args,
-    },
+      data: argsMap,
+    }),
   })
 
   // Remove from lifecycle disposables now that we're about to

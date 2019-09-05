@@ -72,7 +72,7 @@ export default async function subscribe({ options, parameters }: CommandPayload<
     eventName,
     args: options.args || [],
     callback(response) {
-      logger.info(`Event: ${JSON.stringify(response, null, 2)}`)
+      logger.info(`Event received: ${JSON.stringify(response, null, 2)}`)
     },
   })
 
