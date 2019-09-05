@@ -113,6 +113,7 @@ export default class Daemon {
 
     this.containerState = null
     await containerState.container.stop()
+    await containerState.container.remove()
   }
 
   // Terminate is synchronous
@@ -126,6 +127,9 @@ export default class Daemon {
     this.containerState = null
     try {
       execa.sync('docker', ['kill', containerState.container.id], {
+        stdio: 'ignore',
+      })
+      execa.sync('docker', ['rm', containerState.container.id], {
         stdio: 'ignore',
       })
     } catch (_) {
