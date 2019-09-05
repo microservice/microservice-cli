@@ -60,9 +60,10 @@ export default async function executeEventsAction({
 
   const id = generateUUID()
   const containerEventPort = daemon.getContainerPort(event.http.port)
+  const subscribePath = event.http.subscribe.path
 
   // Subscribe to events
-  await got(`http://localhost:${containerEventPort}`, {
+  await got(`http://localhost:${containerEventPort}${subscribePath}`, {
     json: true,
     method: event.http.subscribe.method,
     body: {

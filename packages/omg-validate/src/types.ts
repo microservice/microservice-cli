@@ -74,7 +74,7 @@ export interface Action {
         subscribe: {
           path: string
           method: HttpMethod
-          contentType: ContentType
+          contentType?: ContentType
         }
         unsubscribe?: {
           path: string

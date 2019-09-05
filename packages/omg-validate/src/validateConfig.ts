@@ -84,12 +84,12 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       validateObject(state, 'http', true, ({ state }) => {
         validateWith(state, 'port', true, v.number)
         validateObject(state, 'subscribe', true, ({ state }) => {
-          validateWith(state, 'path', true, v.string)
+          validateWith(state, 'path', true, v.pathname)
           validateWith(state, 'method', true, enumValues(HTTP_METHODS))
-          validateWith(state, 'contentType', true, enumValues(CONTENT_TYPES))
+          validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
         })
-        validateObject(state, 'subscribe', false, ({ state }) => {
-          validateWith(state, 'path', true, v.string)
+        validateObject(state, 'unsubscribe', false, ({ state }) => {
+          validateWith(state, 'path', true, v.pathname)
           validateWith(state, 'method', true, enumValues(HTTP_METHODS))
         })
       })
@@ -121,12 +121,12 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
 
       if (state.value.port) {
-        validateWith(state, 'path', true, v.string)
+        validateWith(state, 'path', true, v.pathname)
         validateWith(state, 'port', true, v.number)
-        validateWith(state, 'url', false, v.notDefined)
+        validateWith(state, 'url', false, v.notDefined('when port is defined'))
       } else {
-        validateWith(state, 'path', false, v.notDefined)
-        validateWith(state, 'port', false, v.notDefined)
+        validateWith(state, 'path', false, v.notDefined('when url is defined'))
+        validateWith(state, 'port', false, v.notDefined('when url is defined'))
         validateWith(state, 'url', true, v.string)
       }
     })
@@ -170,14 +170,14 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   validateAssocObject(root, 'forwards', false, ({ state }) => {
     validateWith(state, 'help', false, v.string)
     validateObject(state, 'http', true, ({ state }) => {
-      validateWith(state, 'path', true, v.string)
+      validateWith(state, 'path', true, v.pathname)
       validateWith(state, 'port', true, v.number)
     })
   })
 
   validateObject(root, 'health', false, ({ state }) => {
     validateObject(state, 'http', true, ({ state }) => {
-      validateWith(state, 'path', true, v.string)
+      validateWith(state, 'path', true, v.pathname)
       validateWith(state, 'port', true, v.number)
     })
   })

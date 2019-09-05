@@ -5,6 +5,11 @@ export const string: Validator = {
   validate: item => !!(typeof item === 'string' && item),
 }
 
+export const pathname: Validator = {
+  message: 'a valid pathname',
+  validate: item => !!(typeof item === 'string' && item.startsWith('/')),
+}
+
 export const number: Validator = {
   message: 'a valid number',
   validate: item => !!(typeof item === 'number' && item),
@@ -15,9 +20,11 @@ export const boolean: Validator = {
   validate: item => !!(typeof item === 'boolean' && item),
 }
 
-export const notDefined: Validator = {
-  message: 'not defined',
-  validate: () => false,
+export function notDefined(message: string): Validator {
+  return {
+    message: `not defined ${message}`,
+    validate: () => false,
+  }
 }
 
 export const any: Validator = {
