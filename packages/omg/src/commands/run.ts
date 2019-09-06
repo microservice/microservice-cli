@@ -68,4 +68,6 @@ export default async function run({ options, parameters }: CommandPayload<Action
     },
   })
   logger.spinnerSucceed(`Ran action '${actionName}' successfully`)
+
+  await daemon.stop()
 }

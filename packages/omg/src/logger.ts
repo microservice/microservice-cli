@@ -2,34 +2,35 @@
 // and logs accordingly.
 
 import util from 'util'
+import logSymbols from 'log-symbols'
 import ora, { Ora } from 'ora'
 import { DEBUG_CLI, lifecycleDisposables } from './common'
 
 let spinner: Ora | null = null
 
 export function info(message: string) {
+  let contents = `${logSymbols.info} ${message}`
   if (spinner) {
-    spinner.info(message)
-  } else {
-    console.log(message)
+    contents = `\r${contents}`
   }
+  console.log(contents)
 }
 
 export function warn(message: string) {
+  let contents = `${logSymbols.warning} ${message}`
   if (spinner) {
-    spinner.warn(message)
-  } else {
-    console.warn(message)
+    contents = `\r${contents}`
   }
+  console.warn(contents)
 }
 
 export function error(err: string | Error) {
   const itemToLog = DEBUG_CLI ? util.inspect(err, false, 5, false) : err
+  let contents = `${logSymbols.error} ${itemToLog instanceof Error ? itemToLog.message : itemToLog.toString()}`
   if (spinner) {
-    spinner.warn(itemToLog instanceof Error ? itemToLog.message : itemToLog)
-  } else {
-    console.error(itemToLog)
+    contents = `\r${contents}`
   }
+  console.error(contents)
 }
 
 export function fatal(message: string): never {
