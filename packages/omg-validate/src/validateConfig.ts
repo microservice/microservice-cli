@@ -131,7 +131,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       }
     })
     validateAssocObject(state, 'arguments', false, validateTArgument)
-    validateObject(state, 'output', false, ({ state }) => {
+    validateObject(state, 'output', true, ({ state }) => {
       validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
       validateTOutput({ state })
     })
