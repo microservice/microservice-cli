@@ -12,12 +12,12 @@ export const pathname: Validator = {
 
 export const number: Validator = {
   message: 'a valid number',
-  validate: item => !!(typeof item === 'number' && item),
+  validate: item => typeof item === 'number',
 }
 
 export const boolean: Validator = {
   message: 'a valid boolean',
-  validate: item => !!(typeof item === 'boolean' && item),
+  validate: item => typeof item === 'boolean',
 }
 
 export function notDefined(message: string): Validator {
