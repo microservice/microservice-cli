@@ -1,6 +1,6 @@
 {
   "name": "omg-ui",
-  "version": "1.0.0-alpha1",
+  "version": "1.0.0-alpha2",
   "scripts": {
     "build": "parcel build src/index.html --out-dir lib",
     "watch": "parcel watch src/index.html --out-dir lib --no-hmr"
