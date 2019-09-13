@@ -23,7 +23,7 @@ export default async function main() {
 
   program
     .version(manifest.version)
-    .description('For more details on the commands below, run `omg `(validate|build|run|subscribe|shutdown)` --help`')
+    .description('For more details on the commands below, run `omg `(validate|build|run|subscribe)` --help`')
     .option('-v --version', 'Show OMG CLI version')
     .option('-d --directory', 'Directory to use as root')
 
