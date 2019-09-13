@@ -89,3 +89,6 @@ dist/
 
 # package stuff
 packages/*/lib
+
+# Binary outputs
+built/
