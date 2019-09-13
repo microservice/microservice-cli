@@ -1,68 +1,51 @@
-# OMG APP
+# OMG
 
-[![CircleCI](https://img.shields.io/circleci/project/github/microservices/omg/master.svg?style=for-the-badge)](https://circleci.com/gh/microservices/omg/tree/master)
+Welcome to OMG Repo! Check out [https://microservice.guide/][website] to see what it's all about
 
-## About lerna
-
-This project uses [lerna](https://github.com/lerna/lerna) to manage packages.
-Thanks to lerna you can run commands available in all packages using `lerna run <command>`.
-
-## Project setup
-
-```bash
-# Install lerna
-$> yarn
-
-# Install the packages dependencies
-$> yarn bootstrap
-
-# Builds package sources for when you execute
-$> yarn build
-```
-
-## Compiles and minifies all packages for production
-
-```bash
-$> lerna run build
-```
-
-## Lint all packages
-
-```bash
-$> lerna run lint
-```
-
-## Test all packages
+### Installation
 
 ```
-$> lerna run test
+$ yarn global add omg
 ```
 
-## Coverage on all packages
+### Usage
 
 ```
-$> lerna run coverage
+Usage: omg [options] [command]
+
+For more details on the commands below, run `omg `(validate|build|run|subscribe)` --help`
+
+Options:
+  -V, --version                         output the version number
+  -v --version                          Show OMG CLI version
+  -d --directory                        Directory to use as root
+  -h, --help                            output usage information
+
+Commands:
+  validate [options]                    Validate the structure of a `microservice.yml` in the working directory
+  build [options]                       Builds the microservice defined by the `Dockerfile`. Image will be tagged
+                                        with `omg/$gihub_user/$repo_name`, unless the tag flag is
+                                        given. If no git config present a random string will be used
+  run [options] <action>                Run actions defined in your `microservice.yml`. Must be ran in a working
+                                        directory with a `Dockerfile` and a `microservice.yml`
+  subscribe [options] <action> <event>  Subscribe to an event defined in your `microservice.yml`. Must be ran in
+                                        a working directory with a `Dockerfile` and a `microservice.yml`
+  ui [options]                          Starts to omg-app which monitors your microservice.
+  list [options]                        Lists all actions available in microservice.
 ```
 
-## Publish all packages that need to be published
+### Contributing
+
+After cloning this repository, open up a shell in said directory and execute the following
 
 ```
-$> yarn run publish
+$ yarn bootstrap
+$ cd packages/cli; yarn link
 ```
 
-## Automatic version bump
+### License
 
-This script bumps the version of all packages using [conventional commit](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#type) types.
-This script does not created nor push git tags.
+OMG packages including the CLI, the UI package and the Validation package are licensed under the terms of the MIT License.
+See the LICENSE file in the repository for more information.
 
-```
-$> npm run bump
-```
-
-If you want to manually bump the packages version, you can use `lerna version`.
-
-## Make an alias
-
-```bash
-$> yarn link-bin
-```
+[website]:https://microservice.guide/
