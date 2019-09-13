@@ -52,6 +52,6 @@ export default async function list({ options }: CommandPayload<ActionOptions>) {
   }
 
   Object.entries(actions).forEach(([key, value], i) => {
-    logger.info(`${i === 0 ? '' : '\n'}${key}: ${value.help ? value.help.trim() : 'No help provided'}`)
+    logger.info(`${key}: ${value.help ? value.help.trim() : 'No help provided'}\n`)
   })
 }
