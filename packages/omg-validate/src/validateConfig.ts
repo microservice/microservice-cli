@@ -137,6 +137,8 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     })
   })
 
+  validateWith(root, 'hostedExternally', false, v.boolean)
+
   validateAssocObject(root, 'environment', false, ({ state }) => {
     validateWith(state, 'type', true, oneOf(enumValues(INPUT_TYPES), array(enumValues(INPUT_TYPES))))
     validateWith(state, 'pattern', false, v.string)
