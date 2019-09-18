@@ -19,7 +19,7 @@
     "yaml"
   ],
   "author": "Aurelien ARINO <aurelien@storyscript.io>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/microservices/omg/issues"
   },
