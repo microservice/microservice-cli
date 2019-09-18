@@ -1,10 +1,12 @@
 <template>
   <div id="omg">
     <Words size="medium">
-      <OMGHeader />
-      <Flex row>
-        <OMGCenter />
-        <OMGRight />
+      <Flex column flex="1" height="100%">
+        <OMGHeader />
+        <Flex row :flex="1">
+          <OMGCenter />
+          <OMGRight />
+        </Flex>
       </Flex>
     </Words>
   </div>

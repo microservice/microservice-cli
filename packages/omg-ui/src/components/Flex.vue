@@ -34,6 +34,7 @@ type PropsFlex = {
   bl?: number
 
   backgroundColor?: string
+  bordercolor?: string
   color?: string
 }
 
@@ -65,6 +66,7 @@ const COLOR_BORDER = colors.grey20
 
 function propsToStyles(props: Partial<PropsFlex>, extraProps: Record<string, any>) {
   const styles: Record<string, any> = { display: 'flex' }
+  const borderColor = props.bordercolor ? colors[props.bordercolor] : COLOR_BORDER
 
   Object.keys(PROPS_NAMES_MAP).forEach(propName => {
     const isPropBorder = propName.startsWith('b')
@@ -75,7 +77,7 @@ function propsToStyles(props: Partial<PropsFlex>, extraProps: Record<string, any
     }
     const keys = PROPS_NAMES_MAP[propName]
     if (isPropBorder) {
-      value = `${value}px solid ${COLOR_BORDER}`
+      value = `${value}px solid ${borderColor}`
     } else if (typeof value === 'number') {
       value = `${value * 8}px`
     }
@@ -135,6 +137,7 @@ export default {
     bb: { type: Number },
     bl: { type: Number },
     backgroundColor: { type: String },
+    bordercolor: { type: String },
     color: { type: String },
   },
   data(cc) {

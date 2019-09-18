@@ -1,5 +1,5 @@
 <template>
-  <Flex row :mv="1" :mh="2" :flex="1">
+  <Flex row :mv="1" :mh="2">
     <Flex row :flex="1">
       <Flex column>
         <Photo :source="omgLogoSource" :size="3" />
