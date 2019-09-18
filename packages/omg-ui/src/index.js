@@ -1,11 +1,9 @@
 import Vue from 'vue'
-import OMG from './OMG.vue'
+import OMG from './views/index.vue'
 import router from './router'
 import store from './store'
 
-if (process.env.NODE_ENV === 'development') {
-  Vue.config.productionTip = true
-}
+import 'normalize.css'
 
 new Vue({
   router,
