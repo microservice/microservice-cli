@@ -3,7 +3,7 @@
     <Words size="medium">
       <Flex column flex="1" height="100%">
         <OMGHeader />
-        <Flex row :flex="1">
+        <Flex row :flex="1" height="100%">
           <OMGCenter />
           <OMGRight />
         </Flex>

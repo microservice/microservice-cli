@@ -29,6 +29,8 @@ function propsToStyles(props: Partial<PropsText>, extraProps: Record<string, any
 }
 
 export default {
+  inheritAttrs: false,
+
   props: ['color', 'size'],
   data(cc) {
     return { componentStyle: propsToStyles(cc._props, cc.$attrs) }

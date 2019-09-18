@@ -1,5 +1,5 @@
 <template>
-  <Flex column backgroundColor="grey10" :flex="1">
+  <Flex column backgroundColor="grey10" :flex="1" height="100%">
     <Flex row :bv="1" :pt="1.5" :ph="2">
       <Button
         :ph="3"
@@ -50,11 +50,13 @@
       </Flex>
       <Flex row :flex="1" :ml="2" />
     </Flex>
-    <Flex row :ph="2" :pv="1">
-      <Flex column :flex="1">
+    <Flex row :ph="2" :pv="1" :flex="1">
+      <Flex column :flex="1" backgroundColor="white">
         <Flex column :flex="1">Hello world</Flex>
       </Flex>
-      <Flex column :flex="1" :ml="2">Result: Hello world</Flex>
+      <Flex column :flex="1" :ml="2" backgroundColor="white">
+        <Flex column :flex="1">Result: Hello world</Flex>
+      </Flex>
     </Flex>
   </Flex>
 </template>
