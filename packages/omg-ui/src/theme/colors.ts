@@ -1,4 +1,6 @@
 // Colors
+export const white = '#ffffff'
+
 export const blue = '#001B59'
 export const blue90 = '#01257D'
 export const blue80 = '#06309E'
