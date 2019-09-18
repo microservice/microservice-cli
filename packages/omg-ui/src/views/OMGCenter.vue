@@ -1,6 +1,6 @@
 <template>
   <Flex column backgroundColor="grey10" :flex="1">
-    <Flex row :bv="1" :pt="1.2" :ph="2">My first action</Flex>
+    <Flex row :bv="1" :pt="1.5" :ph="2">My first action</Flex>
     <Flex row :ph="2" :pv="1">
       <select>
         <option>Select your action</option>
