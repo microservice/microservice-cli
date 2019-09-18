@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <div>Hello world 32</div>
-  </div>
+  <Flex row :ph="2" :pv="1">
+    <div>Bootcamp</div>
+  </Flex>
 </template>
 
 <script>
+import Flex from '~/components/Flex.vue'
+
 export default {
-  components: {},
+  components: { Flex },
   methods: {},
 }
 </script>

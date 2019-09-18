@@ -4,7 +4,10 @@
       <Flex column flex="1" height="100%">
         <OMGHeader />
         <Flex row :flex="1" height="100%">
-          <OMGCenter />
+          <Flex column :flex="1" height="100%">
+            <OMGCenter />
+            <OMGFooter />
+          </Flex>
           <OMGRight />
         </Flex>
       </Flex>
