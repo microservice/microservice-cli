@@ -9,11 +9,11 @@
       </Flex>
     </Flex>
     <Flex row :flex="1" justifyContent="center">
-      <Flex column size="medium" justifyContent="center">
-        <Words>Unhealthy</Words>
+      <Flex column justifyContent="center">
+        <Words size="medium">Unhealthy</Words>
       </Flex>
-      <Flex column :ml="1.2" size="medium" justifyContent="center">
-        <Words>Completeness</Words>
+      <Flex column :ml="1.2" justifyContent="center">
+        <Words size="medium">Completeness</Words>
       </Flex>
     </Flex>
     <Flex row :flex="1" justifyContent="flex-end">

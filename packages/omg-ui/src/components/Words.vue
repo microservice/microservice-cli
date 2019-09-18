@@ -13,7 +13,7 @@ type PropsText = {
   size?: keyof typeof textSizes
 }
 
-function propsToStyles(props: Partial<PropsText>) {
+function propsToStyles(props: Partial<PropsText>, extraProps: Record<string, any>) {
   const styles: Record<string, any> = {}
 
   if (props.color) {
@@ -25,13 +25,13 @@ function propsToStyles(props: Partial<PropsText>) {
     styles.lineHeight = `${lineHeight}px`
   }
 
-  return styles
+  return { ...styles, ...extraProps }
 }
 
 export default {
   props: ['color', 'size'],
   data(cc) {
-    return { componentStyle: propsToStyles(cc._props) }
+    return { componentStyle: propsToStyles(cc._props, cc.$attrs) }
   },
 }
 </script>
