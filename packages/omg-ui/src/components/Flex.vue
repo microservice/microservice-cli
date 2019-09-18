@@ -10,25 +10,29 @@ import * as colors from '~/theme/colors'
 type PropsFlex = {
   row?: boolean
   column?: boolean
-  flex?: number
 
-  pv?: number
-  pt?: number
-  pb?: number
-  ph?: number
-  pl?: number
-  pr?: number
   p?: number
-  mv?: number
-  mt?: number
-  mb?: number
-  mh?: number
-  ml?: number
-  mr?: number
+  pv?: number
+  ph?: number
+  pt?: number
+  pr?: number
+  pb?: number
+  pl?: number
   m?: number
+  mv?: number
+  mh?: number
+  mt?: number
+  mr?: number
+  mb?: number
+  ml?: number
+  b?: number
+  bv?: number
+  bh?: number
+  bt?: number
+  br?: number
+  bb?: number
+  bl?: number
 
-  justifyContent?: string
-  alignItems?: string
   backgroundColor?: string
   color?: string
 }
@@ -46,21 +50,33 @@ const PROPS_NAMES_MAP: Record<string, string[]> = {
   mh: ['marginLeft', 'marginRight'],
   mt: ['marginTop'],
   mr: ['marginRight'],
-  ml: ['marginLeft'],
   mb: ['marginBottom'],
+  ml: ['marginLeft'],
+  b: ['borderTop', 'borderRight', 'borderBottom', 'borderLeft'],
+  bv: ['borderTop', 'borderBottom'],
+  bh: ['borderLeft', 'borderRight'],
+  bt: ['borderTop'],
+  br: ['borderRight'],
+  bb: ['borderBottom'],
+  bl: ['borderLeft'],
 }
-const PROP_NAMES_AS_IS: string[] = ['flex', 'justifyContent', 'alignItems']
 
-function propsToStyles(props: Partial<PropsFlex>) {
+const COLOR_BORDER = colors.grey20
+
+function propsToStyles(props: Partial<PropsFlex>, extraProps: Record<string, any>) {
   const styles: Record<string, any> = { display: 'flex' }
 
   Object.keys(PROPS_NAMES_MAP).forEach(propName => {
+    const isPropBorder = propName.startsWith('b')
+
     let value = props[propName]
     if (typeof value === 'undefined') {
       return
     }
     const keys = PROPS_NAMES_MAP[propName]
-    if (typeof value === 'number') {
+    if (isPropBorder) {
+      value = `${value}px solid ${COLOR_BORDER}`
+    } else if (typeof value === 'number') {
       value = `${value * 8}px`
     }
 
@@ -69,21 +85,9 @@ function propsToStyles(props: Partial<PropsFlex>) {
       styles[propName] = props[propName]
       return
     }
-    if (!keys.length) {
-      // If found and empty, ignore the item.
-      // It's intentional.
-      return
-    }
     keys.forEach(keyName => {
       styles[keyName] = value
     })
-  })
-  PROP_NAMES_AS_IS.forEach(propName => {
-    const value = props[propName]
-    if (typeof value === 'undefined') {
-      return
-    }
-    styles[propName] = value
   })
 
   if (props.row) {
@@ -99,36 +103,42 @@ function propsToStyles(props: Partial<PropsFlex>) {
     styles.color = colors[props.color]
   }
 
-  return styles
+  return { ...styles, ...extraProps }
 }
 
 export default {
+  inheritAttrs: false,
+
   props: {
     row: { type: Boolean },
     column: { type: Boolean },
 
-    flex: { type: Number },
-    pv: { type: Number },
-    pt: { type: Number },
-    pb: { type: Number },
-    ph: { type: Number },
-    pl: { type: Number },
-    pr: { type: Number },
     p: { type: Number },
-    mv: { type: Number },
-    mt: { type: Number },
-    mb: { type: Number },
-    mh: { type: Number },
-    ml: { type: Number },
-    mr: { type: Number },
+    pv: { type: Number },
+    ph: { type: Number },
+    pt: { type: Number },
+    pr: { type: Number },
+    pb: { type: Number },
+    pl: { type: Number },
     m: { type: Number },
-    justifyContent: { type: String },
-    alignItems: { type: String },
+    mv: { type: Number },
+    mh: { type: Number },
+    mt: { type: Number },
+    mr: { type: Number },
+    mb: { type: Number },
+    ml: { type: Number },
+    b: { type: Number },
+    bv: { type: Number },
+    bh: { type: Number },
+    bt: { type: Number },
+    br: { type: Number },
+    bb: { type: Number },
+    bl: { type: Number },
     backgroundColor: { type: String },
     color: { type: String },
   },
   data(cc) {
-    return { componentStyle: propsToStyles(cc._props) }
+    return { componentStyle: propsToStyles(cc._props, cc.$attrs) }
   },
 }
 </script>
