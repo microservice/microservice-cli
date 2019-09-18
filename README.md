@@ -39,6 +39,7 @@ Commands:
 After cloning this repository, open up a shell in said directory and execute the following
 
 ```
+$ yarn
 $ yarn bootstrap
 $ cd packages/cli; yarn link
 ```
