@@ -38,8 +38,8 @@ import Photo from '~/components/Photo.vue'
 export default {
   components: { Flex, Button, Words, Photo },
   data: () => ({
-    omgLogoSource: require('~/images/omg-logo.png'),
-    githubLogoSource: require('~/images/github-logo.png'),
+    omgLogoSource: require('~/images/omg-logo.svg'),
+    githubLogoSource: require('~/images/github-logo.svg'),
   }),
 }
 </script>

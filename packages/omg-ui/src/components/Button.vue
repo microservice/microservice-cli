@@ -1,5 +1,5 @@
 <template>
-  <Flex cursor="pointer" v-bind="componentStyle">
+  <Flex cursor="pointer" alignItems="center" v-bind="componentStyle">
     <slot />
   </Flex>
 </template>

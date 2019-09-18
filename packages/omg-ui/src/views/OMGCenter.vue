@@ -67,7 +67,7 @@ import Button from '~/components/Button.vue'
 export default {
   components: { Flex, Photo, Button },
   data: () => ({
-    iconPlusSource: require('~/images/icon-plus.png'),
+    iconPlusSource: require('~/images/icon-plus.svg'),
   }),
   methods: {},
 }
