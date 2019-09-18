@@ -19,6 +19,9 @@
     "vue-template-compiler": "^2.6.10",
     "vuex": "^3.1.1"
   },
+  "posthtml": {
+    "recognizeSelfClosing": true
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microservices/omg.git",
