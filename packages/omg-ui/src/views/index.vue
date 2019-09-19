@@ -4,7 +4,7 @@
       <Flex column flex="1" height="100%" v-bind:class="{'omg-content-hidden': !!activeModal}">
         <OMGHeader />
         <Flex row :flex="1" overflow="hidden">
-          <OMGLeft v-if="showHistory" />
+          <OMGLeft />
           <OMGCenter />
           <OMGRight />
         </Flex>
@@ -34,7 +34,6 @@ export default {
   computed: {
     ...mapGetters({
       activeModal: 'getActiveModal',
-      showHistory: 'getShowHistory',
     }),
   },
 }
