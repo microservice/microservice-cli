@@ -3,7 +3,7 @@ import { CompositeDisposable } from 'event-kit'
 
 import { Daemon } from '~/services/daemon'
 import { ConfigSchema } from '~/types'
-import { ConfigPaths } from '~/services/config'
+import { ConfigPaths, watchConfigFile } from '~/services/config'
 import { lifecycleDisposables } from '~/common'
 
 import DashboardHttpServer from './DashboardHttpServer'
@@ -46,6 +46,17 @@ export default class Dashboard {
 
     const subscriptions = new CompositeDisposable()
     subscriptions.add(httpServer)
+    subscriptions.add(
+      watchConfigFile({
+        validate: true,
+        configPath: this.configPaths.microservice,
+        onConfigChanged: microserviceConfig => {
+          // TODO: didConfigUpdate
+          this.microserviceConfig = microserviceConfig
+        },
+      }),
+    )
+
     httpServer.onDidDestroy(() => {
       subscriptions.delete(httpServer)
     })
