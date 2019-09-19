@@ -1,3 +1,3 @@
-import { ConfigSchema } from 'omg-validate'
+import { ConfigSchema, InputType } from 'omg-validate'
 
-export { ConfigSchema }
+export { ConfigSchema, InputType }

@@ -1,14 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import config from './config'
-import modals from './modals'
+import config, { ConfigState } from './config'
+import modals, { ModalsState } from './modals'
 
-import { handleConfigUpdated } from '~/rpc'
+import { handleConfigUpdated } from '~/rpc/events'
 
 Vue.use(Vuex)
 
-const store = new Vuex.Store({
+export interface StoreState {
+  config: ConfigState
+  modals: ModalsState
+}
+
+const store = new Vuex.Store<StoreState>({
   modules: { config, modals },
   strict: process.env.NODE_ENV !== 'production',
 })

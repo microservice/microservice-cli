@@ -10,6 +10,7 @@ export function handleConfigUpdated(callback: (config: ConfigSchema) => void) {
 
 async function main() {
   const response = await fetch('/api/events')
+  // @ts-ignore
   const reader = response.body.getReader()
 
   async function read() {

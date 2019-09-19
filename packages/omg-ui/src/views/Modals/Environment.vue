@@ -10,41 +10,43 @@
     <Flex row :flex="1" overflow="hidden">
       <Flex column backgroundColor="grey10" :p="2">
         <Flex column backgroundColor="white" :p="4" :flex="1">
-          <Flex row>
-            <Words size="xLarge" fontWeight="500">Environemnt</Words>
+          <Flex column v-if="getConfigEnvs.length">
+            <Flex row>
+              <Words size="xLarge" fontWeight="500">Environemnt</Words>
+            </Flex>
+            <Flex row :mt="1">
+              <Words>Enter environemt variables for your app below.</Words>
+            </Flex>
+            <Flex column :mt="6">
+              <Flex column :mb="2" v-bind:key="envVar.name" v-for="envVar in getConfigEnvs">
+                <Flex row>
+                  <Words color="grey60" size="small">{{envVar.name}}</Words>
+                </Flex>
+                <Flex row :mt="0.5">
+                  <input
+                    class="modal-env-input"
+                    type="text"
+                    placeholder="String"
+                    v-bind:name="envVar.name"
+                    v-bind:value="envVar.value"
+                    @input="setEnvVar"
+                  />
+                </Flex>
+              </Flex>
+            </Flex>
           </Flex>
-          <Flex row :mt="1">
-            <Words>Enter environemt variables for your app below.</Words>
+          <Flex column :mt="1">
+            <Button
+              :pv="1"
+              color="white"
+              justifyContent="center"
+              backgroundColor="teal60"
+              :onPress="handleBuild"
+            >Save and Rebuild</Button>
           </Flex>
-          <Flex column :mt="6">
-            <Flex column :mb="2">
-              <Flex row>
-                <Words color="grey60" size="small">Account_ID</Words>
-              </Flex>
-              <Flex row :mt="0.5">
-                <input class="modal-env-input" type="text" placeholder="String" />
-              </Flex>
-            </Flex>
-            <Flex column :mb="2">
-              <Flex row>
-                <Words color="grey60" size="small">Account_Passcode</Words>
-              </Flex>
-              <Flex row :mt="0.5">
-                <input class="modal-env-input" type="text" placeholder="String" />
-              </Flex>
-            </Flex>
-            <Flex column :mt="1">
-              <Button
-                :pv="1"
-                color="white"
-                justifyContent="center"
-                backgroundColor="teal60"
-              >Save and Rebuild</Button>
-            </Flex>
-            <Flex column :mt="4">
-              <Flex row justifyContent="center" color="teal60">
-                <Words>Auto Rebuilding</Words>
-              </Flex>
+          <Flex column :mt="4">
+            <Flex row justifyContent="center" color="teal60">
+              <Words>Auto Rebuilding</Words>
             </Flex>
           </Flex>
         </Flex>
@@ -79,16 +81,31 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
+
 import Flex from '~/components/Flex.vue'
 import Button from '~/components/Button.vue'
 import Words from '~/components/Words.vue'
 import Photo from '~/components/Photo.vue'
 
+import { buildImage } from '~/rpc'
+
 export default {
   components: { Flex, Button, Words, Photo },
   methods: {
-    ...mapMutations(['dismissModal']),
+    ...mapMutations(['dismissModal', 'setConfigEnv']),
+    setEnvVar(e) {
+      this.setConfigEnv({
+        key: e.target.name,
+        value: e.target.value,
+      })
+    },
+    handleBuild() {
+      buildImage()
+    },
+  },
+  computed: {
+    ...mapGetters(['getConfigEnvs']),
   },
   data: () => ({
     iconCloseSource: require('~/images/icon-close.svg'),

@@ -5,31 +5,31 @@ export enum Modals {
 
 export const MODAL_NAMES: Modals[] = Object.values(Modals)
 
-export interface ModalState {
+export interface ModalsState {
   activeModal: null | Modals
 }
 
-const defaultState: ModalState = {
-  activeModal: null,
+const defaultState: ModalsState = {
+  activeModal: Modals.ENVIRONMENT,
 }
 
 const mutations = {
-  dismissModal(state: ModalState) {
+  dismissModal(state: ModalsState) {
     state.activeModal = null
   },
-  openEnvironemntModal(state: ModalState) {
+  openEnvironemntModal(state: ModalsState) {
     state.activeModal = Modals.ENVIRONMENT
   },
-  openCompletenessModal(state: ModalState) {
+  openCompletenessModal(state: ModalsState) {
     state.activeModal = Modals.COMPLETENESS
   },
-  openYamlEditorModal(state: ModalState) {
+  openYamlEditorModal(state: ModalsState) {
     state.activeModal = Modals.COMPLETENESS
   },
 }
 
 const getters = {
-  getActiveModal(state: ModalState) {
+  getActiveModal(state: ModalsState) {
     return state.activeModal
   },
 }

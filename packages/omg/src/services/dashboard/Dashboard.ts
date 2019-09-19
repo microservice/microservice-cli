@@ -43,6 +43,9 @@ export default class Dashboard {
       port: options.port || (await getPort({ port: 9000 })),
       microserviceConfig: this.microserviceConfig,
     })
+    httpServer.onShouldBuild(({ env }) => {
+      console.log(env)
+    })
     await httpServer.start()
 
     const subscriptions = new CompositeDisposable()

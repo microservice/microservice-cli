@@ -1,4 +1,5 @@
 import http from 'http'
+import bodyParser from 'body-parser'
 import express, { Response } from 'express'
 import { CompositeDisposable, Emitter, Disposable } from 'event-kit'
 import OmgUiPath from 'omg-ui'
@@ -48,6 +49,7 @@ export default class DashboardHttpServer {
   }
   public async start(): Promise<void> {
     const app = express()
+    app.use(bodyParser.json())
     app.use(express.static(OmgUiPath))
 
     // API Routes
@@ -72,6 +74,12 @@ export default class DashboardHttpServer {
       })
       this.eventListeners.add(res)
     })
+    // API RPC endpoints:
+    app.post('/api/buildImage', (req, res) => {
+      const { env } = req.body
+      this.emitter.emit('should-build', { env })
+      res.json({ status: 'ok' })
+    })
 
     await new Promise(resolve => {
       this.serverRef = app.listen({ port: this.port, hostname: '127.0.0.1' }, resolve)
@@ -89,6 +97,9 @@ export default class DashboardHttpServer {
         resp.write(JSON.stringify({ type, payload }))
       })
     }
+  }
+  public onShouldBuild(callback: (payload: { env: Record<string, string> }) => void): Disposable {
+    return this.emitter.on('should-build', callback)
   }
   public onDidDestroy(callback: () => void): void {
     this.emitter.on('did-destroy', callback)

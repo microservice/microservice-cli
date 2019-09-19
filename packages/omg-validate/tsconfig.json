@@ -4,7 +4,7 @@
     "jsx": "react",
     "module": "esnext",
     "esModuleInterop": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "downlevelIteration": true,
