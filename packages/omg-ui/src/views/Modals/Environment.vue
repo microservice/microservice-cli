@@ -20,7 +20,10 @@
             <Flex column :mt="6">
               <Flex column :mb="2" v-bind:key="envVar.name" v-for="envVar in getConfigEnvs">
                 <Flex row>
-                  <Words color="grey60" size="small">{{envVar.name}}</Words>
+                  <Words color="grey60" size="small">
+                    {{envVar.name}}
+                    <span v-if="envVar.required">*</span>
+                  </Words>
                 </Flex>
                 <Flex row :mt="0.5">
                   <input
@@ -60,7 +63,7 @@
         </Flex>
         <Flex column :mt="3" overflowY="scroll">
           <Words color="grey60">
-            <pre class="modal-env-logs" v-text="logsDocker"></pre>
+            <pre class="modal-env-logs" v-text="logsAll"></pre>
           </Words>
         </Flex>
       </Flex>
@@ -93,7 +96,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getConfigEnvs', 'logsDocker']),
+    ...mapGetters(['getConfigEnvs', 'logsAll']),
   },
   data: () => ({
     iconCloseSource: require('~/images/icon-close.svg'),

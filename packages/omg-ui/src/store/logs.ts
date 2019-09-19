@@ -1,60 +1,41 @@
 import { ConsoleLine, DockerLine } from '~/types'
 
 export interface LogsState {
-  console: ConsoleLine[]
-  docker: DockerLine[]
+  logs: (
+    | ({
+        type: 'console'
+      } & ConsoleLine)
+    | ({ type: 'docker' } & DockerLine))[]
 }
 
 const defaultState: LogsState = {
-  console: [],
-  docker: [],
+  logs: [],
 }
 
 const MAX_HISTORY_LINES = 500
 
 const mutations = {
   logConsoleLine(state: LogsState, payload: ConsoleLine) {
-    state.console = state.console.slice(-MAX_HISTORY_LINES).concat([payload])
+    state.logs = state.logs.slice(-MAX_HISTORY_LINES).concat([{ type: 'console', ...payload }])
   },
   logDockerLine(state: LogsState, payload: DockerLine) {
-    state.docker = state.docker.slice(-MAX_HISTORY_LINES).concat([payload])
+    state.logs = state.logs.slice(-MAX_HISTORY_LINES).concat([{ type: 'docker', ...payload }])
   },
 }
 
 const getters = {
+  logsAll(state: LogsState) {
+    return state.logs.map(item => item.contents).join('\n')
+  },
   logsConsole(state: LogsState) {
-    return state.console.map(item => item.contents).join('\n')
-  },
-  logsConsoleInfo(state: LogsState) {
-    return state.console
-      .filter(item => item.severity === 'info')
-      .map(item => item.contents)
-      .join('\n')
-  },
-  logsConsoleWarn(state: LogsState) {
-    return state.console
-      .filter(item => item.severity === 'warn')
-      .map(item => item.contents)
-      .join('\n')
-  },
-  logsConsoleError(state: LogsState) {
-    return state.console
-      .filter(item => item.severity === 'error')
+    return state.logs
+      .filter(item => item.type === 'console')
       .map(item => item.contents)
       .join('\n')
   },
   logsDocker(state: LogsState) {
-    return state.docker.map(item => item.contents).join('\n')
-  },
-  logsDockerStdout(state: LogsState) {
-    return state.docker
-      .filter(item => item.stream === 'stdout')
-      .map(item => item.contents)
-      .join('\n')
-  },
-  logsDockerSterr(state: LogsState) {
-    return state.docker
-      .filter(item => item.stream === 'stderr')
+    return state.logs
+      .filter(item => item.type === 'docker')
       .map(item => item.contents)
       .join('\n')
   },
