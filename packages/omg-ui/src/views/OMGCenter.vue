@@ -21,7 +21,7 @@
         :mr="1"
         borderBottom="none"
         bordercolor="blue20"
-        backgroundColor="blue10"
+        backgroundColor="blue20"
         :onPress="createActionsTab"
       >
         <Photo :source="iconPlusSource" :size="3" />
@@ -51,7 +51,7 @@
           :ph="2"
           :pv="1.5"
           color="white"
-          backgroundColor="blue40"
+          backgroundColor="blue50"
           :ml="1"
           :onPress="executeActiveAction"
         >Send</Button>
@@ -60,9 +60,10 @@
           :pv="1.5"
           :ml="1"
           :b="1"
-          color="blue40"
+          color="blue60"
+          fontWeight="500"
           bordercolor="blue20"
-          backgroundColor="blue10"
+          backgroundColor="blue20"
         >Save</Button>
       </Flex>
       <Flex row :flex="1" :ml="2" />

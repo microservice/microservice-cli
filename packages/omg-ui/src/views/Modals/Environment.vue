@@ -58,7 +58,7 @@
         <Flex row>
           <Words size="xLarge" fontWeight="500">Docker Logs</Words>
           <Flex row :ml="3" :pv="0.5" :ph="1.5" backgroundColor="teal20">
-            <Words size="small" color="teal70" fontWeight="500">$ docker inspect</Words>
+            <Words size="small" color="teal80" fontWeight="500">$ docker inspect</Words>
           </Flex>
         </Flex>
         <Flex column :mt="3" overflowY="scroll">

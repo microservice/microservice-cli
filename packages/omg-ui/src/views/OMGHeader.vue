@@ -25,7 +25,7 @@
     </Flex>
     <Flex row :flex="1" justifyContent="flex-end">
       <Flex row justifyContent="center">
-        <Button theme="borderless" bold backgroundColor="blue40" color="white" :p="1">
+        <Button theme="borderless" bold backgroundColor="blue50" color="white" :p="1">
           Contribute on Github
           <Photo :source="githubLogoSource" :size="2" :ml="1" />
         </Button>

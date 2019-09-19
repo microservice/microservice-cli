@@ -1,5 +1,11 @@
 <template>
-  <Flex cursor="pointer" alignItems="center" v-bind="componentStyle" v-on:click="onPress">
+  <Flex
+    cursor="pointer"
+    alignItems="center"
+    v-bind="componentStyle"
+    v-on:click="onPress"
+    class="omg-button"
+  >
     <slot />
   </Flex>
 </template>
@@ -41,3 +47,12 @@ export default {
   },
 }
 </script>
+<style lang="less">
+.omg-button {
+  user-select: none;
+  opacity: 0.8;
+  &:active {
+    opacity: 1;
+  }
+}
+</style>
