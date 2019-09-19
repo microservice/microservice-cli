@@ -35,6 +35,11 @@ const getters = {
   logsAll(state: LogsState) {
     return state.logs.map(item => item.contents).join('\n')
   },
+  logsAllReverse(state: LogsState) {
+    const logsReverse = state.logs.slice()
+    logsReverse.reverse()
+    return logsReverse.map(item => item.contents).join('\n')
+  },
   logsConsole(state: LogsState) {
     return state.logs
       .filter(item => item.type === 'console')

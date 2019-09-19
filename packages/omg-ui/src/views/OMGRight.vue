@@ -12,7 +12,7 @@
       <Flex column backgroundColor="white" :flex="1" :ph="2" :pt="3" :pb="1" overflow="hidden">
         <Words fontWeight="500" size="large">Container Logs (stdout &amp; stderr)</Words>
         <Words color="grey60" marginTop="12px" overflowY="scroll">
-          <pre class="omg-right-logs" v-text="logsAll"></pre>
+          <pre class="omg-right-logs" v-text="logsAllReverse"></pre>
         </Words>
       </Flex>
     </Flex>
@@ -33,7 +33,7 @@ export default {
     ...mapMutations(['openEnvironemntModal', 'openYamlEditorModal']),
   },
   computed: {
-    ...mapGetters(['logsAll']),
+    ...mapGetters(['logsAllReverse']),
   },
   data: () => ({
     iconBookmarkSource: require('~/images/icon-bookmark.svg'),
