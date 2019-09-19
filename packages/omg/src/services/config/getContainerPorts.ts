@@ -10,7 +10,7 @@ export default function getContainerPorts(config: ConfigSchema): number[] {
 
   if (config.actions) {
     Object.values(config.actions).forEach(action => {
-      if (action.http) {
+      if (action.http && action.http.port) {
         ports.add(action.http.port)
       }
       if (action.events) {

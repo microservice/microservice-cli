@@ -4,15 +4,15 @@ import { createInterface } from 'readline'
 import { Emitter, Disposable } from 'event-kit'
 
 export default class DaemonLogs {
-  emitter: Emitter
-  container: dockerode.Container
+  private emitter: Emitter
+  private container: dockerode.Container
 
-  constructor(container: dockerode.Container) {
+  public constructor(container: dockerode.Container) {
     this.emitter = new Emitter()
     this.container = container
   }
 
-  async start() {
+  public async start() {
     const stdoutStream = new PassThrough()
     const stderrStream = new PassThrough()
 
@@ -34,19 +34,19 @@ export default class DaemonLogs {
     this.container.modem.demuxStream(containerStream, stdoutStream, stderrStream)
   }
 
-  onLogLine(callback: (line: string) => void): Disposable {
+  public onLogLine(callback: (line: string) => void): Disposable {
     return this.emitter.on('log-line', callback)
   }
 
-  onErrorLine(callback: (line: string) => void): Disposable {
+  public onErrorLine(callback: (line: string) => void): Disposable {
     return this.emitter.on('error-line', callback)
   }
 
-  onDidDestroy(callback: () => void): Disposable {
+  public onDidDestroy(callback: () => void): Disposable {
     return this.emitter.on('did-destroy', callback)
   }
 
-  dispose() {
+  public dispose() {
     this.emitter.emit('did-destroy')
     this.emitter.dispose()
   }
