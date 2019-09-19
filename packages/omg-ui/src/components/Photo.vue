@@ -16,6 +16,7 @@ function propsToStyles(props: Partial<PropsPhoto>) {
 
   if (props.size) {
     styles.width = props.size * 8
+    styles.height = props.size * 8
   }
 
   return { ...styles }
