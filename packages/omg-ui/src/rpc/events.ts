@@ -23,6 +23,9 @@ async function main() {
       /* No Op */
     }
     if (parsed) {
+      if (localStorage.getItem('__OMG_DEBUG')) {
+        console.log(`${parsed.type}:`, parsed.payload)
+      }
       emitter.emit(parsed.type, parsed.payload)
     }
     if (done) {

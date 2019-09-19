@@ -13,6 +13,6 @@ async function apiRequest(endpoint: string, payload: Record<string, any>) {
 }
 
 export async function buildImage() {
-  const { envValues: env } = store.state.config
-  const response = await apiRequest('buildImage', { env })
+  const { envValues: envs } = store.state.config
+  await apiRequest('buildImage', { envs })
 }

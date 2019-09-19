@@ -1,8 +1,9 @@
 import getPort from 'get-port'
 import { CompositeDisposable } from 'event-kit'
 
+import * as logger from '~/logger'
 import { Daemon } from '~/services/daemon'
-import { ConfigSchema } from '~/types'
+import { ConfigSchema, Args } from '~/types'
 import { ConfigPaths, watchConfigFile } from '~/services/config'
 import { lifecycleDisposables } from '~/common'
 
@@ -19,20 +20,22 @@ interface DashboardStartOptions {
 }
 
 export default class Dashboard {
+  public envs: Args
   public inheritEnv: boolean
   public configPaths: ConfigPaths
   public microserviceConfig: ConfigSchema
 
-  private daemonRef: null | Daemon
+  private daemon: null | Daemon
   private httpServer: null | DashboardHttpServer
   private subscriptions: null | CompositeDisposable
 
   public constructor(options: DashboardOptions) {
+    this.envs = []
     this.inheritEnv = options.inheritEnv
     this.configPaths = options.configPaths
     this.microserviceConfig = options.microserviceConfig
 
-    this.daemonRef = null
+    this.daemon = null
     this.httpServer = null
 
     lifecycleDisposables.add(this)
@@ -43,8 +46,9 @@ export default class Dashboard {
       port: options.port || (await getPort({ port: 9000 })),
       microserviceConfig: this.microserviceConfig,
     })
-    httpServer.onShouldBuild(({ env }) => {
-      console.log(env)
+    httpServer.onShouldBuild(({ envs }) => {
+      this.envs = envs
+      this.reload().catch(logger.error)
     })
     await httpServer.start()
 
@@ -57,6 +61,7 @@ export default class Dashboard {
         onConfigUpdated: microserviceConfig => {
           this.microserviceConfig = microserviceConfig
           httpServer.handleConfigUpdated(microserviceConfig)
+          this.reload().catch(logger.error)
         },
       }),
     )
@@ -71,27 +76,54 @@ export default class Dashboard {
     return { port: httpServer.getPort() }
   }
 
+  private async reload(): Promise<void> {
+    const { daemon, httpServer } = this
+    if (!httpServer) {
+      return
+    }
+
+    if (daemon) {
+      daemon.stop().catch(logger.error)
+    }
+    const newDaemon = new Daemon({
+      configPaths: this.configPaths,
+      microserviceConfig: this.microserviceConfig,
+    })
+    this.daemon = newDaemon
+    await newDaemon.start({
+      envs: this.envs,
+      raw: true,
+    })
+    const daemonLogs = await newDaemon.getLogs()
+    daemonLogs.onLogLine(line => {
+      httpServer.handleDockerLog({ stream: 'stdout', contents: line })
+    })
+    daemonLogs.onErrorLine(line => {
+      httpServer.handleDockerLog({ stream: 'stderr', contents: line })
+    })
+  }
+
   public async stop(): Promise<void> {
-    const { daemonRef, httpServer } = this
+    const { daemon, httpServer } = this
     const promises: Promise<void>[] = []
     if (httpServer) {
       httpServer.dispose()
       this.httpServer = null
     }
-    if (daemonRef) {
-      promises.push(daemonRef.stop())
-      this.daemonRef = null
+    if (daemon) {
+      promises.push(daemon.stop())
+      this.daemon = null
     }
 
     await promises
   }
 
   public dispose() {
-    lifecycleDisposables.delete(this)
-
     const { subscriptions } = this
+
     if (subscriptions) {
       subscriptions.dispose()
     }
+    lifecycleDisposables.delete(this)
   }
 }

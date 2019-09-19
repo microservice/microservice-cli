@@ -43,6 +43,7 @@
     "open": "^6.4.0",
     "ora": "^3.4.0",
     "sb-fs": "^4.0.0",
+    "strip-ansi": "^5.2.0",
     "uuid": "^3.3.3"
   },
   "devDependencies": {

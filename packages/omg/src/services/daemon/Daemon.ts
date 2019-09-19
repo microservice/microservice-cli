@@ -65,6 +65,8 @@ export default class Daemon {
         config: this.microserviceConfig,
       })
       this.containerState = { container, portsMap, subscriptions: new CompositeDisposable() }
+      lifecycleDisposables.add(this)
+
       await container.start()
       logger.spinnerSucceed('Successfully started Docker container')
     } catch (error) {
@@ -105,6 +107,11 @@ export default class Daemon {
       portsMap: containerState.portsMap,
     })
     if (!status) {
+      try {
+        await containerState.container.remove()
+      } catch (_) {
+        /* No Op */
+      }
       this.containerState = null
     }
 
@@ -136,6 +143,7 @@ export default class Daemon {
     containerState.subscriptions.dispose()
     await containerState.container.stop()
     await containerState.container.remove()
+    lifecycleDisposables.delete(this)
   }
 
   // Terminate is synchronous
@@ -158,10 +166,10 @@ export default class Daemon {
     } catch (_) {
       /* Ignore kill errors - If this fails, God save us. */
     }
+    lifecycleDisposables.delete(this)
   }
 
   public dispose(): void {
-    lifecycleDisposables.delete(this)
     this.terminate()
   }
 }

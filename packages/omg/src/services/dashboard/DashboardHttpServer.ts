@@ -1,11 +1,12 @@
 import http from 'http'
+import stripAnsi from 'strip-ansi'
 import bodyParser from 'body-parser'
 import express, { Response } from 'express'
 import { CompositeDisposable, Emitter, Disposable } from 'event-kit'
 import OmgUiPath from 'omg-ui'
 
 import * as logger from '~/logger'
-import { ConfigSchema } from '~/types'
+import { ConfigSchema, Args } from '~/types'
 
 interface DashboardHttpServerOptions {
   port: number
@@ -33,8 +34,8 @@ export default class DashboardHttpServer {
     this.subscriptions.add(this.emitter)
 
     // Forward console logs to the UI
-    function handleConsoleLogs({ severity, contents }: { severity: 'info' | 'warn' | 'error'; contents: string }) {
-      this.publishEvent('console-log', { severity, contents })
+    const handleConsoleLogs = ({ severity, contents }: { severity: 'info' | 'warn' | 'error'; contents: string }) => {
+      this.publishEvent('console-log', { severity, contents: stripAnsi(contents) })
     }
 
     logger.logConsumers.add(handleConsoleLogs)
@@ -44,9 +45,11 @@ export default class DashboardHttpServer {
       }),
     )
   }
+
   public getPort(): number {
     return this.port
   }
+
   public async start(): Promise<void> {
     const app = express()
     app.use(bodyParser.json())
@@ -63,7 +66,7 @@ export default class DashboardHttpServer {
       })
 
       res.writeHead(200, {
-        'Content-Type': 'text/event-stream',
+        'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
       })
@@ -76,8 +79,13 @@ export default class DashboardHttpServer {
     })
     // API RPC endpoints:
     app.post('/api/buildImage', (req, res) => {
-      const { env } = req.body
-      this.emitter.emit('should-build', { env })
+      const { envs } = req.body
+      const envsArgs: Args = []
+      Object.keys(envs).forEach(key => {
+        envsArgs.push([key, envs[key]])
+      })
+
+      this.emitter.emit('should-build', { envs: envsArgs })
       res.json({ status: 'ok' })
     })
 
@@ -89,6 +97,9 @@ export default class DashboardHttpServer {
     this.microserviceConfig = microserviceConfig
     this.publishEvent('config-updated', microserviceConfig)
   }
+  public handleDockerLog({ stream, contents }: { stream: 'stdout' | 'stderr'; contents: string }) {
+    this.publishEvent('docker-log', { stream, contents: stripAnsi(contents) })
+  }
   private publishEvent(type: string, payload: Record<string, any>, connection?: Response) {
     if (connection) {
       connection.write(JSON.stringify({ type, payload }))
@@ -98,7 +109,7 @@ export default class DashboardHttpServer {
       })
     }
   }
-  public onShouldBuild(callback: (payload: { env: Record<string, string> }) => void): Disposable {
+  public onShouldBuild(callback: (payload: { envs: Args }) => void): Disposable {
     return this.emitter.on('should-build', callback)
   }
   public onDidDestroy(callback: () => void): void {
