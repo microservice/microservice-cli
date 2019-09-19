@@ -90,7 +90,13 @@ const getters = {
   },
   getConfigValidation(state: ConfigState): ConfigValidation {
     const validationSchema = state.validationErrors.length === 0
-    const validationInfo = !!(state.config && state.config.info && state.config.info.title && state.config.info.version)
+    const validationInfo = !!(
+      state.config &&
+      state.config.info &&
+      state.config.info.title &&
+      state.config.info.description &&
+      state.config.info.version
+    )
     const validationActions = Object.keys((state.config && state.config.actions) || {}).length > 0
     const validationStartup = !!(state.config && state.config.lifecycle && state.config.lifecycle.startup)
     const validationHealth = !!(state.config && state.config.health)
