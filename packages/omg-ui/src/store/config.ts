@@ -11,6 +11,9 @@ export interface ConfigEnv {
   value: string
   required: boolean
 }
+export interface ConfigAction {
+  name: string
+}
 
 const defaultState: ConfigState = {
   config: null,
@@ -35,9 +38,23 @@ const getters = {
   },
   getConfigActions(state: ConfigState) {
     if (state.config) {
-      return state.config.actions || {}
+      const { actions } = state.config
+      if (actions) {
+        const configActions: ConfigAction[] = []
+        Object.keys(actions).forEach(name => {
+          const value = actions[name]
+          if (value.http) {
+            // Only allow http actions in UI for now
+            configActions.push({
+              name,
+            })
+          }
+        })
+
+        return configActions
+      }
     }
-    return {}
+    return []
   },
   getConfigEnvs(state: ConfigState): ConfigEnv[] {
     if (state.config) {

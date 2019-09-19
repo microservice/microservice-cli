@@ -6,20 +6,14 @@
         :pv="1.5"
         :b="1"
         :mr="1"
-        borderTop="3px solid #477BF3"
         borderBottom="none"
         backgroundColor="white"
         color="blue"
-      >My first action</Button>
-      <Button
-        :ph="3"
-        :pv="1.5"
-        :b="1"
-        :mr="1"
-        borderBottom="none"
-        backgroundColor="white"
-        color="blue"
-      >Custom Name</Button>
+        v-bind:key="tab.id"
+        v-for="tab in getAllActionTabs"
+        v-bind:class="{'omg-center-tab-active': tab.id === getActiveActionTab.id}"
+        v-bind:onPress="e => selectActionsTab(tab.id)"
+      >{{tab.title}}</Button>
       <Button
         :ph="1.5"
         :pv="0.5"
@@ -28,14 +22,25 @@
         borderBottom="none"
         bordercolor="blue20"
         backgroundColor="blue10"
+        :onPress="createActionsTab"
       >
         <Photo :source="iconPlusSource" :size="3" />
       </Button>
     </Flex>
     <Flex row :ph="2" :pv="2">
       <Flex row :flex="1">
-        <select :style="{width: '100%'}">
-          <option>Select your action</option>
+        <select
+          class="omg-center-action-select"
+          placeholder="Please select an Action"
+          v-model="getActiveActionTab.actionName"
+          v-on:change="e => selectAction(e.target.value)"
+        >
+          <option :value="null" hidden disabled>Please select an Action</option>
+          <option
+            :value="configAction.name"
+            v-bind:key="configAction.name"
+            v-for="configAction in getConfigActions"
+          >{{configAction.name}}</option>
         </select>
         <Button :ph="2" :pv="1.5" color="white" backgroundColor="blue40" :ml="1">Send</Button>
         <Button
@@ -52,25 +57,40 @@
     </Flex>
     <Flex row :ph="2" :pv="1" :flex="1">
       <Flex column :flex="1" backgroundColor="white">
-        <Flex column :flex="1">Hello world</Flex>
+        <Flex column :flex="1" :p="4">Hello world</Flex>
       </Flex>
       <Flex column :flex="1" :ml="2" backgroundColor="white">
-        <Flex column :flex="1">Result: Hello world</Flex>
+        <Flex column :flex="1" :p="4">Result: Hello world</Flex>
       </Flex>
     </Flex>
   </Flex>
 </template>
 
 <script>
+import { mapGeters, mapGetters, mapMutations } from 'vuex'
+
 import Flex from '~/components/Flex.vue'
 import Photo from '~/components/Photo.vue'
 import Button from '~/components/Button.vue'
 
 export default {
   components: { Flex, Photo, Button },
+  computed: {
+    ...mapGetters(['getActiveActionTab', 'getAllActionTabs', 'getConfigActions']),
+  },
+  methods: {
+    ...mapMutations(['createActionsTab', 'selectActionsTab', 'destroyActionsTab', 'selectAction']),
+  },
   data: () => ({
     iconPlusSource: require('~/images/icon-plus.svg'),
   }),
-  methods: {},
 }
 </script>
+<style lang="less">
+.omg-center-tab-active {
+  border-top: 3px solid #477bf3 !important;
+}
+.omg-center-action-select {
+  width: 100%;
+}
+</style>
