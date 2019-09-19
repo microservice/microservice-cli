@@ -80,7 +80,15 @@ export default {
   methods: {
     ...mapMutations(['dismissModal']),
     writeConfig: debounce(function(contents) {
-      writeConfig(contents)
+      const { configContents } = this
+      if (configContents !== contents) {
+        writeConfig(contents).then(() => {
+          // Handle possible network race conditions
+          if (this.configContents === configContents) {
+            this.configContents = contents
+          }
+        })
+      }
     }, 1000),
   },
   created() {
