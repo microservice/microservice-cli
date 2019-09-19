@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import OMG from './views/index.vue'
-import store from './store'
+import store from './store/index.ts'
 
 import 'normalize.css'
 
