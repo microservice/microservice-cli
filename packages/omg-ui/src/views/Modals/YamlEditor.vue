@@ -79,17 +79,21 @@ export default {
   },
   methods: {
     ...mapMutations(['dismissModal']),
-    writeConfig: debounce(function(contents) {
-      const { configContents } = this
-      if (configContents !== contents) {
-        writeConfig(contents).then(() => {
-          // Handle possible network race conditions
-          if (this.configContents === configContents) {
-            this.configContents = contents
-          }
-        })
-      }
-    }, 1000),
+    writeConfig: debounce(
+      function(contents) {
+        const { configContents } = this
+        if (configContents !== contents) {
+          writeConfig(contents).then(() => {
+            // Handle possible network race conditions
+            if (this.configContents === configContents) {
+              this.configContents = contents
+            }
+          })
+        }
+      },
+      1000,
+      { trailing: true },
+    ),
   },
   created() {
     fetch('/api/configRaw')
