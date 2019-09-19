@@ -13,4 +13,10 @@ export interface CommandPayload<T extends CommandOptionsDefault> {
   parameters: string[]
 }
 
+export enum UIAppStatus {
+  stopped = 'stopped',
+  starting = 'starting',
+  started = 'started',
+}
+
 export { ConfigSchema, Action as ConfigSchemaAction }

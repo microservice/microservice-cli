@@ -10,7 +10,7 @@ export interface ModalsState {
 }
 
 const defaultState: ModalsState = {
-  activeModal: Modals.ENVIRONMENT,
+  activeModal: null,
 }
 
 const mutations = {

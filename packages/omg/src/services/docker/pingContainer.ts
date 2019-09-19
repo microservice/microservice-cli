@@ -2,7 +2,8 @@ import got from 'got'
 
 import waitForHttpPortOpen from '~/helpers/waitForHttpPortOpen'
 import { ConfigSchema } from '~/types'
-import { dockerode } from './common'
+
+import isContainerRunning from './isContainerRunning'
 
 interface PingContainerOptions {
   container: string
@@ -14,10 +15,7 @@ const MAX_ATTEMPTS = 10
 const ATTEMPT_TIMEOUT = 1000 // 1s
 
 export default async function pingContainer({ container, config, portsMap }: PingContainerOptions): Promise<boolean> {
-  const [containerInfo] = await dockerode.listContainers({
-    filters: { id: [container] },
-  })
-  if (!containerInfo || containerInfo.State !== 'running') {
+  if (!(await isContainerRunning(container))) {
     return false
   }
 

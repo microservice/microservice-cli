@@ -7,7 +7,7 @@ export interface ConfigState {
 
 export interface ConfigEnv {
   name: string
-  type: InputType
+  type: InputType | InputType[]
   value: string
   required: boolean
 }

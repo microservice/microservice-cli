@@ -5,7 +5,7 @@ import config, { ConfigState } from './config'
 import modals, { ModalsState } from './modals'
 import logs, { LogsState } from './logs'
 
-import { handleConfigUpdated, handleConsoleLog, handleDockerLog } from '~/rpc/events'
+import { handleConfigUpdated, handleConsoleLog, handleDockerLog, handleAppStatusUpdated } from '~/rpc/events'
 
 Vue.use(Vuex)
 
@@ -28,6 +28,9 @@ handleConsoleLog(logLine => {
 })
 handleDockerLog(logLine => {
   store.commit('logDockerLine', logLine)
+})
+handleAppStatusUpdated(({ status }) => {
+  store.commit('setAppStatus', status)
 })
 
 export default store

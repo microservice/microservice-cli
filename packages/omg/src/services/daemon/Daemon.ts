@@ -6,7 +6,7 @@ import * as logger from '~/logger'
 import { Args, ConfigSchema } from '~/types'
 import { ConfigPaths } from '~/services/config'
 import { lifecycleDisposables } from '~/common'
-import { getImageName, getContainer, pingContainer } from '~/services/docker'
+import { getImageName, getContainer, pingContainer, isContainerRunning } from '~/services/docker'
 
 import DaemonLogs from './DaemonLogs'
 import buildForDaemon from './buildForDaemon'
@@ -116,6 +116,15 @@ export default class Daemon {
     }
 
     return status
+  }
+
+  public async isRunning(): Promise<boolean> {
+    const { containerState } = this
+
+    if (!containerState) {
+      return false
+    }
+    return isContainerRunning(containerState.container.id)
   }
 
   public getContainerPort(sourcePort: number): number {

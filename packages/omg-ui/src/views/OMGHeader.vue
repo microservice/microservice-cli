@@ -10,7 +10,14 @@
     </Flex>
     <Flex row :flex="1" justifyContent="center">
       <Flex column justifyContent="center">
-        <Button theme="borderless" bold color="blue" backgroundColor="grey10" :p="1">Unhealthy</Button>
+        <Button
+          theme="borderless"
+          bold
+          color="blue"
+          backgroundColor="grey10"
+          :p="1"
+          v-text="appStatus"
+        ></Button>
       </Flex>
       <Flex column :ml="1.5" justifyContent="center">
         <Button theme="borderless" bold color="blue" backgroundColor="grey10" :p="1">Completeness</Button>
@@ -28,6 +35,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import Flex from '~/components/Flex.vue'
 import Button from '~/components/Button.vue'
 import Words from '~/components/Words.vue'
@@ -35,6 +44,9 @@ import Photo from '~/components/Photo.vue'
 
 export default {
   components: { Flex, Button, Words, Photo },
+  computed: {
+    ...mapGetters(['appStatus']),
+  },
   data: () => ({
     omgLogoSource: require('~/images/omg-logo.svg'),
     githubLogoSource: require('~/images/github-logo.svg'),

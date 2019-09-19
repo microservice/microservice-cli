@@ -6,15 +6,17 @@ import { CompositeDisposable, Emitter, Disposable } from 'event-kit'
 import OmgUiPath from 'omg-ui'
 
 import * as logger from '~/logger'
-import { ConfigSchema, Args } from '~/types'
+import { ConfigSchema, Args, UIAppStatus } from '~/types'
 
 interface DashboardHttpServerOptions {
   port: number
+  appStatus: UIAppStatus
   microserviceConfig: ConfigSchema
 }
 
 export default class DashboardHttpServer {
   private port: number
+  private appStatus: string
   private microserviceConfig: ConfigSchema
 
   private serverRef: http.Server | null
@@ -24,6 +26,7 @@ export default class DashboardHttpServer {
 
   public constructor(options: DashboardHttpServerOptions) {
     this.port = options.port
+    this.appStatus = options.appStatus
     this.microserviceConfig = options.microserviceConfig
     this.serverRef = null
 
@@ -66,12 +69,15 @@ export default class DashboardHttpServer {
       })
 
       res.writeHead(200, {
+        'Transfer-Encoding': 'chunked',
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
       })
       // Bootstrap events:
       this.publishEvent('config-updated', this.microserviceConfig, res)
+      this.publishEvent('app-status-updated', { status: this.appStatus }, res)
+
+      // GC Handlers:
       res.on('end', () => {
         this.eventListeners.delete(res)
       })
@@ -97,15 +103,20 @@ export default class DashboardHttpServer {
     this.microserviceConfig = microserviceConfig
     this.publishEvent('config-updated', microserviceConfig)
   }
+  public handleAppStatusUpdated(status: UIAppStatus) {
+    this.appStatus = status
+    this.publishEvent('app-status-updated', { status })
+  }
   public handleDockerLog({ stream, contents }: { stream: 'stdout' | 'stderr'; contents: string }) {
     this.publishEvent('docker-log', { stream, contents: stripAnsi(contents) })
   }
   private publishEvent(type: string, payload: Record<string, any>, connection?: Response) {
+    const serialized = `${JSON.stringify({ type, payload })}\n`
     if (connection) {
-      connection.write(JSON.stringify({ type, payload }))
+      connection.write(serialized)
     } else {
       this.eventListeners.forEach(resp => {
-        resp.write(JSON.stringify({ type, payload }))
+        resp.write(serialized)
       })
     }
   }
@@ -123,8 +134,8 @@ export default class DashboardHttpServer {
     }
     this.emitter.emit('did-destroy')
     this.subscriptions.dispose()
-    this.eventListeners.forEach(socket => {
-      socket.end()
+    this.eventListeners.forEach(item => {
+      item.destroy()
     })
     this.eventListeners.clear()
   }

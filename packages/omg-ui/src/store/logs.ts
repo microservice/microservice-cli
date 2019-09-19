@@ -1,6 +1,7 @@
-import { ConsoleLine, DockerLine } from '~/types'
+import { ConsoleLine, DockerLine, AppStatus } from '~/types'
 
 export interface LogsState {
+  status: AppStatus
   logs: (
     | ({
         type: 'console'
@@ -9,12 +10,16 @@ export interface LogsState {
 }
 
 const defaultState: LogsState = {
+  status: AppStatus.stopped,
   logs: [],
 }
 
 const MAX_HISTORY_LINES = 500
 
 const mutations = {
+  setAppStatus(state: LogsState, payload: AppStatus) {
+    state.status = payload
+  },
   logConsoleLine(state: LogsState, payload: ConsoleLine) {
     state.logs = state.logs.slice(-MAX_HISTORY_LINES).concat([{ type: 'console', ...payload }])
   },
@@ -24,6 +29,9 @@ const mutations = {
 }
 
 const getters = {
+  appStatus(state: LogsState) {
+    return state.status
+  },
   logsAll(state: LogsState) {
     return state.logs.map(item => item.contents).join('\n')
   },

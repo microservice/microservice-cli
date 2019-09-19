@@ -47,9 +47,9 @@
               :onPress="handleBuild"
             >Save and Rebuild</Button>
           </Flex>
-          <Flex column :mt="4">
+          <Flex column :mt="4" v-if="showRebuildingMessage">
             <Flex row justifyContent="center" color="teal60">
-              <Words>Auto Rebuilding</Words>
+              <Words>Rebuilding</Words>
             </Flex>
           </Flex>
         </Flex>
@@ -80,6 +80,7 @@ import Words from '~/components/Words.vue'
 import Photo from '~/components/Photo.vue'
 
 import { buildImage } from '~/rpc'
+import { AppStatus } from '~/types'
 
 export default {
   components: { Flex, Button, Words, Photo },
@@ -96,7 +97,10 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getConfigEnvs', 'logsAll']),
+    ...mapGetters(['getConfigEnvs', 'logsAll', 'appStatus']),
+    showRebuildingMessage() {
+      return this.appStatus === AppStatus.starting
+    },
   },
   data: () => ({
     iconCloseSource: require('~/images/icon-close.svg'),

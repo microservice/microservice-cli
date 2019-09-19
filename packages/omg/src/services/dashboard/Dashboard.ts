@@ -3,7 +3,7 @@ import { CompositeDisposable } from 'event-kit'
 
 import * as logger from '~/logger'
 import { Daemon } from '~/services/daemon'
-import { ConfigSchema, Args } from '~/types'
+import { ConfigSchema, Args, UIAppStatus } from '~/types'
 import { ConfigPaths, watchConfigFile } from '~/services/config'
 import { lifecycleDisposables } from '~/common'
 
@@ -24,6 +24,7 @@ export default class Dashboard {
   public inheritEnv: boolean
   public configPaths: ConfigPaths
   public microserviceConfig: ConfigSchema
+  private appStatus: UIAppStatus
 
   private daemon: null | Daemon
   private httpServer: null | DashboardHttpServer
@@ -34,6 +35,7 @@ export default class Dashboard {
     this.inheritEnv = options.inheritEnv
     this.configPaths = options.configPaths
     this.microserviceConfig = options.microserviceConfig
+    this.appStatus = UIAppStatus.stopped
 
     this.daemon = null
     this.httpServer = null
@@ -45,6 +47,7 @@ export default class Dashboard {
     const httpServer = new DashboardHttpServer({
       port: options.port || (await getPort({ port: 9000 })),
       microserviceConfig: this.microserviceConfig,
+      appStatus: this.appStatus,
     })
     httpServer.onShouldBuild(({ envs }) => {
       this.envs = envs
@@ -83,8 +86,11 @@ export default class Dashboard {
     }
 
     if (daemon) {
+      this.updateAppStatus(UIAppStatus.stopped)
+      this.daemon = null
       daemon.stop().catch(logger.error)
     }
+    this.updateAppStatus(UIAppStatus.starting)
     const newDaemon = new Daemon({
       configPaths: this.configPaths,
       microserviceConfig: this.microserviceConfig,
@@ -94,6 +100,7 @@ export default class Dashboard {
       envs: this.envs,
       raw: true,
     })
+    this.updateAppStatus(UIAppStatus.started)
     const daemonLogs = await newDaemon.getLogs()
     daemonLogs.onLogLine(line => {
       httpServer.handleDockerLog({ stream: 'stdout', contents: line })
@@ -103,19 +110,13 @@ export default class Dashboard {
     })
   }
 
-  public async stop(): Promise<void> {
-    const { daemon, httpServer } = this
-    const promises: Promise<void>[] = []
-    if (httpServer) {
-      httpServer.dispose()
-      this.httpServer = null
-    }
-    if (daemon) {
-      promises.push(daemon.stop())
-      this.daemon = null
-    }
+  private updateAppStatus(appStatus: UIAppStatus) {
+    const { httpServer } = this
+    this.appStatus = appStatus
 
-    await promises
+    if (httpServer) {
+      httpServer.handleAppStatusUpdated(appStatus)
+    }
   }
 
   public dispose() {
