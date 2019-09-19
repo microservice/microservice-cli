@@ -1,6 +1,6 @@
 <template>
-  <Flex column backgroundColor="grey10" width="16%" height="100%">
-    <Flex column :flex="1" :bl="1" height="100%">
+  <Flex column backgroundColor="grey10" width="16%">
+    <Flex column :flex="1" :bl="1" overflow="hidden">
       <Flex row :bv="1" :ph="1" :pv="1.125">
         <Button :ph="3" :pv="1" bold color="grey70">
           <Photo :source="iconFileCodeSource" :size="3" :mr="1" />Setup
@@ -9,10 +9,11 @@
           <Photo :source="iconBookmarkSource" :size="3" :mr="1" />Edit the YAML
         </Button>
       </Flex>
-      <Flex column backgroundColor="white" :flex="1" :ph="2" :pv="3" height="100%">
+      <Flex column backgroundColor="white" :flex="1" :ph="2" :pt="3" :pb="1" overflow="hidden">
         <Words fontWeight="500" size="large">Container Logs (stdout &amp; stderr)</Words>
-        <Words color="grey60" marginTop="12px" height="100%" overflowY="scroll">
-          Web client connected to socket.
+        <Words color="grey60" marginTop="12px" overflowY="scroll">
+          <pre class="omg-right-logs">
+      Web client connected to socket.
           ^C(node:11024) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'isRunning' of undefined
           at UIServer.anonymous (/usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:383:45)
           at Generator.next (anonymous)
@@ -24,6 +25,7 @@
           at UIServer.stopContainer (/usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:380:16)
           at Cli.anonymous (/usr/local/lib/node_modules/omg/dist/cli/Cli.js:572:37)
           at Generator.next (anonymous)
+          </pre>
         </Words>
       </Flex>
     </Flex>
@@ -45,3 +47,9 @@ export default {
   }),
 }
 </script>
+<style lang="less">
+.omg-right-logs {
+  font-family: Graphik;
+  white-space: pre-wrap;
+}
+</style>

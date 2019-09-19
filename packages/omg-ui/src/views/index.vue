@@ -3,8 +3,8 @@
     <Words size="medium">
       <Flex column flex="1" height="100%" v-bind:class="{'omg-content-hidden': !!getActiveModal}">
         <OMGHeader />
-        <Flex row :flex="1" height="100%">
-          <Flex column :flex="1" height="100%">
+        <Flex row :flex="1" overflow="hidden">
+          <Flex column :flex="1">
             <OMGCenter />
             <OMGFooter />
           </Flex>

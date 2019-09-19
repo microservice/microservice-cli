@@ -58,7 +58,7 @@
         </Flex>
         <Flex column :mt="3" overflowY="scroll">
           <Words color="grey60">
-            <pre>Web client connected to socket.
+            <pre class="modal-env-logs">Web client connected to socket.
             ^C(node:11024) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'isRunning' of undefined
             at UIServer.anonymous (/usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:383:45)
             at Generator.next (anonymous)
@@ -100,5 +100,8 @@ export default {
   padding: 12px;
   display: flex;
   flex: 1;
+}
+.modal-env-logs {
+  font-family: Graphik;
 }
 </style>

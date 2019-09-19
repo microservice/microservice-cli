@@ -1,5 +1,5 @@
 <template>
-  <Flex column backgroundColor="grey10" :flex="1" height="100%">
+  <Flex column backgroundColor="grey10" :flex="1">
     <Flex row :bv="1" :pt="1.5" :ph="2">
       <Button
         :ph="3"
