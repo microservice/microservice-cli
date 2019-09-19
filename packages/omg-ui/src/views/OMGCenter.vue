@@ -57,10 +57,17 @@
     </Flex>
     <Flex row :ph="2" :pv="1" :flex="1">
       <Flex column :flex="1" backgroundColor="white">
-        <Flex column :flex="1" :p="4">Hello world</Flex>
+        <Flex column :flex="1" :p="4">
+          <Monaco :code="getActiveActionTab.payload" />
+        </Flex>
       </Flex>
       <Flex column :flex="1" :ml="2" backgroundColor="white">
-        <Flex column :flex="1" :p="4">Result: Hello world</Flex>
+        <Flex row :pv="2" :ph="2.5" :bb="1" alignItems="center">
+          <Words size="medium" fontWeight="500">Result</Words>
+        </Flex>
+        <Flex column :flex="1" :ph="4" :pv="2">
+          <Monaco readonly :code="getActiveActionTab.result" />
+        </Flex>
       </Flex>
     </Flex>
   </Flex>
@@ -71,10 +78,12 @@ import { mapGeters, mapGetters, mapMutations } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
 import Photo from '~/components/Photo.vue'
+import Words from '~/components/Words.vue'
 import Button from '~/components/Button.vue'
+import Monaco from '~/components/Monaco.vue'
 
 export default {
-  components: { Flex, Photo, Button },
+  components: { Flex, Photo, Words, Button, Monaco },
   computed: {
     ...mapGetters(['getActiveActionTab', 'getAllActionTabs', 'getConfigActions']),
   },

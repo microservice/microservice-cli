@@ -1,10 +1,14 @@
 import { getRandomString } from '~/common'
 
+const DEFAULT_PAYLOAD = `{\n\t"parameter": "value"\n}`
+const DEFAULT_RESULT = ''
+
 interface ActionTab {
   id: string
   title: string
   actionName: string | null
   payload: string | null
+  result: string | null
 }
 
 export interface ActionsState {
@@ -17,7 +21,8 @@ function getActionTab(): ActionTab {
     id: getRandomString(),
     title: 'Action',
     actionName: null,
-    payload: null,
+    payload: DEFAULT_PAYLOAD,
+    result: DEFAULT_RESULT,
   }
 }
 function getActiveTabFromState(state: ActionsState) {
