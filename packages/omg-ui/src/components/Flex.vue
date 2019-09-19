@@ -1,5 +1,5 @@
 <template>
-  <div :style="componentStyle">
+  <div :style="componentStyle" v-on="parentListeners">
     <slot />
   </div>
 </template>
@@ -142,6 +142,13 @@ export default {
   },
   data(cc) {
     return { componentStyle: propsToStyles(cc._props, cc.$attrs) }
+  },
+  computed: {
+    parentListeners() {
+      return {
+        ...this.$listeners,
+      }
+    },
   },
 }
 </script>

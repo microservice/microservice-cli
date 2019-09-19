@@ -1,5 +1,5 @@
 <template>
-  <Flex cursor="pointer" alignItems="center" v-bind="componentStyle">
+  <Flex cursor="pointer" alignItems="center" v-bind="componentStyle" v-on:click="onPress">
     <slot />
   </Flex>
 </template>
@@ -9,6 +9,7 @@ import Flex from './Flex.vue'
 
 type PropsButton = {
   bold?: boolean
+  onPress?: () => void
 }
 
 function propsToStyles(props: Partial<PropsButton>, extraProps: Record<string, any>) {
@@ -27,6 +28,10 @@ export default {
   props: {
     bold: {
       type: Boolean,
+    },
+    onPress: {
+      type: Function,
+      default() {},
     },
   },
 
