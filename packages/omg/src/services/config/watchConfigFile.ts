@@ -12,11 +12,11 @@ const DEBOUNCE_MS = 500
 export default function watchConfigFile({
   validate,
   configPath,
-  onConfigChanged,
+  onConfigUpdated,
 }: {
   validate: boolean
   configPath: string
-  onConfigChanged: (config: ConfigSchema) => void
+  onConfigUpdated: (config: ConfigSchema) => void
 }): Disposable {
   const watcher = chokidar.watch([configPath])
   const disposable = new Disposable(() => {
@@ -30,7 +30,7 @@ export default function watchConfigFile({
         configPath,
         validate,
       })
-        .then(configParsed => onConfigChanged(configParsed))
+        .then(configParsed => onConfigUpdated(configParsed))
         .catch(logger.error)
     }, DEBOUNCE_MS),
   )

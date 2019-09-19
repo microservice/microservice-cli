@@ -41,6 +41,7 @@ export default class Dashboard {
   public async start(options: DashboardStartOptions): Promise<{ port: number }> {
     const httpServer = new DashboardHttpServer({
       port: options.port || (await getPort({ port: 9000 })),
+      microserviceConfig: this.microserviceConfig,
     })
     await httpServer.start()
 
@@ -50,9 +51,9 @@ export default class Dashboard {
       watchConfigFile({
         validate: true,
         configPath: this.configPaths.microservice,
-        onConfigChanged: microserviceConfig => {
-          // TODO: didConfigUpdate
+        onConfigUpdated: microserviceConfig => {
           this.microserviceConfig = microserviceConfig
+          httpServer.handleConfigUpdated(microserviceConfig)
         },
       }),
     )
