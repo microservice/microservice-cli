@@ -28,8 +28,6 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
-
 import Flex from '~/components/Flex.vue'
 import Button from '~/components/Button.vue'
 import Words from '~/components/Words.vue'

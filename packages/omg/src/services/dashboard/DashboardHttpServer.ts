@@ -55,12 +55,18 @@ export default class DashboardHttpServer {
       res.json(this.microserviceConfig)
     })
     app.get('/api/events', (req, res) => {
+      // 24 hours
+      req.setTimeout(1000 * 60 * 60 * 24, () => {
+        /* No op */
+      })
+
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
       })
-      res.write('\n')
+      // Bootstrap events:
+      this.publishEvent('config-updated', this.microserviceConfig, res)
       res.on('end', () => {
         this.eventListeners.delete(res)
       })
@@ -75,11 +81,14 @@ export default class DashboardHttpServer {
     this.microserviceConfig = microserviceConfig
     this.publishEvent('config-updated', microserviceConfig)
   }
-  private publishEvent(type: string, payload: Record<string, any>) {
-    const encoded = `${JSON.stringify({ type, payload })}\n`
-    this.eventListeners.forEach(resp => {
-      resp.write(encoded)
-    })
+  private publishEvent(type: string, payload: Record<string, any>, connection?: Response) {
+    if (connection) {
+      connection.write(JSON.stringify({ type, payload }))
+    } else {
+      this.eventListeners.forEach(resp => {
+        resp.write(JSON.stringify({ type, payload }))
+      })
+    }
   }
   public onDidDestroy(callback: () => void): void {
     this.emitter.on('did-destroy', callback)

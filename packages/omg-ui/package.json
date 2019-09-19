@@ -5,7 +5,9 @@
     "build": "rm -rf lib/*; parcel build src/index.html --out-dir lib",
     "watch": "parcel watch src/index.html --out-dir lib --no-hmr"
   },
-  "dependencies": {},
+  "dependencies": {
+    "event-kit": "^2.5.3"
+  },
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.0.0",
     "eslint": "^5.16.0 || ^6.1.0",
@@ -29,9 +31,7 @@
   },
   "main": "./index.js",
   "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
+    "last 10 Chrome versions"
   ],
   "description": "UI used in the cli with the command 'omg ui'",
   "bugs": {
