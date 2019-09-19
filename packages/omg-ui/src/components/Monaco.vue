@@ -8,6 +8,7 @@
 <script lang="ts">
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 import 'monaco-editor/esm/vs/language/json/monaco.contribution.js'
+import 'monaco-editor/esm/vs/editor/contrib/format/formatActions.js'
 
 // @ts-ignore
 self.MonacoEnvironment = {
@@ -30,10 +31,21 @@ export default {
       type: Function,
     },
   },
+  watch: {
+    code(newValue) {
+      if (this.$editor) {
+        if (newValue !== this.$editor.getValue()) {
+          this.$editor.setValue(newValue)
+          this.$editor.getAction('editor.action.formatDocument').run()
+        }
+      }
+    },
+  },
   components: {},
   methods: {},
   mounted() {
-    const editor = monaco.editor.create(this.$refs.editor, {
+    this.$lastValue = this.code
+    this.$editor = monaco.editor.create(this.$refs.editor, {
       language: 'json',
       value: this.code,
       readOnly: this.readonly,
@@ -49,8 +61,8 @@ export default {
       },
       scrollBeyondLastLine: false,
     })
-    editor.onDidChangeModelContent(() => {
-      if (this.onChange) [this.onChange(editor.getValue())]
+    this.$editor.onDidChangeModelContent(() => {
+      if (this.onChange) [this.onChange(this.$editor.getValue())]
     })
   },
 }

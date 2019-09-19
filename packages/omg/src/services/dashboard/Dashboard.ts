@@ -3,6 +3,7 @@ import { CompositeDisposable } from 'event-kit'
 
 import * as logger from '~/logger'
 import { Daemon } from '~/services/daemon'
+import { executeAction } from '~/services/action'
 import { ConfigSchema, Args, UIAppStatus } from '~/types'
 import { ConfigPaths, watchConfigFile } from '~/services/config'
 import { lifecycleDisposables } from '~/common'
@@ -48,6 +49,25 @@ export default class Dashboard {
       port: options.port || (await getPort({ port: 9000 })),
       microserviceConfig: this.microserviceConfig,
       appStatus: this.appStatus,
+      executeAction: async ({ name, args }) => {
+        // Start the daemon if it dieded.
+        const { daemon } = this
+        if (!daemon) {
+          throw new Error('Container is not running')
+        }
+        let response = null
+        await executeAction({
+          daemon,
+          actionName: name,
+          args,
+          config: this.microserviceConfig,
+          callback(_response) {
+            response = _response
+          },
+        })
+
+        return response
+      },
     })
     httpServer.onShouldBuild(({ envs }) => {
       this.envs = envs

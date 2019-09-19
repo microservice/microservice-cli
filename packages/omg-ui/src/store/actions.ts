@@ -1,4 +1,5 @@
 import { getRandomString } from '~/common'
+import { executeAction } from '~/rpc'
 
 const DEFAULT_PAYLOAD = `{\n\t"parameter": "value"\n}`
 const DEFAULT_RESULT = ''
@@ -7,8 +8,8 @@ interface ActionTab {
   id: string
   title: string
   actionName: string | null
-  payload: string | null
-  result: string | null
+  payload: string
+  result: string
 }
 
 export interface ActionsState {
@@ -57,6 +58,49 @@ const mutations = {
     const activeTab = getActiveTabFromState(state)
     activeTab.actionName = name
   },
+  setActionPayload(state: ActionsState, payload: string) {
+    const activeTab = getActiveTabFromState(state)
+    activeTab.payload = payload
+  },
+  setActionResult(state: ActionsState, { tabId, result }) {
+    const relevantTab = state.tabs.find(item => item.id === tabId)
+    if (relevantTab) {
+      relevantTab.result = JSON.stringify(result)
+    }
+  },
+}
+
+const actions = {
+  executeActiveAction(context) {
+    const activeTab = getActiveTabFromState(context.state)
+    const { actionName } = activeTab
+
+    let parsed
+    try {
+      parsed = JSON.parse(activeTab.payload)
+    } catch (_) {
+      /* No Op */
+    }
+    if (!parsed || typeof parsed !== 'object' || !actionName) {
+      // Don't bother
+      return
+    }
+    executeAction({
+      name: actionName,
+      args: parsed,
+    }).then(response => {
+      const result =
+        response.status === 'ok'
+          ? response.result
+          : {
+              error: response.error,
+            }
+      context.commit('setActionResult', {
+        tabId: activeTab.id,
+        result,
+      })
+    })
+  },
 }
 
 const getters = {
@@ -70,4 +114,5 @@ export default {
   state: defaultState,
   mutations,
   getters,
+  actions,
 }

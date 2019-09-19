@@ -8,16 +8,19 @@ import OmgUiPath from 'omg-ui'
 import * as logger from '~/logger'
 import { ConfigSchema, Args, UIAppStatus } from '~/types'
 
+type TExecuteAction = (payload: { name: string; args: Args }) => Promise<any>
 interface DashboardHttpServerOptions {
   port: number
   appStatus: UIAppStatus
   microserviceConfig: ConfigSchema
+  executeAction: TExecuteAction
 }
 
 export default class DashboardHttpServer {
   private port: number
   private appStatus: string
   private microserviceConfig: ConfigSchema
+  private executeAction: TExecuteAction
 
   private serverRef: http.Server | null
   private emitter: Emitter
@@ -28,6 +31,7 @@ export default class DashboardHttpServer {
     this.port = options.port
     this.appStatus = options.appStatus
     this.microserviceConfig = options.microserviceConfig
+    this.executeAction = options.executeAction
     this.serverRef = null
 
     this.emitter = new Emitter()
@@ -93,6 +97,23 @@ export default class DashboardHttpServer {
 
       this.emitter.emit('should-build', { envs: envsArgs })
       res.json({ status: 'ok' })
+    })
+    app.post('/api/executeAction', async (req, res) => {
+      try {
+        const { name, args } = req.body
+        const actionArgs: Args = []
+        Object.keys(args).forEach(key => {
+          actionArgs.push([key, args[key]])
+        })
+
+        const result = await this.executeAction({
+          name,
+          args: actionArgs,
+        })
+        res.json({ status: 'ok', result })
+      } catch (error) {
+        res.json({ status: 'error', error: error && error.message })
+      }
     })
 
     await new Promise(resolve => {

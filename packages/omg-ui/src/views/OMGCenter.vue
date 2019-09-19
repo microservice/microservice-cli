@@ -32,17 +32,29 @@
         <select
           class="omg-center-action-select"
           placeholder="Please select an Action"
-          v-model="getActiveActionTab.actionName"
           v-on:change="e => selectAction(e.target.value)"
         >
-          <option :value="null" hidden disabled>Please select an Action</option>
+          <option
+            :value="null"
+            hidden
+            disabled
+            :selected="getActiveActionTab.actionName === null"
+          >Please select an Action</option>
           <option
             :value="configAction.name"
+            :selected="getActiveActionTab.actionName === configAction.name"
             v-bind:key="configAction.name"
             v-for="configAction in getConfigActions"
           >{{configAction.name}}</option>
         </select>
-        <Button :ph="2" :pv="1.5" color="white" backgroundColor="blue40" :ml="1">Send</Button>
+        <Button
+          :ph="2"
+          :pv="1.5"
+          color="white"
+          backgroundColor="blue40"
+          :ml="1"
+          :onPress="executeActiveAction"
+        >Send</Button>
         <Button
           :ph="2"
           :pv="1.5"
@@ -58,7 +70,7 @@
     <Flex row :ph="2" :pv="1" :flex="1">
       <Flex column :flex="1" backgroundColor="white">
         <Flex column :flex="1" :p="4">
-          <Monaco :code="getActiveActionTab.payload" />
+          <Monaco :code="getActiveActionTab.payload" :onChange="setActionPayload" />
         </Flex>
       </Flex>
       <Flex column :flex="1" :ml="2" backgroundColor="white">
@@ -74,7 +86,7 @@
 </template>
 
 <script>
-import { mapGeters, mapGetters, mapMutations } from 'vuex'
+import { mapGeters, mapGetters, mapMutations, mapActions } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
 import Photo from '~/components/Photo.vue'
@@ -88,7 +100,8 @@ export default {
     ...mapGetters(['getActiveActionTab', 'getAllActionTabs', 'getConfigActions']),
   },
   methods: {
-    ...mapMutations(['createActionsTab', 'selectActionsTab', 'destroyActionsTab', 'selectAction']),
+    ...mapMutations(['createActionsTab', 'selectActionsTab', 'destroyActionsTab', 'selectAction', 'setActionPayload']),
+    ...mapActions(['executeActiveAction']),
   },
   data: () => ({
     iconPlusSource: require('~/images/icon-plus.svg'),
