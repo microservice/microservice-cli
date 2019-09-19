@@ -12,20 +12,7 @@
       <Flex column backgroundColor="white" :flex="1" :ph="2" :pt="3" :pb="1" overflow="hidden">
         <Words fontWeight="500" size="large">Container Logs (stdout &amp; stderr)</Words>
         <Words color="grey60" marginTop="12px" overflowY="scroll">
-          <pre class="omg-right-logs">
-      Web client connected to socket.
-          ^C(node:11024) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'isRunning' of undefined
-          at UIServer.anonymous (/usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:383:45)
-          at Generator.next (anonymous)
-          at /usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:7:71
-          at new Promise (anonymous)
-          at __awaiter (/usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:3:12)
-          at /usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:380:49
-          at new Promise (anonymous)
-          at UIServer.stopContainer (/usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:380:16)
-          at Cli.anonymous (/usr/local/lib/node_modules/omg/dist/cli/Cli.js:572:37)
-          at Generator.next (anonymous)
-          </pre>
+          <pre class="omg-right-logs" v-text="logsDocker"></pre>
         </Words>
       </Flex>
     </Flex>
@@ -33,7 +20,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
 import Button from '~/components/Button.vue'
@@ -44,6 +31,9 @@ export default {
   components: { Flex, Button, Words, Photo },
   methods: {
     ...mapMutations(['openEnvironemntModal', 'openYamlEditorModal']),
+  },
+  computed: {
+    ...mapGetters(['logsDocker']),
   },
   data: () => ({
     iconBookmarkSource: require('~/images/icon-bookmark.svg'),

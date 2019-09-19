@@ -1,11 +1,17 @@
 import { Emitter } from 'event-kit'
 
-import { ConfigSchema } from '~/types'
+import { ConfigSchema, ConsoleLine, DockerLine } from '~/types'
 
 const emitter = new Emitter()
 
 export function handleConfigUpdated(callback: (config: ConfigSchema) => void) {
   return emitter.on('config-updated', callback)
+}
+export function handleConsoleLog(callback: (logLine: ConsoleLine) => void) {
+  return emitter.on('console-log', callback)
+}
+export function handleDockerLog(callback: (logLine: DockerLine) => void) {
+  return emitter.on('docker-log', callback)
 }
 
 async function main() {

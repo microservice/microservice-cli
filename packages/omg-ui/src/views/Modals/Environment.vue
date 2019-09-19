@@ -60,19 +60,7 @@
         </Flex>
         <Flex column :mt="3" overflowY="scroll">
           <Words color="grey60">
-            <pre class="modal-env-logs">Web client connected to socket.
-            ^C(node:11024) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'isRunning' of undefined
-            at UIServer.anonymous (/usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:383:45)
-            at Generator.next (anonymous)
-            at /usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:7:71
-            at new Promise (anonymous)
-            at __awaiter (/usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:3:12)
-            at /usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:380:49
-            at new Promise (anonymous)
-            at UIServer.stopContainer (/usr/local/lib/node_modules/omg/dist/commands/ui/UI.js:380:16)
-            at Cli.anonymous (/usr/local/lib/node_modules/omg/dist/cli/Cli.js:572:37)
-            at Generator.next (anonymous)Web client connected to socket.
-            The end</pre>
+            <pre class="modal-env-logs" v-text="logsDocker"></pre>
           </Words>
         </Flex>
       </Flex>
@@ -105,7 +93,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getConfigEnvs']),
+    ...mapGetters(['getConfigEnvs', 'logsDocker']),
   },
   data: () => ({
     iconCloseSource: require('~/images/icon-close.svg'),
