@@ -5,12 +5,10 @@
         <OMGHeader />
         <Flex row :flex="1" overflow="hidden">
           <OMGLeft v-if="showHistory" />
-          <Flex column :flex="1">
-            <OMGCenter />
-            <OMGFooter />
-          </Flex>
+          <OMGCenter />
           <OMGRight />
         </Flex>
+        <OMGFooter />
       </Flex>
       <Modals />
     </Words>
