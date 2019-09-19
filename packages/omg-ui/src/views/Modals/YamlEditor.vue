@@ -39,10 +39,9 @@
       >
         <Words color="white">microservice.yaml</Words>
       </Flex>
-      <Flex column :flex="1" background="#1f1f1f" :pv="1.5" :ph="1.5">
+      <Flex column :flex="1" background="white" :pv="1.5" :ph="1.5">
         <Monaco
           language="yaml"
-          theme="vs-dark"
           lineNumbers="on"
           :minimapEnabled="true"
           :code="configContents"
