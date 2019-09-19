@@ -8,6 +8,7 @@
 <script lang="ts">
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 import 'monaco-editor/esm/vs/language/json/monaco.contribution.js'
+import 'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution.js'
 import 'monaco-editor/esm/vs/editor/contrib/format/formatActions.js'
 
 // @ts-ignore
@@ -23,7 +24,27 @@ export default {
       type: String,
       default: '',
     },
+    language: {
+      type: String,
+      required: true,
+    },
+    theme: {
+      type: String,
+      default: null,
+    },
+    lineNumbers: {
+      type: String,
+      default: 'off',
+    },
+    wordWrap: {
+      type: String,
+      default: 'on',
+    },
     readonly: {
+      type: Boolean,
+      default: false,
+    },
+    minimapEnabled: {
       type: Boolean,
       default: false,
     },
@@ -46,20 +67,21 @@ export default {
   mounted() {
     this.$lastValue = this.code
     this.$editor = monaco.editor.create(this.$refs.editor, {
-      language: 'json',
+      language: this.language,
       value: this.code,
       readOnly: this.readonly,
       renderLineHighlight: this.readonly ? 'none' : 'all',
       minimap: {
-        enabled: false,
+        enabled: this.minimapEnabled,
       },
-      wordWrap: 'on',
-      lineNumbers: 'off',
+      wordWrap: this.wordWrap,
+      lineNumbers: this.lineNumbers,
       scrollbar: {
         verticalScrollbarSize: 2,
         horizontal: 'visible',
       },
       scrollBeyondLastLine: false,
+      theme: this.theme,
     })
     this.$editor.onDidChangeModelContent(() => {
       if (this.onChange) [this.onChange(this.$editor.getValue())]

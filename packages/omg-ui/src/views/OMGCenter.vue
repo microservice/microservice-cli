@@ -71,7 +71,7 @@
     <Flex row :ph="2" :pv="1" :flex="1">
       <Flex column :flex="1" backgroundColor="white">
         <Flex column :flex="1" :p="4">
-          <Monaco :code="getActiveActionTab.payload" :onChange="setActionPayload" />
+          <Monaco language="json" :code="getActiveActionTab.payload" :onChange="setActionPayload" />
         </Flex>
       </Flex>
       <Flex column :flex="1" :ml="2" backgroundColor="white">
@@ -79,7 +79,7 @@
           <Words size="medium" fontWeight="500">Result</Words>
         </Flex>
         <Flex column :flex="1" :ph="4" :pv="2">
-          <Monaco readonly :code="getActiveActionTab.result" />
+          <Monaco language="json" readonly :code="getActiveActionTab.result" />
         </Flex>
       </Flex>
     </Flex>
