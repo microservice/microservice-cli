@@ -1,9 +1,10 @@
 <template>
   <div id="omg">
     <Words size="medium">
-      <Flex column flex="1" height="100%" v-bind:class="{'omg-content-hidden': !!getActiveModal}">
+      <Flex column flex="1" height="100%" v-bind:class="{'omg-content-hidden': !!activeModal}">
         <OMGHeader />
         <Flex row :flex="1" overflow="hidden">
+          <OMGLeft v-if="showHistory" />
           <Flex column :flex="1">
             <OMGCenter />
             <OMGFooter />
@@ -25,14 +26,18 @@ import Words from '~/components/Words.vue'
 import OMGHeader from './OMGHeader.vue'
 import OMGCenter from './OMGCenter.vue'
 import OMGRight from './OMGRight.vue'
+import OMGLeft from './OMGLeft.vue'
 import OMGFooter from './OMGFooter.vue'
 
 import Modals from './Modals/index.vue'
 
 export default {
-  components: { Flex, Words, OMGHeader, OMGCenter, OMGRight, OMGFooter, Modals },
+  components: { Flex, Words, OMGHeader, OMGCenter, OMGRight, OMGLeft, OMGFooter, Modals },
   computed: {
-    ...mapGetters(['getActiveModal']),
+    ...mapGetters({
+      activeModal: 'getActiveModal',
+      showHistory: 'getShowHistory',
+    }),
   },
 }
 </script>

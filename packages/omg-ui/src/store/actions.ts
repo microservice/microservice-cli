@@ -93,7 +93,7 @@ const actions = {
       if (result.status === 'ok') {
         result = result.result
       } else if (result.status === 'error') {
-        result = result.error
+        result = { error: result.error }
       }
       context.commit('setActionResult', {
         tabId: activeTab.id,

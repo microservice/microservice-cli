@@ -5,6 +5,7 @@ import config, { ConfigState } from './config'
 import modals, { ModalsState } from './modals'
 import logs, { LogsState } from './logs'
 import actions, { ActionsState } from './actions'
+import views, { ViewsState } from './views'
 
 import { handleConfigUpdated, handleConsoleLog, handleDockerLog, handleAppStatusUpdated } from '~/rpc/events'
 
@@ -15,10 +16,11 @@ export interface StoreState {
   modals: ModalsState
   logs: LogsState
   actions: ActionsState
+  views: ViewsState
 }
 
 const store = new Vuex.Store<StoreState>({
-  modules: { config, modals, logs, actions },
+  modules: { config, modals, logs, actions, views },
   strict: process.env.NODE_ENV !== 'production',
 })
 
