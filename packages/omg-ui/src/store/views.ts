@@ -14,7 +14,7 @@ const mutations = {
 
 const getters = {
   getShowMetrics(state: ViewsState) {
-    return this.showMetrics
+    return state.showMetrics
   },
 }
 

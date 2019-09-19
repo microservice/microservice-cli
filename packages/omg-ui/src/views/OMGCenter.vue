@@ -64,6 +64,7 @@
           fontWeight="500"
           bordercolor="blue20"
           backgroundColor="blue20"
+          :onPress="saveActiveAction"
         >Save</Button>
       </Flex>
       <Flex row :flex="1" :ml="2" />
@@ -101,7 +102,14 @@ export default {
     ...mapGetters(['getActiveActionTab', 'getAllActionTabs', 'getConfigActions']),
   },
   methods: {
-    ...mapMutations(['createActionsTab', 'selectActionsTab', 'destroyActionsTab', 'selectAction', 'setActionPayload']),
+    ...mapMutations([
+      'createActionsTab',
+      'selectActionsTab',
+      'destroyActionsTab',
+      'selectAction',
+      'setActionPayload',
+      'saveActiveAction',
+    ]),
     ...mapActions(['executeActiveAction']),
   },
   data: () => ({

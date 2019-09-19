@@ -12,8 +12,13 @@ interface ActionTab {
   result: string
 }
 
+type ActionTabHistoric = ActionTab & {
+  timestamp: number
+}
+
 export interface ActionsState {
   tabs: ActionTab[]
+  history: ActionTabHistoric[]
   activeTabId: string | null
 }
 
@@ -37,6 +42,7 @@ function getActiveTabFromState(state: ActionsState) {
 
 const defaultState: ActionsState = {
   tabs: [getActionTab()],
+  history: [],
   activeTabId: null,
 }
 
@@ -67,6 +73,23 @@ const mutations = {
     if (relevantTab) {
       relevantTab.result = JSON.stringify(result)
     }
+  },
+  saveActiveAction(state: ActionsState) {
+    const activeTab = getActiveTabFromState(state)
+    state.history.push({
+      ...activeTab,
+      timestamp: Date.now(),
+    })
+  },
+  restoreHistoricTab(state: ActionsState, historicTab: ActionTabHistoric) {
+    const newTab = getActionTab()
+    newTab.title = historicTab.title
+    newTab.actionName = historicTab.actionName
+    newTab.payload = historicTab.payload
+    newTab.result = historicTab.result
+
+    state.tabs.push(newTab)
+    state.activeTabId = newTab.id
   },
 }
 
@@ -104,6 +127,9 @@ const actions = {
 }
 
 const getters = {
+  historicTabs(state: ActionsState): ActionTabHistoric[] {
+    return state.history.slice()
+  },
   getAllActionTabs(state: ActionsState): ActionTab[] {
     return state.tabs
   },
