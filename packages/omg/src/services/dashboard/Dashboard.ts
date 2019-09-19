@@ -47,6 +47,7 @@ export default class Dashboard {
   public async start(options: DashboardStartOptions): Promise<{ port: number }> {
     const httpServer = new DashboardHttpServer({
       port: options.port || (await getPort({ port: 9000 })),
+      configPaths: this.configPaths,
       microserviceConfig: this.microserviceConfig,
       appStatus: this.appStatus,
       executeAction: async ({ name, args }) => {
@@ -79,7 +80,7 @@ export default class Dashboard {
     subscriptions.add(httpServer)
     subscriptions.add(
       watchConfigFile({
-        validate: true,
+        validate: false,
         configPath: this.configPaths.microservice,
         onConfigUpdated: microserviceConfig => {
           this.microserviceConfig = microserviceConfig

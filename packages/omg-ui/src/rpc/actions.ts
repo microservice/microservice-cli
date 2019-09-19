@@ -20,3 +20,7 @@ export async function buildImage() {
 export async function executeAction(payload: { name: string; args: Record<string, any> }) {
   return apiRequest('executeAction', payload)
 }
+
+export async function writeConfig(config: string): Promise<void> {
+  await apiRequest('writeConfig', { config })
+}

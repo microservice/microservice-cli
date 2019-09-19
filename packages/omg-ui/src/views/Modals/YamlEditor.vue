@@ -51,14 +51,23 @@
         <Words color="white">microservice.yaml</Words>
       </Flex>
       <Flex column :flex="1" background="#1f1f1f" :pv="1.5" :ph="1.5">
-        <Monaco language="yaml" theme="vs-dark" lineNumbers="on" :minimapEnabled="true" />
+        <Monaco
+          language="yaml"
+          theme="vs-dark"
+          lineNumbers="on"
+          :minimapEnabled="true"
+          :code="configContents"
+          :onChange="writeConfig"
+        />
       </Flex>
     </Flex>
   </Flex>
 </template>
 
 <script>
+import { debounce } from 'lodash'
 import { mapMutations } from 'vuex'
+import { writeConfig } from '~/rpc'
 
 import Flex from '~/components/Flex.vue'
 import Photo from '~/components/Photo.vue'
@@ -70,8 +79,19 @@ export default {
   components: { Flex, Photo, Button, Words, Monaco },
   methods: {
     ...mapMutations(['dismissModal']),
+    writeConfig: debounce(function(contents) {
+      writeConfig(contents)
+    }, 1000),
+  },
+  created() {
+    fetch('/api/configRaw')
+      .then(response => response.text())
+      .then(contents => {
+        this.configContents = contents
+      })
   },
   data: () => ({
+    configContents: '',
     iconBackSource: require('~/images/icon-back.svg'),
     iconCircleCheck: require('~/images/icon-circle-check.svg'),
     iconCircleTimes: require('~/images/icon-circle-times.svg'),

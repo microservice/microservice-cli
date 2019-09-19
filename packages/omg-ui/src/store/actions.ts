@@ -89,12 +89,12 @@ const actions = {
       name: actionName,
       args: parsed,
     }).then(response => {
-      const result =
-        response.status === 'ok'
-          ? response.result
-          : {
-              error: response.error,
-            }
+      let result = response
+      if (result.status === 'ok') {
+        result = result.result
+      } else if (result.status === 'error') {
+        result = result.error
+      }
       context.commit('setActionResult', {
         tabId: activeTab.id,
         result,

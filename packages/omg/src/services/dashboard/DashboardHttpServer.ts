@@ -1,3 +1,4 @@
+import fs from 'sb-fs'
 import http from 'http'
 import stripAnsi from 'strip-ansi'
 import bodyParser from 'body-parser'
@@ -6,11 +7,13 @@ import { CompositeDisposable, Emitter, Disposable } from 'event-kit'
 import OmgUiPath from 'omg-ui'
 
 import * as logger from '~/logger'
+import { ConfigPaths } from '~/services/config'
 import { ConfigSchema, Args, UIAppStatus } from '~/types'
 
 type TExecuteAction = (payload: { name: string; args: Args }) => Promise<any>
 interface DashboardHttpServerOptions {
   port: number
+  configPaths: ConfigPaths
   appStatus: UIAppStatus
   microserviceConfig: ConfigSchema
   executeAction: TExecuteAction
@@ -18,6 +21,7 @@ interface DashboardHttpServerOptions {
 
 export default class DashboardHttpServer {
   private port: number
+  private configPaths: ConfigPaths
   private appStatus: string
   private microserviceConfig: ConfigSchema
   private executeAction: TExecuteAction
@@ -29,6 +33,7 @@ export default class DashboardHttpServer {
 
   public constructor(options: DashboardHttpServerOptions) {
     this.port = options.port
+    this.configPaths = options.configPaths
     this.appStatus = options.appStatus
     this.microserviceConfig = options.microserviceConfig
     this.executeAction = options.executeAction
@@ -65,6 +70,9 @@ export default class DashboardHttpServer {
     // API Routes
     app.get('/api/config', (req, res) => {
       res.json(this.microserviceConfig)
+    })
+    app.get('/api/configRaw', (req, res) => {
+      res.sendFile(this.configPaths.microservice)
     })
     app.get('/api/events', (req, res) => {
       // 24 hours
@@ -114,6 +122,13 @@ export default class DashboardHttpServer {
       } catch (error) {
         res.json({ status: 'error', error: error && error.message })
       }
+    })
+    app.post('/api/writeConfig', async (req, res) => {
+      const { config } = req.body
+      if (config && config.length && typeof config === 'string') {
+        fs.writeFile(this.configPaths.microservice, config).catch(logger.error)
+      }
+      res.json({ status: 'ok' })
     })
 
     await new Promise(resolve => {

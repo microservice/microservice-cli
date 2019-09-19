@@ -15,7 +15,7 @@ export default async function ui({ options }: CommandPayload<ActionOptions>) {
   const configPaths = await getConfigPaths(options, true)
   const microserviceConfig = await parseMicroserviceConfig({
     configPath: configPaths.microservice,
-    validate: true,
+    validate: false,
   })
 
   logger.spinnerStart('Booting up UI')
