@@ -10,18 +10,21 @@ export interface ModalState {
 }
 
 const defaultState: ModalState = {
-  activeModal: Modals.ENVIRONMENT,
+  activeModal: null,
 }
 
 const mutations = {
   dismissModal(state: ModalState) {
     state.activeModal = null
   },
-  openModal(state: ModalState, modalName: Modals) {
-    if (!MODAL_NAMES.includes(modalName)) {
-      throw new Error(`Invalid modal name to open: ${modalName}`)
-    }
-    state.activeModal = modalName
+  openEnvironemntModal(state: ModalState) {
+    state.activeModal = Modals.ENVIRONMENT
+  },
+  openCompletenessModal(state: ModalState) {
+    state.activeModal = Modals.COMPLETENESS
+  },
+  openYamlEditorModal(state: ModalState) {
+    state.activeModal = Modals.COMPLETENESS
   },
 }
 
