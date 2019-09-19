@@ -10,7 +10,7 @@ export interface ModalsState {
 }
 
 const defaultState: ModalsState = {
-  activeModal: Modals.YAML_EDITOR,
+  activeModal: null,
 }
 
 const mutations = {

@@ -9,7 +9,6 @@ export interface ConfigState {
 export interface ConfigEnv {
   name: string
   type: InputType | InputType[]
-  value: string
   required: boolean
 }
 export interface ConfigAction {
@@ -66,6 +65,9 @@ const getters = {
     }
     return []
   },
+  getConfigEnvValues(state: ConfigState): Record<string, string> {
+    return state.envValues
+  },
   getConfigEnvs(state: ConfigState): ConfigEnv[] {
     if (state.config) {
       const { environment } = state.config
@@ -78,7 +80,6 @@ const getters = {
             name,
             type: value.type,
             required: !!value.required,
-            value: state.envValues[name],
           })
         })
 

@@ -31,7 +31,7 @@
                     type="text"
                     placeholder="String"
                     v-bind:name="envVar.name"
-                    v-bind:value="envVar.value"
+                    v-bind:value="getConfigEnvValues[envVar.name]"
                     @input="setEnvVar"
                   />
                 </Flex>
@@ -97,7 +97,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getConfigEnvs', 'logsAll', 'appStatus']),
+    ...mapGetters(['getConfigEnvs', 'logsAll', 'appStatus', 'getConfigEnvValues']),
     showRebuildingMessage() {
       return this.appStatus === AppStatus.starting
     },
