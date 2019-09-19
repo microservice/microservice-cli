@@ -15,28 +15,17 @@
         </Button>
       </Flex>
       <Flex column :mt="8">
-        <Flex row :ph="2" :pv="1">
-          <Words color="white" size="large">Info</Words>
+        <Flex
+          row
+          :ph="2"
+          :pv="1"
+          v-for="validationItem in configValidations"
+          v-bind:key="validationItem[0]"
+        >
+          <Words color="white" size="large">{{validationItem[0]}}</Words>
           <Flex :flex="1" row justifyContent="flex-end" alignItems="center">
-            <Photo :source="iconCircleCheck" :size="2" />
-          </Flex>
-        </Flex>
-        <Flex row :ph="2" :pv="1">
-          <Words color="white" size="large">Actions</Words>
-          <Flex :flex="1" row justifyContent="flex-end" alignItems="center">
-            <Photo :source="iconCircleCheck" :size="2" />
-          </Flex>
-        </Flex>
-        <Flex row :ph="2" :pv="1">
-          <Words color="white" size="large">Startup</Words>
-          <Flex :flex="1" row justifyContent="flex-end" alignItems="center">
-            <Photo :source="iconCircleCheck" :size="2" />
-          </Flex>
-        </Flex>
-        <Flex row :ph="2" :pv="1">
-          <Words color="white" size="large">Health</Words>
-          <Flex :flex="1" row justifyContent="flex-end" alignItems="center">
-            <Photo :source="iconCircleTimes" :size="2" />
+            <Photo :source="iconCircleCheck" :size="2" v-if="validationItem[1]" />
+            <Photo :source="iconCircleTimes" :size="2" v-if="!validationItem[1]" />
           </Flex>
         </Flex>
       </Flex>
@@ -66,7 +55,7 @@
 
 <script>
 import { debounce } from 'lodash'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 import { writeConfig } from '~/rpc'
 
 import Flex from '~/components/Flex.vue'
@@ -77,6 +66,18 @@ import Monaco from '~/components/Monaco.vue'
 
 export default {
   components: { Flex, Photo, Button, Words, Monaco },
+  computed: {
+    ...mapGetters(['getConfigValidation']),
+    configValidations() {
+      return [
+        ['Schema validation', this.getConfigValidation.schema],
+        ['Info', this.getConfigValidation.info],
+        ['Actions', this.getConfigValidation.actions],
+        ['Startup', this.getConfigValidation.startup],
+        ['Health', this.getConfigValidation.health],
+      ]
+    },
+  },
   methods: {
     ...mapMutations(['dismissModal']),
     writeConfig: debounce(function(contents) {

@@ -22,8 +22,8 @@ const store = new Vuex.Store<StoreState>({
   strict: process.env.NODE_ENV !== 'production',
 })
 
-handleConfigUpdated(configSchema => {
-  store.commit('setConfig', configSchema)
+handleConfigUpdated(payload => {
+  store.commit('setConfig', payload)
 })
 handleConsoleLog(logLine => {
   store.commit('logConsoleLine', logLine)

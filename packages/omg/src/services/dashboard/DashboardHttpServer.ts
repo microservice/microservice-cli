@@ -7,7 +7,7 @@ import { CompositeDisposable, Emitter, Disposable } from 'event-kit'
 import OmgUiPath from 'omg-ui'
 
 import * as logger from '~/logger'
-import { ConfigPaths } from '~/services/config'
+import { ConfigPaths, getValidationErrors } from '~/services/config'
 import { ConfigSchema, Args, UIAppStatus } from '~/types'
 
 type TExecuteAction = (payload: { name: string; args: Args }) => Promise<any>
@@ -86,7 +86,14 @@ export default class DashboardHttpServer {
         'Cache-Control': 'no-cache',
       })
       // Bootstrap events:
-      this.publishEvent('config-updated', this.microserviceConfig, res)
+      this.publishEvent(
+        'config-updated',
+        {
+          config: this.microserviceConfig,
+          validationErrors: getValidationErrors(this.microserviceConfig),
+        },
+        res,
+      )
       this.publishEvent('app-status-updated', { status: this.appStatus }, res)
 
       // GC Handlers:
@@ -137,7 +144,10 @@ export default class DashboardHttpServer {
   }
   public handleConfigUpdated(microserviceConfig: ConfigSchema) {
     this.microserviceConfig = microserviceConfig
-    this.publishEvent('config-updated', microserviceConfig)
+    this.publishEvent('config-updated', {
+      config: microserviceConfig,
+      validationErrors: getValidationErrors(microserviceConfig),
+    })
   }
   public handleAppStatusUpdated(status: UIAppStatus) {
     this.appStatus = status

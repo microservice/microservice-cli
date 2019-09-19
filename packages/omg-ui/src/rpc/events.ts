@@ -4,7 +4,7 @@ import { ConfigSchema, ConsoleLine, DockerLine, AppStatus } from '~/types'
 
 const emitter = new Emitter()
 
-export function handleConfigUpdated(callback: (config: ConfigSchema) => void) {
+export function handleConfigUpdated(callback: (payload: { config: ConfigSchema; validationErrors: string[] }) => void) {
   return emitter.on('config-updated', callback)
 }
 export function handleConsoleLog(callback: (logLine: ConsoleLine) => void) {

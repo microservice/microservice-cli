@@ -2,6 +2,7 @@ import { ConfigSchema, InputType } from '~/types'
 
 export interface ConfigState {
   config: ConfigSchema | null
+  validationErrors: string[]
   envValues: Record<string, any>
 }
 
@@ -14,15 +15,24 @@ export interface ConfigEnv {
 export interface ConfigAction {
   name: string
 }
+export interface ConfigValidation {
+  schema: boolean
+  info: boolean
+  actions: boolean
+  startup: boolean
+  health: boolean
+}
 
 const defaultState: ConfigState = {
   config: null,
+  validationErrors: [],
   envValues: {},
 }
 
 const mutations = {
-  setConfig(state: ConfigState, newConfig: ConfigSchema | null) {
-    state.config = newConfig
+  setConfig(state: ConfigState, payload: { config: ConfigSchema; validationErrors: string[] }) {
+    state.config = payload.config
+    state.validationErrors = payload.validationErrors
   },
   setConfigEnv(state: ConfigState, { key, value }: { key: string; value: string }) {
     state.envValues[key] = value
@@ -76,6 +86,21 @@ const getters = {
       }
     }
     return []
+  },
+  getConfigValidation(state: ConfigState): ConfigValidation {
+    const validationSchema = state.validationErrors.length === 0
+    const validationInfo = !!(state.config && state.config.info && state.config.info.title && state.config.info.version)
+    const validationActions = Object.keys((state.config && state.config.actions) || {}).length > 0
+    const validationStartup = !!(state.config && state.config.lifecycle && state.config.lifecycle.startup)
+    const validationHealth = !!(state.config && state.config.health)
+
+    return {
+      schema: validationSchema,
+      info: validationInfo,
+      actions: validationActions,
+      startup: validationStartup,
+      health: validationHealth,
+    }
   },
 }
 
