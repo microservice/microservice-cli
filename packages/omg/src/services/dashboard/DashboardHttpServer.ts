@@ -1,8 +1,9 @@
 import http from 'http'
 import express, { Response } from 'express'
-import { CompositeDisposable, Emitter } from 'event-kit'
+import { CompositeDisposable, Emitter, Disposable } from 'event-kit'
 import OmgUiPath from 'omg-ui'
 
+import * as logger from '~/logger'
 import { ConfigSchema } from '~/types'
 
 interface DashboardHttpServerOptions {
@@ -29,6 +30,18 @@ export default class DashboardHttpServer {
     this.eventListeners = new Set()
 
     this.subscriptions.add(this.emitter)
+
+    // Forward console logs to the UI
+    function handleConsoleLogs({ severity, contents }: { severity: 'info' | 'warn' | 'error'; contents: string }) {
+      this.publishEvent('console-log', { severity, contents })
+    }
+
+    logger.logConsumers.add(handleConsoleLogs)
+    this.subscriptions.add(
+      new Disposable(() => {
+        logger.logConsumers.delete(handleConsoleLogs)
+      }),
+    )
   }
   public getPort(): number {
     return this.port

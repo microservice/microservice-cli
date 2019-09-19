@@ -8,12 +8,16 @@ import { DEBUG_CLI, lifecycleDisposables } from './common'
 
 let spinner: Ora | null = null
 
+export type LogConsumer = (payload: { severity: 'info' | 'warn' | 'error'; contents: string }) => void
+export const logConsumers: Set<LogConsumer> = new Set()
+
 export function info(message: string) {
   let contents = `${logSymbols.info} ${message}`
   if (spinner) {
     contents = `\r${contents}`
   }
   console.log(contents)
+  logConsumers.forEach(callback => callback({ severity: 'info', contents }))
 }
 
 export function warn(message: string) {
@@ -22,6 +26,7 @@ export function warn(message: string) {
     contents = `\r${contents}`
   }
   console.warn(contents)
+  logConsumers.forEach(callback => callback({ severity: 'warn', contents }))
 }
 
 export function error(err: string | Error) {
@@ -31,6 +36,7 @@ export function error(err: string | Error) {
     contents = `\r${contents}`
   }
   console.error(contents)
+  logConsumers.forEach(callback => callback({ severity: 'error', contents }))
 }
 
 export function fatal(message: string): never {
