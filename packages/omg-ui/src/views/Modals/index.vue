@@ -33,6 +33,8 @@ export default {
   height: 100%;
   top: 0;
   left: 0;
+  overflow-y: scroll;
+  display: flex;
 }
 .modals-wrapper.hidden {
   display: none;
