@@ -1,6 +1,6 @@
 <template>
   <div class="modals-wrapper" v-bind:class="{hidden: !getActiveModal}">
-    <Completeness v-if="showCompletenessModal" />
+    <YamlEditor v-if="openYamlEditorModal" />
     <Environment v-if="showEnvironmentModal" />
   </div>
 </template>
@@ -9,16 +9,16 @@
 import { mapGetters } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
-import Completeness from './Completeness.vue'
+import YamlEditor from './YamlEditor.vue'
 import Environment from './Environment.vue'
 
 export default {
-  components: { Flex, Completeness, Environment },
+  components: { Flex, YamlEditor, Environment },
   methods: {},
   computed: {
     ...mapGetters(['getActiveModal']),
-    showCompletenessModal() {
-      return this.getActiveModal === 'COMPLETENESS'
+    openYamlEditorModal() {
+      return this.getActiveModal === 'YAML_EDITOR'
     },
     showEnvironmentModal() {
       return this.getActiveModal === 'ENVIRONMENT'

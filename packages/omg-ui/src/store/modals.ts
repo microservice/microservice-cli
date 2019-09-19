@@ -1,6 +1,6 @@
 export enum Modals {
   ENVIRONMENT = 'ENVIRONMENT',
-  COMPLETENESS = 'COMPLETENESS',
+  YAML_EDITOR = 'YAML_EDITOR',
 }
 
 export const MODAL_NAMES: Modals[] = Object.values(Modals)
@@ -20,11 +20,8 @@ const mutations = {
   openEnvironemntModal(state: ModalsState) {
     state.activeModal = Modals.ENVIRONMENT
   },
-  openCompletenessModal(state: ModalsState) {
-    state.activeModal = Modals.COMPLETENESS
-  },
   openYamlEditorModal(state: ModalsState) {
-    state.activeModal = Modals.COMPLETENESS
+    state.activeModal = Modals.YAML_EDITOR
   },
 }
 
