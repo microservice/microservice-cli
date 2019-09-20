@@ -100,7 +100,7 @@ export default class Dashboard {
     return { port: httpServer.getPort() }
   }
 
-  private async reload(): Promise<void> {
+  public async reload(): Promise<void> {
     const { daemon, httpServer } = this
     if (!httpServer) {
       return

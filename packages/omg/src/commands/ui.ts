@@ -33,4 +33,6 @@ export default async function ui({ options }: CommandPayload<ActionOptions>) {
   if (options.open) {
     await open(serverUrl)
   }
+
+  await dashboard.reload().catch(logger.error)
 }
