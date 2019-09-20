@@ -7,7 +7,7 @@
     "microservice",
     "microservices"
   ],
-  "version": "1.0.0-alpha2",
+  "version": "1.0.0-alpha3",
   "main": "omg",
   "scripts": {
     "build": "sb-babel-cli src -o lib --typescript",
@@ -38,8 +38,8 @@
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
     "log-symbols": "^3.0.0",
-    "omg-ui": "^1.0.0-alpha2",
-    "omg-validate": "^1.0.0-alpha2",
+    "omg-ui": "^1.0.0-alpha3",
+    "omg-validate": "^1.0.0-alpha3",
     "open": "^6.4.0",
     "ora": "^3.4.0",
     "sb-fs": "^4.0.0",

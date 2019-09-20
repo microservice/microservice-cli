@@ -1,6 +1,5 @@
 {
   "name": "omg",
-  "version": "0.10.2",
   "private": true,
   "workspaces": [
     "packages/*"
