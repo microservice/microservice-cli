@@ -6,6 +6,9 @@
     "packages/*"
   ],
   "dependencies": {
+    "nexe": "^3.3.2"
+  },
+  "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
@@ -19,7 +22,6 @@
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-prettier": "^3.1.0",
     "lerna": "^3.16.4",
-    "nexe": "^3.3.2",
     "prettier-cli": "^0.1.0",
     "sb-babel-cli": "^2.0.0"
   },
