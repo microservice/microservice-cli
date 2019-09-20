@@ -5,8 +5,8 @@ node_js:
 services:
   - docker
 
-before_install:
-  - yarn && yarn build && (cd packages/omg; yarn link)
+before_script:
+  - yarn build && (cd packages/omg; yarn link)
 
 script:
   - cd tests/regression && ./travis.sh
