@@ -11,6 +11,12 @@ let spinner: Ora | null = null
 export type LogConsumer = (payload: { severity: 'info' | 'warn' | 'error'; contents: string }) => void
 export const logConsumers: Set<LogConsumer> = new Set()
 
+let spinnerAllowed = true
+
+export function setSpinnerAllowed(status: boolean) {
+  spinnerAllowed = status
+}
+
 export function info(message: string) {
   const contents = `${logSymbols.info} ${message}`
   if (spinner) {
@@ -63,12 +69,6 @@ export function fatal(message: string): never {
 
   process.exit(1)
   throw new Error('Never should reach here.')
-}
-
-let spinnerAllowed = true
-
-export function setSpinnerAllowed(status: boolean) {
-  spinnerAllowed = status
 }
 
 export function spinnerStart(message: string) {

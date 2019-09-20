@@ -42,12 +42,14 @@ export default async function main() {
   program
     .command('build')
     .option('-t --tag, <t>', 'The tag name of the image')
-    .option('-r --raw', 'Show raw Docker build logs')
+    .option('-r --raw', 'Show Docker build logs')
     .description(
       'Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a random string will be used',
     )
     .action(options => {
-      logger.setSpinnerAllowed(!options.raw)
+      if (options.raw) {
+        logger.setSpinnerAllowed(false)
+      }
       actionPromise = commands.build({
         options,
         parameters: [],
@@ -72,7 +74,7 @@ export default async function main() {
       getCollector('envs'),
       [],
     )
-    .option('-r --raw', 'All logging is suppressed except for the output of the action.')
+    .option('-r --raw', 'Show docker build logs')
     .option('--debug', 'Show container logs in CLI (for debugging purpose)')
     .description(
       'Run actions defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
@@ -103,7 +105,7 @@ export default async function main() {
       getCollector('envs'),
       [],
     )
-    .option('-r --raw', 'All logging is suppressed except for the output of the action.')
+    .option('-r --raw', 'Show docker build logs')
     .option('--debug', 'Show container logs in CLI (for debugging purpose)')
     .description(
       'Subscribe to an event defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
