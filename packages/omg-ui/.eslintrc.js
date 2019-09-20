@@ -5,13 +5,8 @@ module.exports = {
   rules,
   parser,
   plugins,
-  extends: ['airbnb/hooks', 'prettier', 'plugin:@typescript-eslint/recommended', 'plugin:react/recommended'],
+  extends: ['prettier', 'plugin:@typescript-eslint/recommended'],
   env: {
     browser: true,
-  },
-  settings: {
-    react: {
-      version: '16.9.0',
-    },
   },
 }
