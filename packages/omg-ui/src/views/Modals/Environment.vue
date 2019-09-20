@@ -10,7 +10,7 @@
     <Flex row :flex="1" overflow="hidden">
       <Flex column backgroundColor="grey10" :p="2">
         <Flex column backgroundColor="white" :p="4" :flex="1">
-          <Flex column v-if="getConfigEnvs.length">
+          <Flex column v-if="configEnvs.length">
             <Flex row>
               <Words size="xLarge" fontWeight="500">Environemnt</Words>
             </Flex>
@@ -18,7 +18,7 @@
               <Words>Enter environemt variables for your app below.</Words>
             </Flex>
             <Flex column :mt="6">
-              <Flex column :mb="2" v-bind:key="envVar.name" v-for="envVar in getConfigEnvs">
+              <Flex column :mb="2" v-bind:key="envVar.name" v-for="envVar in configEnvs">
                 <Flex row>
                   <Words color="grey60" size="small">
                     {{envVar.name}}
@@ -31,7 +31,7 @@
                     type="text"
                     placeholder="String"
                     v-bind:name="envVar.name"
-                    v-bind:value="getConfigEnvValues[envVar.name]"
+                    v-bind:value="configEnvValues[envVar.name]"
                     @input="setEnvVar"
                   />
                 </Flex>
@@ -97,7 +97,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getConfigEnvs', 'logsAll', 'appStatus', 'getConfigEnvValues']),
+    ...mapGetters(['logsAll', 'appStatus']),
+    ...mapGetters({
+      configEnvs: 'getConfigEnvs',
+      configEnvValues: 'getConfigEnvValues',
+    }),
     showRebuildingMessage() {
       return this.appStatus === AppStatus.starting
     },

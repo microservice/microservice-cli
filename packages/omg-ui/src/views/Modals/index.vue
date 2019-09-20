@@ -1,5 +1,5 @@
 <template>
-  <div class="modals-wrapper" v-bind:class="{hidden: !getActiveModal}">
+  <div class="modals-wrapper" v-bind:class="{hidden: !activeModal}">
     <YamlEditor v-if="openYamlEditorModal" />
     <Environment v-if="showEnvironmentModal" />
   </div>
@@ -16,12 +16,14 @@ export default {
   components: { Flex, YamlEditor, Environment },
   methods: {},
   computed: {
-    ...mapGetters(['getActiveModal']),
+    ...mapGetters({
+      activeModal: 'getActiveModal',
+    }),
     openYamlEditorModal() {
-      return this.getActiveModal === 'YAML_EDITOR'
+      return this.activeModal === 'YAML_EDITOR'
     },
     showEnvironmentModal() {
-      return this.getActiveModal === 'ENVIRONMENT'
+      return this.activeModal === 'ENVIRONMENT'
     },
   },
 }

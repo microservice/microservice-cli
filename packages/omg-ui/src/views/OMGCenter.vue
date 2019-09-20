@@ -10,8 +10,8 @@
         backgroundColor="white"
         color="blue"
         v-bind:key="tab.id"
-        v-for="tab in getAllActionTabs"
-        v-bind:class="{'omg-center-tab-active': tab.id === getActiveActionTab.id}"
+        v-for="tab in allActionTabs"
+        v-bind:class="{'omg-center-tab-active': tab.id === activeActionTab.id}"
         v-bind:onPress="e => selectActionsTab(tab.id)"
       >{{tab.title}}</Button>
       <Button
@@ -38,13 +38,13 @@
             :value="null"
             hidden
             disabled
-            :selected="getActiveActionTab.actionName === null"
+            :selected="activeActionTab.actionName === null"
           >Please select an Action</option>
           <option
             :value="configAction.name"
-            :selected="getActiveActionTab.actionName === configAction.name"
+            :selected="activeActionTab.actionName === configAction.name"
             v-bind:key="configAction.name"
-            v-for="configAction in getConfigActions"
+            v-for="configAction in configActions"
           >{{configAction.name}}</option>
         </select>
         <Button
@@ -72,7 +72,7 @@
     <Flex row :ph="2" :pv="1" :flex="1">
       <Flex column :flex="1" backgroundColor="white">
         <Flex column :flex="1" :p="4">
-          <Monaco language="json" :code="getActiveActionTab.payload" :onChange="setActionPayload" />
+          <Monaco language="json" :code="activeActionTab.payload" :onChange="setActionPayload" />
         </Flex>
       </Flex>
       <Flex column :flex="1" :ml="2" backgroundColor="white">
@@ -80,7 +80,7 @@
           <Words size="medium" fontWeight="500">Result</Words>
         </Flex>
         <Flex column :flex="1" :ph="4" :pv="2">
-          <Monaco language="json" readonly :code="getActiveActionTab.result" />
+          <Monaco language="json" readonly :code="activeActionTab.result" />
         </Flex>
       </Flex>
     </Flex>
@@ -99,7 +99,11 @@ import Monaco from '~/components/Monaco.vue'
 export default {
   components: { Flex, Photo, Words, Button, Monaco },
   computed: {
-    ...mapGetters(['getActiveActionTab', 'getAllActionTabs', 'getConfigActions']),
+    ...mapGetters({
+      activeActionTab: 'getActiveActionTab',
+      allActionTabs: 'getAllActionTabs',
+      configActions: 'getConfigActions',
+    }),
   },
   methods: {
     ...mapMutations([

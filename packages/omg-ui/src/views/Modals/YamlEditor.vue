@@ -66,14 +66,16 @@ import Monaco from '~/components/Monaco.vue'
 export default {
   components: { Flex, Photo, Button, Words, Monaco },
   computed: {
-    ...mapGetters(['getConfigValidation']),
+    ...mapGetters({
+      configValidationsRaw: 'getConfigValidation',
+    }),
     configValidations() {
       return [
-        ['Schema validation', this.getConfigValidation.schema],
-        ['Info', this.getConfigValidation.info],
-        ['Actions', this.getConfigValidation.actions],
-        ['Startup', this.getConfigValidation.startup],
-        ['Health', this.getConfigValidation.health],
+        ['Schema validation', this.configValidationsRaw.schema],
+        ['Info', this.configValidationsRaw.info],
+        ['Actions', this.configValidationsRaw.actions],
+        ['Startup', this.configValidationsRaw.startup],
+        ['Health', this.configValidationsRaw.health],
       ]
     },
   },
