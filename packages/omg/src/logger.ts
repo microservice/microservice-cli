@@ -12,30 +12,39 @@ export type LogConsumer = (payload: { severity: 'info' | 'warn' | 'error'; conte
 export const logConsumers: Set<LogConsumer> = new Set()
 
 export function info(message: string) {
-  let contents = `${logSymbols.info} ${message}`
+  const contents = `${logSymbols.info} ${message}`
   if (spinner) {
-    contents = `\r${contents}`
+    spinner.stop()
   }
   console.log(contents)
+  if (spinner) {
+    spinner.start()
+  }
   logConsumers.forEach(callback => callback({ severity: 'info', contents }))
 }
 
 export function warn(message: string) {
-  let contents = `${logSymbols.warning} ${message}`
+  const contents = `${logSymbols.warning} ${message}`
   if (spinner) {
-    contents = `\r${contents}`
+    spinner.stop()
   }
   console.warn(contents)
+  if (spinner) {
+    spinner.start()
+  }
   logConsumers.forEach(callback => callback({ severity: 'warn', contents }))
 }
 
 export function error(err: string | Error) {
   const itemToLog = DEBUG_CLI ? util.inspect(err, false, 5, false) : err
-  let contents = `${logSymbols.error} ${itemToLog instanceof Error ? itemToLog.message : itemToLog.toString()}`
+  const contents = `${logSymbols.error} ${itemToLog instanceof Error ? itemToLog.message : itemToLog.toString()}`
   if (spinner) {
-    contents = `\r${contents}`
+    spinner.stop()
   }
   console.error(contents)
+  if (spinner) {
+    spinner.start()
+  }
   logConsumers.forEach(callback => callback({ severity: 'error', contents }))
 }
 
