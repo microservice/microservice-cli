@@ -24,7 +24,7 @@ export const INPUT_TYPES: InputType[] = [
   'path',
   'any',
 ]
-export type OutputType = InputType | 'null'
+export type OutputType = InputType | 'none'
 export const OUTPUT_TYPES: OutputType[] = [
   'int',
   'number',
@@ -37,7 +37,7 @@ export const OUTPUT_TYPES: OutputType[] = [
   'boolean',
   'path',
   'any',
-  'null',
+  'none',
 ]
 
 export type ContentType = 'application/json' | 'application/x-www-form-urlencoded' | 'multipart/form-data'

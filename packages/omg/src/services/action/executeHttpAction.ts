@@ -1,12 +1,16 @@
 import got from 'got'
 import FormData from 'form-data'
 import querystring from 'querystring'
+import {OutputType} from 'omg-validate/src/types'
 
 import { Daemon } from '~/services/daemon'
 import { Args, ConfigSchemaAction } from '~/types'
 import argsToMap from '~/helpers/argsToMap'
 
 import validateActionOutput from './validateActionOutput'
+
+const OUTPUT_TYPES_TO_PARSE: OutputType[] = ['map', 'object']
+const OUTPUT_TYPE_TO_IGNORE: OutputType = 'none'
 
 interface ExecuteHttpActionOptions {
   daemon: Daemon
@@ -108,13 +112,17 @@ export default async function executeHttpAction({
     throw err
   }
 
-  let parsed = response.body
-  if (['map', 'object'].includes(action.output.type as any)) {
+  const outputType: any = action.output.type
+
+  let parsed: any = response.body
+  if (OUTPUT_TYPES_TO_PARSE.includes(outputType)) {
     try {
       parsed = JSON.parse(parsed)
     } catch (_) {
       throw new Error(`Action#${actionName} returned non-JSON output`)
     }
+  } else if (outputType === OUTPUT_TYPE_TO_IGNORE) {
+    parsed = null
   }
 
   validateActionOutput({
