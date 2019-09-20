@@ -74,7 +74,7 @@ export default async function subscribe({ options, parameters }: CommandPayload<
     args: options.args || [],
     callback(response) {
       if (options.silent) {
-        logger.info(JSON.stringify(response, null, 2))
+        logger.info(response && typeof response === 'object' ? JSON.stringify(response, null, 2) : response)
       } else {
         logger.info(`Event received: ${JSON.stringify(response, null, 2)}`)
       }
