@@ -7,6 +7,7 @@ import { CompositeDisposable, Emitter, Disposable } from 'event-kit'
 import OmgUiPath from 'omg-ui'
 
 import * as logger from '~/logger'
+import mapToArgs from '~/helpers/mapToArgs'
 import { ConfigPaths, getValidationErrors } from '~/services/config'
 import { ConfigSchema, Args, UIAppStatus } from '~/types'
 
@@ -104,26 +105,14 @@ export default class DashboardHttpServer {
     })
     // API RPC endpoints:
     app.post('/api/buildImage', (req, res) => {
-      const { envs } = req.body
-      const envsArgs: Args = []
-      Object.keys(envs).forEach(key => {
-        envsArgs.push([key, envs[key]])
-      })
-
-      this.emitter.emit('should-build', { envs: envsArgs })
+      this.emitter.emit('should-build', { envs: mapToArgs(req.body.envs || {}) })
       res.json({ status: 'ok' })
     })
     app.post('/api/executeAction', async (req, res) => {
       try {
-        const { name, args } = req.body
-        const actionArgs: Args = []
-        Object.keys(args).forEach(key => {
-          actionArgs.push([key, args[key]])
-        })
-
         const result = await this.executeAction({
-          name,
-          args: actionArgs,
+          name: req.body.name,
+          args: mapToArgs(req.body.args || {}),
         })
         res.json({ status: 'ok', result })
       } catch (error) {
