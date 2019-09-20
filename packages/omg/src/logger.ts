@@ -17,8 +17,17 @@ export function setSpinnerAllowed(status: boolean) {
   spinnerAllowed = status
 }
 
+let symbolsAllowed = true
+
+export function setSymbolsAllowed(status: boolean) {
+  symbolsAllowed = status
+}
+
 export function info(message: string) {
-  const contents = `${logSymbols.info} ${message}`
+  let contents = message
+  if (symbolsAllowed) {
+    contents = `${logSymbols.info} ${contents}`
+  }
   if (spinner) {
     spinner.stop()
   }
@@ -30,7 +39,10 @@ export function info(message: string) {
 }
 
 export function warn(message: string) {
-  const contents = `${logSymbols.warning} ${message}`
+  let contents = message
+  if (symbolsAllowed) {
+    contents = `${logSymbols.warning} ${contents}`
+  }
   if (spinner) {
     spinner.stop()
   }
@@ -43,7 +55,10 @@ export function warn(message: string) {
 
 export function error(err: string | Error) {
   const itemToLog = DEBUG_CLI ? util.inspect(err, false, 5, false) : err
-  const contents = `${logSymbols.error} ${itemToLog instanceof Error ? itemToLog.message : itemToLog.toString()}`
+  let contents = itemToLog instanceof Error ? itemToLog.message : itemToLog.toString()
+  if (symbolsAllowed) {
+    contents = `${logSymbols.info} ${contents}`
+  }
   if (spinner) {
     spinner.stop()
   }

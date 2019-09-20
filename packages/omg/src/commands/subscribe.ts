@@ -13,6 +13,7 @@ interface ActionOptions extends CommandOptionsDefault {
   envs?: Args
   raw?: boolean
   debug?: boolean
+  silent?: boolean
 }
 
 export default async function subscribe({ options, parameters }: CommandPayload<ActionOptions>) {
@@ -72,7 +73,11 @@ export default async function subscribe({ options, parameters }: CommandPayload<
     eventName,
     args: options.args || [],
     callback(response) {
-      logger.info(`Event received: ${JSON.stringify(response, null, 2)}`)
+      if (options.silent) {
+        logger.info(JSON.stringify(response, null, 2))
+      } else {
+        logger.info(`Event received: ${JSON.stringify(response, null, 2)}`)
+      }
     },
   })
 

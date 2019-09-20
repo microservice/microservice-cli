@@ -11,6 +11,7 @@ interface ActionOptions extends CommandOptionsDefault {
   envs?: Args
   raw?: boolean
   debug?: boolean
+  silent?: boolean
 }
 
 export default async function run({ options, parameters }: CommandPayload<ActionOptions>) {
@@ -64,7 +65,11 @@ export default async function run({ options, parameters }: CommandPayload<Action
     actionName,
     args: options.args || [],
     callback(response) {
-      logger.info(`Output: ${JSON.stringify(response, null, 2)}`)
+      if (options.silent) {
+        logger.info(JSON.stringify(response, null, 2))
+      } else {
+        logger.info(`Output: ${JSON.stringify(response, null, 2)}`)
+      }
     },
   })
   logger.spinnerSucceed(`Ran action '${actionName}' successfully`)
