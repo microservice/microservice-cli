@@ -20,7 +20,7 @@ done
 for repo in python-events node-events ; do
     echo "===== Testing $repo ====="
     git clone -q "https://github.com/microservices/${repo}.git"
-    ( cd "$repo";
+    ( cd "$repo"; git checkout config-fixes;
         ./test/all.js
     )
 done
