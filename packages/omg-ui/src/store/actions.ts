@@ -1,5 +1,6 @@
 import { getRandomString } from '~/common'
 import { executeAction } from '~/rpc'
+import { setHistoricTabs } from '~/persistence'
 
 const DEFAULT_PAYLOAD = `{\n\t"parameter": "value"\n}`
 const DEFAULT_RESULT = ''
@@ -80,6 +81,7 @@ const mutations = {
       ...activeTab,
       timestamp: Date.now(),
     })
+    setHistoricTabs(state.history)
   },
   restoreHistoricTab(state: ActionsState, historicTab: ActionTabHistoric) {
     const newTab = getActionTab()
@@ -90,6 +92,9 @@ const mutations = {
 
     state.tabs.push(newTab)
     state.activeTabId = newTab.id
+  },
+  setHistoricTabs(state: ActionsState, historicTabs: ActionTabHistoric[]) {
+    state.history = historicTabs
   },
 }
 

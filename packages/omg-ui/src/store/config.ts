@@ -1,4 +1,5 @@
 import { ConfigSchema, InputType } from '~/types'
+import { setEnvValues } from '~/persistence'
 
 export interface ConfigState {
   config: ConfigSchema | null
@@ -35,6 +36,10 @@ const mutations = {
   },
   setConfigEnv(state: ConfigState, { key, value }: { key: string; value: string }) {
     state.envValues[key] = value
+    setEnvValues(state.envValues)
+  },
+  setConfigEnvs(state: ConfigState, envValues: Record<string, string>) {
+    state.envValues = envValues
   },
   resetConfigEnv(state: ConfigState) {
     state.envValues = {}

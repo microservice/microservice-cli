@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import { getEnvValues, getHistoricTabs } from '~/persistence'
+import { handleConfigUpdated, handleConsoleLog, handleDockerLog, handleAppStatusUpdated } from '~/rpc/events'
+
 import config, { ConfigState } from './config'
 import modals, { ModalsState } from './modals'
 import logs, { LogsState } from './logs'
 import actions, { ActionsState } from './actions'
 import views, { ViewsState } from './views'
-
-import { handleConfigUpdated, handleConsoleLog, handleDockerLog, handleAppStatusUpdated } from '~/rpc/events'
 
 Vue.use(Vuex)
 
@@ -36,5 +37,12 @@ handleDockerLog(logLine => {
 handleAppStatusUpdated(({ status }) => {
   store.commit('setAppStatus', status)
 })
+
+Promise.all([getEnvValues(), getHistoricTabs()])
+  .then(([envValues, historicTabs]) => {
+    store.commit('setConfigEnvs', envValues)
+    store.commit('setHistoricTabs', historicTabs)
+  })
+  .catch(console.error)
 
 export default store
