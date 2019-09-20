@@ -33,6 +33,9 @@ export default async function main() {
     .option('-s --silent', 'Only feedback is the status exit code')
     .description('Validate the structure of a `microservice.yml` in the working directory')
     .action(options => {
+      if (options.json) {
+        logger.setSymbolsAllowed(false)
+      }
       actionPromise = commands.validate({
         options,
         parameters: [],
@@ -149,6 +152,9 @@ export default async function main() {
     .option('-d --details', 'Returns detailed actions')
     .description('Lists all actions available in microservice.')
     .action(options => {
+      if (options.json) {
+        logger.setSymbolsAllowed(false)
+      }
       actionPromise = commands.list({
         options,
         parameters: [],
