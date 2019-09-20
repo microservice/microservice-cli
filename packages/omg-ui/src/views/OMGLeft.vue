@@ -7,7 +7,7 @@
       </Flex>
     </Flex>
     <Flex row backgroundColor="grey10" justifyContent="flex-end" :pv="0.5" :ph="2" :bv="1">
-      <Button>
+      <Button :onPress="clearHistoricTabs">
         <Words size="small">Clear all</Words>
       </Button>
     </Flex>
@@ -53,7 +53,7 @@ import Photo from '~/components/Photo.vue'
 export default {
   components: { Flex, Words, Button, Photo },
   methods: {
-    ...mapMutations(['restoreHistoricTab']),
+    ...mapMutations(['restoreHistoricTab', 'clearHistoricTabs']),
     toggleExpanded(label) {
       if (this.expanded.includes(label)) {
         this.expanded = this.expanded.filter(item => item !== label)
