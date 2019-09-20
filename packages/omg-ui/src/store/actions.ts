@@ -4,7 +4,7 @@ import { executeAction } from '~/rpc'
 const DEFAULT_PAYLOAD = `{\n\t"parameter": "value"\n}`
 const DEFAULT_RESULT = ''
 
-interface ActionTab {
+export interface ActionTab {
   id: string
   title: string
   actionName: string | null
@@ -12,7 +12,7 @@ interface ActionTab {
   result: string
 }
 
-type ActionTabHistoric = ActionTab & {
+export type ActionTabHistoric = ActionTab & {
   timestamp: number
 }
 

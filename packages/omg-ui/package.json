@@ -15,6 +15,7 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "event-kit": "^2.5.3",
+    "idb-keyval": "^3.2.0",
     "less": "^3.10.3",
     "luxon": "^1.17.3",
     "monaco-editor": "^0.17.1",
