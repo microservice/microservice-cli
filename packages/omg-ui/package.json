@@ -1,6 +1,6 @@
 {
   "name": "omg-ui",
-  "version": "1.0.0-alpha3",
+  "version": "1.0.0-alpha4",
   "scripts": {
     "build": "yarn build-app; yarn build-worker",
     "build-worker": "parcel build ../../node_modules/monaco-editor/esm/vs/editor/editor.worker.js --out-dir lib --no-source-maps",
