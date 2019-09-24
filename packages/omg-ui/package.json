@@ -2,8 +2,7 @@
   "name": "omg-ui",
   "version": "1.0.0-alpha4",
   "scripts": {
-    "build": "yarn build-app; yarn build-worker",
-    "build-worker": "parcel build ../../node_modules/monaco-editor/esm/vs/editor/editor.worker.js --out-dir lib --no-source-maps",
+    "build": "yarn build-app; ./scripts/build-workers.sh",
     "build-app": "rm -rf lib/*; parcel build src/index.html --out-dir lib",
     "watch": "parcel watch src/index.html --out-dir lib --no-hmr"
   },

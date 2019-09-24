@@ -13,8 +13,12 @@ import 'monaco-editor/esm/vs/editor/contrib/format/formatActions.js'
 
 // @ts-ignore
 self.MonacoEnvironment = {
-  getWorkerUrl() {
-    return '/editor.worker.js'
+  getWorkerUrl(moduleId, label) {
+    if (label === 'json') {
+      return '/monaco.json.worker.js'
+    }
+
+    return '/monaco.editor.worker.js'
   },
 }
 
