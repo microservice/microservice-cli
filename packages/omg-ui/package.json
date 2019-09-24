@@ -17,7 +17,7 @@
     "idb-keyval": "^3.2.0",
     "less": "^3.10.3",
     "luxon": "^1.17.3",
-    "monaco-editor": "^0.17.1",
+    "monaco-editor": "^0.18.1",
     "normalize.css": "^8.0.1",
     "parcel-bundler": "^1.12.3",
     "vue": "^2.6.10",
