@@ -10,7 +10,7 @@ if [ "$(which pkg)" = "" ]; then
 fi
 
 function build_package {
-  pkg packages/omg/lib/cli.js $@
+  pkg package.json $@
 }
 
 OUTPUT_NAME="omg"

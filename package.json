@@ -1,5 +1,6 @@
 {
   "name": "omg",
+  "bin": "./packages/omg/lib/cli.js",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -36,7 +37,9 @@
     "publish": "yarn bootstrap && yarn build && yarn test && yarn test-post-build && lerna publish",
     "version": "lerna version --no-git-tag-version --no-push"
   },
-  "bin": "omg",
+  "pkg": {
+    "assets": "src/omg-ui/lib/*"
+  },
   "postcss": {
     "plugins": {
       "autoprefixer": {}
