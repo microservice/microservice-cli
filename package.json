@@ -4,9 +4,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "dependencies": {
-    "nexe": "^3.3.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
