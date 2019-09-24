@@ -40,6 +40,9 @@
   "bugs": {
     "url": "https://github.com/microservices/omg/issues"
   },
+  "pkg": {
+    "assets": "lib/*"
+  },
   "homepage": "https://github.com/microservices/omg#readme",
   "license": "MIT"
 }
