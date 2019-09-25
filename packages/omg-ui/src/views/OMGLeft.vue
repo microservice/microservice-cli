@@ -33,7 +33,7 @@
             v-bind:key="historicTab.id + historicTab.timestamp"
           >
             <Button :onPress="() => {restoreHistoricTab(historicTab)}">
-              <Words>{{historicTab.name || 'Action'}}</Words>
+              <Words>{{historicTab.title || 'Action'}}</Words>
             </Button>
           </Flex>
         </Flex>

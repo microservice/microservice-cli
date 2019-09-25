@@ -63,6 +63,7 @@ const mutations = {
   },
   selectAction(state: ActionsState, name: string) {
     const activeTab = getActiveTabFromState(state)
+    activeTab.title = name
     activeTab.actionName = name
   },
   setActionPayload(state: ActionsState, payload: string) {
