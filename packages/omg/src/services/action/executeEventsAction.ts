@@ -71,20 +71,25 @@ export default async function executeEventsAction({
 
   const argsMap = argsToMap(args)
   const subscribePath = event.http.subscribe.path
+  const subscribeMethod = event.http.subscribe.method
 
   // Subscribe to events
-  await got(`http://localhost:${containerEventPort}${subscribePath}`, {
-    method: event.http.subscribe.method,
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      id,
-      endpoint: `http://host.docker.internal:${httpServerPort}`,
-      event: eventName,
-      data: argsMap,
-    }),
-  })
+  try {
+    await got(`http://localhost:${containerEventPort}${subscribePath}`, {
+      method: subscribeMethod,
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        id,
+        endpoint: `http://host.docker.internal:${httpServerPort}`,
+        event: eventName,
+        data: argsMap,
+      }),
+    })
+  } catch (error) {
+    throw new Error(`HTTP Error when subscribing to ${subscribeMethod} ${subscribePath}`)
+  }
 
   // Remove from lifecycle disposables now that we're about to
   // return the disposable to caller function
