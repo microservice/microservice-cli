@@ -20,7 +20,7 @@ export default async function getImageName(options: GetImageNameOptions): Promis
     if (firstRemote) {
       const parsed = gitUrlParse(firstRemote[1])
       if (parsed.full_name) {
-        return { name: `omg/${parsed.full_name}`, generated: false }
+        return { name: `omg/${parsed.full_name}`.toLowerCase(), generated: false }
       }
     }
   } catch (_) {
@@ -32,7 +32,7 @@ export default async function getImageName(options: GetImageNameOptions): Promis
     .toLowerCase()
     .replace(/=/g, '')
   return {
-    name: `omg/${directoryHash}`,
+    name: `omg/${directoryHash}`.toLowerCase(),
     generated: true,
   }
 }
