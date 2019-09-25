@@ -72,7 +72,7 @@ const mutations = {
   setActionResult(state: ActionsState, { tabId, result }) {
     const relevantTab = state.tabs.find(item => item.id === tabId)
     if (relevantTab) {
-      relevantTab.result = JSON.stringify(result)
+      relevantTab.result = JSON.stringify(result, null, 2)
     }
   },
   saveActiveAction(state: ActionsState) {
