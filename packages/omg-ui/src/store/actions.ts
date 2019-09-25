@@ -27,7 +27,7 @@ export interface ActionsState {
 function getActionTab(): ActionTab {
   return {
     id: getRandomString(),
-    title: 'Action',
+    title: 'New Tab',
     actionName: null,
     payload: DEFAULT_PAYLOAD,
     result: DEFAULT_RESULT,
