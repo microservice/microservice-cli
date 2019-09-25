@@ -11,6 +11,7 @@ export interface ActionTab {
   actionName: string | null
   payload: string
   result: string
+  bookmark: boolean
 }
 
 export type ActionTabHistoric = ActionTab & {
@@ -30,6 +31,7 @@ function getActionTab(): ActionTab {
     actionName: null,
     payload: DEFAULT_PAYLOAD,
     result: DEFAULT_RESULT,
+    bookmark: false,
   }
 }
 function getActiveTabFromState(state: ActionsState) {
@@ -76,10 +78,11 @@ const mutations = {
       relevantTab.result = JSON.stringify(result, null, 2)
     }
   },
-  saveActiveAction(state: ActionsState) {
+  saveActiveAction(state: ActionsState, bookmark: boolean = true) {
     const activeTab = getActiveTabFromState(state)
     state.history.push({
       ...activeTab,
+      bookmark,
       timestamp: Date.now(),
     })
     setHistoricTabs(state.history)
@@ -132,6 +135,7 @@ const actions = {
         tabId: activeTab.id,
         result,
       })
+      context.commit('saveActiveAction', false)
     })
   },
 }
