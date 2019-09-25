@@ -1,7 +1,7 @@
 import got from 'got'
 import FormData from 'form-data'
 import querystring from 'querystring'
-import {OutputType} from 'omg-validate/src/types'
+import { OutputType } from 'omg-validate/src/types'
 
 import { Daemon } from '~/services/daemon'
 import { Args, ConfigSchemaAction } from '~/types'
