@@ -11,6 +11,9 @@ import mapToArgs from '~/helpers/mapToArgs'
 import { ConfigPaths, getValidationErrors } from '~/services/config'
 import { ConfigSchema, Args, UIAppStatus } from '~/types'
 
+// Note: Should always be positive
+const MAX_HISTORY_LENGTH = 500
+
 type TExecuteAction = (payload: { name: string; args: Args }) => Promise<any>
 interface DashboardHttpServerOptions {
   port: number
@@ -31,6 +34,7 @@ export default class DashboardHttpServer {
   private emitter: Emitter
   private subscriptions: CompositeDisposable
   private eventListeners: Set<Response>
+  private logHistory: { type: 'docker-log' | 'console-log'; payload: Record<string, any> }[]
 
   public constructor(options: DashboardHttpServerOptions) {
     this.port = options.port
@@ -43,12 +47,13 @@ export default class DashboardHttpServer {
     this.emitter = new Emitter()
     this.subscriptions = new CompositeDisposable()
     this.eventListeners = new Set()
+    this.logHistory = []
 
     this.subscriptions.add(this.emitter)
 
     // Forward console logs to the UI
     const handleConsoleLogs = ({ severity, contents }: { severity: 'info' | 'warn' | 'error'; contents: string }) => {
-      this.publishEvent('console-log', { severity, contents: stripAnsi(contents) })
+      this.logToHistory('console-log', { severity, contents: stripAnsi(contents) })
     }
 
     logger.logConsumers.add(handleConsoleLogs)
@@ -96,6 +101,9 @@ export default class DashboardHttpServer {
         res,
       )
       this.publishEvent('app-status-updated', { status: this.appStatus }, res)
+      this.logHistory.forEach(({ type, payload }) => {
+        this.publishEvent(type, payload, res)
+      })
 
       // GC Handlers:
       res.on('end', () => {
@@ -143,7 +151,11 @@ export default class DashboardHttpServer {
     this.publishEvent('app-status-updated', { status })
   }
   public handleDockerLog({ stream, contents }: { stream: 'stdout' | 'stderr'; contents: string }) {
-    this.publishEvent('docker-log', { stream, contents: stripAnsi(contents) })
+    this.logToHistory('docker-log', { stream, contents: stripAnsi(contents) })
+  }
+  private logToHistory(type: 'docker-log' | 'console-log', payload: Record<string, any>) {
+    this.logHistory = this.logHistory.slice(1 - MAX_HISTORY_LENGTH).concat([{ type, payload }])
+    this.publishEvent(type, payload)
   }
   private publishEvent(type: string, payload: Record<string, any>, connection?: Response) {
     const serialized = `${JSON.stringify({ type, payload })}\n`

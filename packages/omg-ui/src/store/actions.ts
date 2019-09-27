@@ -34,6 +34,7 @@ function getActionTab(): ActionTab {
     bookmark: false,
   }
 }
+
 function getActiveTabFromState(state: ActionsState) {
   const { tabs, activeTabId } = state
   const activeTab = tabs.find(item => item.id === activeTabId)
