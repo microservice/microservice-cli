@@ -1,5 +1,5 @@
 <template>
-  <Flex column backgroundColor="grey10" width="16%">
+  <Flex column backgroundColor="grey10" width="22%">
     <Flex column :flex="1" :bl="1" overflow="hidden">
       <Flex row :bv="1" :ph="1" :pv="1.125">
         <Button :ph="3" :pv="1" bold color="grey70" :onPress="openEnvironemntModal">

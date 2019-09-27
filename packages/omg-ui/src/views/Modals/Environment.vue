@@ -8,7 +8,7 @@
       </Flex>
     </Flex>
     <Flex row :flex="1" overflow="hidden">
-      <Flex column backgroundColor="grey10" :p="2">
+      <Flex column backgroundColor="grey10" :p="2" width="25%">
         <Flex column backgroundColor="white" :p="4" :flex="1">
           <Flex column v-if="configEnvs.length">
             <Flex row>

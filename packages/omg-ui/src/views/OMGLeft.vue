@@ -1,5 +1,5 @@
 <template>
-  <Flex column backgroundColor="white" width="14%">
+  <Flex column backgroundColor="white" width="22%">
     <Flex column :pv="1" :ph="2">
       <Words color="grey90">History</Words>
       <Flex row :mt="1">
