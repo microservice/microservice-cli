@@ -1,12 +1,11 @@
 {
   "name": "omg-ui",
-  "version": "1.0.0-alpha4",
+  "version": "1.0.0-alpha5",
   "scripts": {
     "build": "yarn build-app; ./scripts/build-workers.sh",
     "build-app": "rm -rf lib/*; parcel build src/index.html --out-dir lib",
     "watch": "parcel watch src/index.html --out-dir lib --no-hmr"
   },
-  "dependencies": {},
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.0.0",
     "eslint": "^5.16.0 || ^6.1.0",
