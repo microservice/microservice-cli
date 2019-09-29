@@ -12,6 +12,7 @@ import { lifecycleDisposables } from '~/common'
 import DashboardHttpServer from './DashboardHttpServer'
 
 interface DashboardOptions {
+  image: string | null
   inheritEnv: boolean
   configPaths: ConfigPaths
   microserviceConfig: ConfigSchema
@@ -23,6 +24,7 @@ interface DashboardStartOptions {
 
 export default class Dashboard {
   public envs: Args
+  public image: string | null
   public inheritEnv: boolean
   public configPaths: ConfigPaths
   public microserviceConfig: ConfigSchema
@@ -34,6 +36,7 @@ export default class Dashboard {
 
   public constructor(options: DashboardOptions) {
     this.envs = []
+    this.image = options.image
     this.inheritEnv = options.inheritEnv
     this.configPaths = options.configPaths
     this.microserviceConfig = options.microserviceConfig
@@ -121,6 +124,7 @@ export default class Dashboard {
     await newDaemon.start({
       envs: this.envs,
       raw: true,
+      image: this.image,
       inheritEnv: this.inheritEnv,
     })
     this.updateAppStatus(UIAppStatus.started)

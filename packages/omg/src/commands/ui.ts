@@ -21,6 +21,7 @@ export default async function ui({ options }: CommandPayload<ActionOptions>) {
 
   logger.spinnerStart('Booting up UI')
   const dashboard = new Dashboard({
+    image: options.image || null,
     inheritEnv: !!options.inheritEnv,
     configPaths,
     microserviceConfig,
