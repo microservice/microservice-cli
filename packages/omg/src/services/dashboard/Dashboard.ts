@@ -121,12 +121,17 @@ export default class Dashboard {
       microserviceConfig: this.microserviceConfig,
     })
     this.daemon = newDaemon
-    await newDaemon.start({
-      envs: this.envs,
-      raw: true,
-      image: this.image,
-      inheritEnv: this.inheritEnv,
-    })
+    try {
+      await newDaemon.start({
+        envs: this.envs,
+        raw: true,
+        image: this.image,
+        inheritEnv: this.inheritEnv,
+      })
+    } catch (error) {
+      this.updateAppStatus(UIAppStatus.stopped)
+      throw error
+    }
     this.updateAppStatus(UIAppStatus.started)
     const daemonLogs = await newDaemon.getLogs()
     daemonLogs.onLogLine(line => {
