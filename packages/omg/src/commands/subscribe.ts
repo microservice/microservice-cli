@@ -19,7 +19,7 @@ interface ActionOptions extends CommandOptionsDefault {
 }
 
 export default async function subscribe({ options, parameters }: CommandPayload<ActionOptions>) {
-  const configPaths = await getConfigPaths(options, true)
+  const configPaths = await getConfigPaths(options, true, !options.image)
   const microserviceConfig = await parseMicroserviceConfig({
     configPath: configPaths.microservice,
     validate: true,

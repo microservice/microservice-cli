@@ -82,7 +82,7 @@ export default class Dashboard {
     subscriptions.add(
       watchConfigFile({
         validate: false,
-        configPath: this.configPaths.microservice,
+        configPath: this.configPaths.microservice as string,
         onConfigUpdated: microserviceConfig => {
           this.microserviceConfig = microserviceConfig
           httpServer.handleConfigUpdated(microserviceConfig)

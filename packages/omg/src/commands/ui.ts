@@ -8,11 +8,12 @@ import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 interface ActionOptions extends CommandOptionsDefault {
   port?: string
   open: boolean
+  image?: string
   inheritEnv?: boolean
 }
 
 export default async function ui({ options }: CommandPayload<ActionOptions>) {
-  const configPaths = await getConfigPaths(options, true)
+  const configPaths = await getConfigPaths(options, true, !options.image)
   const microserviceConfig = await parseMicroserviceConfig({
     configPath: configPaths.microservice,
     validate: false,

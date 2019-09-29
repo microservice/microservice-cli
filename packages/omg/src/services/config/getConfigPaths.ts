@@ -9,13 +9,47 @@ interface ConfigOptions {
 }
 
 export interface ConfigPaths {
-  docker: string
-  microservice: string
+  docker: string | null
+  microservice: string | null
 }
 
-export default async function getConfigPaths(options: ConfigOptions, required: true): Promise<ConfigPaths>
-export default async function getConfigPaths(options: ConfigOptions, required: false): Promise<ConfigPaths | null>
-export default async function getConfigPaths(options: ConfigOptions, required: boolean): Promise<ConfigPaths | null> {
+export default async function getConfigPaths(
+  options: ConfigOptions,
+  microserviceRequired: true,
+  dockerRequired: true,
+): Promise<{
+  docker: string
+  microservice: string
+}>
+export default async function getConfigPaths(
+  options: ConfigOptions,
+  microserviceRequired: true,
+  dockerRequired: boolean,
+): Promise<{
+  docker: string | null
+  microservice: string
+}>
+export default async function getConfigPaths(
+  options: ConfigOptions,
+  microserviceRequired: boolean,
+  dockerRequired: true,
+): Promise<{
+  docker: string
+  microservice: string | null
+}>
+export default async function getConfigPaths(
+  options: ConfigOptions,
+  microserviceRequired: boolean,
+  dockerRequired: boolean,
+): Promise<{
+  docker: string | null
+  microservice: string | null
+}>
+export default async function getConfigPaths(
+  options: ConfigOptions,
+  microserviceRequired: boolean = true,
+  dockerRequired: boolean = true,
+): Promise<ConfigPaths> {
   const workingDirectory = options.directory || process.cwd()
 
   const dockerConfigPath = path.join(workingDirectory, 'Dockerfile')
@@ -28,18 +62,28 @@ export default async function getConfigPaths(options: ConfigOptions, required: b
     fs.exists(microserviceYaml),
   ])
 
-  if (dockerConfigPathExists) {
-    if (microserviceYmlExists) {
-      return { docker: dockerConfigPath, microservice: microserviceYml }
-    }
-    if (microserviceYamlExists) {
-      return { docker: dockerConfigPath, microservice: microserviceYaml }
-    }
+  let foundDockerPath = dockerConfigPathExists ? dockerConfigPath : null
+  let foundMicroservicePath: string | null = null
+  if (microserviceYmlExists && microserviceYml) {
+    foundMicroservicePath = microserviceYml
+  } else if (microserviceYamlExists) {
+    foundMicroservicePath = microserviceYaml
   }
 
-  if (required) {
-    logger.fatal('Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`')
+  const chunks: string[] = []
+  if (microserviceRequired && !foundMicroservicePath) {
+    chunks.push('a `microservice.y[a]ml`')
+  }
+  if (dockerRequired && !foundDockerPath) {
+    chunks.push('a `Dockerfile`')
   }
 
-  return null
+  if (chunks.length) {
+    logger.fatal(`Must be ran in a directory with ${chunks.join(' and ')}`)
+  }
+
+  return {
+    docker: foundDockerPath,
+    microservice: foundMicroservicePath,
+  }
 }

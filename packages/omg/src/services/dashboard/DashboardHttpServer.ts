@@ -80,7 +80,7 @@ export default class DashboardHttpServer {
       res.json(this.microserviceConfig)
     })
     app.get('/api/configRaw', (req, res) => {
-      res.sendFile(this.configPaths.microservice)
+      res.sendFile(this.configPaths.microservice as string)
     })
     app.get('/api/events', (req, res) => {
       // 24 hours

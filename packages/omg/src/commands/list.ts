@@ -8,7 +8,7 @@ interface ActionOptions extends CommandOptionsDefault {
 }
 
 export default async function list({ options }: CommandPayload<ActionOptions>) {
-  const configPaths = await getConfigPaths(options, true)
+  const configPaths = await getConfigPaths(options, true, false)
   const microserviceConfig = await parseMicroserviceConfig({
     configPath: configPaths.microservice,
     validate: true,

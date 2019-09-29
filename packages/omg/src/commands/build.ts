@@ -9,7 +9,7 @@ interface ActionOptions extends CommandOptionsDefault {
 }
 
 export default async function build({ options }: CommandPayload<ActionOptions>) {
-  const configPaths = await getConfigPaths(options, true)
+  const configPaths = await getConfigPaths(options, true, true)
 
   const tagName = options.tag || (await getImageName({ configPath: configPaths.docker })).name
 

@@ -48,12 +48,12 @@ export default class Daemon {
       throw new CLIError('Cannot start when already started')
     }
 
-    const imageName = image || (await getImageName({ configPath: this.configPaths.docker })).name
+    const imageName = image || (await getImageName({ configPath: this.configPaths.docker as string })).name
     if (!image) {
       // If an image name is not specified, call build
       await buildForDaemon({
         imageName,
-        configPath: this.configPaths.docker,
+        configPath: this.configPaths.docker as string,
         raw,
       })
     }

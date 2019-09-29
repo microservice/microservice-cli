@@ -137,6 +137,10 @@ export default async function main() {
 
   program
     .command('ui')
+    .option(
+      '-i --image <i>',
+      'The name of the image to spin up the microservice, if not provided a fresh image will be build based of the `Dockerfile`',
+    )
     .option('-p --port, <p>', 'The port to bind')
     .option('--no-open', 'Do not open in browser')
     .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
