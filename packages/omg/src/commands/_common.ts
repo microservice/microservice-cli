@@ -37,9 +37,14 @@ interface ValidateContainerEnvOptions {
 }
 
 export function validateContainerEnv({ config, inheritEnv, envs }: ValidateContainerEnvOptions) {
-  const { missing } = processContainerEnv({ config, inheritEnv, envs })
+  const { missing, invalid } = processContainerEnv({ config, inheritEnv, envs })
   if (missing.length) {
     logger.error(`Missing environment variable${missing.length > 1 ? 's' : ''}: ${missing.join(', ')}`)
+  }
+  if (invalid.length) {
+    logger.error(`Invalid environment variable${invalid.length > 1 ? 's' : ''}: ${invalid.join(', ')}`)
+  }
+  if (missing.length || invalid.length) {
     logger.info('You can specify environment variables with -e KEY="VALUE"')
     return false
   }

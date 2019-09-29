@@ -36,14 +36,22 @@ export default async function getContainer({
     throw new CLIError(`Docker Image '${image}' not found on this machine. Maybe try 'docker pull ${image}' first`)
   }
 
-  const { missing: missingEnvs, values: envObj } = processContainerEnv({
+  const { missing: missingEnvs, invalid: invalidEnvs, values: envObj } = processContainerEnv({
     config,
     envs,
     inheritEnv,
   })
 
+  const invalidChunks: string[] = []
   if (missingEnvs.length) {
-    throw new CLIError(`Missing environment variables: ${missingEnvs.join(', ')}`)
+    invalidChunks.push(`${missingEnvs.join(', ')} ${missingEnvs.length > 1 ? 'are' : 'is'} missing`)
+  }
+  if (invalidEnvs.length) {
+    invalidChunks.push(`${invalidEnvs.join(', ')} ${invalidEnvs.length > 1 ? 'are' : 'is'} invalid`)
+  }
+  if (invalidChunks.length) {
+    const totalCount = missingEnvs.length + invalidEnvs.length
+    throw new CLIError(`Environment variable${totalCount > 1 ? 's' : ''} ${invalidChunks.join(' and ')}`)
   }
 
   const portsMap: Map</* container port */ number, /* host port */ number> = new Map()

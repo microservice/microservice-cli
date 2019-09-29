@@ -9,6 +9,7 @@ interface ProcessContainerEnvOptions {
 
 interface ProcessContainerEnvResult {
   missing: string[]
+  invalid: string[]
   values: Record<string, any>
 }
 
@@ -18,6 +19,7 @@ export default function processContainerEnv({
   inheritEnv,
 }: ProcessContainerEnvOptions): ProcessContainerEnvResult {
   const missing: string[] = []
+  const invalid: string[] = []
   const values = {}
 
   const envsMap = argsToMap(envs)
@@ -39,5 +41,5 @@ export default function processContainerEnv({
     }
   })
 
-  return { missing, values }
+  return { missing, invalid, values }
 }
