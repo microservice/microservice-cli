@@ -3,8 +3,8 @@ import _get from 'lodash/get'
 import * as logger from '~/logger'
 import { Daemon } from '~/services/daemon'
 import { executeAction } from '~/services/action'
-import { lifecycleDisposables } from '~/common'
 import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
+import { lifecycleDisposables, HELP_OMG_LIST, HELP_OMG_LIST_DETAILS } from '~/common'
 import { Args, CommandPayload, CommandOptionsDefault, ConfigSchemaAction } from '~/types'
 
 interface ActionOptions extends CommandOptionsDefault {
@@ -24,18 +24,16 @@ export default async function subscribe({ options, parameters }: CommandPayload<
   })
   const [actionName, eventName] = parameters
   if (!actionName) {
-    logger.fatal(`No action name specified`)
+    logger.fatal(`No action name specified. ${HELP_OMG_LIST}`)
   }
   const actionConfig: ConfigSchemaAction = _get(microserviceConfig, ['actions', actionName])
   if (!actionConfig) {
-    logger.fatal(`Action '${actionName}' not found. Try 'omg list' to get a list of available actions`)
+    logger.fatal(`Action '${actionName}' not found. ${HELP_OMG_LIST}`)
   } else if (!actionConfig.events) {
-    logger.fatal(`Action '${actionName}' has no events specified.`)
+    logger.fatal(`Action '${actionName}' has no events specified. ${HELP_OMG_LIST}`)
   }
   if (!actionConfig.events![eventName]) {
-    logger.fatal(
-      `Action '${actionName}' has no event named '${eventName}'. Try 'omg list' to get a list of available actions and their events.`,
-    )
+    logger.fatal(`Action '${actionName}' has no event named '${eventName}'. ${HELP_OMG_LIST_DETAILS}`)
   }
 
   const daemon = new Daemon({ configPaths, microserviceConfig })

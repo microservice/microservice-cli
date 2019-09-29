@@ -1,7 +1,8 @@
 import _get from 'lodash/get'
 import * as logger from '~/logger'
-import { executeAction } from '~/services/action'
 import { Daemon } from '~/services/daemon'
+import { HELP_OMG_LIST } from '~/common'
+import { executeAction } from '~/services/action'
 import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 import { Args, CommandPayload, CommandOptionsDefault, ConfigSchemaAction } from '~/types'
 
@@ -22,11 +23,11 @@ export default async function run({ options, parameters }: CommandPayload<Action
   })
   const [actionName] = parameters
   if (!actionName) {
-    logger.fatal(`No action name specified`)
+    logger.fatal(`No action name specified. ${HELP_OMG_LIST}`)
   }
   const actionConfig: ConfigSchemaAction = _get(microserviceConfig, ['actions', actionName])
   if (!actionConfig) {
-    logger.fatal(`Action '${actionName}' not found. Try 'omg list' to get a list of available actions`)
+    logger.fatal(`Action '${actionName}' not found. ${HELP_OMG_LIST}`)
   } else if (actionConfig.events) {
     logger.fatal(`Action '${actionName}' is an event action. Try 'omg subscribe ${actionName} [event]' instead.`)
   }

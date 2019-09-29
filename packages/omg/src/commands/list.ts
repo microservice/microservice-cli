@@ -25,8 +25,8 @@ export default async function list({ options }: CommandPayload<ActionOptions>) {
   }
 
   if (options.details) {
-    Object.entries(actions).forEach(([actionName, action], i) => {
-      logger.info(`${i === 0 ? '' : '\n'}${actionName}: ${action.help ? action.help.trim() : 'No help provided'}`)
+    Object.entries(actions).forEach(([actionName, action], i, actionEntries) => {
+      logger.info(`${actionName}: ${action.help ? action.help.trim() : 'No help provided'}`)
       const { events, http } = action
       if (http) {
         const args = Object.entries(action.arguments || {})
@@ -46,6 +46,11 @@ export default async function list({ options }: CommandPayload<ActionOptions>) {
           logger.info(`  ${eventName}: ${event.help ? event.help.trim() : 'No help provided'}`)
           // TODO: Subscribe/Unsubscribe?
         })
+      }
+
+      // Only emit an empty line for non-last items
+      if (i < actionEntries.length - 1) {
+        console.log('')
       }
     })
     return
