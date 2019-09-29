@@ -41,5 +41,23 @@ export default function processContainerEnv({
     }
   })
 
+  Object.entries(config.environment || {}).forEach(([envName, env]) => {
+    const value = values[envName]
+
+    if (typeof value !== 'string' || !env.type) {
+      // Non-existent, ignore
+      return
+    }
+    if (env.type === 'boolean' && !['false', 'true'].includes(value)) {
+      invalid.push(envName)
+    }
+    if (env.type === 'int' && parseInt(value, 10).toString() !== value) {
+      invalid.push(envName)
+    }
+    if (env.type === 'float' && parseFloat(value).toString() !== value) {
+      invalid.push(envName)
+    }
+  })
+
   return { missing, invalid, values }
 }
