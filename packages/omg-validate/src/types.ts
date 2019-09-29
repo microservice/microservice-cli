@@ -49,7 +49,7 @@ export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 export const HTTP_METHODS: HttpMethod[] = ['get', 'post', 'put', 'delete', 'patch']
 
 export interface Argument {
-  type: InputType | InputType[]
+  type: InputType
   help?: string
   in: 'query' | 'path' | 'requestBody' | 'header'
   pattern?: string
