@@ -2,7 +2,16 @@
 
 import * as v from './validatorsConfig'
 import { validate, validateWith, validateObject, validateAssocObject, enumValues, oneOf, array } from './validatorsBase'
-import { ConfigSchema, INPUT_TYPES, OUTPUT_TYPES, CONTENT_TYPES, HTTP_METHODS, State, ErrorCallback } from './types'
+import {
+  ConfigSchema,
+  INPUT_TYPES,
+  OUTPUT_TYPES,
+  CONTENT_TYPES,
+  ENV_TYPES,
+  HTTP_METHODS,
+  State,
+  ErrorCallback,
+} from './types'
 
 export default function validateConfig(config: ConfigSchema, rootError: ErrorCallback): void {
   if (typeof config !== 'object' || !config) {
@@ -140,7 +149,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   validateWith(root, 'hostedExternally', false, v.boolean)
 
   validateAssocObject(root, 'environment', false, ({ state }) => {
-    validateWith(state, 'type', true, oneOf(enumValues(INPUT_TYPES), array(enumValues(INPUT_TYPES))))
+    validateWith(state, 'type', true, enumValues(ENV_TYPES))
     validateWith(state, 'pattern', false, v.string)
     validateWith(state, 'required', false, v.boolean)
     validateWith(state, 'sensitive', false, v.boolean)

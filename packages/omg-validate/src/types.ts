@@ -39,6 +39,8 @@ export const OUTPUT_TYPES: OutputType[] = [
   'any',
   'none',
 ]
+export type EnvType = 'int' | 'float' | 'string' | 'boolean'
+export const ENV_TYPES: EnvType[] = ['int', 'float', 'string', 'boolean']
 
 export type ContentType = 'application/json' | 'application/x-www-form-urlencoded' | 'multipart/form-data'
 export const CONTENT_TYPES: ContentType[] = ['application/json', 'application/x-www-form-urlencoded', 'multipart/form-data']
@@ -168,7 +170,7 @@ export interface ConfigSchema {
   environment?: Record<
     string,
     {
-      type: InputType | InputType[]
+      type: EnvType
       pattern?: string
       required?: boolean
       default?: any // <== default value for env var
