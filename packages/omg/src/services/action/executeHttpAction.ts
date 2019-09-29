@@ -107,9 +107,15 @@ export default async function executeHttpAction({
 
   // Non 2XX Response
   if (response.statusCode < 200 || response.statusCode > 299) {
-    const err = new Error(`Action#${actionName} returned non-OK Http Status ${response.statusCode}`)
+    const err = new CLIError(`Action#${actionName} returned non-OK Http Status ${response.statusCode}`)
+    let { body } = response
+    try {
+      body = JSON.parse(body)
+    } catch (_) {
+      /* No op */
+    }
     // @ts-ignore
-    err.response = response.body
+    err.response = body
     throw err
   }
 
