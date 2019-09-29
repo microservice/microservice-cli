@@ -8,18 +8,19 @@ interface PrepareActionArgumentsOptions {
   eventName?: string
   args: Args
 }
+
 interface PrepareActionArgumentsResponse {
   missing: string[]
   invalid: string[]
   values: Record<string, any>
 }
 
-export default async function prepareActionArguments({
+export default function prepareActionArguments({
   config,
   actionName,
   eventName,
   args,
-}: PrepareActionArgumentsOptions): Promise<PrepareActionArgumentsResponse> {
+}: PrepareActionArgumentsOptions): PrepareActionArgumentsResponse {
   const action = (config.actions && config.actions[actionName]) || null
   const values: Record<string, any> = {}
   if (!action) {
@@ -45,14 +46,15 @@ export default async function prepareActionArguments({
 
   const argsMap = argsToMap(args)
   Object.entries(actionArgs || {}).forEach(([argName, arg]) => {
-    if (!argsMap[argName]) {
+    const value = argsMap[argName]
+    if (value) {
+      values[argName] = value
+    } else {
       if (arg.required) {
         missing.push(argName)
       } else if (arg.default) {
         values[argName] = arg.default
       }
-    } else {
-      values[argName] = argsMap[argName]
     }
   })
 

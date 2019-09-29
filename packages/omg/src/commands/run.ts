@@ -2,9 +2,10 @@ import _get from 'lodash/get'
 import * as logger from '~/logger'
 import { Daemon } from '~/services/daemon'
 import { HELP_OMG_LIST } from '~/common'
-import { executeAction, prepareActionArguments } from '~/services/action'
+import { executeAction } from '~/services/action'
 import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 import { Args, CommandPayload, CommandOptionsDefault, ConfigSchemaAction } from '~/types'
+import { validateActionArguments, validateContainerEnv } from './_common'
 
 interface ActionOptions extends CommandOptionsDefault {
   image?: string
@@ -31,19 +32,19 @@ export default async function run({ options, parameters }: CommandPayload<Action
   } else if (actionConfig.events) {
     logger.fatal(`Action '${actionName}' is an event action. Try 'omg subscribe ${actionName} [event]' instead.`)
   }
-  const { missing: missingArgs, invalid: invalidArgs } = await prepareActionArguments({
+  const validatedEnv = validateContainerEnv({
+    config: microserviceConfig,
+    envs: options.envs || [],
+    inheritEnv: false,
+    // TODO: ^ Fix this
+  })
+  const validatatedArguments = validateActionArguments({
     actionName,
     args: options.args || [],
     config: microserviceConfig,
   })
-  if (missingArgs.length) {
-    logger.error(`Missing arguments: ${missingArgs.join(', ')}`)
-  }
-  if (invalidArgs.length) {
-    logger.error(`Invalid arguments: ${invalidArgs.join(', ')}`)
-  }
-  if (missingArgs.length || invalidArgs.length) {
-    logger.fatal('You can specify arguments with -a key="val"')
+  if (!validatedEnv || !validatatedArguments) {
+    return
   }
 
   const daemon = new Daemon({ configPaths, microserviceConfig })
