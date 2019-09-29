@@ -16,6 +16,7 @@ export function validateActionArguments({ actionName, eventName, args, config }:
     eventName,
     args,
     config,
+    transform: true,
   })
   if (missing.length) {
     logger.error(`Missing argument${missing.length > 1 ? 's' : ''}: ${missing.join(', ')}`)

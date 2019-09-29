@@ -6,6 +6,7 @@ interface ProcessActionArgumentsOptions {
   config: ConfigSchema
   actionName: string
   eventName?: string
+  transform: boolean
   args: Args
 }
 
@@ -19,6 +20,7 @@ export default function processActionArguments({
   config,
   actionName,
   eventName,
+  transform,
   args,
 }: ProcessActionArgumentsOptions): ProcessActionArgumentsResponse {
   const action = (config.actions && config.actions[actionName]) || null
@@ -45,6 +47,7 @@ export default function processActionArguments({
   const invalid: string[] = []
 
   const argsMap = argsToMap(args)
+  // Step 1 - Map
   Object.entries(actionArgs || {}).forEach(([argName, arg]) => {
     const value = argsMap[argName]
     if (typeof value !== 'undefined') {
@@ -58,6 +61,18 @@ export default function processActionArguments({
     }
   })
 
+  // Step 2 - Transform
+  if (transform) {
+    Object.entries(actionArgs || {}).forEach(([argName, arg]) => {
+      const value = argsMap[argName]
+      if (typeof value !== 'string') {
+        // We only unravel string args coming from CLI here
+        return
+      }
+    })
+  }
+
+  // Step 3 - Validate
   // TODO: Validate/transform types here
 
   return { missing, invalid, values }
