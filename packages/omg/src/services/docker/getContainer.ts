@@ -32,7 +32,7 @@ export default async function getContainer({
   const imageWithTag = image.includes(':') ? image : `${image}:latest`
 
   const availableImages = await dockerode.listImages()
-  if (!availableImages.some(item => item.RepoTags.includes(imageWithTag))) {
+  if (!availableImages.some(item => Array.isArray(item.RepoTags) && item.RepoTags.includes(imageWithTag))) {
     throw new CLIError(`Docker Image '${image}' not found with latest tag`)
   }
 
