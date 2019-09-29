@@ -25,7 +25,7 @@
     </Flex>
     <Flex row :flex="1" justifyContent="flex-end">
       <Flex row justifyContent="center">
-        <Button theme="borderless" bold backgroundColor="blue50" color="white" :p="1">
+        <Button theme="borderless" bold backgroundColor="blue50" color="white" :p="1" :onPress="handleContributeOnGithub">
           Contribute on Github
           <Photo :source="githubLogoSource" :size="2" :ml="1" />
         </Button>
@@ -46,6 +46,11 @@ export default {
   components: { Flex, Button, Words, Photo },
   computed: {
     ...mapGetters(['appStatus']),
+  },
+  methods: {
+    handleContributeOnGithub() {
+      window.open('https://github.com/microservices/omg', '_blank', 'noopener,noreferrer')
+    },
   },
   data: () => ({
     omgLogoSource: require('~/images/omg-logo.svg'),
