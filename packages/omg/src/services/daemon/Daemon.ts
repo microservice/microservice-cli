@@ -21,6 +21,7 @@ interface DaemonStartOptions {
   envs: Args
   image?: string | null
   raw: boolean
+  inheritEnv: boolean
 }
 
 interface ContainerState {
@@ -42,7 +43,7 @@ export default class Daemon {
     lifecycleDisposables.add(this)
   }
 
-  public async start({ image, envs, raw }: DaemonStartOptions): Promise<void> {
+  public async start({ image, envs, raw, inheritEnv }: DaemonStartOptions): Promise<void> {
     if (this.containerState) {
       throw new CLIError('Cannot start when already started')
     }
@@ -64,6 +65,7 @@ export default class Daemon {
         envs,
         image: imageName,
         config: this.microserviceConfig,
+        inheritEnv,
       })
       this.containerState = { container, portsMap, subscriptions: new CompositeDisposable() }
       lifecycleDisposables.add(this)

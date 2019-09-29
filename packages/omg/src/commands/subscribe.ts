@@ -15,6 +15,7 @@ interface ActionOptions extends CommandOptionsDefault {
   raw?: boolean
   debug?: boolean
   silent?: boolean
+  inheritEnv?: boolean
 }
 
 export default async function subscribe({ options, parameters }: CommandPayload<ActionOptions>) {
@@ -45,8 +46,7 @@ export default async function subscribe({ options, parameters }: CommandPayload<
   const validatedEnv = validateContainerEnv({
     config: microserviceConfig,
     envs: options.envs || [],
-    inheritEnv: false,
-    // TODO: ^ Fix this
+    inheritEnv: !!options.inheritEnv,
   })
   if (!validatedEnv || !validatatedArguments) {
     return
@@ -57,6 +57,7 @@ export default async function subscribe({ options, parameters }: CommandPayload<
     envs: options.envs || [],
     image: options.image,
     raw: !!options.raw,
+    inheritEnv: !!options.inheritEnv,
   })
   if (options.debug) {
     const daemonLogger = await daemon.getLogs()

@@ -121,6 +121,7 @@ export default class Dashboard {
     await newDaemon.start({
       envs: this.envs,
       raw: true,
+      inheritEnv: this.inheritEnv,
     })
     this.updateAppStatus(UIAppStatus.started)
     const daemonLogs = await newDaemon.getLogs()

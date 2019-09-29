@@ -14,6 +14,7 @@ interface GetContainerOptions {
   config: ConfigSchema
   envs: Args
   image: string
+  inheritEnv: boolean
 }
 
 interface GetContainerResult {
@@ -22,7 +23,12 @@ interface GetContainerResult {
 }
 
 const SHOULD_MAP_TO_LOCALHOST = !['darwin', 'win32'].includes(process.platform)
-export default async function getContainer({ config, envs, image }: GetContainerOptions): Promise<GetContainerResult> {
+export default async function getContainer({
+  config,
+  envs,
+  image,
+  inheritEnv,
+}: GetContainerOptions): Promise<GetContainerResult> {
   const imageWithTag = image.includes(':') ? image : `${image}:latest`
 
   const availableImages = await dockerode.listImages()
@@ -33,7 +39,7 @@ export default async function getContainer({ config, envs, image }: GetContainer
   const { missing: missingEnvs, values: envObj } = processContainerEnv({
     config,
     envs,
-    inheritEnv: false,
+    inheritEnv,
   })
 
   if (missingEnvs.length) {

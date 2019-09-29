@@ -77,6 +77,7 @@ export default async function main() {
       getCollector('envs'),
       [],
     )
+    .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
     .option('-r --raw', 'Show docker build logs')
     .option('--silent', 'Hide output except for action result')
     .option('--debug', 'Show container logs in CLI (for debugging purpose)')
@@ -114,6 +115,7 @@ export default async function main() {
       getCollector('envs'),
       [],
     )
+    .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
     .option('-r --raw', 'Show docker build logs')
     .option('--silent', 'Hide output except for action result')
     .option('--debug', 'Show container logs in CLI (for debugging purpose)')
