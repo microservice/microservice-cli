@@ -12,10 +12,10 @@
         <Flex column backgroundColor="white" :p="4" :flex="1">
           <Flex column v-if="configEnvs.length">
             <Flex row>
-              <Words size="xLarge" fontWeight="500">Environemnt</Words>
+              <Words size="xLarge" fontWeight="500">Environment</Words>
             </Flex>
             <Flex row :mt="1">
-              <Words>Enter environemt variables for your app below.</Words>
+              <Words>Enter environment variables for your app below.</Words>
             </Flex>
             <Flex column :mt="6">
               <Flex column :mb="2" v-bind:key="envVar.name" v-for="envVar in configEnvs">
