@@ -28,7 +28,7 @@ export default function processContainerEnv({
       value = process.env[envName]
     }
 
-    if (value) {
+    if (typeof value === 'string') {
       values[envName] = value
     } else {
       if (env.required) {

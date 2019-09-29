@@ -47,7 +47,7 @@ export default function processActionArguments({
   const argsMap = argsToMap(args)
   Object.entries(actionArgs || {}).forEach(([argName, arg]) => {
     const value = argsMap[argName]
-    if (value) {
+    if (typeof value !== 'undefined') {
       values[argName] = value
     } else {
       if (arg.required) {
