@@ -1,13 +1,14 @@
+import querystring from 'qs'
 import argsToMap from '~/helpers/argsToMap'
 import { CLIError } from '~/errors'
-import { Args, ConfigSchema, ConfigSchemaAction } from '~/types'
+import { Args, ArgsTransformed, ConfigSchema, ConfigSchemaAction } from '~/types'
 
 interface ProcessActionArgumentsOptions {
   config: ConfigSchema
   actionName: string
   eventName?: string
   transform: boolean
-  args: Args
+  args: Args | ArgsTransformed
 }
 
 interface ProcessActionArgumentsResponse {
@@ -63,11 +64,32 @@ export default function processActionArguments({
 
   // Step 2 - Transform
   if (transform) {
+    // We try to parse these args from the CLI in following types:
+    // - JSON
+    // - URLEncoded (extended)
     Object.entries(actionArgs || {}).forEach(([argName, arg]) => {
-      const value = argsMap[argName]
-      if (typeof value !== 'string') {
+      let value = argsMap[argName]
+      let changed = false
+      if (typeof value !== 'string' || arg.type === 'string') {
         // We only unravel string args coming from CLI here
         return
+      }
+      if (arg.type === 'object' || arg.type === 'map') {
+        // Try to parse as JSON
+        try {
+          value = JSON.parse(value)
+          changed = true
+        } catch (_) {
+          /* No op */
+        }
+        if (!changed) {
+          // Hail Mary! Please work!
+          value = querystring.parse(value)
+          changed = true
+        }
+      }
+      if (changed) {
+        values[argName] = value
       }
     })
   }

@@ -1,6 +1,9 @@
 import { Action, ConfigSchema } from 'omg-validate'
 
 export type Args = [string, string][]
+export type ArgsTransformed = [string, any][]
+// ^ These args are pre-transformed, they come from the UI probably
+// They do not need to be parsed as strings and unraveled
 export type RecordVal<T> = T extends Record<any, infer T> ? T : never
 
 export interface CommandOptionsDefault {

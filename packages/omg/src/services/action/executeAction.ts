@@ -2,7 +2,7 @@ import { DisposableLike } from 'event-kit'
 
 import { CLIError } from '~/errors'
 import { Daemon } from '~/services/daemon'
-import { Args, ConfigSchema } from '~/types'
+import { Args, ArgsTransformed, ConfigSchema } from '~/types'
 
 import executeHttpAction from './executeHttpAction'
 import executeEventsAction from './executeEventsAction'
@@ -14,7 +14,7 @@ interface ExecuteActionOptions {
   actionName: string
   eventName?: string
   args?: Args
-  transformedArgs?: Args
+  transformedArgs?: ArgsTransformed
   // ^ These are non-string args that come from UI or something
   // their values are non-string and don't need to be transformed
   callback: (payload: any) => void | Promise<void>
@@ -40,7 +40,7 @@ export default async function executeAction({
     eventName,
     args: transformedArgs || (args as Args),
     config,
-    transform: !!transformedArgs,
+    transform: !transformedArgs,
   })
   if (missingArgs.length || invalidArgs.length) {
     const chunks: string[] = []

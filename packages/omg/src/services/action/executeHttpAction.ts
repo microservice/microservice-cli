@@ -1,5 +1,4 @@
 import got from 'got'
-import pick from 'lodash/pick'
 import FormData from 'form-data'
 import querystring from 'querystring'
 import { OutputType } from 'omg-validate/src/types'

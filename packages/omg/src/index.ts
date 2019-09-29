@@ -67,7 +67,7 @@ export default async function main() {
     )
     .option(
       '-a --args <a>',
-      'Arguments to be passed to the command, must be of the form `key="value"`',
+      'Arguments to be passed to the event, must be of the form `key="value"`. These arguments may be JSON or URL encoded for `map` and `object` types.',
       getCollector('args'),
       [],
     )
@@ -105,7 +105,7 @@ export default async function main() {
     )
     .option(
       '-a --args <a>',
-      'Arguments to be passed to the event, must be of the form `key="value"`',
+      'Arguments to be passed to the event, must be of the form `key="value"`. These arguments may be JSON or URL encoded for `map` and `object` types.',
       getCollector('args'),
       [],
     )
