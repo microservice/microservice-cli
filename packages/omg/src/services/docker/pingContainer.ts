@@ -1,7 +1,8 @@
 import got from 'got'
 
-import waitForHttpPortOpen from '~/helpers/waitForHttpPortOpen'
+import { CLIError } from '~/errors'
 import { ConfigSchema } from '~/types'
+import waitForHttpPortOpen from '~/helpers/waitForHttpPortOpen'
 
 import isContainerRunning from './isContainerRunning'
 
@@ -39,7 +40,7 @@ export default async function pingContainer({ container, config, portsMap }: Pin
   const healthCheckPort = portsMap.get(health.http.port)
   if (!healthCheckPort) {
     // Should never happen but just in case.
-    throw new Error(`Mapped port for healthcheck port '${health.http.port}' not found`)
+    throw new CLIError(`Mapped port for healthcheck port '${health.http.port}' not found`)
   }
 
   const uri = `http://localhost:${healthCheckPort}${health.http.path}`

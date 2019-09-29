@@ -4,6 +4,7 @@
 import util from 'util'
 import logSymbols from 'log-symbols'
 import ora, { Ora } from 'ora'
+import { CLIError } from '~/errors'
 import { DEBUG_CLI, lifecycleDisposables } from './common'
 
 let spinner: Ora | null = null
@@ -83,7 +84,7 @@ export function fatal(message: string): never {
   }
 
   process.exit(1)
-  throw new Error('Never should reach here.')
+  throw new CLIError('Never should reach here.')
 }
 
 export function spinnerStart(message: string) {

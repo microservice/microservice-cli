@@ -3,6 +3,7 @@ import Dockerode from 'dockerode'
 import { CompositeDisposable } from 'event-kit'
 
 import * as logger from '~/logger'
+import { CLIError } from '~/errors'
 import { Args, ConfigSchema } from '~/types'
 import { ConfigPaths } from '~/services/config'
 import { lifecycleDisposables } from '~/common'
@@ -43,7 +44,7 @@ export default class Daemon {
 
   public async start({ image, envs, raw }: DaemonStartOptions): Promise<void> {
     if (this.containerState) {
-      throw new Error('Cannot start when already started')
+      throw new CLIError('Cannot start when already started')
     }
 
     const imageName = image || (await getImageName({ configPath: this.configPaths.docker })).name
@@ -80,7 +81,7 @@ export default class Daemon {
     const { containerState } = this
 
     if (!containerState) {
-      throw new Error('Failed to get logs on a stopped Daemon')
+      throw new CLIError('Failed to get logs on a stopped Daemon')
     }
 
     const daemonLogger = new DaemonLogs(containerState.container)
@@ -123,11 +124,11 @@ export default class Daemon {
     const { containerState } = this
 
     if (!containerState) {
-      throw new Error(`Failed to getContainerPort#${sourcePort} while the container is not running`)
+      throw new CLIError(`Failed to getContainerPort#${sourcePort} while the container is not running`)
     }
     const mappedPort = containerState.portsMap.get(sourcePort)
     if (!mappedPort) {
-      throw new Error(`Mapped port for port '${sourcePort}' not found`)
+      throw new CLIError(`Mapped port for port '${sourcePort}' not found`)
     }
     return mappedPort
   }

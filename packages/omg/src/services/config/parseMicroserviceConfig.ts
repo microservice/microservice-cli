@@ -1,7 +1,9 @@
 import fs from 'sb-fs'
 import jsYaml from 'js-yaml'
 import * as logger from '~/logger'
+
 import getValidationErrors from './getValidationErrors'
+import { CLIError } from '~/errors'
 import { ConfigSchema } from '~/types'
 
 interface ParseMicroserviceConfigOptions {
@@ -12,7 +14,7 @@ interface ParseMicroserviceConfigOptions {
 export default async function parseMicroserviceConfig(options: ParseMicroserviceConfigOptions): Promise<ConfigSchema> {
   const parsed = jsYaml.safeLoad(await fs.readFile(options.configPath, 'utf8'))
   if (typeof parsed !== 'object' || !parsed) {
-    throw new Error(`Malformed config file (found at: ${options.configPath})`)
+    throw new CLIError(`Malformed config file (found at: ${options.configPath})`)
   }
   if (options.validate) {
     if (getValidationErrors(parsed).length) {

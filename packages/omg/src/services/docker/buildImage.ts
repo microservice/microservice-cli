@@ -1,6 +1,7 @@
 import path from 'path'
 import readline from 'readline'
 
+import { CLIError } from '~/errors'
 import pingDaemon from './pingDaemon'
 import { dockerode } from './common'
 
@@ -13,7 +14,7 @@ interface BuildImageOptions {
 
 export default async function buildImage(options: BuildImageOptions): Promise<void> {
   if (!(await pingDaemon())) {
-    throw new Error('Docker daemon must be running before build images')
+    throw new CLIError('Docker daemon must be running before build images')
   }
 
   const stream = await dockerode.buildImage(

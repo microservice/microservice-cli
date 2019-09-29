@@ -3,6 +3,7 @@ import FormData from 'form-data'
 import querystring from 'querystring'
 import { OutputType } from 'omg-validate/src/types'
 
+import { CLIError } from '~/errors'
 import { Daemon } from '~/services/daemon'
 import { Args, ConfigSchemaAction } from '~/types'
 import argsToMap from '~/helpers/argsToMap'
@@ -36,7 +37,7 @@ export default async function executeHttpAction({
   } else if (url) {
     uri = url
   } else {
-    throw new Error(`Action#${actionName} has neither port+path nor url specified in config`)
+    throw new CLIError(`Action#${actionName} has neither port+path nor url specified in config`)
   }
 
   let hasQueryArgs = false
@@ -119,7 +120,7 @@ export default async function executeHttpAction({
     try {
       parsed = JSON.parse(parsed)
     } catch (_) {
-      throw new Error(`Action#${actionName} returned non-JSON output`)
+      throw new CLIError(`Action#${actionName} returned non-JSON output`)
     }
   } else if (outputType === OUTPUT_TYPE_TO_IGNORE) {
     parsed = null

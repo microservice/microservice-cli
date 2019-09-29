@@ -1,5 +1,6 @@
 import { DisposableLike } from 'event-kit'
 
+import { CLIError } from '~/errors'
 import { Daemon } from '~/services/daemon'
 import { Args, ConfigSchema } from '~/types'
 import argsToMap from '~/helpers/argsToMap'
@@ -26,7 +27,7 @@ export default async function executeAction({
 }: ExecuteActionOptions): Promise<null | DisposableLike> {
   const action = (config.actions && config.actions[actionName]) || null
   if (!action) {
-    throw new Error(`Action#${actionName} not found`)
+    throw new CLIError(`Action#${actionName} not found`)
   }
 
   // Validate all actions have requested arguments
@@ -38,7 +39,7 @@ export default async function executeAction({
     }
   })
   if (missingArgs.length) {
-    throw new Error(`Missing arguments for Action: ${missingArgs.join(', ')}`)
+    throw new CLIError(`Missing arguments for Action: ${missingArgs.join(', ')}`)
   }
 
   if (action.http != null) {
@@ -55,7 +56,7 @@ export default async function executeAction({
   }
   if (action.events != null) {
     if (!eventName) {
-      throw new Error(`Missing event name for Action#${actionName}`)
+      throw new CLIError(`Missing event name for Action#${actionName}`)
     }
 
     const { disposable } = await executeEventsAction({
@@ -69,5 +70,5 @@ export default async function executeAction({
 
     return disposable
   }
-  throw new Error(`Action#${actionName} has none of format/http/events specified`)
+  throw new CLIError(`Action#${actionName} has none of http/events specified`)
 }

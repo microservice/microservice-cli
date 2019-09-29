@@ -4,6 +4,7 @@ import Dockerode from 'dockerode'
 
 import getHostIp from '~/helpers/getHostIp'
 import argsToMap from '~/helpers/argsToMap'
+import { CLIError } from '~/errors'
 import { Args, ConfigSchema } from '~/types'
 import { getContainerPorts } from '~/services/config'
 
@@ -26,7 +27,7 @@ export default async function getContainer({ config, envs, image }: GetContainer
 
   const availableImages = await dockerode.listImages()
   if (!availableImages.some(item => item.RepoTags.includes(imageWithTag))) {
-    throw new Error(`Docker Image '${image}' not found with latest tag`)
+    throw new CLIError(`Docker Image '${image}' not found with latest tag`)
   }
 
   const envObj = argsToMap(envs)
@@ -43,7 +44,7 @@ export default async function getContainer({ config, envs, image }: GetContainer
     })
 
     if (missingEnvs.length) {
-      throw new Error(`Missing environment variables: ${missingEnvs.join(', ')}`)
+      throw new CLIError(`Missing environment variables: ${missingEnvs.join(', ')}`)
     }
   }
 

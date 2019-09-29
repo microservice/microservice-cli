@@ -2,6 +2,7 @@ import getPort from 'get-port'
 import { CompositeDisposable } from 'event-kit'
 
 import * as logger from '~/logger'
+import { CLIError } from '~/errors'
 import { Daemon } from '~/services/daemon'
 import { executeAction } from '~/services/action'
 import { ConfigSchema, Args, UIAppStatus } from '~/types'
@@ -54,7 +55,7 @@ export default class Dashboard {
         // Start the daemon if it dieded.
         const { daemon } = this
         if (!daemon) {
-          throw new Error('Container is not running')
+          throw new CLIError('Container is not running')
         }
         let response = null
         await executeAction({

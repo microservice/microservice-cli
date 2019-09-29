@@ -8,6 +8,7 @@ import { Disposable } from 'event-kit'
 import * as logger from '~/logger'
 import argsToMap from '~/helpers/argsToMap'
 import { Daemon } from '~/services/daemon'
+import { CLIError } from '~/errors'
 import { lifecycleDisposables } from '~/common'
 import { Args, ConfigSchemaAction } from '~/types'
 
@@ -30,7 +31,7 @@ export default async function executeEventsAction({
 }: ExecuteEventsActionOptions): Promise<{ disposable: Disposable }> {
   const event = action.events![eventName]
   if (!event) {
-    throw new Error(`Action '${actionName}' has no event named '${eventName}'`)
+    throw new CLIError(`Action '${actionName}' has no event named '${eventName}'`)
   }
 
   const httpServer = express()
@@ -88,7 +89,7 @@ export default async function executeEventsAction({
       }),
     })
   } catch (error) {
-    throw new Error(`HTTP Error when subscribing to ${subscribeMethod} ${subscribePath}`)
+    throw new CLIError(`HTTP Error when subscribing to ${subscribeMethod} ${subscribePath}`)
   }
 
   // Remove from lifecycle disposables now that we're about to
