@@ -106,14 +106,6 @@ export default class Daemon {
       container: containerState.container.id,
       portsMap: containerState.portsMap,
     })
-    if (!status) {
-      try {
-        await containerState.container.remove()
-      } catch (_) {
-        /* No Op */
-      }
-      this.containerState = null
-    }
 
     return status
   }
