@@ -4,6 +4,7 @@ import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 
 interface ActionOptions extends CommandOptionsDefault {
   json?: boolean
+  pretty?: boolean
   details?: boolean
 }
 
@@ -15,7 +16,7 @@ export default async function list({ options }: CommandPayload<ActionOptions>) {
   })
 
   if (options.json) {
-    logger.info(JSON.stringify(microserviceConfig.actions))
+    logger.info(JSON.stringify(microserviceConfig.actions, null, options.pretty ? 2 : 0))
     return
   }
 

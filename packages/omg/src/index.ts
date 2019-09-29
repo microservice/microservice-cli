@@ -155,6 +155,7 @@ export default async function main() {
   program
     .command('list')
     .option('-j --json', 'Returns actions in json format')
+    .option('--pretty', 'Works with --json to show prettified json')
     .option('-d --details', 'Returns detailed actions')
     .description('Lists all actions available in microservice.')
     .action(options => {
