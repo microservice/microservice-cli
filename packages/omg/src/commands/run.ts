@@ -2,7 +2,7 @@ import _get from 'lodash/get'
 import * as logger from '~/logger'
 import { Daemon } from '~/services/daemon'
 import { HELP_OMG_LIST } from '~/common'
-import { executeAction } from '~/services/action'
+import { executeAction, prepareActionArguments } from '~/services/action'
 import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 import { Args, CommandPayload, CommandOptionsDefault, ConfigSchemaAction } from '~/types'
 
@@ -30,6 +30,20 @@ export default async function run({ options, parameters }: CommandPayload<Action
     logger.fatal(`Action '${actionName}' not found. ${HELP_OMG_LIST}`)
   } else if (actionConfig.events) {
     logger.fatal(`Action '${actionName}' is an event action. Try 'omg subscribe ${actionName} [event]' instead.`)
+  }
+  const { missing: missingArgs, invalid: invalidArgs } = await prepareActionArguments({
+    actionName,
+    args: options.args || [],
+    config: microserviceConfig,
+  })
+  if (missingArgs.length) {
+    logger.error(`Missing arguments: ${missingArgs.join(', ')}`)
+  }
+  if (invalidArgs.length) {
+    logger.error(`Invalid arguments: ${invalidArgs.join(', ')}`)
+  }
+  if (missingArgs.length || invalidArgs.length) {
+    logger.fatal('You can specify arguments with -a key="val"')
   }
 
   const daemon = new Daemon({ configPaths, microserviceConfig })

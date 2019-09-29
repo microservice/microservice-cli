@@ -90,7 +90,7 @@ export default async function executeEventsAction({
     })
   } catch (error) {
     const err = new CLIError(`HTTP Error when subscribing to ${subscribeMethod} ${subscribePath}`)
-    let { body } = (error && error.response) || {}
+    let { body } = (error && error.response) || { body: '' }
     try {
       body = JSON.parse(body)
     } catch (_) {
