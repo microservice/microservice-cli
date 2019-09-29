@@ -33,7 +33,7 @@ export default async function getContainer({
 
   const availableImages = await dockerode.listImages()
   if (!availableImages.some(item => Array.isArray(item.RepoTags) && item.RepoTags.includes(imageWithTag))) {
-    throw new CLIError(`Docker Image '${image}' not found with latest tag`)
+    throw new CLIError(`Docker Image '${image}' not found on this machine. Maybe try 'docker pull ${image}' first`)
   }
 
   const { missing: missingEnvs, values: envObj } = processContainerEnv({
