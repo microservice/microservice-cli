@@ -15,6 +15,8 @@ import { ConfigSchema, Args, UIAppStatus } from '~/types'
 const MAX_HISTORY_LENGTH = 500
 
 type TExecuteAction = (payload: { name: string; args: Args }) => Promise<any>
+type TLogHistory = { type: 'docker-log' | 'console-log'; payload: Record<string, any> }[]
+
 interface DashboardHttpServerOptions {
   port: number
   configPaths: ConfigPaths
@@ -34,7 +36,7 @@ export default class DashboardHttpServer {
   private emitter: Emitter
   private subscriptions: CompositeDisposable
   private eventListeners: Set<Response>
-  private logHistory: { type: 'docker-log' | 'console-log'; payload: Record<string, any> }[]
+  private logHistory: TLogHistory
 
   public constructor(options: DashboardHttpServerOptions) {
     this.port = options.port
@@ -154,8 +156,30 @@ export default class DashboardHttpServer {
     this.logToHistory('docker-log', { stream, contents: stripAnsi(contents) })
   }
   private logToHistory(type: 'docker-log' | 'console-log', payload: Record<string, any>) {
-    this.logHistory = this.logHistory.slice(1 - MAX_HISTORY_LENGTH).concat([{ type, payload }])
     this.publishEvent(type, payload)
+
+    // Keep them both separately so restarting app often
+    // doesn't remove Docker logs from the stack
+    let countDockerLogs = 0
+    let countConsoleLogs = 0
+
+    const logHistory: TLogHistory = []
+
+    // Temporarily store them in present->past order
+    const reversedLogHistory = this.logHistory.slice().concat([{ type, payload }])
+    reversedLogHistory.reverse()
+    reversedLogHistory.forEach(item => {
+      if (item.type === 'docker-log' && countDockerLogs < MAX_HISTORY_LENGTH) {
+        logHistory.push(item)
+        countDockerLogs += 1
+      } else if (item.type === 'console-log' && countConsoleLogs < MAX_HISTORY_LENGTH) {
+        logHistory.push(item)
+        countConsoleLogs += 1
+      }
+    })
+
+    // Now that we're done filtering, reverse once more to make it all in past->present order
+    this.logHistory = logHistory.reverse()
   }
   private publishEvent(type: string, payload: Record<string, any>, connection?: Response) {
     const serialized = `${JSON.stringify({ type, payload })}\n`
