@@ -3,11 +3,11 @@ import getPort from 'get-port'
 import Dockerode from 'dockerode'
 
 import getHostIp from '~/helpers/getHostIp'
-import argsToMap from '~/helpers/argsToMap'
 import { CLIError } from '~/errors'
 import { Args, ConfigSchema } from '~/types'
 import { getContainerPorts } from '~/services/config'
 
+import processContainerEnv from './processContainerEnv'
 import { dockerode } from './common'
 
 interface GetContainerOptions {
@@ -30,22 +30,14 @@ export default async function getContainer({ config, envs, image }: GetContainer
     throw new CLIError(`Docker Image '${image}' not found with latest tag`)
   }
 
-  const envObj = argsToMap(envs)
+  const { missing: missingEnvs, values: envObj } = processContainerEnv({
+    config,
+    envs,
+    inheritEnv: false,
+  })
 
-  if (config.environment) {
-    const missingEnvs: string[] = []
-    Object.entries(config.environment).forEach(([name, env]) => {
-      if (env.default && !envObj[name]) {
-        envObj[name] = env.default
-      }
-      if (env.required && !envObj[name]) {
-        missingEnvs.push(name)
-      }
-    })
-
-    if (missingEnvs.length) {
-      throw new CLIError(`Missing environment variables: ${missingEnvs.join(', ')}`)
-    }
+  if (missingEnvs.length) {
+    throw new CLIError(`Missing environment variables: ${missingEnvs.join(', ')}`)
   }
 
   const portsMap: Map</* container port */ number, /* host port */ number> = new Map()

@@ -2,25 +2,25 @@ import argsToMap from '~/helpers/argsToMap'
 import { CLIError } from '~/errors'
 import { Args, ConfigSchema, ConfigSchemaAction } from '~/types'
 
-interface PrepareActionArgumentsOptions {
+interface ProcessActionArgumentsOptions {
   config: ConfigSchema
   actionName: string
   eventName?: string
   args: Args
 }
 
-interface PrepareActionArgumentsResponse {
+interface ProcessActionArgumentsResponse {
   missing: string[]
   invalid: string[]
   values: Record<string, any>
 }
 
-export default function prepareActionArguments({
+export default function processActionArguments({
   config,
   actionName,
   eventName,
   args,
-}: PrepareActionArgumentsOptions): PrepareActionArgumentsResponse {
+}: ProcessActionArgumentsOptions): ProcessActionArgumentsResponse {
   const action = (config.actions && config.actions[actionName]) || null
   const values: Record<string, any> = {}
   if (!action) {

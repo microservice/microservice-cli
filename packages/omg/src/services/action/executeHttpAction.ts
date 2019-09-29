@@ -5,8 +5,7 @@ import { OutputType } from 'omg-validate/src/types'
 
 import { CLIError } from '~/errors'
 import { Daemon } from '~/services/daemon'
-import { Args, ConfigSchemaAction } from '~/types'
-import argsToMap from '~/helpers/argsToMap'
+import { ConfigSchemaAction } from '~/types'
 
 import validateActionOutput from './validateActionOutput'
 
@@ -17,14 +16,14 @@ interface ExecuteHttpActionOptions {
   daemon: Daemon
   action: ConfigSchemaAction
   actionName: string
-  args: Args
+  argsMap: Record<string, any>
 }
 
 export default async function executeHttpAction({
   daemon,
   action,
   actionName,
-  args,
+  argsMap,
 }: ExecuteHttpActionOptions): Promise<{ response: any; disposable: null }> {
   const { path, method, port, url, contentType } = action.http!
 
@@ -46,7 +45,6 @@ export default async function executeHttpAction({
   const headers: Record<string, string> = {
     Accept: 'application/json,text/plain,*/*',
   }
-  const argsMap = argsToMap(args)
 
   Object.entries(action.arguments || {}).forEach(([argName, arg]) => {
     const argValue = argsMap[argName] || arg.default

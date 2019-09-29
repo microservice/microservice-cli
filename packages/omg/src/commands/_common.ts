@@ -1,6 +1,6 @@
 import * as logger from '~/logger'
 import { processContainerEnv } from '~/services/docker'
-import { prepareActionArguments } from '~/services/action'
+import { processActionArguments } from '~/services/action'
 import { Args, ConfigSchema } from '~/types'
 
 interface ValidateActionArgumentsOptions {
@@ -11,7 +11,7 @@ interface ValidateActionArgumentsOptions {
 }
 
 export function validateActionArguments({ actionName, eventName, args, config }: ValidateActionArgumentsOptions): boolean {
-  const { missing, invalid } = prepareActionArguments({
+  const { missing, invalid } = processActionArguments({
     actionName,
     eventName,
     args,
@@ -40,6 +40,7 @@ export function validateContainerEnv({ config, inheritEnv, envs }: ValidateConta
   const { missing } = processContainerEnv({ config, inheritEnv, envs })
   if (missing.length) {
     logger.error(`Missing environment variable${missing.length > 1 ? 's' : ''}: ${missing.join(', ')}`)
+    logger.info('You can specify environment variables with -e KEY="VAL"')
     return false
   }
   return true

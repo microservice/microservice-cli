@@ -6,15 +6,14 @@ import generateUUID from 'uuid/v4'
 import { Disposable } from 'event-kit'
 
 import * as logger from '~/logger'
-import argsToMap from '~/helpers/argsToMap'
 import { Daemon } from '~/services/daemon'
 import { CLIError } from '~/errors'
 import { lifecycleDisposables } from '~/common'
-import { Args, ConfigSchemaAction } from '~/types'
+import { ConfigSchemaAction } from '~/types'
 
 interface ExecuteEventsActionOptions {
   daemon: Daemon
-  args: Args
+  argsMap: Record<string, any>
   action: ConfigSchemaAction
   actionName: string
   eventName: string
@@ -23,7 +22,7 @@ interface ExecuteEventsActionOptions {
 
 export default async function executeEventsAction({
   daemon,
-  args,
+  argsMap,
   action,
   actionName,
   eventName,
@@ -70,7 +69,6 @@ export default async function executeEventsAction({
   const id = generateUUID()
   const containerEventPort = daemon.getContainerPort(event.http.port)
 
-  const argsMap = argsToMap(args)
   const subscribePath = event.http.subscribe.path
   const subscribeMethod = event.http.subscribe.method
 

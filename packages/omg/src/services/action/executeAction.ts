@@ -3,10 +3,10 @@ import { DisposableLike } from 'event-kit'
 import { CLIError } from '~/errors'
 import { Daemon } from '~/services/daemon'
 import { Args, ConfigSchema } from '~/types'
-import argsToMap from '~/helpers/argsToMap'
 
 import executeHttpAction from './executeHttpAction'
 import executeEventsAction from './executeEventsAction'
+import processActionArguments from './processActionArguments'
 
 interface ExecuteActionOptions {
   daemon: Daemon
@@ -31,15 +31,21 @@ export default async function executeAction({
   }
 
   // Validate all actions have requested arguments
-  const argsMap = argsToMap(args)
-  const missingArgs: string[] = []
-  Object.entries(action.arguments || {}).forEach(([argName, arg]) => {
-    if (!arg.default && arg.required && !argsMap[argName]) {
-      missingArgs.push(argName)
-    }
+  const { missing: missingArgs, invalid: invalidArgs, values: argsMap } = processActionArguments({
+    actionName,
+    eventName,
+    args,
+    config,
   })
-  if (missingArgs.length) {
-    throw new CLIError(`Missing arguments for Action: ${missingArgs.join(', ')}`)
+  if (missingArgs.length || invalidArgs.length) {
+    const chunks: string[] = []
+    if (missingArgs.length) {
+      chunks.push(`${missingArgs.join(', ')} are missing`)
+    }
+    if (invalidArgs.length) {
+      chunks.push(`${invalidArgs.join(', ')} are invalid`)
+    }
+    throw new CLIError(`Invalid arguments for Action#${actionName}: ${chunks.join(' and ')}`)
   }
 
   if (action.http != null) {
@@ -47,7 +53,7 @@ export default async function executeAction({
       daemon,
       action,
       actionName,
-      args,
+      argsMap,
     })
 
     callback(response)
@@ -61,7 +67,7 @@ export default async function executeAction({
 
     const { disposable } = await executeEventsAction({
       daemon,
-      args,
+      argsMap,
       action,
       actionName,
       eventName,
