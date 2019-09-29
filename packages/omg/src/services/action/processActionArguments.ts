@@ -1,7 +1,11 @@
 import { validateArgout } from 'omg-validate'
+import { InputType } from 'omg-validate/src/types'
 import argsToMap from '~/helpers/argsToMap'
 import { CLIError } from '~/errors'
 import { Args, ArgsTransformed, ConfigSchema, ConfigSchemaAction } from '~/types'
+
+const TYPES_TO_JSON_DECODE: InputType[] = ['list', 'object', 'map', 'int', 'number', 'float', 'boolean']
+// Non-object ones are added to eg. convert from String int to Number int before validation
 
 interface ProcessActionArgumentsOptions {
   config: ConfigSchema
@@ -73,7 +77,7 @@ export default function processActionArguments({
         // We only unravel string args coming from CLI here
         return
       }
-      if (arg.type === 'object' || arg.type === 'map') {
+      if (TYPES_TO_JSON_DECODE.includes(arg.type)) {
         // Try to parse as JSON
         try {
           value = JSON.parse(value)
