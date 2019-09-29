@@ -1,4 +1,5 @@
 import got from 'got'
+import pick from 'lodash/pick'
 import FormData from 'form-data'
 import querystring from 'querystring'
 import { OutputType } from 'omg-validate/src/types'
@@ -96,9 +97,10 @@ export default async function executeHttpAction({
       throwHttpErrors: false,
     })
   } catch (error) {
-    if (error && typeof error === 'object') {
-      // Strip any sensitive info from error message
-      error.gotOptions = undefined
+    // Got HTTP Error
+    if (error && error.gotOptions) {
+      const err = new CLIError(`Net Error ${error.code} on ${error.url}`)
+      throw err
     }
     throw error
   }
