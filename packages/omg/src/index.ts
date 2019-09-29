@@ -177,6 +177,6 @@ export default async function main() {
 
   await actionPromise.catch(error => {
     logger.spinnerStop()
-    throw error
+    logger.error(error)
   })
 }

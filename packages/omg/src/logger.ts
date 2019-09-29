@@ -55,10 +55,10 @@ export function warn(message: string) {
 }
 
 export function error(err: string | Error) {
-  const itemToLog = DEBUG_CLI ? util.inspect(err, false, 5, false) : err
+  const itemToLog = DEBUG_CLI || !(err instanceof CLIError) ? util.inspect(err, false, 5, false) : err
   let contents = itemToLog instanceof Error ? itemToLog.message : itemToLog.toString()
   if (symbolsAllowed) {
-    contents = `${logSymbols.info} ${contents}`
+    contents = `${logSymbols.error} ${contents}`
   }
   if (spinner) {
     spinner.stop()
