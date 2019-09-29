@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const DEBUG_CLI = {}.hasOwnProperty.call(process.env, 'OMG_CLI_DEBUG') || process.argv.includes('--debug')
+const DEBUG_CLI = {}.hasOwnProperty.call(process.env, 'OMS_CLI_DEBUG')
 
 // Wrapping whole thing in promise to catch any errors in require-ing as well
 const mainPromise = new Promise(resolve => {

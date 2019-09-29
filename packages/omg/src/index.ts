@@ -161,6 +161,12 @@ export default async function main() {
       })
     })
 
+  program.on('--help', function() {
+    console.log('')
+    console.log('Environment Variables recognized by the CLI:')
+    console.log('  OMS_CLI_DEBUG=true\t\t\tTo print stack traces of errors/issues')
+  })
+
   // The order is important, this has to be before the args length check.
   program.parse(process.argv)
 

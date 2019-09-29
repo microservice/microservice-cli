@@ -1,6 +1,6 @@
 import { CompositeDisposable, Disposable } from 'event-kit'
 
-export const DEBUG_CLI = {}.hasOwnProperty.call(process.env, 'OMG_CLI_DEBUG') || process.argv.includes('--debug')
+export const DEBUG_CLI = {}.hasOwnProperty.call(process.env, 'OMS_CLI_DEBUG')
 export const lifecycleDisposables = new CompositeDisposable()
 
 export function disposableInterval(callback: () => void, timeout: number): Disposable {
