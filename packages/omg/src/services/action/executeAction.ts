@@ -48,7 +48,7 @@ export default async function executeAction({
       chunks.push(`${missingArgs.join(', ')} are missing`)
     }
     if (invalidArgs.length) {
-      chunks.push(`${invalidArgs.join(', ')} are invalid`)
+      chunks.push(`${invalidArgs.join(', ')}`)
     }
     throw new CLIError(`Invalid arguments for Action#${actionName}: ${chunks.join(' and ')}`)
   }

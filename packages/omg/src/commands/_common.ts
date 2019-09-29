@@ -25,7 +25,9 @@ export function validateActionArguments({ actionName, eventName, args, config }:
     logger.error(`Invalid argument${invalid.length > 1 ? 's' : ''}: ${invalid.join(', ')}`)
   }
   if (missing.length || invalid.length) {
-    logger.info('You can specify arguments with -a key="value"')
+    logger.info(
+      'You can specify arguments with -a key="value". These arguments may be JSON encoded for `map` and `object` types.',
+    )
     return false
   }
   return true

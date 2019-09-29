@@ -1,4 +1,4 @@
-import querystring from 'qs'
+import { validateArgout } from 'omg-validate'
 import argsToMap from '~/helpers/argsToMap'
 import { CLIError } from '~/errors'
 import { Args, ArgsTransformed, ConfigSchema, ConfigSchemaAction } from '~/types'
@@ -66,7 +66,6 @@ export default function processActionArguments({
   if (transform) {
     // We try to parse these args from the CLI in following types:
     // - JSON
-    // - URLEncoded (extended)
     Object.entries(actionArgs || {}).forEach(([argName, arg]) => {
       let value = argsMap[argName]
       let changed = false
@@ -82,11 +81,6 @@ export default function processActionArguments({
         } catch (_) {
           /* No op */
         }
-        if (!changed) {
-          // Hail Mary! Please work!
-          value = querystring.parse(value)
-          changed = true
-        }
       }
       if (changed) {
         values[argName] = value
@@ -95,6 +89,15 @@ export default function processActionArguments({
   }
 
   // Step 3 - Validate
+  Object.entries(actionArgs || {}).forEach(([argName, arg]) => {
+    const value = argsMap[argName]
+    if (typeof value === 'undefined') {
+      // Skip missing ones
+      return
+    }
+
+    invalid.push(...validateArgout(arg, value).map(item => `${argName}${item.slice(1)}`))
+  })
   // TODO: Validate/transform types here
 
   return { missing, invalid, values }
