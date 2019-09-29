@@ -89,7 +89,18 @@ export default async function executeEventsAction({
       }),
     })
   } catch (error) {
-    throw new CLIError(`HTTP Error when subscribing to ${subscribeMethod} ${subscribePath}`)
+    const err = new CLIError(`HTTP Error when subscribing to ${subscribeMethod} ${subscribePath}`)
+    let { body } = (error && error.response) || {}
+    try {
+      body = JSON.parse(body)
+    } catch (_) {
+      /* No op */
+    }
+    if (body) {
+      // @ts-ignore
+      err.response = body
+    }
+    throw err
   }
 
   // Remove from lifecycle disposables now that we're about to
