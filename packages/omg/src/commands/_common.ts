@@ -24,7 +24,7 @@ export function validateActionArguments({ actionName, eventName, args, config }:
     logger.error(`Invalid argument${invalid.length > 1 ? 's' : ''}: ${invalid.join(', ')}`)
   }
   if (missing.length || invalid.length) {
-    logger.info('You can specify arguments with -a key="val"')
+    logger.info('You can specify arguments with -a key="value"')
     return false
   }
   return true
@@ -40,7 +40,7 @@ export function validateContainerEnv({ config, inheritEnv, envs }: ValidateConta
   const { missing } = processContainerEnv({ config, inheritEnv, envs })
   if (missing.length) {
     logger.error(`Missing environment variable${missing.length > 1 ? 's' : ''}: ${missing.join(', ')}`)
-    logger.info('You can specify environment variables with -e KEY="VAL"')
+    logger.info('You can specify environment variables with -e KEY="VALUE"')
     return false
   }
   return true

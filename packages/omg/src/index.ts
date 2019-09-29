@@ -67,13 +67,13 @@ export default async function main() {
     )
     .option(
       '-a --args <a>',
-      'Arguments to be passed to the command, must be of the form `key="val"`',
+      'Arguments to be passed to the command, must be of the form `key="value"`',
       getCollector('args'),
       [],
     )
     .option(
       '-e --envs <e>',
-      'Environment variables to be passed to run environment, must be of the form `key="val"`',
+      'Environment variables to be passed to run environment, must be of the form `key="value"`',
       getCollector('envs'),
       [],
     )
@@ -105,13 +105,13 @@ export default async function main() {
     )
     .option(
       '-a --args <a>',
-      'Arguments to be passed to the event, must be of the form `key="val"`',
+      'Arguments to be passed to the event, must be of the form `key="value"`',
       getCollector('args'),
       [],
     )
     .option(
       '-e --envs <e>',
-      'Environment variables to be passed to run environment, must be of the form `key="val"`',
+      'Environment variables to be passed to run environment, must be of the form `key="value"`',
       getCollector('envs'),
       [],
     )
