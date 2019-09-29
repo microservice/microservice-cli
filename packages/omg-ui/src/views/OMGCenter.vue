@@ -3,19 +3,33 @@
     <Flex column :bv="1">
       <Flex row :mt="1.5" :mh="2" overflow-x="scroll" width="calc(100% - 32px)">
         <Button
-          :ph="3"
+          :pl="3"
           :pv="1.5"
           :b="1"
           :mr="1"
-          minWidth="60px"
+          minWidth="80px"
+          width="100px"
           borderBottom="none"
           backgroundColor="white"
           color="blue"
+          class="omg-center-tab"
           v-bind:key="tab.id"
           v-for="tab in allActionTabs"
           v-bind:class="{'omg-center-tab-active': tab.id === activeActionTab.id}"
           v-bind:onPress="e => selectActionsTab(tab.id)"
-        >{{tab.title}}</Button>
+        >
+          <span>{{tab.title}}</span>
+          <Photo
+            class="close-button"
+            align-items="flex-end"
+            v-if="showTabCloseButton"
+            :flex="1"
+            :mr="1"
+            :source="iconCloseSource"
+            :size="2"
+            :onPress="(e) => handleTabClosePress(e, tab.id)"
+          />
+        </Button>
         <Button
           :ph="1.5"
           :pv="0.5"
@@ -107,6 +121,9 @@ export default {
       allActionTabs: 'getAllActionTabs',
       configActions: 'getConfigActions',
     }),
+    showTabCloseButton(state) {
+      return state.allActionTabs.length > 1
+    },
   },
   methods: {
     ...mapMutations([
@@ -118,13 +135,26 @@ export default {
       'saveActiveAction',
     ]),
     ...mapActions(['executeActiveAction']),
+    handleTabClosePress(event, tabId) {
+      event.stopImmediatePropagation()
+      this.destroyActionsTab(tabId)
+    },
   },
   data: () => ({
     iconPlusSource: require('~/images/icon-plus.svg'),
+    iconCloseSource: require('~/images/icon-close.svg'),
   }),
 }
 </script>
 <style lang="less">
+.omg-center-tab {
+  .close-button {
+    display: none !important;
+  }
+  &:hover .close-button {
+    display: flex !important;
+  }
+}
 .omg-center-tab-active {
   border-top: 3px solid #477bf3 !important;
 }

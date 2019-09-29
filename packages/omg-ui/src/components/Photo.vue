@@ -1,5 +1,5 @@
 <template>
-  <Flex column justifyContent="center" v-bind="componentStyle">
+  <Flex column justifyContent="center" v-bind="componentStyle" v-on:click="onPress">
     <img :src="source" :style="imageStyle" />
   </Flex>
 </template>
@@ -9,6 +9,7 @@ import Flex from './Flex.vue'
 
 type PropsPhoto = {
   size?: number
+  onPress?: () => void
 }
 
 function propsToStyles(props: Partial<PropsPhoto>) {
@@ -31,6 +32,10 @@ export default {
     },
     source: {
       type: String,
+    },
+    onPress: {
+      type: Function,
+      default() {},
     },
   },
   components: { Flex },
