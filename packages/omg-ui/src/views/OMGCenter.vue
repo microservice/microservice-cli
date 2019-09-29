@@ -1,31 +1,34 @@
 <template>
-  <Flex column backgroundColor="grey10" :flex="1">
-    <Flex row :bv="1" :pt="1.5" :ph="2">
-      <Button
-        :ph="3"
-        :pv="1.5"
-        :b="1"
-        :mr="1"
-        borderBottom="none"
-        backgroundColor="white"
-        color="blue"
-        v-bind:key="tab.id"
-        v-for="tab in allActionTabs"
-        v-bind:class="{'omg-center-tab-active': tab.id === activeActionTab.id}"
-        v-bind:onPress="e => selectActionsTab(tab.id)"
-      >{{tab.title}}</Button>
-      <Button
-        :ph="1.5"
-        :pv="0.5"
-        :b="1"
-        :mr="1"
-        borderBottom="none"
-        bordercolor="blue20"
-        backgroundColor="blue20"
-        :onPress="createActionsTab"
-      >
-        <Photo :source="iconPlusSource" :size="3" />
-      </Button>
+  <Flex column backgroundColor="grey10" :flex="1" overflow="hidden">
+    <Flex column :bv="1">
+      <Flex row :mt="1.5" :mh="2" overflow-x="scroll" width="calc(100% - 32px)">
+        <Button
+          :ph="3"
+          :pv="1.5"
+          :b="1"
+          :mr="1"
+          minWidth="60px"
+          borderBottom="none"
+          backgroundColor="white"
+          color="blue"
+          v-bind:key="tab.id"
+          v-for="tab in allActionTabs"
+          v-bind:class="{'omg-center-tab-active': tab.id === activeActionTab.id}"
+          v-bind:onPress="e => selectActionsTab(tab.id)"
+        >{{tab.title}}</Button>
+        <Button
+          :ph="1.5"
+          :pv="0.5"
+          :b="1"
+          :mr="1"
+          borderBottom="none"
+          bordercolor="blue20"
+          backgroundColor="blue20"
+          :onPress="createActionsTab"
+        >
+          <Photo :source="iconPlusSource" :size="3" />
+        </Button>
+      </Flex>
     </Flex>
     <Flex row :ph="2" :pv="2">
       <Flex row :flex="1">
