@@ -5,7 +5,7 @@ cd $(dirname $0)/..
 
 if [ "$(which pkg)" = "" ]; then
   echo "zeit/pkg is not installed on your system or not in your \$PATH"
-  echo "Try doing 'yarn global add zeit' and then re-run this script"
+  echo "Try doing 'yarn global add pkg' and then re-run this script"
   exit 1
 fi
 
