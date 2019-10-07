@@ -1,5 +1,5 @@
-import { CLIError } from '~/errors'
 import { validateArgout } from 'omg-validate'
+import { CLIError } from '~/errors'
 import { ConfigSchemaAction } from '~/types'
 
 interface ValidateActionOutputOptions {

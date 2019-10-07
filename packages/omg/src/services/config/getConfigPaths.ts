@@ -62,7 +62,7 @@ export default async function getConfigPaths(
     fs.exists(microserviceYaml),
   ])
 
-  let foundDockerPath = dockerConfigPathExists ? dockerConfigPath : null
+  const foundDockerPath = dockerConfigPathExists ? dockerConfigPath : null
   let foundMicroservicePath: string | null = null
   if (microserviceYmlExists && microserviceYml) {
     foundMicroservicePath = microserviceYml

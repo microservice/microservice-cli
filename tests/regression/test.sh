@@ -14,7 +14,7 @@ fi
 echo $PATH
 
 echo "===== OMG VERSION ====="
-omg -V
+omg -v
 
 echo "===== HELLO WORLD TEMPLATES ===="
 mkdir repos

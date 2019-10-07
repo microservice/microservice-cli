@@ -3,7 +3,7 @@
 
 echo "===== OMG VERSION ====="
 node --version
-omg -V
+omg -v
 
 echo "===== HELLO WORLD TEMPLATES ===="
 mkdir repos
