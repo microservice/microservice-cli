@@ -32,12 +32,10 @@ export default function processContainerEnv({
 
     if (typeof value === 'string') {
       values[envName] = value
-    } else {
-      if (env.required) {
-        missing.push(envName)
-      } else if (env.default) {
-        values[envName] = value
-      }
+    } else if (env.required) {
+      missing.push(envName)
+    } else if (env.default) {
+      values[envName] = value
     }
   })
 

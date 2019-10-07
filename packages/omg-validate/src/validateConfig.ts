@@ -151,9 +151,16 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   validateAssocObject(root, 'environment', false, ({ state }) => {
     validateWith(state, 'type', true, enumValues(ENV_TYPES))
     validateWith(state, 'pattern', false, v.string)
-    validateWith(state, 'required', false, v.boolean)
     validateWith(state, 'sensitive', false, v.boolean)
     validateWith(state, 'help', false, v.string)
+
+    if (typeof state.value.required !== 'undefined') {
+      validateWith(state, 'default', false, v.notDefined('when port is defined'))
+      validateWith(state, 'required', false, v.boolean)
+    } else {
+      validateWith(state, 'required', false, v.notDefined('when port is defined'))
+      validateWith(state, 'default', false, v.string)
+    }
   })
 
   validateAssocObject(root, 'volumes', false, ({ state }) => {

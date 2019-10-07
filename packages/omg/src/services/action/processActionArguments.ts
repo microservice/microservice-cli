@@ -57,12 +57,10 @@ export default function processActionArguments({
     const value = argsMap[argName]
     if (typeof value !== 'undefined') {
       values[argName] = value
-    } else {
-      if (arg.required) {
-        missing.push(argName)
-      } else if (arg.default) {
-        values[argName] = arg.default
-      }
+    } else if (arg.required) {
+      missing.push(argName)
+    } else if (arg.default) {
+      values[argName] = arg.default
     }
   })
 
