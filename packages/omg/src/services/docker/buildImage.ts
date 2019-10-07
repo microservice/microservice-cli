@@ -1,8 +1,8 @@
 import path from 'path'
 import readline from 'readline'
 
-import { CLIError } from '~/errors'
 import pingDaemon from './pingDaemon'
+import { CLIError } from '~/errors'
 import { dockerode } from './common'
 
 interface BuildImageOptions {
@@ -29,18 +29,20 @@ export default async function buildImage(options: BuildImageOptions): Promise<vo
     input: stream,
     terminal: false,
   })
-  lineInterface.on('line', line => {
-    const parsedLine = JSON.parse(line)
-    if (parsedLine.stream) {
-      // Ignore non-stream status
-      const trimmed = parsedLine.stream.trim()
-      if (trimmed.length) {
-        options.onLog(trimmed)
-      }
-    }
-  })
 
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
+    lineInterface.on('line', line => {
+      const parsedLine = JSON.parse(line)
+      if (parsedLine.stream) {
+        // Ignore non-stream status
+        const trimmed = parsedLine.stream.trim()
+        if (trimmed.length) {
+          options.onLog(trimmed)
+        }
+      } else if (parsedLine.error) {
+        reject(new CLIError(`Building Docker image failed: ${parsedLine.error}`))
+      }
+    })
     lineInterface.on('close', resolve)
   })
 }
