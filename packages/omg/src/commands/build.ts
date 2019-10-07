@@ -17,7 +17,6 @@ export default async function build({ options }: CommandPayload<ActionOptions>) 
 
   try {
     await buildImage({
-      raw: !!options.raw,
       configPath: configPaths.docker,
       name: tagName,
       onLog(line) {

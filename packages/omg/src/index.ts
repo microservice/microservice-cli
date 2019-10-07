@@ -4,6 +4,7 @@ import manifest from '../package.json'
 import * as commands from './commands'
 import * as logger from './logger'
 import { Args } from '~/types'
+import { setCliOptions } from './common'
 
 function getCollector(name: string) {
   return (val: string, memo: Args) => {
@@ -32,6 +33,7 @@ export default async function main() {
     .option('-s --silent', 'Only feedback is the status exit code')
     .description('Validate the structure of a `microservice.yml` in the working directory')
     .action(options => {
+      setCliOptions(options)
       if (options.json) {
         logger.setSymbolsAllowed(false)
       }
@@ -49,6 +51,7 @@ export default async function main() {
       'Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a random string will be used',
     )
     .action(options => {
+      setCliOptions(options)
       if (options.raw) {
         logger.setSpinnerAllowed(false)
       }
@@ -84,6 +87,7 @@ export default async function main() {
       'Run actions defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
     )
     .action(async (action, options) => {
+      setCliOptions(options)
       if (options.silent || options.raw) {
         logger.setSpinnerAllowed(false)
       }
@@ -122,6 +126,7 @@ export default async function main() {
       'Subscribe to an event defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
     )
     .action(async (action, event, options) => {
+      setCliOptions(options)
       if (options.silent || options.raw) {
         logger.setSpinnerAllowed(false)
       }
@@ -145,6 +150,7 @@ export default async function main() {
     .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
     .description('Starts to omg-app which monitors your microservice.')
     .action(options => {
+      setCliOptions(options)
       actionPromise = commands.ui({
         options,
         parameters: [],
@@ -158,6 +164,7 @@ export default async function main() {
     .option('-d --details', 'Returns detailed actions')
     .description('Lists all actions available in microservice.')
     .action(options => {
+      setCliOptions(options)
       if (options.json) {
         logger.setSymbolsAllowed(false)
       }
@@ -167,7 +174,7 @@ export default async function main() {
       })
     })
 
-  program.on('--help', function() {
+  program.on('--help', () => {
     console.log('')
     console.log('Environment Variables recognized by the CLI:')
     console.log('  OMS_CLI_DEBUG=true\t\t\tTo print stack traces of errors/issues')

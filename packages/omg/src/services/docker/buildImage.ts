@@ -1,12 +1,12 @@
 import path from 'path'
 import readline from 'readline'
 
-import pingDaemon from './pingDaemon'
 import { CLIError } from '~/errors'
+import { getCliOptions } from '~/common'
+import pingDaemon from './pingDaemon'
 import { dockerode } from './common'
 
 interface BuildImageOptions {
-  raw: boolean
   name: string | null
   configPath: string
   onLog(line: string): void
@@ -40,7 +40,8 @@ export default async function buildImage(options: BuildImageOptions): Promise<vo
           options.onLog(trimmed)
         }
       } else if (parsedLine.error) {
-        reject(new CLIError(`Building Docker image failed: ${parsedLine.error}`))
+        const debugMessage = getCliOptions().debug ? '' : ' (run with --debug for build log)'
+        reject(new CLIError(`Building Docker image failed${debugMessage}: ${parsedLine.error}`))
       }
     })
     lineInterface.on('close', resolve)

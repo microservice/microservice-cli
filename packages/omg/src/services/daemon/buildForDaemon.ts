@@ -15,7 +15,6 @@ export default async function buildForDaemon({
 
   try {
     await buildImage({
-      raw,
       configPath,
       name: imageName,
       onLog(line) {
