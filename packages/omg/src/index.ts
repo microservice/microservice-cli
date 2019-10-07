@@ -22,9 +22,8 @@ export default async function main() {
   let actionPromise
 
   program
-    .version(manifest.version)
+    .version(manifest.version, '-v --version', 'Show OMG CLI version')
     .description('For more details on the commands below, run `omg `(validate|build|run|subscribe)` --help`')
-    .option('-v --version', 'Show OMG CLI version')
     .option('-d --directory', 'Directory to use as root')
 
   program
