@@ -30,10 +30,12 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       validateTOutput({ state })
     })
   }
-  function validateTArgument({ state }: { state: State }) {
+  function validateTArgument({ state, validateIn }: { state: State; validateIn: boolean }) {
     validateWith(state, 'help', false, v.string)
     validateWith(state, 'type', true, enumValues(INPUT_TYPES))
-    validateWith(state, 'in', true, enumValues(['query', 'path', 'requestBody', 'header']))
+    if (validateIn) {
+      validateWith(state, 'in', true, enumValues(['query', 'path', 'requestBody', 'header']))
+    }
 
     validateWith(state, 'enum', false, array(v.string))
     validateObject(state, 'range', false, ({ state }) => {
@@ -44,7 +46,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     validateWith(state, 'default', false, v.any)
 
     validateAssocObject(state, 'properties', state.value.type === 'object', ({ state }) => {
-      validateTArgument({ state })
+      validateTArgument({ state, validateIn: false })
     })
   }
   // -Local validator mixins
@@ -107,7 +109,9 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
         validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
         validateTOutput({ state })
       })
-      validateAssocObject(state, 'arguments', false, validateTArgument)
+      validateAssocObject(state, 'arguments', false, ({ state }) => {
+        validateTArgument({ state, validateIn: true })
+      })
     })
     validateObject(state, 'rpc', false, ({ state }) => {
       validateWith(state, 'port', true, v.number)
@@ -139,7 +143,9 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
         validateWith(state, 'url', true, v.string)
       }
     })
-    validateAssocObject(state, 'arguments', false, validateTArgument)
+    validateAssocObject(state, 'arguments', false, ({ state }) => {
+      validateTArgument({ state, validateIn: true })
+    })
     validateObject(state, 'output', true, ({ state }) => {
       validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
       validateTOutput({ state })
