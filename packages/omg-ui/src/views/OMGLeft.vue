@@ -31,10 +31,18 @@
             :pl="2"
             v-for="historicTab in historicTabGroup.items"
             v-bind:key="historicTab.id + historicTab.timestamp"
+            class="omg-left-history-item"
           >
             <Button :onPress="() => {restoreHistoricTab(historicTab)}">
               <Words>{{historicTab.title || 'Action'}}</Words>
             </Button>
+            <Photo
+              :source="iconCircleTimes"
+              :onPress="() => {destroyHistoricTab(historicTab.id)}"
+              :size="1.5"
+              marginLeft="auto"
+              class="omg-left-history-delete"
+            />
           </Flex>
         </Flex>
       </Flex>
@@ -53,7 +61,7 @@ import Photo from '~/components/Photo.vue'
 export default {
   components: { Flex, Words, Button, Photo },
   methods: {
-    ...mapMutations(['restoreHistoricTab', 'clearHistoricTabs']),
+    ...mapMutations(['restoreHistoricTab', 'clearHistoricTabs', 'destroyHistoricTab']),
     toggleExpanded(label) {
       if (this.expanded.includes(label)) {
         this.expanded = this.expanded.filter(item => item !== label)
@@ -107,6 +115,7 @@ export default {
   data: () => ({
     expanded: ['Today', 'Yesterday'],
     iconDropdownSource: require('~/images/icon-dropdown.svg'),
+    iconCircleTimes: require('~/images/icon-circle-times.svg'),
   }),
 }
 </script>
@@ -117,5 +126,15 @@ export default {
 }
 .omg-left-history-collapsed {
   transform: rotate(270deg);
+}
+.omg-left-history-item {
+  .omg-left-history-delete {
+    display: none !important;
+  }
+  &:hover {
+    .omg-left-history-delete {
+      display: flex !important;
+    }
+  }
 }
 </style>

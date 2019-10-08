@@ -101,6 +101,9 @@ const mutations = {
   setHistoricTabs(state: ActionsState, historicTabs: ActionTabHistoric[]) {
     state.history = historicTabs
   },
+  destroyHistoricTab(state: ActionsState, tabId: string) {
+    state.history = state.history.filter(item => item.id !== tabId)
+  },
   clearHistoricTabs(state: ActionsState) {
     state.history = []
     setHistoricTabs(state.history)

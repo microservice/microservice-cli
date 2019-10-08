@@ -12,12 +12,19 @@ type PropsPhoto = {
   onPress?: () => void
 }
 
+function defaultOnPress() {
+  /* No op */
+}
+
 function propsToStyles(props: Partial<PropsPhoto>) {
   const styles: Record<string, any> = {}
 
   if (props.size) {
     styles.width = props.size * 8
     styles.height = props.size * 8
+  }
+  if (props.onPress && props.onPress !== defaultOnPress) {
+    styles.cursor = 'pointer'
   }
 
   return { ...styles }
@@ -35,7 +42,7 @@ export default {
     },
     onPress: {
       type: Function,
-      default() {},
+      default: defaultOnPress,
     },
   },
   components: { Flex },
