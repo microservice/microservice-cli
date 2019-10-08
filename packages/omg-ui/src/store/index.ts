@@ -42,6 +42,7 @@ Promise.all([getEnvValues(), getHistoricTabs()])
   .then(([envValues, historicTabs]) => {
     store.commit('setConfigEnvs', envValues)
     store.commit('setHistoricTabs', historicTabs)
+    store.commit('setAppReady')
   })
   .catch(console.error)
 

@@ -19,7 +19,7 @@
       </Button>
     </Flex>
     <Flex column :p="3" :flex="1">
-      <Flex column v-if="historicTabGroups.length" :flex="1">
+      <Flex key="omg-left-historic-non-empty" column v-if="historicTabGroups.length" :flex="1">
         <Flex
           column
           v-for="historicTabGroup in historicTabGroups"
@@ -60,11 +60,13 @@
         </Flex>
       </Flex>
       <Flex
+        key="omg-left-historic-empty"
         column
-        v-if="!historicTabGroups.length"
+        v-if="!historicTabGroups.length && appReady"
         :flex="1"
         justifyContent="center"
         alignItems="center"
+        class="omg-left-historic-empty"
       >
         <Words size="large">There's nothing to show here yet.</Words>
         <Words size="large">Try executing an Action or two!</Words>
@@ -95,6 +97,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      appReady: 'getAppReady',
       historicTabsRaw: 'getHistoricTabs',
     }),
     historicTabGroups() {
@@ -168,5 +171,7 @@ export default {
       display: flex !important;
     }
   }
+}
+.omg-left-historic-empty {
 }
 </style>
