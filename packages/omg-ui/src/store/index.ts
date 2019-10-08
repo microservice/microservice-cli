@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import getDeferredPromise from 'promise.defer'
 
+import { configHasRequiredEnvs } from '~/common'
 import { getEnvValues, getHistoricTabs } from '~/persistence'
 import { handleConfigUpdated, handleConsoleLog, handleDockerLog, handleAppStatusUpdated } from '~/rpc/events'
 
@@ -25,8 +27,10 @@ const store = new Vuex.Store<StoreState>({
   strict: process.env.NODE_ENV !== 'production',
 })
 
+const configReady = getDeferredPromise()
 handleConfigUpdated(payload => {
   store.commit('setConfig', payload)
+  configReady.resolve(payload.config)
 })
 handleConsoleLog(logLine => {
   store.commit('logConsoleLine', logLine)
@@ -38,11 +42,15 @@ handleAppStatusUpdated(({ status }) => {
   store.commit('setAppStatus', status)
 })
 
-Promise.all([getEnvValues(), getHistoricTabs()])
-  .then(([envValues, historicTabs]) => {
+Promise.all([getEnvValues(), getHistoricTabs(), configReady.promise])
+  .then(([envValues, historicTabs, appConfig]) => {
     store.commit('setConfigEnvs', envValues)
     store.commit('setHistoricTabs', historicTabs)
     store.commit('setAppReady')
+
+    if (configHasRequiredEnvs(appConfig, envValues)) {
+      store.commit('openEnvironmentModal')
+    }
   })
   .catch(console.error)
 

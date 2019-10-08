@@ -17,7 +17,7 @@ const mutations = {
   dismissModal(state: ModalsState) {
     state.activeModal = null
   },
-  openEnvironemntModal(state: ModalsState) {
+  openEnvironmentModal(state: ModalsState) {
     state.activeModal = Modals.ENVIRONMENT
   },
   openYamlEditorModal(state: ModalsState) {

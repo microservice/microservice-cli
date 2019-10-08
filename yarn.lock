@@ -8033,6 +8033,11 @@ promise-retry@^1.1.1:
     err-code "^1.0.0"
     retry "^0.10.0"
 
+promise.defer@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/promise.defer/-/promise.defer-1.0.1.tgz#21103b5b6ecd9ae36f903301e8a347f84477c4ec"
+  integrity sha1-IRA7W27NmuNvkDMB6KNH+ER3xOw=
+
 promise@^7.1.1:
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/promise/-/promise-7.3.1.tgz#064b72602b18f90f29192b8b1bc418ffd1ebd3bf"
