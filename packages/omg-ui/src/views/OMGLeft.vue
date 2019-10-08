@@ -72,7 +72,10 @@
         class="omg-left-historic-empty"
       >
         <Words size="large">There's nothing to show here yet.</Words>
-        <Words size="large">Try executing an Action or two!</Words>
+        <Words
+          size="large"
+          v-text="searchTerm ? 'Try searching with something else!' : 'Try executing an Action or two!'"
+        />
       </Flex>
     </Flex>
   </Flex>
