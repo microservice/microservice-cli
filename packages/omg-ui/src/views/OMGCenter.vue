@@ -89,6 +89,9 @@
     </Flex>
     <Flex row :ph="2" :pv="1" :flex="1">
       <Flex column :flex="1" backgroundColor="white">
+        <Flex row :pv="2" :ph="2.5" :bb="1" alignItems="center">
+          <Words size="medium" fontWeight="500">Request</Words>
+        </Flex>
         <Flex column :flex="1" :p="4">
           <Monaco language="json" :code="activeActionTab.payload" :onChange="setActionPayload" />
         </Flex>
