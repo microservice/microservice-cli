@@ -3,7 +3,7 @@
     <Flex column :pv="1" :ph="2">
       <Words color="grey90">History</Words>
       <Flex row :mt="1">
-        <input type="text" placeholder="Filter" class="omg-left-search" />
+        <input type="text" placeholder="Filter" class="omg-left-search" v-model="searchTerm" />
       </Flex>
     </Flex>
     <Flex row backgroundColor="grey10" justifyContent="flex-end" :pv="0.5" :ph="2" :bv="1">
@@ -77,9 +77,17 @@ export default {
     historicTabGroups() {
       const dateToday = DateTime.local().startOf('day')
       const dateYesterday = dateToday.minus({ days: 1 })
+      const searchTerm = this.searchTerm.toLowerCase()
       const dateGroups = {}
 
-      const historicTabsRaw = this.historicTabsRaw.slice()
+      let historicTabsRaw = this.historicTabsRaw.slice()
+      if (searchTerm) {
+        historicTabsRaw = historicTabsRaw.filter(
+          item =>
+            item.title.toLowerCase().includes(searchTerm) ||
+            (item.actionName && item.actionName.toLowerCase().includes(searchTerm)),
+        )
+      }
 
       historicTabsRaw.sort((a, b) => b.timestamp - a.timestamp)
 
@@ -113,6 +121,7 @@ export default {
     },
   },
   data: () => ({
+    searchTerm: '',
     expanded: ['Today', 'Yesterday'],
     iconDropdownSource: require('~/images/icon-dropdown.svg'),
     iconCircleTimes: require('~/images/icon-circle-times.svg'),
