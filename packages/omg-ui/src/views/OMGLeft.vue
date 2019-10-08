@@ -64,14 +64,18 @@ export default {
   },
   computed: {
     ...mapGetters({
-      historicTabsRaw: 'historicTabs',
+      historicTabsRaw: 'getHistoricTabs',
     }),
     historicTabGroups() {
       const dateToday = DateTime.local().startOf('day')
       const dateYesterday = dateToday.minus({ days: 1 })
       const dateGroups = {}
 
-      this.historicTabsRaw.forEach(historicTab => {
+      const historicTabsRaw = this.historicTabsRaw.slice()
+
+      historicTabsRaw.sort((a, b) => b.timestamp - a.timestamp)
+
+      historicTabsRaw.forEach(historicTab => {
         const actionDate = DateTime.fromMillis(historicTab.timestamp)
 
         let groupLabel
@@ -101,7 +105,7 @@ export default {
     },
   },
   data: () => ({
-    expanded: [],
+    expanded: ['Today', 'Yesterday'],
     iconDropdownSource: require('~/images/icon-dropdown.svg'),
   }),
 }

@@ -142,7 +142,7 @@ const actions = {
 }
 
 const getters = {
-  historicTabs(state: ActionsState): ActionTabHistoric[] {
+  getHistoricTabs(state: ActionsState): ActionTabHistoric[] {
     return state.history.slice()
   },
   getAllActionTabs(state: ActionsState): ActionTab[] {
