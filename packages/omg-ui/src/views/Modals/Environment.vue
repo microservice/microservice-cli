@@ -1,8 +1,8 @@
 <template>
   <Flex column :flex="1">
     <Flex column>
-      <Flex row :ph="2" :pv="1.5" :bb="1" backgroundColor="white">
-        <Button :onPress="dismissModal">
+      <Flex row :ph="2" :pv="1.5" :bb="1" backgroundColor="white" minHeight="24px">
+        <Button :onPress="dismissModal" v-if="appStatus === 'started'">
           <Photo :size="3" :source="iconCloseSource" />
         </Button>
       </Flex>
@@ -61,10 +61,28 @@
             <Words size="small" color="teal80" fontWeight="500">$ docker inspect</Words>
           </Flex>
         </Flex>
-        <Flex column :mt="3" overflowY="scroll">
+        <Flex
+          key="env-logs-non-empty"
+          column
+          :mt="3"
+          overflowY="scroll"
+          v-if="logsAllReverse.length"
+        >
           <Words color="grey60">
             <pre class="modal-env-logs" v-text="logsAllReverse"></pre>
           </Words>
+        </Flex>
+        <Flex
+          key="env-logs-empty"
+          column
+          :mt="3"
+          :flex="1"
+          alignItems="center"
+          justifyContent="center"
+          v-if="!logsAllReverse.length"
+        >
+          <Words size="large">There's nothing to show here yet.</Words>
+          <Words size="large">Try adding some environment variables and hitting Save & Rebuild!</Words>
         </Flex>
       </Flex>
     </Flex>
