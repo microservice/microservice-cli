@@ -71,6 +71,7 @@
           backgroundColor="blue50"
           :ml="1"
           :onPress="executeActiveAction"
+          :disabled="!activeActionTab.actionName"
         >Send</Button>
         <Button
           :ph="2"
