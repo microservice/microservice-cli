@@ -63,7 +63,7 @@
         </Flex>
         <Flex column :mt="3" overflowY="scroll">
           <Words color="grey60">
-            <pre class="modal-env-logs" v-text="logsAll"></pre>
+            <pre class="modal-env-logs" v-text="logsAllReverse"></pre>
           </Words>
         </Flex>
       </Flex>
@@ -97,7 +97,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['logsAll', 'appStatus']),
+    ...mapGetters(['logsAllReverse', 'appStatus']),
     ...mapGetters({
       configEnvs: 'getConfigEnvs',
       configEnvValues: 'getConfigEnvValues',
