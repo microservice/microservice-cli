@@ -48,13 +48,16 @@
               <Button :onPress="() => {restoreHistoricTab(historicTab)}">
                 <Words>{{historicTab.title || 'Action'}}</Words>
               </Button>
-              <Photo
-                :source="iconCircleTimes"
-                :onPress="() => {destroyHistoricTab(historicTab.id)}"
-                :size="1.5"
-                marginLeft="auto"
-                class="omg-left-history-delete"
-              />
+              <Flex row :flex="1" justifyContent="flex-end">
+                <Photo v-if="historicTab.bookmark" :source="iconBookmark" :size="1.5" :mr="1" />
+                <Photo
+                  :source="iconCircleTimes"
+                  :onPress="() => {destroyHistoricTab(historicTab.id)}"
+                  :size="1.5"
+                  :mr="1"
+                  class="omg-left-history-delete"
+                />
+              </Flex>
             </Flex>
           </Flex>
         </Flex>
@@ -151,6 +154,7 @@ export default {
     expanded: ['Today', 'Yesterday'],
     iconDropdownSource: require('~/images/icon-dropdown.svg'),
     iconCircleTimes: require('~/images/icon-circle-times.svg'),
+    iconBookmark: require('~/images/icon-bookmark.svg'),
   }),
 }
 </script>
