@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import getDeferredPromise from 'promise.defer'
 
+import { buildImage } from '~/rpc'
 import { configHasRequiredEnvs } from '~/common'
 import { getEnvValues, getHistoricTabs } from '~/persistence'
 import { handleConfigUpdated, handleConsoleLog, handleDockerLog, handleAppStatusUpdated } from '~/rpc/events'
@@ -28,6 +29,7 @@ const store = new Vuex.Store<StoreState>({
 })
 
 const configReady = getDeferredPromise()
+const appStatusReady = getDeferredPromise()
 handleConfigUpdated(payload => {
   store.commit('setConfig', payload)
   configReady.resolve(payload.config)
@@ -40,16 +42,19 @@ handleDockerLog(logLine => {
 })
 handleAppStatusUpdated(({ status }) => {
   store.commit('setAppStatus', status)
+  appStatusReady.resolve(status)
 })
 
-Promise.all([getEnvValues(), getHistoricTabs(), configReady.promise])
-  .then(([envValues, historicTabs, appConfig]) => {
+Promise.all([getEnvValues(), getHistoricTabs(), configReady.promise, appStatusReady.promise])
+  .then(([envValues, historicTabs, appConfig, appStatus]) => {
     store.commit('setConfigEnvs', envValues)
     store.commit('setHistoricTabs', historicTabs)
     store.commit('setAppReady')
 
     if (configHasRequiredEnvs(appConfig, envValues)) {
       store.commit('openEnvironmentModal')
+    } else if (appStatus === 'stopped') {
+      buildImage()
     }
   })
   .catch(console.error)
