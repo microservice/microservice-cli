@@ -115,7 +115,8 @@ export default class DashboardHttpServer {
     })
     // API RPC endpoints:
     app.post('/api/buildImage', (req, res) => {
-      this.emitter.emit('should-build', { envs: mapToArgs(req.body.envs || {}) })
+      // Filtering is necessary because UI cannot have empty string
+      this.emitter.emit('should-build', { envs: mapToArgs(req.body.envs || {}).filter(item => item[0] && item[1]) })
       res.json({ status: 'ok' })
     })
     app.post('/api/executeAction', async (req, res) => {
