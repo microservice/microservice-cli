@@ -40,7 +40,14 @@ After cloning this repository, open up a shell in said directory and execute the
 
 ```
 $ yarn bootstrap
-$ cd packages/cli; yarn link
+$ yarn link
+$ yarn build
+```
+
+When working on the sources and want your changes to be transpiled as you work on them, do:
+
+```
+$ yarn watch
 ```
 
 ### License
