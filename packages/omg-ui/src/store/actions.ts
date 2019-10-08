@@ -83,6 +83,7 @@ const mutations = {
     const activeTab = getActiveTabFromState(state)
     state.history.push({
       ...activeTab,
+      id: getRandomString(),
       bookmark,
       timestamp: Date.now(),
     })
