@@ -1,5 +1,12 @@
 <template>
-  <Flex column backgroundColor="white" width="22%">
+  <Flex
+    column
+    backgroundColor="white"
+    width="18%"
+    :bt="1"
+    boxShadow="4px 0px 5px rgba(0, 0, 0, 0.05)"
+    zIndex="1"
+  >
     <Flex column :pv="1" :ph="2">
       <Words color="grey90">History</Words>
       <Flex row :mt="1">
@@ -11,40 +18,56 @@
         <Words size="small">Clear all</Words>
       </Button>
     </Flex>
-    <Flex column :p="3">
-      <Flex column v-for="historicTabGroup in historicTabGroups" v-bind:key="historicTabGroup.date">
-        <Flex row :pv="1" :bb="1">
-          <Button :onPress="() => toggleExpanded(historicTabGroup.date)">
-            <Photo
-              :source="iconDropdownSource"
-              :size="1"
-              :mr="1"
-              v-bind:class="{'omg-left-history-collapsed': !expanded.includes(historicTabGroup.date)}"
-            />
-            <Words>{{historicTabGroup.date}}</Words>
-          </Button>
-        </Flex>
-        <Flex column v-if="expanded.includes(historicTabGroup.date)">
-          <Flex
-            row
-            :pv="1"
-            :pl="2"
-            v-for="historicTab in historicTabGroup.items"
-            v-bind:key="historicTab.id + historicTab.timestamp"
-            class="omg-left-history-item"
-          >
-            <Button :onPress="() => {restoreHistoricTab(historicTab)}">
-              <Words>{{historicTab.title || 'Action'}}</Words>
+    <Flex column :p="3" :flex="1">
+      <Flex column v-if="historicTabGroups.length" :flex="1">
+        <Flex
+          column
+          v-for="historicTabGroup in historicTabGroups"
+          v-bind:key="historicTabGroup.date"
+        >
+          <Flex row :pv="1" :bb="1">
+            <Button :onPress="() => toggleExpanded(historicTabGroup.date)">
+              <Photo
+                :source="iconDropdownSource"
+                :size="1"
+                :mr="1"
+                v-bind:class="{'omg-left-history-collapsed': !expanded.includes(historicTabGroup.date)}"
+              />
+              <Words>{{historicTabGroup.date}}</Words>
             </Button>
-            <Photo
-              :source="iconCircleTimes"
-              :onPress="() => {destroyHistoricTab(historicTab.id)}"
-              :size="1.5"
-              marginLeft="auto"
-              class="omg-left-history-delete"
-            />
+          </Flex>
+          <Flex column v-if="expanded.includes(historicTabGroup.date)">
+            <Flex
+              row
+              :pv="1"
+              :pl="2"
+              v-for="historicTab in historicTabGroup.items"
+              v-bind:key="historicTab.id + historicTab.timestamp"
+              class="omg-left-history-item"
+            >
+              <Button :onPress="() => {restoreHistoricTab(historicTab)}">
+                <Words>{{historicTab.title || 'Action'}}</Words>
+              </Button>
+              <Photo
+                :source="iconCircleTimes"
+                :onPress="() => {destroyHistoricTab(historicTab.id)}"
+                :size="1.5"
+                marginLeft="auto"
+                class="omg-left-history-delete"
+              />
+            </Flex>
           </Flex>
         </Flex>
+      </Flex>
+      <Flex
+        column
+        v-if="!historicTabGroups.length"
+        :flex="1"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Words size="large">There's nothing to show here yet.</Words>
+        <Words size="large">Try executing an Action or two!</Words>
       </Flex>
     </Flex>
   </Flex>
