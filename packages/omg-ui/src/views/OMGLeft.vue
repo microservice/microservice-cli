@@ -46,6 +46,9 @@
               :mr="1"
               class="hitem-delete"
             />
+            <Words color="grey60">
+              <Timeago :datetime="historicTab.timestamp" :auto-update="60" />
+            </Words>
           </Flex>
         </Flex>
       </Flex>
@@ -67,8 +70,8 @@
   </Flex>
 </template>
 <script lang="ts">
-import { mapGetters, mapMutations } from 'vuex'
 import { DateTime } from 'luxon'
+import { mapGetters, mapMutations } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
 import Words from '~/components/Words.vue'

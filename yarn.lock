@@ -3571,6 +3571,11 @@ data-urls@^1.1.0:
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
 
+date-fns@^1.29.0:
+  version "1.30.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
+  integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
+
 date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
@@ -9969,6 +9974,13 @@ vue-template-es2015-compiler@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
+
+vue-timeago@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/vue-timeago/-/vue-timeago-5.1.2.tgz#1fa625077a271cb1b7dddbbfb79e7647d2ea44c4"
+  integrity sha512-K74EdER1WO1XX+EIsf5ZeHucZjconfncOTlKxntC7s7q0QAAgiZt5BYenJ/GPHEEcxfmrGsiFWJPYmLHyNzDRg==
+  dependencies:
+    date-fns "^1.29.0"
 
 vue@^2.6.10:
   version "2.6.10"
