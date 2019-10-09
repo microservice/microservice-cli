@@ -60,7 +60,7 @@
           backgroundColor="blue50"
           :ml="1"
           :onPress="executeActiveAction"
-          :disabled="!activeActionTab.actionName"
+          :disabled="!allowActionSend"
         >Send</Button>
         <Button
           :ph="2"
@@ -72,6 +72,7 @@
           bordercolor="blue20"
           backgroundColor="blue20"
           :onPress="saveActiveAction"
+          :disabled="!allowActionSave"
         >Save</Button>
       </Flex>
       <Flex row :flex="1" :ml="2" />
@@ -118,6 +119,12 @@ export default {
     showTabCloseButton(state) {
       return state.allActionTabs.length > 1
     },
+    allowActionSend() {
+      return !!this.activeActionTab.actionName
+    },
+    allowActionSave() {
+      return !!this.activeActionTab.actionName
+    },
   },
   methods: {
     ...mapMutations([
@@ -155,6 +162,7 @@ export default {
 </style>
 <style lang="less">
 .center-tab-vselect {
+  background-color: white;
   width: 100%;
   .vs__dropdown-toggle {
     height: 100%;
