@@ -28,7 +28,7 @@ export default {
   },
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .modals-wrapper {
   position: fixed;
   width: 100%;

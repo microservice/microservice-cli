@@ -41,7 +41,7 @@ export default {
   }),
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .omg-right-logs {
   font-family: Graphik;
   white-space: pre-wrap;

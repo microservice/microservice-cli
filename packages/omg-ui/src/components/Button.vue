@@ -63,7 +63,7 @@ export default {
   },
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .omg-button {
   user-select: none;
   opacity: 0.8;

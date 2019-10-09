@@ -39,7 +39,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .omg-content-hidden {
   filter: blur(2px);
 }

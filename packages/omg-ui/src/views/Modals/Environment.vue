@@ -129,7 +129,7 @@ export default {
   }),
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .modal-env-input {
   padding: 12px;
   display: flex;
