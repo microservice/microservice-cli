@@ -79,16 +79,44 @@
     </Flex>
     <Flex row :ph="2" :pv="1" :flex="1">
       <Flex column :flex="1" backgroundColor="white">
-        <Flex row :pv="2" :ph="2.5" :bb="1" alignItems="center">
+        <Flex row :pv="1" :ph="2.5" :bb="1" alignItems="center">
           <Words size="medium" fontWeight="500">Request</Words>
+          <Flex row :flex="1" justifyContent="flex-end" v-if="copySupported">
+            <Flex
+              row
+              :b="1"
+              :ph="1"
+              :pv="0.5"
+              v-on:click="handleCopyPayload"
+              boxShadow="0px 1px 5px rgba(24, 59, 140, 0.2)"
+              cursor="pointer"
+              userSelect="none"
+            >
+              <Words size="small">Copy</Words>
+            </Flex>
+          </Flex>
         </Flex>
         <Flex column :flex="1" :p="4">
           <Monaco language="json" :code="activeActionTab.payload" :onChange="setActionPayload" />
         </Flex>
       </Flex>
       <Flex column :flex="1" :ml="2" backgroundColor="white">
-        <Flex row :pv="2" :ph="2.5" :bb="1" alignItems="center">
+        <Flex row :pv="1" :ph="2.5" :bb="1" alignItems="center">
           <Words size="medium" fontWeight="500">Result</Words>
+          <Flex row :flex="1" justifyContent="flex-end" v-if="copySupported">
+            <Flex
+              row
+              :b="1"
+              :ph="1"
+              :pv="0.5"
+              v-on:click="handleCopyResult"
+              boxShadow="0px 1px 5px rgba(24, 59, 140, 0.2)"
+              cursor="pointer"
+              userSelect="none"
+            >
+              <Words size="small">Copy</Words>
+            </Flex>
+          </Flex>
         </Flex>
         <Flex column :flex="1" :ph="4" :pv="2">
           <Monaco language="json" readonly :code="activeActionTab.result" />
@@ -140,8 +168,15 @@ export default {
       event.stopImmediatePropagation()
       this.destroyActionsTab(tabId)
     },
+    handleCopyPayload() {
+      navigator.clipboard.writeText(this.activeActionTab.payload)
+    },
+    handleCopyResult() {
+      navigator.clipboard.writeText(this.activeActionTab.result)
+    },
   },
   data: () => ({
+    copySupported: !!(navigator.clipboard && navigator.clipboard.writeText),
     iconPlusSource: require('~/images/icon-plus.svg'),
     iconCloseSource: require('~/images/icon-close.svg'),
   }),
