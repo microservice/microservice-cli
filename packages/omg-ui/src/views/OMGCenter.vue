@@ -164,8 +164,15 @@ export default {
 .center-tab-vselect {
   background-color: white;
   width: 100%;
+  box-shadow: 0px 1px 5px rgba(24, 59, 140, 0.2);
+
   .vs__dropdown-toggle {
     height: 100%;
+    border: none;
+    border-radius: 0;
+  }
+  .vs__dropdown-menu {
+    border: none;
   }
   &.vs--open .vs__selected {
     font-size: 10px;
