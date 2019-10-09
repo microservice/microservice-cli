@@ -106,6 +106,13 @@ const mutations = {
     state.history = state.history.filter(item => item.id !== tabId)
     setHistoricTabs(state.history)
   },
+  toggleHistoricTabBookmark(state: ActionsState, tabId: string) {
+    state.history = state.history.map(item => ({
+      ...item,
+      bookmark: item.id === tabId ? !item.bookmark : item.bookmark,
+    }))
+    setHistoricTabs(state.history)
+  },
   clearHistoricTabs(state: ActionsState) {
     state.history = []
     setHistoricTabs(state.history)

@@ -10,7 +10,7 @@
     <Flex column :pv="1" :ph="2">
       <Words color="grey90">History</Words>
       <Flex row :mt="1">
-        <input type="text" placeholder="Filter" class="omg-left-search" v-model="searchTerm" />
+        <input type="text" placeholder="Filter" class="hsearch" v-model="searchTerm" />
       </Flex>
     </Flex>
     <Flex row backgroundColor="grey10" justifyContent="flex-end" :pv="0.5" :ph="2" :bv="1">
@@ -19,57 +19,43 @@
       </Button>
     </Flex>
     <Flex column :p="3" :flex="1">
-      <Flex key="omg-left-historic-non-empty" column v-if="historicTabGroups.length" :flex="1">
+      <Flex key="hitems-non-empty" column v-if="historicTabs.length" :flex="1">
         <Flex
-          column
-          v-for="historicTabGroup in historicTabGroups"
-          v-bind:key="historicTabGroup.date"
+          row
+          :pb="1"
+          :pl="2"
+          v-for="historicTab in historicTabs"
+          v-bind:key="historicTab.id + historicTab.timestamp"
+          class="hitem"
         >
-          <Flex row :pv="1" :bb="1">
-            <Button :onPress="() => toggleExpanded(historicTabGroup.date)">
-              <Photo
-                :source="iconDropdownSource"
-                :size="1"
-                :mr="1"
-                v-bind:class="{'omg-left-history-collapsed': !expanded.includes(historicTabGroup.date)}"
-              />
-              <Words>{{historicTabGroup.date}}</Words>
-            </Button>
-          </Flex>
-          <Flex column v-if="expanded.includes(historicTabGroup.date)">
-            <Flex
-              row
-              :pv="1"
-              :pl="2"
-              v-for="historicTab in historicTabGroup.items"
-              v-bind:key="historicTab.id + historicTab.timestamp"
-              class="omg-left-history-item"
-            >
-              <Button :onPress="() => {restoreHistoricTab(historicTab)}">
-                <Words>{{historicTab.title || 'Action'}}</Words>
-              </Button>
-              <Flex row :flex="1" justifyContent="flex-end">
-                <Photo v-if="historicTab.bookmark" :source="iconBookmark" :size="1.5" :mr="1" />
-                <Photo
-                  :source="iconCircleTimes"
-                  :onPress="() => {destroyHistoricTab(historicTab.id)}"
-                  :size="1.5"
-                  :mr="1"
-                  class="omg-left-history-delete"
-                />
-              </Flex>
-            </Flex>
+          <Button :onPress="() => {restoreHistoricTab(historicTab)}">
+            <Words>{{historicTab.title || 'Action'}}</Words>
+          </Button>
+          <Flex row :flex="1" justifyContent="flex-end">
+            <Photo
+              :source="iconBookmark"
+              :onPress="() => {toggleHistoricTabBookmark(historicTab.id)}"
+              :size="1.5"
+              :mr="1"
+              :class="{'hitem-bookmark': true, 'hitem-bookmarked': historicTab.bookmark}"
+            />
+            <Photo
+              :source="iconCircleTimes"
+              :onPress="() => {destroyHistoricTab(historicTab.id)}"
+              :size="1.5"
+              :mr="1"
+              class="hitem-delete"
+            />
           </Flex>
         </Flex>
       </Flex>
       <Flex
-        key="omg-left-historic-empty"
+        key="hitems-empty"
         column
-        v-if="!historicTabGroups.length && appReady"
+        v-if="!historicTabs.length && appReady"
         :flex="1"
         justifyContent="center"
         alignItems="center"
-        class="omg-left-historic-empty"
       >
         <Words size="large">There's nothing to show here yet.</Words>
         <Words
@@ -92,7 +78,7 @@ import Photo from '~/components/Photo.vue'
 export default {
   components: { Flex, Words, Button, Photo },
   methods: {
-    ...mapMutations(['restoreHistoricTab', 'clearHistoricTabs', 'destroyHistoricTab']),
+    ...mapMutations(['restoreHistoricTab', 'clearHistoricTabs', 'destroyHistoricTab', 'toggleHistoricTabBookmark']),
     toggleExpanded(label) {
       if (this.expanded.includes(label)) {
         this.expanded = this.expanded.filter(item => item !== label)
@@ -106,13 +92,10 @@ export default {
       appReady: 'getAppReady',
       historicTabsRaw: 'getHistoricTabs',
     }),
-    historicTabGroups() {
-      const dateToday = DateTime.local().startOf('day')
-      const dateYesterday = dateToday.minus({ days: 1 })
+    historicTabs() {
       const searchTerm = this.searchTerm.toLowerCase()
-      const dateGroups = {}
-
       let historicTabsRaw = this.historicTabsRaw.slice()
+
       if (searchTerm) {
         historicTabsRaw = historicTabsRaw.filter(
           item =>
@@ -123,62 +106,42 @@ export default {
 
       historicTabsRaw.sort((a, b) => b.timestamp - a.timestamp)
 
-      historicTabsRaw.forEach(historicTab => {
-        const actionDate = DateTime.fromMillis(historicTab.timestamp)
-
-        let groupLabel
-        if (actionDate.hasSame(dateToday, 'day')) {
-          groupLabel = 'Today'
-        } else if (actionDate.hasSame(dateYesterday, 'day')) {
-          groupLabel = 'Yesterday'
-        } else {
-          groupLabel = actionDate.toFormat('yyyy LL dd')
-        }
-
-        if (!dateGroups[groupLabel]) {
-          dateGroups[groupLabel] = []
-        }
-        dateGroups[groupLabel].push(historicTab)
-      })
-
-      const dateGroupsForView = []
-      Object.keys(dateGroups).forEach(groupLabel => {
-        dateGroupsForView.push({
-          date: groupLabel,
-          items: dateGroups[groupLabel],
-        })
-      })
-
-      return dateGroupsForView
+      return historicTabsRaw
     },
   },
   data: () => ({
     searchTerm: '',
-    expanded: ['Today', 'Yesterday'],
     iconDropdownSource: require('~/images/icon-dropdown.svg'),
     iconCircleTimes: require('~/images/icon-circle-times.svg'),
     iconBookmark: require('~/images/icon-bookmark.svg'),
   }),
 }
 </script>
-<style lang="less">
-.omg-left-search {
+<style lang="less" scoped>
+.hsearch {
   width: 100%;
   padding: 4px;
 }
-.omg-left-history-collapsed {
-  transform: rotate(270deg);
-}
-.omg-left-history-item {
-  .omg-left-history-delete {
+.hitem {
+  .hitem-delete {
     display: none !important;
   }
-  &:hover {
-    .omg-left-history-delete {
+  .hitem-bookmark {
+    display: none !important;
+    &:not(.hitem-bookmarked) {
+      filter: invert(1);
+    }
+    &.hitem-bookmarked {
       display: flex !important;
     }
   }
-}
-.omg-left-historic-empty {
+  &:hover {
+    .hitem-delete {
+      display: flex !important;
+    }
+    .hitem-bookmark {
+      display: flex !important;
+    }
+  }
 }
 </style>
