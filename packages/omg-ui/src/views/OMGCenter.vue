@@ -12,10 +12,10 @@
           borderBottom="none"
           backgroundColor="white"
           color="blue"
-          class="omg-center-tab"
+          class="tab"
           v-bind:key="tab.id"
           v-for="tab in allActionTabs"
-          v-bind:class="{'omg-center-tab-active': tab.id === activeActionTab.id}"
+          v-bind:class="{'tab-active': tab.id === activeActionTab.id}"
           v-bind:onPress="e => selectActionsTab(tab.id)"
         >
           <span>{{tab.title}}</span>
@@ -46,24 +46,13 @@
     </Flex>
     <Flex row :ph="2" :pv="2">
       <Flex row :flex="1">
-        <select
-          class="omg-center-action-select"
+        <VSelect
+          class="center-tab-vselect"
           placeholder="Please select an Action"
-          v-on:change="e => selectAction(e.target.value)"
-        >
-          <option
-            :value="null"
-            hidden
-            disabled
-            :selected="activeActionTab.actionName === null"
-          >Please select an Action</option>
-          <option
-            :value="configAction.name"
-            :selected="activeActionTab.actionName === configAction.name"
-            v-bind:key="configAction.name"
-            v-for="configAction in configActions"
-          >{{configAction.name}}</option>
-        </select>
+          @input="selectAction"
+          :value="activeActionTab.actionName"
+          :options="configActions.map(item => item.name)"
+        />
         <Button
           :ph="2"
           :pv="1.5"
@@ -109,6 +98,7 @@
 </template>
 
 <script>
+import VSelect from 'vue-select'
 import { mapGeters, mapGetters, mapMutations, mapActions } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
@@ -118,7 +108,7 @@ import Button from '~/components/Button.vue'
 import Monaco from '~/components/Monaco.vue'
 
 export default {
-  components: { Flex, Photo, Words, Button, Monaco },
+  components: { Flex, Photo, Words, Button, Monaco, VSelect },
   computed: {
     ...mapGetters({
       activeActionTab: 'getActiveActionTab',
@@ -151,7 +141,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.omg-center-tab {
+.tab {
   .close-button {
     display: none !important;
   }
@@ -159,10 +149,19 @@ export default {
     display: flex !important;
   }
 }
-.omg-center-tab-active {
+.tab-active {
   border-top: 3px solid #477bf3 !important;
 }
-.omg-center-action-select {
+</style>
+<style lang="less">
+.center-tab-vselect {
   width: 100%;
+  .vs__dropdown-toggle {
+    height: 100%;
+  }
+  &.vs--open .vs__selected {
+    font-size: 10px;
+    margin-left: 4px;
+  }
 }
 </style>

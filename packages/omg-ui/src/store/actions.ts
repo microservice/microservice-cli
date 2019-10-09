@@ -4,6 +4,7 @@ import { setHistoricTabs } from '~/persistence'
 
 const DEFAULT_PAYLOAD = `{\n\t"parameter": "value"\n}`
 const DEFAULT_RESULT = ''
+const DEFAULT_TITLE = 'New Tab'
 
 export interface ActionTab {
   id: string
@@ -27,7 +28,7 @@ export interface ActionsState {
 function getActionTab(): ActionTab {
   return {
     id: getRandomString(),
-    title: 'New Tab',
+    title: DEFAULT_TITLE,
     actionName: null,
     payload: DEFAULT_PAYLOAD,
     result: DEFAULT_RESULT,
@@ -66,8 +67,8 @@ const mutations = {
   },
   selectAction(state: ActionsState, name: string) {
     const activeTab = getActiveTabFromState(state)
-    activeTab.title = name
-    activeTab.actionName = name
+    activeTab.title = name || DEFAULT_TITLE
+    activeTab.actionName = name || null
   },
   setActionPayload(state: ActionsState, payload: string) {
     const activeTab = getActiveTabFromState(state)

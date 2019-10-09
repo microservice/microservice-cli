@@ -5,6 +5,7 @@ import OMG from './views/index.vue'
 import store from './store/index.ts'
 
 import 'normalize.css'
+import 'vue-select/dist/vue-select.css'
 
 Vue.use(VueTimeago, {
   name: 'Timeago',
