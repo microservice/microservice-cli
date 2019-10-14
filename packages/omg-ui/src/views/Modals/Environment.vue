@@ -1,6 +1,6 @@
 <template>
   <Flex column :flex="1">
-    <Flex column>
+    <Flex column height="auto">
       <Flex row :ph="2" :pv="1.5" :bb="1" backgroundColor="white" minHeight="24px">
         <Button :onPress="dismissModal" v-if="appStatus === 'started'">
           <Photo :size="3" :source="iconCloseSource" />
@@ -9,8 +9,8 @@
     </Flex>
     <Flex row :flex="1" overflow="hidden">
       <Flex column backgroundColor="grey10" :p="2" width="25%">
-        <Flex column backgroundColor="white" :p="4" :flex="1">
-          <Flex column v-if="configEnvs.length">
+        <Flex column height="auto" backgroundColor="white" :p="4" :flex="1">
+          <Flex column height="auto" v-if="configEnvs.length">
             <Flex row>
               <Words size="xLarge" fontWeight="500">Environment</Words>
             </Flex>

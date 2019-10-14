@@ -1,14 +1,15 @@
 <template>
   <div id="omg">
     <Words size="medium">
-      <Flex column flex="1" height="100%" v-bind:class="{'omg-content-hidden': !!activeModal}">
+      <Flex column flex="1" v-bind:class="{'omg-content-hidden': !!activeModal}">
         <OMGHeader />
-        <Flex row :flex="1" overflow="hidden">
+        <Flex row :flex="1" height="100%">
           <OMGLeft />
-          <OMGCenter />
-          <OMGRight />
+          <Flex column :flex="1" overflow="hidden">
+            <OMGCenter />
+            <OMGFooter />
+          </Flex>
         </Flex>
-        <OMGFooter />
       </Flex>
       <Modals />
     </Words>
@@ -23,14 +24,13 @@ import Words from '~/components/Words.vue'
 
 import OMGHeader from './OMGHeader.vue'
 import OMGCenter from './OMGCenter.vue'
-import OMGRight from './OMGRight.vue'
 import OMGLeft from './OMGLeft.vue'
 import OMGFooter from './OMGFooter.vue'
 
 import Modals from './Modals/index.vue'
 
 export default {
-  components: { Flex, Words, OMGHeader, OMGCenter, OMGRight, OMGLeft, OMGFooter, Modals },
+  components: { Flex, Words, OMGHeader, OMGCenter, OMGLeft, OMGFooter, Modals },
   computed: {
     ...mapGetters({
       activeModal: 'getActiveModal',

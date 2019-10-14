@@ -65,6 +65,7 @@ const PROPS_NAMES_MAP: Record<string, string[]> = {
 const COLOR_BORDER = colors.grey20
 
 function propsToStyles(props: Partial<PropsFlex>, extraProps: Record<string, any>) {
+  let paddingHeight = 0
   const styles: Record<string, any> = { display: 'flex' }
   const borderColor = props.bordercolor ? colors[props.bordercolor] : COLOR_BORDER
 
@@ -88,6 +89,9 @@ function propsToStyles(props: Partial<PropsFlex>, extraProps: Record<string, any
       return
     }
     keys.forEach(keyName => {
+      if (PROPS_NAMES_MAP.pv.includes(keyName)) {
+        paddingHeight += props[propName] * 8
+      }
       styles[keyName] = value
     })
   })
@@ -96,6 +100,9 @@ function propsToStyles(props: Partial<PropsFlex>, extraProps: Record<string, any
     styles.flexDirection = 'row'
   } else if (props.column) {
     styles.flexDirection = 'column'
+    if (!styles.height) {
+      styles.height = paddingHeight > 0 ? `calc(100% - ${paddingHeight}px)` : '100%'
+    }
   }
 
   if (props.backgroundColor) {

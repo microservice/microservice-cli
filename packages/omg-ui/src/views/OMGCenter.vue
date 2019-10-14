@@ -1,7 +1,7 @@
 <template>
-  <Flex column backgroundColor="grey10" :flex="1" overflow="hidden">
-    <Flex column :bv="1">
-      <Flex row :mt="1.5" :mh="2" overflow-x="scroll" width="calc(100% - 32px)">
+  <Flex column backgroundColor="grey10" :flex="2" overflow="hidden">
+    <Flex row :bv="1">
+      <Flex row :mt="1.5" :mh="2" width="calc(82% - 48px)">
         <Button
           :pl="3"
           :pv="1.5"
@@ -37,10 +37,18 @@
           :mr="1"
           borderBottom="none"
           bordercolor="blue20"
-          backgroundColor="blue20"
+          backgroundColor="blue10"
           :onPress="createActionsTab"
         >
           <Photo :source="iconPlusSource" :size="3" />
+        </Button>
+      </Flex>
+      <Flex row :ph="1" :pv="1.125" width="18%">
+        <Button :ph="3" :pv="1" bold color="grey70" :onPress="openEnvironmentModal">
+          <Photo :source="iconFileCodeSource" :size="3" :mr="1" />Setup
+        </Button>
+        <Button :ph="3" :pv="1" bold color="grey70" :onPress="openYamlEditorModal">
+          <Photo :source="iconBookmarkSource" :size="3" :mr="1" />Edit the YAML
         </Button>
       </Flex>
     </Flex>
@@ -162,6 +170,8 @@ export default {
       'selectAction',
       'setActionPayload',
       'saveActiveAction',
+      'openEnvironmentModal',
+      'openYamlEditorModal',
     ]),
     ...mapActions(['executeActiveAction']),
     handleTabClosePress(event, tabId) {
@@ -179,6 +189,8 @@ export default {
     copySupported: !!(navigator.clipboard && navigator.clipboard.writeText),
     iconPlusSource: require('~/images/icon-plus.svg'),
     iconCloseSource: require('~/images/icon-close.svg'),
+    iconBookmarkSource: require('~/images/icon-bookmark.svg'),
+    iconFileCodeSource: require('~/images/icon-file-code.svg'),
   }),
 }
 </script>

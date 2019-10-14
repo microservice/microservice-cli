@@ -7,11 +7,11 @@
     boxShadow="4px 0px 5px rgba(0, 0, 0, 0.05)"
     zIndex="1"
   >
-    <Flex column :pv="1" :ph="2">
+    <Flex column :pv="1" :ph="2" height="auto">
       <Words color="grey90">History</Words>
       <Flex row :mt="1">
         <input type="text" placeholder="Filter" class="hsearch" v-model="searchTerm" />
-        <Flex column justifyContent="center" position="relative">
+        <Flex column height="auto" justifyContent="center" position="relative">
           <img :src="iconMagnifyingGlassSource" class="search-icon" />
         </Flex>
       </Flex>
