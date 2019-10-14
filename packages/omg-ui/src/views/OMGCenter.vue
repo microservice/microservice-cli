@@ -1,7 +1,7 @@
 <template>
   <Flex column backgroundColor="grey10" :flex="2" overflow="hidden">
     <Flex row :bv="1">
-      <Flex row :mt="1.5" :mh="2" width="calc(82% - 48px)" overflowY="auto">
+      <Flex row :mt="1.5" :mh="2" width="calc(100% - 24px)" overflowY="auto">
         <Button
           :pl="3"
           :pv="1.5"
@@ -42,14 +42,6 @@
           <Photo :source="iconPlusSource" :size="3" />
         </Button>
       </Flex>
-      <Flex row :ph="1" :pv="1.125" width="18%">
-        <Button :ph="3" :pv="1" bold color="grey70" :onPress="openEnvironmentModal">
-          <Photo :source="iconFileCodeSource" :size="3" :mr="1" />Setup
-        </Button>
-        <Button :ph="3" :pv="1" bold color="grey70" :onPress="openYamlEditorModal">
-          <Photo :source="iconBookmarkSource" :size="3" :mr="1" />Edit the YAML
-        </Button>
-      </Flex>
     </Flex>
     <Flex row :ph="2" :pv="2">
       <Flex row :flex="1">
@@ -82,7 +74,14 @@
           :disabled="!allowActionSave"
         >Save</Button>
       </Flex>
-      <Flex row :flex="1" :ml="2" />
+      <Flex row :flex="1" :ml="2" justifyContent="flex-end">
+        <Button :pv="1" bold color="grey70" :onPress="openEnvironmentModal">
+          <Photo :source="iconFileCodeSource" :size="3" :mr="1" />Setup
+        </Button>
+        <Button :pl="3" :pv="1" bold color="grey70" :onPress="openYamlEditorModal">
+          <Photo :source="iconBookmarkSource" :size="3" :mr="1" />Edit the YAML
+        </Button>
+      </Flex>
     </Flex>
     <Flex row :ph="2" :pv="1" :flex="1">
       <Flex column :flex="1" backgroundColor="white">
