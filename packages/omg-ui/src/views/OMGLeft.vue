@@ -11,6 +11,9 @@
       <Words color="grey90">History</Words>
       <Flex row :mt="1">
         <input type="text" placeholder="Filter" class="hsearch" v-model="searchTerm" />
+        <Flex column justifyContent="center" position="relative">
+          <img :src="iconMagnifyingGlassSource" class="search-icon" />
+        </Flex>
       </Flex>
     </Flex>
     <Flex row backgroundColor="grey10" justifyContent="flex-end" :pv="0.5" :ph="2" :bv="1">
@@ -33,14 +36,14 @@
           </Button>
           <Flex row :flex="1" justifyContent="flex-end">
             <Photo
-              :source="iconBookmark"
+              :source="iconBookmarkSource"
               :onPress="() => {toggleHistoricTabBookmark(historicTab.id)}"
               :size="1.5"
               :mr="1"
               :class="{'hitem-bookmark': true, 'hitem-bookmarked': historicTab.bookmark}"
             />
             <Photo
-              :source="iconCircleTimes"
+              :source="iconCircleTimesSource"
               :onPress="() => {destroyHistoricTab(historicTab.id)}"
               :size="1.5"
               :mr="1"
@@ -115,8 +118,9 @@ export default {
   data: () => ({
     searchTerm: '',
     iconDropdownSource: require('~/images/icon-dropdown.svg'),
-    iconCircleTimes: require('~/images/icon-circle-times.svg'),
-    iconBookmark: require('~/images/icon-bookmark.svg'),
+    iconCircleTimesSource: require('~/images/icon-circle-times.svg'),
+    iconBookmarkSource: require('~/images/icon-bookmark.svg'),
+    iconMagnifyingGlassSource: require('~/images/icon-magnifyingglass.svg'),
   }),
 }
 </script>
@@ -146,5 +150,11 @@ export default {
       display: flex !important;
     }
   }
+}
+.search-icon {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  left: -16px;
 }
 </style>
