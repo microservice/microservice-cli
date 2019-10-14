@@ -106,7 +106,10 @@
           <Monaco language="json" :code="activeActionTab.payload" :onChange="setActionPayload" />
         </Flex>
       </Flex>
-      <Flex column :flex="1" :ml="2" backgroundColor="white">
+      <Flex :ph="0.5">
+        <Photo :source="iconResizeKnobSource" :width="2" :height="2" class="editor-resize-knob" />
+      </Flex>
+      <Flex column :flex="1" backgroundColor="white">
         <Flex row :pv="1" :ph="2.5" :bb="1" alignItems="center">
           <Words size="medium" fontWeight="500">Result</Words>
           <Flex row :flex="1" justifyContent="flex-end" v-if="copySupported">
@@ -189,6 +192,7 @@ export default {
     iconCloseSource: require('~/images/icon-close.svg'),
     iconBookmarkSource: require('~/images/icon-bookmark.svg'),
     iconFileCodeSource: require('~/images/icon-file-code.svg'),
+    iconResizeKnobSource: require('~/images/icon-resize-knob.svg'),
   }),
 }
 </script>
@@ -203,6 +207,9 @@ export default {
 }
 .tab-active {
   border-top: 3px solid #477bf3 !important;
+}
+.editor-resize-knob {
+  transform: rotate(90deg);
 }
 </style>
 <style lang="less">

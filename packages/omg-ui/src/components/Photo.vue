@@ -9,6 +9,8 @@ import Flex from './Flex.vue'
 
 type PropsPhoto = {
   size?: number
+  width?: number
+  height?: number
   onPress?: () => void
 }
 
@@ -23,6 +25,12 @@ function propsToStyles(props: Partial<PropsPhoto>) {
     styles.width = props.size * 8
     styles.height = props.size * 8
   }
+  if (props.width) {
+    styles.width = props.width * 8
+  }
+  if (props.height) {
+    styles.height = props.height * 8
+  }
   if (props.onPress && props.onPress !== defaultOnPress) {
     styles.cursor = 'pointer'
   }
@@ -35,6 +43,12 @@ export default {
 
   props: {
     size: {
+      type: Number,
+    },
+    width: {
+      type: Number,
+    },
+    height: {
       type: Number,
     },
     source: {
