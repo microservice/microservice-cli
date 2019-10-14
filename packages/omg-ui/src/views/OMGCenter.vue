@@ -1,14 +1,13 @@
 <template>
   <Flex column backgroundColor="grey10" :flex="2" overflow="hidden">
     <Flex row :bv="1">
-      <Flex row :mt="1.5" :mh="2" width="calc(82% - 48px)">
+      <Flex row :mt="1.5" :mh="2" width="calc(82% - 48px)" overflowY="auto">
         <Button
           :pl="3"
           :pv="1.5"
           :b="1"
           :mr="1"
-          minWidth="80px"
-          width="100px"
+          minWidth="100px"
           borderBottom="none"
           backgroundColor="white"
           color="blue"
