@@ -1,17 +1,18 @@
 {
   "name": "regression",
   "version": "0.14.0",
-  "description": "Tests checking for regressions on omg-cli",
+  "description": "Tests checking for regressions on oms-cli",
   "main": "index.js",
   "scripts": {
     "test-post-build-disable": "./test.sh"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/microservices/omg.git"
+    "url": "git+https://github.com/microservices/oms.git"
   },
   "private": true,
   "keywords": [
+    "oms",
     "omg",
     "microservice",
     "yaml",
@@ -20,7 +21,7 @@
   "author": "Aurelien ARINO <aurelien@storyscript.io>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/microservices/omg/issues"
+    "url": "https://github.com/microservices/oms/issues"
   },
-  "homepage": "https://github.com/microservices/omg#readme"
+  "homepage": "https://github.com/microservices/oms#readme"
 }
