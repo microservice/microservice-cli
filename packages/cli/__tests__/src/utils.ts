@@ -1,6 +1,10 @@
+import * as fs from 'fs'
+import * as path from 'path'
+
 import { EnvironmentVariable, Microservice } from '@microservices/validate'
 import * as utils from '~/utils'
 
+jest.mock('fs')
 jest.mock('~/utils/exec')
 
 const exec = jest.requireActual('../../src/utils/exec').default
@@ -391,6 +395,116 @@ describe('utils.ts', () => {
       })
 
       expect(await utils.createImageName(true)).toBe('microservice/machinebox-classificationbox')
+    })
+  })
+
+  describe('getOMSFilePath(dir)', () => {
+    test('returns a oms.yml', () => {
+      const expectedFile = path.join('aDir', 'oms.yml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      expect(utils.getOMSFilePath('aDir')).toEqual(expectedFile)
+    })
+    test('returns a oms.yaml', () => {
+      const expectedFile = path.join('aDir', 'oms.yaml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      expect(utils.getOMSFilePath('aDir')).toEqual(expectedFile)
+    })
+    test('returns a microservice.yml', () => {
+      const expectedFile = path.join('aDir', 'microservice.yml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      expect(utils.getOMSFilePath('aDir')).toEqual(expectedFile)
+    })
+    test('returns a microservice.yaml', () => {
+      const expectedFile = path.join('aDir', 'microservice.yaml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      expect(utils.getOMSFilePath('aDir')).toEqual(expectedFile)
+    })
+    test('returns `null` if no spec was found', () => {
+      ;(fs.existsSync as jest.Mock).mockImplementation(() => false)
+      expect(utils.getOMSFilePath('aDir')).toEqual(null)
+    })
+  })
+
+  describe('checkValidOMSDirectory(dir)', () => {
+    const dockerFile = path.join('aDir', 'Dockerfile')
+    test('returns false if only oms.yml exists', () => {
+      const expectedFile = path.join('aDir', 'oms.yml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      expect(utils.checkValidOMSDirectory('aDir')).toEqual(false)
+    })
+    test('returns false if only a oms.yaml exists', () => {
+      const expectedFile = path.join('aDir', 'oms.yaml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      expect(utils.checkValidOMSDirectory('aDir')).toEqual(false)
+    })
+    test('returns false if only a microservice.yml exists', () => {
+      const expectedFile = path.join('aDir', 'microservice.yml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      expect(utils.checkValidOMSDirectory('aDir')).toEqual(false)
+    })
+    test('returns false if only a microservice.yaml exists', () => {
+      const expectedFile = path.join('aDir', 'microservice.yaml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      expect(utils.checkValidOMSDirectory('aDir')).toEqual(false)
+    })
+    test('returns false when no config was found', () => {
+      ;(fs.existsSync as jest.Mock).mockImplementation(() => false)
+      expect(utils.checkValidOMSDirectory('aDir')).toEqual(false)
+    })
+    test('returns true if oms.yml + Dockerfile exists', () => {
+      const expectedFile = path.join('aDir', 'oms.yml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile || e === dockerFile)
+      expect(utils.checkValidOMSDirectory('aDir')).toEqual(true)
+    })
+    test('returns true if oms.yaml + Dockerfile exists', () => {
+      const expectedFile = path.join('aDir', 'oms.yaml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile || e === dockerFile)
+      expect(utils.checkValidOMSDirectory('aDir')).toEqual(true)
+    })
+    test('returns true if microservice.yml + Dockerfile exists', () => {
+      const expectedFile = path.join('aDir', 'microservice.yml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile || e === dockerFile)
+      expect(utils.checkValidOMSDirectory('aDir')).toEqual(true)
+    })
+    test('returns true if microservice.yaml + Dockerfile exists', () => {
+      const expectedFile = path.join('aDir', 'microservice.yaml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile || e === dockerFile)
+      expect(utils.checkValidOMSDirectory('aDir')).toEqual(true)
+    })
+    test('returns false when no config, but Dockerfile was found', () => {
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === dockerFile)
+      expect(utils.checkValidOMSDirectory('aDir')).toEqual(false)
+    })
+  })
+
+  describe('readOMSFile(dir)', () => {
+    test('returns a oms.yml', () => {
+      const expectedFile = path.join('aDir', 'oms.yml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      ;(fs.readFileSync as jest.Mock).mockImplementation(e => (e === expectedFile ? 'OMS' : ''))
+      expect(utils.readOMSFile('aDir')).toEqual('OMS')
+    })
+    test('returns a oms.yaml', () => {
+      const expectedFile = path.join('aDir', 'oms.yaml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      ;(fs.readFileSync as jest.Mock).mockImplementation(e => (e === expectedFile ? 'OMS' : ''))
+      expect(utils.readOMSFile('aDir')).toEqual('OMS')
+    })
+    test('returns a microservice.yml', () => {
+      const expectedFile = path.join('aDir', 'microservice.yml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      ;(fs.readFileSync as jest.Mock).mockImplementation(e => (e === expectedFile ? 'OMS' : ''))
+      expect(utils.readOMSFile('aDir')).toEqual('OMS')
+    })
+    test('returns a microservice.yaml', () => {
+      const expectedFile = path.join('aDir', 'microservice.yaml')
+      ;(fs.existsSync as jest.Mock).mockImplementation(e => e === expectedFile)
+      ;(fs.readFileSync as jest.Mock).mockImplementation(e => (e === expectedFile ? 'OMS' : ''))
+      expect(utils.readOMSFile('aDir')).toEqual('OMS')
+    })
+    test('returns an empty string if no spec was found', () => {
+      ;(fs.existsSync as jest.Mock).mockImplementation(() => false)
+      expect(utils.readOMSFile('aDir')).toEqual('')
     })
   })
 })

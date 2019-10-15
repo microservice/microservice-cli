@@ -14,7 +14,7 @@ export default class Http {
    *
    * @param {String} commandName The name of the command that interfaces via http
    * @param {Object} rawHttp The given raw data
-   * @param {String} pathToHttp Path in the `microservice.yml` file to this {@link Http}
+   * @param {String} pathToHttp Path in the `oms.yml` file to this {@link Http}
    * @param {Integer} [port] If no port given on rawHttp, this port will be used
    */
   public constructor(commandName: string, rawHttp: any, pathToHttp: string, port: number = null) {

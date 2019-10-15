@@ -56,7 +56,7 @@ export default {
         this.setOwner(res.notif)
       }
     })
-    this.socket.on('microservice.yml', res => {
+    this.socket.on('oms.yml', res => {
       this.setMicroserviceRaw(res)
       if (!this.getMicroserviceStatus) {
         this.$router.push({ path: '/validation-error' })
@@ -103,7 +103,7 @@ export default {
   beforeDestroy () {
     this.socket.removeListener('validate')
     this.socket.removeListener('owner')
-    this.socket.removeListener('microservice.yml')
+    this.socket.removeListener('oms.yml')
     this.socket.removeListener('build')
     this.socket.removeListener('start')
     this.socket.removeListener('stop')

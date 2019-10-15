@@ -86,7 +86,7 @@ export default class UIServer {
         this.isClientConnected = true
         socket.removeAllListeners()
         this.socket = socket
-        this.sendFile(utils.getMicroserviceFilePath())
+        this.sendFile(utils.getOMSFilePath(process.cwd()))
         this.initListeners()
         utils.log('Web client connected to socket.')
       }
@@ -157,12 +157,13 @@ export default class UIServer {
     this.socket.on('clear-container-logs', timestamp => {
       this.clogsSince = timestamp
     })
-    this.socket.on('microservice.yml', (data: any) => {
+    this.socket.on('oms.yml', (data: any) => {
       const content = new Uint8Array(Buffer.from(data))
-      fs.writeFile(utils.getMicroserviceFilePath(), content, err => {
+      const omsFilePath = utils.getOMSFilePath(process.cwd())
+      fs.writeFile(omsFilePath, content, err => {
         if (err) throw err
         this.validate()
-        utils.log('microservice.yml file has been saved!')
+        utils.log(`${omsFilePath} file has been saved!`)
       })
     })
   }
@@ -184,7 +185,7 @@ export default class UIServer {
         this.microserviceStr = microservice
       }
 
-      this.sendFile(utils.getMicroserviceFilePath())
+      this.sendFile(utils.getOMSFilePath(process.cwd()))
       await this.stopContainer()
       await this.removeContainer()
       if (bak && this.rebuildBak) {
@@ -204,7 +205,7 @@ export default class UIServer {
   public sendFile(file: string) {
     fs.readFile(file, 'utf8', (err: any, data: any) => {
       if (err) throw err
-      this.socket.emit('microservice.yml', data)
+      this.socket.emit('oms.yml', data)
       this.validate()
     })
   }

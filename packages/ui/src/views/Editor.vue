@@ -82,7 +82,7 @@ export default {
     },
     onCodeChange (editor) {
       this.disabled = false
-      this.socket.emit('microservice.yml', this.editor.getValue())
+      this.socket.emit('oms.yml', this.editor.getValue())
     },
     searchLine (query) {
       query = query.replace('root.', '')

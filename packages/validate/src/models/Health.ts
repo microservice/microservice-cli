@@ -1,7 +1,7 @@
 const validateHealth = require('../schema/schema').health
 
 /**
- * Defines health object from microservice.yml
+ * Defines health object from oms.yml
  * This object is complient with the Docker API.
  * See https://docs.docker.com/engine/api/v1.37/#operation/ContainerCreate
  */
@@ -10,7 +10,7 @@ export default class Health {
   private readonly _port: number
 
   /**
-   * @param  {any} rawHealth Health json object from microservice.yml
+   * @param  {any} rawHealth Health json object from oms.yml
    */
   public constructor(rawHealth: any) {
     const isValid = validateHealth(rawHealth)

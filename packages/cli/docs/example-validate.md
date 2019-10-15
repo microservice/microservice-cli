@@ -2,7 +2,7 @@
 
 ## Vanila
 
-### Valid `microservice.yml`
+### Valid `oms.yml`
 #### Input
 ```
 oms validate
@@ -13,7 +13,7 @@ oms validate
 No errors
 ```
 
-### Invalid `microservice.yml`
+### Invalid `oms.yml`
 #### Input
 ```
 oms validate
@@ -25,7 +25,7 @@ actions.list_channels.http should have required property 'port'
 ```
 
 ## `--silent`, or `-s` tag
-### Valid `microservice.yml`
+### Valid `oms.yml`
 #### Input
 ```
 oms validate -s
@@ -34,7 +34,7 @@ oms validate -s
 #### Output
 Will exit with status code `0`
 
-### Invalid `microservice.yml`
+### Invalid `oms.yml`
 #### Input
 ```
 oms validate -s
@@ -44,13 +44,13 @@ oms validate -s
 Will exit with status code `1`
 
 ## `--json`, or `-j` tag
-### Valid `microservice.yml`
+### Valid `oms.yml`
 #### Input
 ```
 oms validate -j
 ```
 
-### Valid `microservice.yml`
+### Valid `oms.yml`
 #### Output
 ```json
 {
@@ -63,7 +63,7 @@ oms validate -j
 }
 ```
 
-### Invalid `microservice.yml`
+### Invalid `oms.yml`
 #### Input
 ```
 oms validate -j

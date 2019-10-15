@@ -8,7 +8,7 @@ import Health from './Health'
 const validateMicroservice = require('../schema/schema').microservice
 
 /**
- * Describes a microservice defined by a `microservice.yml`
+ * Describes a microservice defined by a `oms.yml`
  */
 export default class Microservice {
   private readonly _rawData: object
@@ -20,9 +20,9 @@ export default class Microservice {
   private readonly forwardMap: object
 
   /**
-   * Builds a {@link Microservice} defined by a `microservice.yml`.
+   * Builds a {@link Microservice} defined by a `oms.yml`.
    *
-   * @param {Object} microserviceYamlJson The given raw JSON of the `microservice.yml`
+   * @param {Object} microserviceYamlJson The given raw JSON of the `oms.yml`
    */
   public constructor(microserviceYamlJson: any) {
     const isValid = validateMicroservice(microserviceYamlJson)

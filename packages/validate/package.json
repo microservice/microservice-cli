@@ -1,7 +1,7 @@
 {
   "name": "@microservices/validate",
   "version": "0.15.0",
-  "description": "OMS microservice.yml validation library",
+  "description": "OMS oms.yml validation library",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "scripts": {

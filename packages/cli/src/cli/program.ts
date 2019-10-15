@@ -21,7 +21,7 @@ program
   .command('validate')
   .option('-j --json', 'Formats output to JSON')
   .option('-s --silent', 'Only feedback is the status exit code')
-  .description('Validate the structure of a `microservice.yml` in the current directory')
+  .description('Validate the structure of a `oms.yml` in the current directory')
   .action(options => Cli.validate(options))
 
 program
@@ -46,9 +46,7 @@ program
     [],
   )
   .option('-r --raw', 'All logging is suppressed expect for the output of the action.')
-  .description(
-    'Run actions defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`',
-  )
+  .description('Run actions defined in your `oms.yml`. Must be ran in a directory with a `Dockerfile` and a `oms.yml`')
   .action(async (action, options) => {
     cli.buildMicroservice()
     await cli.run(action, options)
@@ -65,7 +63,7 @@ program
   )
   .option('-r --raw', 'All logging is suppressed expect for the output of the action.')
   .description(
-    'Subscribe to an event defined in your `microservice.yml`. Must be ran in a directory with a `Dockerfile` and a `microservice.yml`',
+    'Subscribe to an event defined in your `oms.yml`. Must be ran in a directory with a `Dockerfile` and a `oms.yml`',
   )
   .action(async (action, event, options) => {
     cli.buildMicroservice()
@@ -76,7 +74,7 @@ program
   .command('ui')
   .option('-p --port, <p>', 'The port to bind')
   .option('--no-open', 'Do not open in browser')
-  .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
+  .option('--inherit-env', 'Binds host env variable asked in the oms.yml to the container env')
   .description('Starts to oms-app which monitors your microservice.')
   .action(async options => cli.ui(options))
 
@@ -95,46 +93,27 @@ if (
   program.help()
 }
 
-let args = JSON.parse(JSON.stringify(process.argv))
-let theArgs = args.splice(args.indexOf('run'))
+const args = JSON.parse(JSON.stringify(process.argv))
 
-if (theArgs.includes('run') && theArgs.includes('--help') && theArgs[1] !== '--help') {
-  if (
-    (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) &&
-      !fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) ||
-    !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))
-  ) {
-    utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`')
-    process.exit(1)
-  }
-  cli.buildMicroservice()
-  try {
-    cli.actionHelp(theArgs[1])
-  } catch (e) {
-    utils.log(e)
-    process.exit(1)
+function checkAndBuild(arg: string) {
+  const theArgs = args.splice(args.indexOf(arg))
+  if ((theArgs.includes('run') || theArgs.includes(arg)) && theArgs.includes('--help') && theArgs[1] !== '--help') {
+    if (utils.checkValidOMSDirectory(process.cwd())) {
+      utils.error('Must be ran in a directory with a `Dockerfile` and a `oms.y[a]ml`')
+      process.exit(1)
+    }
+    cli.buildMicroservice()
+    try {
+      cli.actionHelp(theArgs[1])
+    } catch (e) {
+      utils.log(e)
+      process.exit(1)
+    }
   }
 }
 
-args = JSON.parse(JSON.stringify(process.argv))
-theArgs = args.splice(args.indexOf('subscribe'))
-if (theArgs.includes('subscribe') && theArgs.includes('--help') && theArgs[1] !== '--help') {
-  if (
-    (!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) &&
-      !fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) ||
-    !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))
-  ) {
-    utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`')
-    process.exit(1)
-  }
-  cli.buildMicroservice()
-  try {
-    cli.eventActionHelp(theArgs[1])
-  } catch (e) {
-    utils.log(e)
-    process.exit(1)
-  }
-}
+checkAndBuild('run')
+checkAndBuild('subscribe')
 
 process.on('SIGINT', async () => {
   try {

@@ -7,11 +7,11 @@
           <span class="title title-padding">Setup</span>
           <!-- <div @click="$router.push({ path: '/editor' })" class="tile-wrapper"> -->
           <!-- <tile-grade
-              :title="'microservice.yml'"
+              :title="'oms.yml'"
               :clickable="true"
               :state="getMicroserviceStatus ? 'good' : 'bad'"
           />-->
-          <tile-grade :title="'microservice.yml'" :state="getMicroserviceStatus ? 'good' : 'bad'" />
+          <tile-grade :title="'oms.yml'" :state="getMicroserviceStatus ? 'good' : 'bad'" />
           <!-- </div> -->
         </div>
         <div class="dcontainer-wrapper">

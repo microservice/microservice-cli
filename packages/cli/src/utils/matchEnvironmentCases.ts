@@ -2,7 +2,7 @@ import { EnvironmentVariable } from '@microservices/validate'
 
 /**
  * Matches the case of given cli environment arguments to the case defined in
- * the microservice.yml.
+ * the oms.yml.
  *
  * @param {Object} env The given environment variable mapping
  * @param {Array<EnvironmentVariable>} environmentVariables The given {@link EnvironmentVariable}s
