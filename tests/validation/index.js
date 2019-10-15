@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { OMGValidate } from 'omg-validate'
+import { OMGValidate } from 'oms-validate'
 
 const FILES_PATH = path.join(__dirname, 'files')
 const EXPECT_PATH = path.join(__dirname, 'expectations')

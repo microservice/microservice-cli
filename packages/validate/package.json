@@ -1,0 +1,39 @@
+{
+  "name": "@microservices/validate",
+  "version": "0.15.0",
+  "description": "OMS microservice.yml validation library",
+  "main": "dist/index.js",
+  "typings": "src/index.ts",
+  "scripts": {
+    "build": "sb-babel-cli src -o dist --typescript",
+    "watch": "yarn build -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microservices/oms.git"
+  },
+  "keywords": [
+    "oms",
+    "omg",
+    "open",
+    "microservice",
+    "specification",
+    "validation",
+    "yaml"
+  ],
+  "author": "Storyscript <support@storyscript.io>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^12.0.8",
+    "typescript": "^3.5.2"
+  },
+  "bugs": {
+    "url": "https://github.com/microservices/oms/issues"
+  },
+  "homepage": "https://github.com/microservices/oms#readme",
+  "dependencies": {
+    "ajv": "^6.10.0",
+    "underscore": "^1.9.1",
+    "yaml-js": "^0.2.3"
+  }
+}

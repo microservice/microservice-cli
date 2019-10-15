@@ -1,5 +1,5 @@
 {
-  "name": "omg",
+  "name": "oms",
   "version": "0.10.2",
   "private": true,
   "workspaces": [
@@ -36,7 +36,10 @@
     "publish": "yarn bootstrap && yarn build && yarn test && yarn test-post-build && lerna publish",
     "version": "lerna version --no-git-tag-version --no-push"
   },
-  "bin": "omg",
+  "bin": {
+    "omg": "./oms",
+    "oms": "./oms"
+  },
   "postcss": {
     "plugins": {
       "autoprefixer": {}

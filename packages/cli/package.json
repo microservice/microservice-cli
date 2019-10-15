@@ -1,0 +1,60 @@
+{
+  "name": "@microservices/cli",
+  "description": "A CLI to interact with microservices built with the OMS standard.",
+  "keywords": [
+    "oms",
+    "omg",
+    "cli",
+    "open",
+    "microservice",
+    "microservices",
+    "specification"
+  ],
+  "version": "0.15.0",
+  "main": "oms",
+  "scripts": {
+    "build": "sb-babel-cli src -o dist --typescript",
+    "watch": "yarn build -w",
+    "test": "jest",
+    "coverage": "jest --coverage"
+  },
+  "bin": {
+    "oms": "./oms",
+    "omg": "./oms"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microservices/oms.git",
+    "directory": "packages/cli"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chokidar": "^2.1.5",
+    "commander": "^2.15.1",
+    "dockerode": "^2.5.8",
+    "dockerode-promise": "^0.1.0",
+    "express": "^4.17.1",
+    "form-data": "^2.5.0",
+    "get-port": "^5.0.0",
+    "lineup": "^0.0.7",
+    "log-symbols": "^2.2.0",
+    "@microservices/ui": "^0.15.0",
+    "@microservices/validate": "^0.15.0",
+    "open": "^6.1.0",
+    "ora": "^3.0.0",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "shelljs": "^0.8.2",
+    "socket.io": "^2.2.0",
+    "underscore": "^1.9.1",
+    "uuid": "^3.3.2",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.14",
+    "@types/node": "^12.6.8",
+    "babel-jest": "^24.8.0",
+    "jest": "^24.8.0",
+    "typescript": "^3.1.6"
+  }
+}
