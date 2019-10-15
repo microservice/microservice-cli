@@ -1,4 +1,4 @@
-import { Http } from 'oms-validate'
+import { Http } from '@microservices/validate'
 
 describe('Https.ts', () => {
   describe('constructor', () => {

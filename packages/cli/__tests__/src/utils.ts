@@ -1,4 +1,4 @@
-import { EnvironmentVariable, Microservice } from 'oms-validate'
+import { EnvironmentVariable, Microservice } from '@microservices/validate'
 import * as utils from '~/utils'
 
 jest.mock('~/utils/exec')

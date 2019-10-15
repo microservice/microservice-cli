@@ -1,4 +1,4 @@
-import { EnvironmentVariable } from 'oms-validate'
+import { EnvironmentVariable } from '@microservices/validate'
 
 /**
  * Matches the case of given cli environment arguments to the case defined in

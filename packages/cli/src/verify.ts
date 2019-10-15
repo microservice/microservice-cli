@@ -1,5 +1,5 @@
 import _ from 'underscore'
-import { Command, Microservice } from 'oms-validate'
+import { Command, Microservice } from '@microservices/validate'
 import { dataTypes } from './utils'
 
 /**

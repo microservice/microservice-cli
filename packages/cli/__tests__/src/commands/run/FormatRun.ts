@@ -1,4 +1,4 @@
-import { Microservice } from 'oms-validate'
+import { Microservice } from '@microservices/validate'
 import FormatRun from '~/commands/run/FormatRun'
 import * as utils from '~/utils'
 

@@ -1,5 +1,5 @@
 {
-  "name": "oms-shell",
+  "name": "@microservices/cli",
   "description": "A CLI to interact with microservices built with the OMS standard.",
   "keywords": [
     "oms",
@@ -10,7 +10,7 @@
     "microservices",
     "specification"
   ],
-  "version": "0.14.1",
+  "version": "0.15.0",
   "main": "oms",
   "scripts": {
     "build": "sb-babel-cli src -o dist --typescript",
@@ -25,7 +25,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microservices/oms.git",
-    "directory": "packages/oms"
+    "directory": "packages/cli"
   },
   "license": "MIT",
   "dependencies": {
@@ -38,8 +38,8 @@
     "get-port": "^5.0.0",
     "lineup": "^0.0.7",
     "log-symbols": "^2.2.0",
-    "oms-ui": "^0.14.1",
-    "oms-validate": "^0.14.1",
+    "@microservices/ui": "^0.15.0",
+    "@microservices/validate": "^0.15.0",
     "open": "^6.1.0",
     "ora": "^3.0.0",
     "request": "^2.87.0",
@@ -56,6 +56,5 @@
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
     "typescript": "^3.1.6"
-  },
-  "gitHead": "fcbefab45c0c4991a98ca3eccde9b196e41863e7"
+  }
 }

@@ -1,4 +1,4 @@
-import { Format } from 'oms-validate'
+import { Format } from '@microservices/validate'
 
 describe('Format.ts', () => {
   describe('constructor', () => {

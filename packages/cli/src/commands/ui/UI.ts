@@ -1,6 +1,6 @@
-import { app } from 'oms-ui'
+import { app } from '@microservices/ui'
 import LineUp from 'lineup'
-import { Microservice } from 'oms-validate'
+import { Microservice } from '@microservices/validate'
 import fs from 'fs'
 import path from 'path'
 import * as utils from '../../utils'

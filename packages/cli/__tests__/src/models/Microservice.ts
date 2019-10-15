@@ -1,4 +1,4 @@
-import { Action, EnvironmentVariable, Lifecycle, Microservice, Volume } from 'oms-validate'
+import { Action, EnvironmentVariable, Lifecycle, Microservice, Volume } from '@microservices/validate'
 
 describe('Microservice.ts', () => {
   describe('constructor', () => {

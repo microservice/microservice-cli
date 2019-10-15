@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Microservice } from 'oms-validate'
+import { Microservice } from '@microservices/validate'
 import * as rp from '~/request'
 import * as utils from '~/utils'
 import Subscribe from '~/commands/Subscribe'

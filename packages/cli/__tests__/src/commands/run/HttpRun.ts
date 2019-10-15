@@ -1,5 +1,5 @@
 import * as rp from 'request-promise'
-import { Microservice } from 'oms-validate'
+import { Microservice } from '@microservices/validate'
 import HttpRun from '~/commands/run/HttpRun'
 import * as utils from '~/utils'
 import Run from '~/commands/run/Run'

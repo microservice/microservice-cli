@@ -1,0 +1,25 @@
+{
+  "name": "@microservices/oms",
+  "description": "Toolchain to interact with microservices built with the OMS standard.",
+  "keywords": [
+    "oms",
+    "omg",
+    "cli",
+    "open",
+    "microservice",
+    "microservices",
+    "specification"
+  ],
+  "version": "0.15.0",
+  "main": "oms",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microservices/oms.git",
+    "directory": "packages/oms"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@microservices/cli": "^0.15.0",
+    "@microservices/ui": "^0.15.0"
+  }
+}

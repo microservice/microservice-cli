@@ -1,4 +1,4 @@
-import { Argument } from 'oms-validate'
+import { Argument } from '@microservices/validate'
 
 describe('Argument.ts', () => {
   describe('constructor', () => {

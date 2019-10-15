@@ -1,4 +1,4 @@
-import { Microservice } from 'oms-validate'
+import { Microservice } from '@microservices/validate'
 
 /**
  * Gets the ports that need to be open defined by the given {@link Microservice}.

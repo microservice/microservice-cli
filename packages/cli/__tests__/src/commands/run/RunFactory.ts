@@ -1,4 +1,4 @@
-import { Action, Microservice } from 'oms-validate'
+import { Action, Microservice } from '@microservices/validate'
 import RunFactory from '~/commands/run/RunFactory'
 import FormatRun from '~/commands/run/FormatRun'
 import EventRun from '~/commands/run/EventRun'

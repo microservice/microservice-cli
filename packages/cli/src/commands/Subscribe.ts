@@ -1,7 +1,7 @@
 import fs from 'fs'
 import http from 'http'
 import uuidv4 from 'uuid/v4'
-import { Action, Event, Microservice } from 'oms-validate'
+import { Action, Event, Microservice } from '@microservices/validate'
 import * as utils from '../utils'
 import * as verify from '../verify'
 import * as rp from '../request'

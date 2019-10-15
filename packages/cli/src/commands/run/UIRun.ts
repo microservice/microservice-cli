@@ -1,4 +1,4 @@
-import { Microservice } from 'oms-validate'
+import { Microservice } from '@microservices/validate'
 import rp from 'request-promise'
 import _ from 'underscore'
 import querystring from 'querystring'

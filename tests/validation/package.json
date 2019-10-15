@@ -26,6 +26,6 @@
   },
   "homepage": "https://github.com/microservices/oms#readme",
   "dependencies": {
-    "oms-validate": "^0.14.0"
+    "@microservices/oms-validate": "*"
   }
 }

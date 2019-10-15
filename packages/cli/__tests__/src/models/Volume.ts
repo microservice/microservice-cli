@@ -1,4 +1,4 @@
-import { Volume } from 'oms-validate'
+import { Volume } from '@microservices/validate'
 
 describe('Volume.ts', () => {
   describe('constructor', () => {

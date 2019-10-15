@@ -1,4 +1,4 @@
-import { Lifecycle } from 'oms-validate'
+import { Lifecycle } from '@microservices/validate'
 
 describe('Lifecycle.ts', () => {
   describe('constructor', () => {

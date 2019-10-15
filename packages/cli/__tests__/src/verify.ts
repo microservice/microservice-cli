@@ -1,4 +1,4 @@
-import { Action, Microservice } from 'oms-validate'
+import { Action, Microservice } from '@microservices/validate'
 import * as verify from '~/verify'
 
 describe('verify.ts', () => {

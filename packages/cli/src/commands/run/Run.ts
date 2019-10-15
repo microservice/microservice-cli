@@ -1,6 +1,6 @@
 import rp from 'request-promise'
 import $ from 'shelljs'
-import { Action, Microservice } from 'oms-validate'
+import { Action, Microservice } from '@microservices/validate'
 import * as verify from '../../verify'
 import * as utils from '../../utils'
 

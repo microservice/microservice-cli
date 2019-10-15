@@ -1,4 +1,4 @@
-import { EnvironmentVariable } from 'oms-validate'
+import { EnvironmentVariable } from '@microservices/validate'
 
 describe('EnvironmentVariable.ts', () => {
   describe('constructor', () => {

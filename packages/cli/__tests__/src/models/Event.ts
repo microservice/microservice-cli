@@ -1,4 +1,4 @@
-import { Argument, Event, Http } from 'oms-validate'
+import { Argument, Event, Http } from '@microservices/validate'
 
 describe('Event.ts', () => {
   describe('constructor', () => {

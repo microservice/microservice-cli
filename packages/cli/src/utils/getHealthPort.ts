@@ -1,4 +1,4 @@
-import { Microservice } from 'oms-validate'
+import { Microservice } from '@microservices/validate'
 
 /**
  * Return the health port
