@@ -5,7 +5,7 @@ Welcome to OMS Repo! Check out [https://microservice.guide/][website] to see wha
 ### Installation
 
 ```
-$ yarn global add oms
+$ yarn global add @microservices/oms
 ```
 
 ### Usage

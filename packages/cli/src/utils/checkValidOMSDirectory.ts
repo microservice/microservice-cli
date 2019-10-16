@@ -4,7 +4,7 @@ import path from 'path'
 import getOMSFilePath from './getOMSFilePath'
 
 /**
- * @param {string} dir Directory to search for Open Microservice specification file
+ * @param {string} dir Directory to search for the Open Microservice specification file
  * @return {boolean} if a `oms.yml` file exists in the provided directory
  */
 export default function checkValidOMGDirectory(dir: string): boolean {
