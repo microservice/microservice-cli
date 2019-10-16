@@ -181,9 +181,19 @@ export default {
     },
     handleCopyPayload() {
       navigator.clipboard.writeText(this.activeActionTab.payload)
+      this.$toasted.show('Copied Payload to Clipboard', {
+        type: 'success',
+        position: 'bottom-center',
+        duration: 1500,
+      })
     },
     handleCopyResult() {
       navigator.clipboard.writeText(this.activeActionTab.result)
+      this.$toasted.show('Copied Result to Clipboard', {
+        type: 'success',
+        position: 'bottom-center',
+        duration: 1500,
+      })
     },
   },
   data: () => ({
