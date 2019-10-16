@@ -133,6 +133,12 @@ const actions = {
     }
     if (!parsed || typeof parsed !== 'object' || !actionName) {
       // Don't bother
+      context.commit('setActionResult', {
+        tabId: activeTab.id,
+        result: {
+          error: 'Payload must be a valid JSON object',
+        },
+      })
       return
     }
     executeAction({
