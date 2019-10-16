@@ -1,19 +1,21 @@
 <template>
-  <Flex column :flex="1">
+  <Flex column v-bind:class="{'omg-footer': true, 'expanded': showLogs}">
     <Flex column :bv="1">
       <Flex row justifyContent="space-between" :ph="2" :pv="1">
         <Words>Container Logs</Words>
         <Photo :source="iconResizeKnobSource" :width="1.5" :height="2" />
-        <Words>Dismiss Button</Words>
+        <Flex row :mr="3">
+          <ToggleVertical :enabled="showLogs" :onToggle="toggleShowLogs" />
+        </Flex>
       </Flex>
-      <Flex column :bt="1" :ph="2" overflow="hidden">
+      <Flex column :bt="1" :ph="2" overflow="hidden" v-if="showLogs">
         <Words color="grey60" overflowY="scroll">
           <pre class="omg-right-logs" v-text="logsAllReverse" />
         </Words>
       </Flex>
     </Flex>
     <Flex row :ph="2" :pv="1" userSelect="none">
-      <Toggle :enabled="showHistory" :onToggle="toggleShowHistory" />
+      <ToggleHorizontal :enabled="showHistory" :onToggle="toggleShowHistory" />
       <Flex :ml="1">
         <Words size="small">Show History</Words>
       </Flex>
@@ -28,15 +30,17 @@ import Flex from '~/components/Flex.vue'
 import Button from '~/components/Button.vue'
 import Photo from '~/components/Photo.vue'
 import Words from '~/components/Words.vue'
-import Toggle from '~/components/Toggle.vue'
+import ToggleVertical from '~/components/ToggleVertical.vue'
+import ToggleHorizontal from '~/components/ToggleHorizontal.vue'
 
 export default {
-  components: { Flex, Button, Words, Photo, Toggle },
+  components: { Flex, Button, Words, Photo, ToggleVertical, ToggleHorizontal },
   methods: {
-    ...mapMutations(['toggleShowHistory'])
+    ...mapMutations(['toggleShowHistory', 'toggleShowLogs']),
   },
   computed: {
     ...mapGetters({
+      showLogs: 'getShowLogs',
       showHistory: 'getShowHistory',
       logsAllReverse: 'logsAllReverse',
     }),
@@ -46,3 +50,11 @@ export default {
   }),
 }
 </script>
+<style lang="less" scoped>
+.omg-footer {
+  height: 9% !important;
+  &.expanded {
+    height: 30% !important;
+  }
+}
+</style>

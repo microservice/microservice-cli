@@ -1,5 +1,5 @@
 <template>
-  <Flex column backgroundColor="grey10" :flex="2" overflow="hidden">
+  <Flex column backgroundColor="grey10" overflow="hidden">
     <Flex row :bv="1">
       <Flex row :mt="1.5" :mh="2" width="calc(100% - 24px)" overflowY="auto">
         <Button
@@ -83,7 +83,7 @@
         </Button>
       </Flex>
     </Flex>
-    <Flex row :ph="2" :pv="1" :flex="1">
+    <Flex row :ph="2" :pv="1" :flex="1" height="100%">
       <Flex column width="calc(50% - 12px)" backgroundColor="white">
         <Flex row :pv="1" :ph="2.5" :bb="1" alignItems="center">
           <Words size="medium" fontWeight="500">Request</Words>
@@ -149,6 +149,7 @@ export default {
   components: { Flex, Photo, Words, Button, Monaco, VSelect },
   computed: {
     ...mapGetters({
+      showLogs: 'getShowLogs',
       configActions: 'getConfigActions',
       allActionTabs: 'getAllActionTabs',
       activeActionTab: 'getActiveActionTab',

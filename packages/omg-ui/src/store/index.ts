@@ -4,7 +4,7 @@ import getDeferredPromise from 'promise.defer'
 
 import { buildImage } from '~/rpc'
 import { configHasRequiredEnvs } from '~/common'
-import { getEnvValues, getHistoricTabs, getShowHistory } from '~/persistence'
+import { getEnvValues, getHistoricTabs, getShowHistory, getShowLogs } from '~/persistence'
 import { handleConfigUpdated, handleConsoleLog, handleDockerLog, handleAppStatusUpdated } from '~/rpc/events'
 
 import config, { ConfigState } from './config'
@@ -45,11 +45,19 @@ handleAppStatusUpdated(({ status }) => {
   appStatusReady.resolve(status)
 })
 
-Promise.all([getEnvValues(), getHistoricTabs(), getShowHistory(), configReady.promise, appStatusReady.promise])
-  .then(([envValues, historicTabs, showHistory, appConfig, appStatus]) => {
+Promise.all([
+  getEnvValues(),
+  getHistoricTabs(),
+  getShowHistory(),
+  getShowLogs(),
+  configReady.promise,
+  appStatusReady.promise,
+])
+  .then(([envValues, historicTabs, showHistory, showLogs, appConfig, appStatus]) => {
     store.commit('setConfigEnvs', envValues)
     store.commit('setHistoricTabs', historicTabs)
     store.commit('setShowHistory', showHistory)
+    store.commit('setShowLogs', showLogs)
     store.commit('setAppReady')
 
     if (configHasRequiredEnvs(appConfig, envValues)) {

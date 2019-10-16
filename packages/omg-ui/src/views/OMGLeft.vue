@@ -116,7 +116,6 @@ export default {
   },
   data: () => ({
     searchTerm: '',
-    iconDropdownSource: require('~/images/icon-dropdown.svg'),
     iconCircleTimesSource: require('~/images/icon-circle-times.svg'),
     iconBookmarkSource: require('~/images/icon-bookmark.svg'),
     iconMagnifyingGlassSource: require('~/images/icon-magnifyingglass.svg'),

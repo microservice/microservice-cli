@@ -2,7 +2,6 @@
   <Flex
     row
     :b="1"
-    v-bind="componentStyle"
     v-on:click="onToggle"
     :class="{'oms-toggle': true, enabled}"
     bordercolor="blue40"
@@ -15,11 +14,6 @@
 
 <script lang="ts">
 import Flex from './Flex.vue'
-
-type PropsPhoto = {
-  enabled: boolean
-  onToggle: () => void
-}
 
 export default {
   inheritAttrs: false,
@@ -35,39 +29,38 @@ export default {
     },
   },
   components: { Flex },
-  data(cc) {
-    return { componentStyle: cc.$attrs }
-  },
 }
 </script>
 <style lang="less" scoped>
-  .oms-toggle {
-    width: 24px;
-    cursor: pointer;
-    border-radius: 2px;
-    background-color: white;
+.oms-toggle {
+  user-select: none;
+  width: 24px;
+  cursor: pointer;
+  border-radius: 2px;
+  background-color: white;
+  box-shadow: 0px 1px 5px rgba(24, 59, 140, 0.186325);
 
-    .bullet {
-      background-color: #477BF3;
-    }
+  .bullet {
+    background-color: #477bf3;
+  }
+  .spacer-1 {
+    flex: 0;
+  }
+  .spacer-2 {
+    flex: 2;
+  }
+  &.enabled {
+    background-color: #477bf3;
+
     .spacer-1 {
-      flex: 0;
-    }
-    .spacer-2 {
       flex: 2;
     }
-    &.enabled {
-      background-color: #477BF3;
-
-      .spacer-1 {
-        flex: 2
-      }
-      .spacer-2 {
-        flex: 0;
-      }
-      .bullet {
-        background-color: white;
-      }
+    .spacer-2 {
+      flex: 0;
+    }
+    .bullet {
+      background-color: white;
     }
   }
+}
 </style>

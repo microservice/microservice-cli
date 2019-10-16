@@ -1,13 +1,15 @@
-import { setShowHistory } from '~/persistence'
+import { setShowHistory, setShowLogs } from '~/persistence'
 
 export interface ViewsState {
   appReady: boolean
   showHistory: boolean
+  showLogs: boolean
 }
 
 const defaultState: ViewsState = {
   appReady: false,
   showHistory: false,
+  showLogs: false,
 }
 
 const mutations = {
@@ -19,6 +21,14 @@ const mutations = {
     state.showHistory = !!value
     setShowHistory(state.showHistory)
   },
+  toggleShowLogs(state: ViewsState) {
+    state.showLogs = !state.showLogs
+    setShowLogs(state.showLogs)
+  },
+  setShowLogs(state: ViewsState, value: boolean) {
+    state.showLogs = !!value
+    setShowLogs(state.showLogs)
+  },
   setAppReady(state: ViewsState) {
     state.appReady = true
   },
@@ -27,6 +37,9 @@ const mutations = {
 const getters = {
   getShowHistory(state: ViewsState) {
     return state.showHistory
+  },
+  getShowLogs(state: ViewsState) {
+    return state.showLogs
   },
   getAppReady(state: ViewsState) {
     return state.appReady
