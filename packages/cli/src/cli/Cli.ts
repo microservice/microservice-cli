@@ -600,7 +600,7 @@ export default class Cli {
       if (ui) {
         return 'ERROR_PARSING'
       }
-      utils.error(`Issue with oms.yml: ${e.message}`)
+      utils.error(`Issue with ${yamlPath}: ${e.message}`)
       process.exit(1)
       throw new Error('Parsing failed')
       // ^ Purely cosmetic for typechecker

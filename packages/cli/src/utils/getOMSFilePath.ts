@@ -8,10 +8,5 @@ const omsFileAliases = ['oms.yml', 'oms.yaml', 'microservice.yml', 'microservice
  * @return {string} microservice file path
  */
 export default function getOMSFilePath(dir: string): string {
-  for (let i = 0; i < omsFileAliases.length; i++) {
-    const fileAlias = omsFileAliases[i]
-    const filePath = path.join(dir, fileAlias)
-    if (fs.existsSync(filePath)) return filePath
-  }
-  return null
+  return omsFileAliases.map(fileName => path.join(dir, fileName)).find(filePath => fs.existsSync(filePath)) || null
 }
