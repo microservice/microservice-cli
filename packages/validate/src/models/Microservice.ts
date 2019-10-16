@@ -60,13 +60,13 @@ export default class Microservice {
     }
     this._lifecycle = microserviceYamlJson.lifecycle ? new Lifecycle(microserviceYamlJson.lifecycle) : null
     this.forwardMap = null
-    if (microserviceYamlJson.forward) {
+    if (microserviceYamlJson.forwards) {
       this.forwardMap = {}
-      const forwardList = Object.keys(microserviceYamlJson.forward)
+      const forwardList = Object.keys(microserviceYamlJson.forwards)
       for (let i = 0; i < forwardList.length; i += 1) {
         this.forwardMap[forwardList[i]] = new Forward(
           forwardList[i],
-          microserviceYamlJson.forward[forwardList[i]],
+          microserviceYamlJson.forwards[forwardList[i]],
           this.actionMap,
           this.forwardMap,
         )
