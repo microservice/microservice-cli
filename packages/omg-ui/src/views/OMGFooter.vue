@@ -12,8 +12,11 @@
         </Words>
       </Flex>
     </Flex>
-    <Flex row :ph="2" :pv="1">
-      <Words>History Dismiss Button</Words>
+    <Flex row :ph="2" :pv="1" userSelect="none">
+      <Toggle :enabled="showHistory" :onToggle="toggleShowHistory" />
+      <Flex :ml="1">
+        <Words size="small">Show History</Words>
+      </Flex>
     </Flex>
   </Flex>
 </template>
@@ -25,11 +28,18 @@ import Flex from '~/components/Flex.vue'
 import Button from '~/components/Button.vue'
 import Photo from '~/components/Photo.vue'
 import Words from '~/components/Words.vue'
+import Toggle from '~/components/Toggle.vue'
 
 export default {
-  components: { Flex, Button, Words, Photo },
+  components: { Flex, Button, Words, Photo, Toggle },
+  methods: {
+    ...mapMutations(['toggleShowHistory'])
+  },
   computed: {
-    ...mapGetters(['logsAllReverse']),
+    ...mapGetters({
+      showHistory: 'getShowHistory',
+      logsAllReverse: 'logsAllReverse',
+    }),
   },
   data: () => ({
     iconResizeKnobSource: require('~/images/icon-resize-knob.svg'),

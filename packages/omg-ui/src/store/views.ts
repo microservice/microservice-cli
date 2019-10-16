@@ -1,16 +1,16 @@
 export interface ViewsState {
   appReady: boolean
-  showMetrics: boolean
+  showHistory: boolean
 }
 
 const defaultState: ViewsState = {
   appReady: false,
-  showMetrics: false,
+  showHistory: true,
 }
 
 const mutations = {
-  toggleMetrics(state: ViewsState) {
-    state.showMetrics = !state.showMetrics
+  toggleShowHistory(state: ViewsState) {
+    state.showHistory = !state.showHistory
   },
   setAppReady(state: ViewsState) {
     state.appReady = true
@@ -18,8 +18,8 @@ const mutations = {
 }
 
 const getters = {
-  getShowMetrics(state: ViewsState) {
-    return state.showMetrics
+  getShowHistory(state: ViewsState) {
+    return state.showHistory
   },
   getAppReady(state: ViewsState) {
     return state.appReady
