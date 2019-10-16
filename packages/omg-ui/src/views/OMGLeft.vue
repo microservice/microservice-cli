@@ -18,7 +18,7 @@
     </Flex>
     <Flex row backgroundColor="grey10" justifyContent="flex-end" :pv="0.5" :ph="2" :bv="1">
       <Button :onPress="clearHistoricTabs">
-        <Words size="small">Clear all</Words>
+        <Words size="small" :class="{'clear-all-dimmed': !historicTabs.length}">Clear all</Words>
       </Button>
     </Flex>
     <Flex column :p="3" :flex="1">
@@ -156,5 +156,8 @@ export default {
   width: 10px;
   height: 10px;
   left: -16px;
+}
+.clear-all-dimmed {
+  color: #9aa5b1;
 }
 </style>
