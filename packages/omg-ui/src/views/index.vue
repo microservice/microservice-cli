@@ -1,5 +1,5 @@
 <template>
-  <div id="omg">
+  <div id="omg" v-if="appReady">
     <Words size="medium">
       <Flex column flex="1" v-bind:class="{'omg-content-hidden': !!activeModal}">
         <OMGHeader />
@@ -33,6 +33,7 @@ export default {
   components: { Flex, Words, OMGHeader, OMGCenter, OMGLeft, OMGFooter, Modals },
   computed: {
     ...mapGetters({
+      appReady: 'getAppReady',
       activeModal: 'getActiveModal',
       showHistory: 'getShowHistory',
     }),

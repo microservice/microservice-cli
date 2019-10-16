@@ -58,7 +58,7 @@
       <Flex
         key="hitems-empty"
         column
-        v-if="!historicTabs.length && appReady"
+        v-if="!historicTabs.length"
         :flex="1"
         justifyContent="center"
         alignItems="center"
@@ -95,7 +95,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      appReady: 'getAppReady',
       historicTabsRaw: 'getHistoricTabs',
     }),
     historicTabs() {

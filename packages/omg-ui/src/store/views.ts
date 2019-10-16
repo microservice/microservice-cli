@@ -1,3 +1,5 @@
+import { setShowHistory } from '~/persistence'
+
 export interface ViewsState {
   appReady: boolean
   showHistory: boolean
@@ -5,12 +7,17 @@ export interface ViewsState {
 
 const defaultState: ViewsState = {
   appReady: false,
-  showHistory: true,
+  showHistory: false,
 }
 
 const mutations = {
   toggleShowHistory(state: ViewsState) {
     state.showHistory = !state.showHistory
+    setShowHistory(state.showHistory)
+  },
+  setShowHistory(state: ViewsState, value: boolean) {
+    state.showHistory = !!value
+    setShowHistory(state.showHistory)
   },
   setAppReady(state: ViewsState) {
     state.appReady = true

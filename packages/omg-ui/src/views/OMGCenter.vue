@@ -149,9 +149,9 @@ export default {
   components: { Flex, Photo, Words, Button, Monaco, VSelect },
   computed: {
     ...mapGetters({
-      activeActionTab: 'getActiveActionTab',
-      allActionTabs: 'getAllActionTabs',
       configActions: 'getConfigActions',
+      allActionTabs: 'getAllActionTabs',
+      activeActionTab: 'getActiveActionTab',
     }),
     showTabCloseButton(state) {
       return state.allActionTabs.length > 1
