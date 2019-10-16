@@ -84,7 +84,7 @@
       </Flex>
     </Flex>
     <Flex row :ph="2" :pv="1" :flex="1">
-      <Flex column :flex="1" backgroundColor="white">
+      <Flex column width="calc(50% - 12px)" backgroundColor="white">
         <Flex row :pv="1" :ph="2.5" :bb="1" alignItems="center">
           <Words size="medium" fontWeight="500">Request</Words>
           <Flex row :flex="1" justifyContent="flex-end" v-if="copySupported">
@@ -109,7 +109,7 @@
       <Flex :ph="0.5">
         <Photo :source="iconResizeKnobSource" :width="2" :height="2" class="editor-resize-knob" />
       </Flex>
-      <Flex column :flex="1" backgroundColor="white">
+      <Flex column width="calc(50% - 12px)" backgroundColor="white">
         <Flex row :pv="1" :ph="2.5" :bb="1" alignItems="center">
           <Words size="medium" fontWeight="500">Result</Words>
           <Flex row :flex="1" justifyContent="flex-end" v-if="copySupported">

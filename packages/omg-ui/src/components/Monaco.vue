@@ -78,14 +78,15 @@ export default {
       minimap: {
         enabled: this.minimapEnabled,
       },
+      theme: this.theme,
       wordWrap: this.wordWrap,
       lineNumbers: this.lineNumbers,
       scrollbar: {
         verticalScrollbarSize: 2,
         horizontal: 'visible',
       },
+      automaticLayout: true,
       scrollBeyondLastLine: false,
-      theme: this.theme,
     })
     this.$editor.onDidChangeModelContent(() => {
       if (this.onChange) [this.onChange(this.$editor.getValue())]
