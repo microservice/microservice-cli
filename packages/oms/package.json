@@ -14,7 +14,7 @@
     "oms": "./oms",
     "omg": "./oms"
   },
-  "version": "0.15.0",
+  "version": "0.15.1",
   "main": "oms",
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@microservices/cli": "^0.15.0",
-    "@microservices/ui": "^0.15.0"
+    "@microservices/cli": "^0.15.1",
+    "@microservices/ui": "^0.15.1"
   }
 }

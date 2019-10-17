@@ -1,6 +1,6 @@
 {
   "name": "@microservices/ui",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "scripts": {
     "watch": "yarn build --watch",
     "serve": "vue-cli-service serve",

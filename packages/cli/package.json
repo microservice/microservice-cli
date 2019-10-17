@@ -10,7 +10,7 @@
     "microservices",
     "specification"
   ],
-  "version": "0.15.0",
+  "version": "0.15.1",
   "main": "oms",
   "scripts": {
     "build": "sb-babel-cli src -o dist --typescript",
@@ -29,6 +29,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@microservices/ui": "^0.15.1",
+    "@microservices/validate": "^0.15.1",
     "chokidar": "^2.1.5",
     "commander": "^2.15.1",
     "dockerode": "^2.5.8",
@@ -38,8 +40,6 @@
     "get-port": "^5.0.0",
     "lineup": "^0.0.7",
     "log-symbols": "^2.2.0",
-    "@microservices/ui": "^0.15.0",
-    "@microservices/validate": "^0.15.0",
     "open": "^6.1.0",
     "ora": "^3.0.0",
     "request": "^2.87.0",
