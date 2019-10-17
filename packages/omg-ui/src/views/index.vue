@@ -1,13 +1,13 @@
 <template>
-  <div id="omg" v-if="appReady">
+  <div v-if="appReady">
     <Words size="medium">
-      <Flex column flex="1" v-bind:class="{'omg-content-hidden': !!activeModal}">
-        <OMGHeader />
+      <Flex column flex="1" v-bind:class="{'content-hidden': !!activeModal}">
+        <AppHeader />
         <Flex row :flex="1" height="100%">
-          <OMGLeft v-if="showHistory" />
+          <ActionsHistory v-if="showHistory" />
           <Flex column :flex="1" overflow="hidden">
-            <OMGCenter />
-            <OMGFooter />
+            <AppCenter />
+            <AppFooter />
           </Flex>
         </Flex>
       </Flex>
@@ -22,15 +22,15 @@ import { mapGetters } from 'vuex'
 import Flex from '~/components/Flex.vue'
 import Words from '~/components/Words.vue'
 
-import OMGHeader from './OMGHeader.vue'
-import OMGCenter from './OMGCenter.vue'
-import OMGLeft from './OMGLeft.vue'
-import OMGFooter from './OMGFooter.vue'
+import AppHeader from './AppHeader/index.vue'
+import AppCenter from './AppCenter.vue'
+import AppFooter from './AppFooter.vue'
+import ActionsHistory from './ActionsHistory.vue'
 
 import Modals from './Modals/index.vue'
 
 export default {
-  components: { Flex, Words, OMGHeader, OMGCenter, OMGLeft, OMGFooter, Modals },
+  components: { Flex, Words, AppHeader, AppCenter, ActionsHistory, AppFooter, Modals },
   computed: {
     ...mapGetters({
       appReady: 'getAppReady',
@@ -42,7 +42,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.omg-content-hidden {
+.content-hidden {
   filter: blur(2px);
 }
 </style>

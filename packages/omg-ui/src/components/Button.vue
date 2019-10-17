@@ -1,6 +1,6 @@
 <template>
   <Flex
-    class="omg-button"
+    class="app-button"
     alignItems="center"
     v-bind="componentStyle"
     v-bind:style="{cursor: disabled ? 'initial' : 'pointer', filter: disabled ? 'contrast(0.7)' : 'none'}"
@@ -64,7 +64,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.omg-button {
+.app-button {
   user-select: none;
   opacity: 0.8;
   &&:not(.disabled):active {

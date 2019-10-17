@@ -2,7 +2,7 @@
   <Flex row :mv="1" :mh="2">
     <Flex row :flex="1">
       <Flex column>
-        <Photo :source="omgLogoSource" :size="3" />
+        <Photo :source="appLogoSource" :size="3" />
       </Flex>
       <Flex column :mh="1.5" justifyContent="center">
         <Words size="large">Open Microservice Guide</Words>
@@ -25,7 +25,14 @@
     </Flex>
     <Flex row :flex="1" justifyContent="flex-end">
       <Flex row justifyContent="center">
-        <Button theme="borderless" bold backgroundColor="blue50" color="white" :p="1" :onPress="handleContributeOnGithub">
+        <Button
+          theme="borderless"
+          bold
+          backgroundColor="blue50"
+          color="white"
+          :p="1"
+          :onPress="handleContributeOnGithub"
+        >
           Contribute on Github
           <Photo :source="githubLogoSource" :size="2" :ml="1" />
         </Button>
@@ -49,11 +56,11 @@ export default {
   },
   methods: {
     handleContributeOnGithub() {
-      window.open('https://github.com/microservices/omg', '_blank', 'noopener,noreferrer')
+      window.open('https://github.com/microservices/oms', '_blank', 'noopener,noreferrer')
     },
   },
   data: () => ({
-    omgLogoSource: require('~/images/omg-logo.svg'),
+    appLogoSource: require('~/images/app-logo.svg'),
     githubLogoSource: require('~/images/github-logo.svg'),
   }),
 }

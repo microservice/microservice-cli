@@ -1,5 +1,5 @@
 <template>
-  <Flex column v-bind:class="{'omg-footer': true, 'expanded': showLogs}">
+  <Flex column v-bind:class="{'app-footer': true, 'expanded': showLogs}">
     <Flex column :bv="1">
       <Flex row justifyContent="space-between" :ph="2" :pv="1">
         <Words>Container Logs</Words>
@@ -10,7 +10,7 @@
       </Flex>
       <Flex column :bt="1" :ph="2" overflow="hidden" v-if="showLogs">
         <Words color="grey60" overflowY="scroll">
-          <pre class="omg-right-logs" v-text="logsAllReverse" />
+          <pre v-text="logsAllReverse" />
         </Words>
       </Flex>
     </Flex>
@@ -51,7 +51,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.omg-footer {
+.app-footer {
   height: 9% !important;
   &.expanded {
     height: 30% !important;
