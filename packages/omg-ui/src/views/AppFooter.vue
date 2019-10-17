@@ -4,11 +4,11 @@
       <Flex row justifyContent="space-between" :ph="2" :pv="1">
         <Words>Container Logs</Words>
         <Photo :source="iconResizeKnobSource" :width="1.5" :height="2" />
-        <Flex row :mr="3">
+        <Flex row :mr="1">
           <ToggleVertical :enabled="showLogs" :onToggle="toggleShowLogs" />
         </Flex>
       </Flex>
-      <Flex column :bt="1" :ph="2" overflow="hidden" v-if="showLogs">
+      <Flex column :bt="1" :pl="2" overflow="hidden" v-if="showLogs">
         <Words color="grey60" overflowY="scroll">
           <pre v-text="logsAllReverse" />
         </Words>
