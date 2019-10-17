@@ -102,7 +102,7 @@
             </Flex>
           </Flex>
         </Flex>
-        <Flex column :flex="1" :p="4">
+        <Flex column :flex="1">
           <Monaco language="json" :code="activeActionTab.payload" :onChange="setActionPayload" />
         </Flex>
       </Flex>
@@ -127,7 +127,7 @@
             </Flex>
           </Flex>
         </Flex>
-        <Flex column :flex="1" :ph="4" :pv="2">
+        <Flex column :flex="1">
           <Monaco language="json" readonly :code="activeActionTab.result" />
         </Flex>
       </Flex>
