@@ -171,7 +171,7 @@ export default abstract class Run {
     })
   }
   /**
-   * Starts the server for the HTTP command based off the lifecycle provided in the microservice.yml and builds port mapping.
+   * Starts the server for the HTTP command based off the lifecycle provided in the oms.yml and builds port mapping.
    *
    * @param {boolean} [inheritEnv=false] Boolean that allows to get env from host env or not
    * @return {String} The id of the container

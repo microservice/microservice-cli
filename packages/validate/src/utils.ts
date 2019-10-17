@@ -2,7 +2,7 @@ import * as _ from 'underscore'
 import { scopes } from './schema/schemas'
 
 /**
- * @param  {string} scope scope of the microservice.yml
+ * @param  {string} scope scope of the oms.yml
  * @return {string} array of properties
  */
 export function getPossibleProperties(givenScope: string): string[] {
@@ -38,7 +38,7 @@ export function setVal(val: any, _else: any): any {
 /**
  * Checks the interface
  *
- * @param  {any} microserviceJson provided microservice.yml as JSON
+ * @param  {any} microserviceJson provided oms.yml as JSON
  * @return {void} no return value
  */
 export function checkActionInterface(microserviceJson: any): void {

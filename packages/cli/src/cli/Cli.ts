@@ -26,9 +26,7 @@ export default class Cli {
    */
   public constructor() {
     if (
-      ((!fs.existsSync(path.join(process.cwd(), 'microservice.yml')) &&
-        !fs.existsSync(path.join(process.cwd(), 'microservice.yaml'))) ||
-        !fs.existsSync(path.join(process.cwd(), 'Dockerfile'))) &&
+      !utils.checkValidOMSDirectory(process.cwd()) &&
       !process.argv.includes('--help') &&
       !process.argv.includes('-h') &&
       !process.argv.includes('--version') &&
@@ -36,7 +34,7 @@ export default class Cli {
       !process.argv.includes('-v') &&
       process.argv.length > 2
     ) {
-      utils.error('Must be ran in a directory with a `Dockerfile` and a `microservice.y[a]ml`')
+      utils.error('Must be ran in a directory with a `Dockerfile` and a `oms.y[a]ml`')
       process.exit(1)
     }
   }
@@ -54,12 +52,12 @@ export default class Cli {
   }
 
   /**
-   * Builds a {@link Microservice} based ton the `microservice.yml` file. If the build throws an error the user
+   * Builds a {@link Microservice} based ton the `oms.yml` file. If the build throws an error the user
    * will be directed to run `oms validate`.
    */
   public buildMicroservice(): void {
     try {
-      const json = YAML.parse(utils.readMicroserviceFile())
+      const json = YAML.parse(utils.readOMSFile(process.cwd()))
       this.microservice = new Microservice(json)
     } catch (e) {
       Cli.validate({})
@@ -193,13 +191,13 @@ export default class Cli {
   }
 
   /**
-   * Reads the `microservice.yml` and validates it.
+   * Reads the `oms.yml` and validates it.
    *
    * @param {Object} options The given options (json, silent, or text)
    */
   public static validate(options: any): void {
     try {
-      utils.log(new OMGValidate(utils.readMicroserviceFile(), options).validate())
+      utils.log(new OMGValidate(utils.readOMSFile(process.cwd()), options).validate())
       process.exit(0)
     } catch (e) {
       utils.error(e)
@@ -236,7 +234,7 @@ export default class Cli {
   }
 
   /**
-   * Will read the `microservice.yml` and `Dockerfile` and run the given command with the given arguments and environment variables.
+   * Will read the `oms.yml` and `Dockerfile` and run the given command with the given arguments and environment variables.
    *
    * @param {String} action The command to run
    * @param {Object} options The given object holding the command, arguments, and environment variables
@@ -423,7 +421,7 @@ export default class Cli {
   }
 
   /**
-   * Will read the `microservice.yml` and `Dockerfile` and subscribe to the with the given event..
+   * Will read the `oms.yml` and `Dockerfile` and subscribe to the with the given event..
    *
    * @param {String} action The given action
    * @param {String} event The given event
@@ -481,7 +479,7 @@ export default class Cli {
   public async ui(options: any): Promise<any> {
     await Cli.checkDocker()
     try {
-      this.uiServer = new UIServer(options, Cli.readYAML(utils.getMicroserviceFilePath(), true))
+      this.uiServer = new UIServer(options, Cli.readYAML(utils.getOMSFilePath(process.cwd()), true))
       this.uiServer.startUI(!!options.open)
 
       chokidar
@@ -490,7 +488,7 @@ export default class Cli {
         })
         .on('all', (event, appPath) => {
           if (event === 'change') {
-            this.uiServer.rebuild({}, Cli.readYAML(utils.getMicroserviceFilePath(), true), true, appPath)
+            this.uiServer.rebuild({}, Cli.readYAML(utils.getOMSFilePath(process.cwd()), true), true, appPath)
           }
         })
     } catch (e) {
@@ -526,7 +524,7 @@ export default class Cli {
    * @param  {any} options Provided options for 'list' action
    */
   public list(options: any): void {
-    const json = Cli.readYAML(utils.getMicroserviceFilePath())
+    const json = Cli.readYAML(utils.getOMSFilePath(process.cwd()))
     try {
       utils.checkActionInterface(json)
       const m = new Microservice(json)
@@ -589,7 +587,7 @@ export default class Cli {
   }
 
   /**
-   * Read's a `microservice.yml` file to a string.
+   * Read's a `oms.yml` file to a string.
    *
    * @param {String} path The given path
    * @param {boolean} [ui=false] The given boolean if ui mode is enabled or not
@@ -602,7 +600,7 @@ export default class Cli {
       if (ui) {
         return 'ERROR_PARSING'
       }
-      utils.error(`Issue with microservice.yml: ${e.message}`)
+      utils.error(`Issue with ${yamlPath}: ${e.message}`)
       process.exit(1)
       throw new Error('Parsing failed')
       // ^ Purely cosmetic for typechecker

@@ -15,7 +15,7 @@ import healthSchema from './schemas/health'
 const ajv = new Ajv({ allErrors: true })
 
 /**
- * Runs validation on a `microservice.yml`.
+ * Runs validation on a `oms.yml`.
  *
  * @param {Object} json The given object to validate
  * @param {Object} validator The given validation function

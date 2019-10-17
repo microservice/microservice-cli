@@ -76,7 +76,7 @@ describe('Cli.ts', () => {
       process.argv = ['1', '2', '3']
       new Cli()
 
-      // expect(utils.error.toBeCalledWith('Must be run in a directory with a `Dockerfile` and a `microservice.yml`')).toBeTruthy();
+      // expect(utils.error.toBeCalledWith('Must be run in a directory with a `Dockerfile` and a `oms.yml`')).toBeTruthy();
       expect(process.exit).toHaveBeenCalledWith(1)
     })
   })
@@ -90,7 +90,7 @@ describe('Cli.ts', () => {
       expect(process.exit).not.toBeCalled()
     })
 
-    test('errors out because the `microservice.yml` is not valid', () => {
+    test('errors out because the `oms.yml` is not valid', () => {
       ;(fs.readFileSync as jest.Mock).mockImplementation(() => 'foo: bar')
       const cli = new Cli()
       cli.buildMicroservice()
@@ -133,7 +133,7 @@ describe('Cli.ts', () => {
   })
 
   describe('Cli.validate(options)', () => {
-    describe('valid `microservice.yml`', () => {
+    describe('valid `oms.yml`', () => {
       test('silent option', () => {
         Cli.validate({ silent: true })
 
@@ -204,7 +204,7 @@ describe('Cli.ts', () => {
       })
     })
 
-    describe('invalid `microservice.yml`', () => {
+    describe('invalid `oms.yml`', () => {
       // we need to make the return value fail the test, and we already stubbed in the layer above this
       // so we need to restore and re-wrap it, then the next layer will restore
       beforeEach(() => {

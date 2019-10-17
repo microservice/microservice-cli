@@ -14,7 +14,7 @@ export default class Argument extends Item {
    * Builds an {@link Argument}.
    *
    * @param {String} name The given name
-   * @param {String} pathToArgument The path in the `microservice.yml` to this {@link Argument}
+   * @param {String} pathToArgument The path in the `oms.yml` to this {@link Argument}
    * @param {Object} rawArguments The given raw data
    */
   public constructor(name: string, pathToArgument: string, rawArguments: any) {

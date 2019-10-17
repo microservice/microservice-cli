@@ -8,7 +8,7 @@ import { scopes } from './schema/schemas'
 
 /**
  * OMGValidate class
- * Used to validate microservice.yml.
+ * Used to validate oms.yml.
  */
 export default class OMGValidate {
   private readonly _microservice: string
@@ -17,7 +17,7 @@ export default class OMGValidate {
   /**
    * Constructor
    *
-   * @param  {string} microservice microservice.yml as a string
+   * @param  {string} microservice oms.yml as a string
    * @param  {any} opts optionnal options mostly used by oms-cli
    */
   public constructor(microservice: string, opts?: any) {
@@ -26,7 +26,7 @@ export default class OMGValidate {
   }
 
   /**
-   * Validates the microservice.yml
+   * Validates the oms.yml
    *
    * @return {any} Success or error message
    */
@@ -45,7 +45,7 @@ export default class OMGValidate {
   /**
    * YAML Parser
    *
-   * @param  {string} file microservice.yml
+   * @param  {string} file oms.yml
    * @return {string} parsing result
    */
   private readYAML(file: string): string {
@@ -53,7 +53,7 @@ export default class OMGValidate {
       yamljs.parse(file)
       return yamljs.load(file)
     } catch (e) {
-      utils.error(`Issue with microservice.yml:\n${e}`)
+      utils.error(`Issue with oms.yml:\n${e}`)
       process.exit(1)
       throw new Error('Parsing failed')
       // ^ Pure cosmetic since we called process.exit() earlier
