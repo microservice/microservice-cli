@@ -115,7 +115,7 @@ describe('utils.ts', () => {
             port: 5050,
           },
         },
-        forward: {
+        forwards: {
           ui: {
             http: {
               path: '/ui',
@@ -322,7 +322,7 @@ describe('utils.ts', () => {
             port: 5050,
           },
         },
-        forward: {
+        forwards: {
           ui: {
             http: {
               path: '/ui',

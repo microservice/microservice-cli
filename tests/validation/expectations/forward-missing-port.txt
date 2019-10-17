@@ -1,5 +1,5 @@
 2 errors found:
-  1. forward.http should only have theses properties:
+  1. forwards.http should only have theses properties:
     'method'
     'port'
     'path'
