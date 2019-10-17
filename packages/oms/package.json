@@ -10,6 +10,10 @@
     "microservices",
     "specification"
   ],
+  "bin": {
+    "oms": "./oms",
+    "omg": "./oms"
+  },
   "version": "0.15.0",
   "main": "oms",
   "repository": {
