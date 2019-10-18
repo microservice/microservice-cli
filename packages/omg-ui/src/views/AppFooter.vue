@@ -23,7 +23,7 @@
   </Flex>
 </template>
 
-<script>
+<script lang="ts">
 import { mapGetters, mapMutations } from 'vuex'
 
 import Flex from '~/components/Flex.vue'

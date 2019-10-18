@@ -52,7 +52,7 @@
   </Flex>
 </template>
 
-<script>
+<script lang="ts">
 import { debounce } from 'lodash'
 import { mapMutations, mapGetters } from 'vuex'
 import { writeConfig } from '~/rpc'

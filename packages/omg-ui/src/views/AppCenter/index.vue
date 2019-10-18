@@ -84,69 +84,29 @@
       </Flex>
     </Flex>
     <Flex row :ph="2" :pv="1" :flex="1" height="100%">
-      <Flex column width="calc(50% - 12px)" backgroundColor="white">
-        <Flex row :pv="1" :ph="2.5" :bb="1" alignItems="center">
-          <Words size="medium" fontWeight="500">Request</Words>
-          <Flex row :flex="1" justifyContent="flex-end" v-if="copySupported">
-            <Flex
-              row
-              :b="1"
-              :ph="1"
-              :pv="0.5"
-              v-on:click="handleCopyPayload"
-              boxShadow="0px 1px 5px rgba(24, 59, 140, 0.2)"
-              cursor="pointer"
-              userSelect="none"
-            >
-              <Words size="small">Copy</Words>
-            </Flex>
-          </Flex>
-        </Flex>
-        <Flex column :flex="1">
-          <Monaco language="json" :code="activeActionTab.payload" :onChange="setActionPayload" />
-        </Flex>
-      </Flex>
+      <Request />
       <Flex :ph="0.5">
         <Photo :source="iconResizeKnobSource" :width="2" :height="2" class="editor-resize-knob" />
       </Flex>
-      <Flex column width="calc(50% - 12px)" backgroundColor="white">
-        <Flex row :pv="1" :ph="2.5" :bb="1" alignItems="center">
-          <Words size="medium" fontWeight="500">Result</Words>
-          <Flex row :flex="1" justifyContent="flex-end" v-if="copySupported">
-            <Flex
-              row
-              :b="1"
-              :ph="1"
-              :pv="0.5"
-              v-on:click="handleCopyResult"
-              boxShadow="0px 1px 5px rgba(24, 59, 140, 0.2)"
-              cursor="pointer"
-              userSelect="none"
-            >
-              <Words size="small">Copy</Words>
-            </Flex>
-          </Flex>
-        </Flex>
-        <Flex column :flex="1">
-          <Monaco language="json" readonly :code="activeActionTab.result" />
-        </Flex>
-      </Flex>
+      <Response />
     </Flex>
   </Flex>
 </template>
 
-<script>
+<script lang="ts">
 import VSelect from 'vue-select'
-import { mapGeters, mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
 import Photo from '~/components/Photo.vue'
 import Words from '~/components/Words.vue'
 import Button from '~/components/Button.vue'
-import Monaco from '~/components/Monaco.vue'
+
+import Request from './Request.vue'
+import Response from './Response.vue'
 
 export default {
-  components: { Flex, Photo, Words, Button, Monaco, VSelect },
+  components: { Flex, Photo, Words, Button, VSelect, Request, Response },
   computed: {
     ...mapGetters({
       showLogs: 'getShowLogs',
@@ -170,7 +130,6 @@ export default {
       'selectActionsTab',
       'destroyActionsTab',
       'selectAction',
-      'setActionPayload',
       'saveActiveAction',
       'openEnvironmentModal',
       'openYamlEditorModal',
@@ -180,25 +139,8 @@ export default {
       event.stopImmediatePropagation()
       this.destroyActionsTab(tabId)
     },
-    handleCopyPayload() {
-      navigator.clipboard.writeText(this.activeActionTab.payload)
-      this.$toasted.show('Copied Payload to Clipboard', {
-        type: 'success',
-        position: 'bottom-center',
-        duration: 1500,
-      })
-    },
-    handleCopyResult() {
-      navigator.clipboard.writeText(this.activeActionTab.result)
-      this.$toasted.show('Copied Result to Clipboard', {
-        type: 'success',
-        position: 'bottom-center',
-        duration: 1500,
-      })
-    },
   },
   data: () => ({
-    copySupported: !!(navigator.clipboard && navigator.clipboard.writeText),
     iconPlusSource: require('~/images/icon-plus.svg'),
     iconCloseSource: require('~/images/icon-close.svg'),
     iconBookmarkSource: require('~/images/icon-bookmark.svg'),

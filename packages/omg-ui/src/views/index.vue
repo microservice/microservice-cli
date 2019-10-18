@@ -16,14 +16,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapGetters } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
 import Words from '~/components/Words.vue'
 
 import AppHeader from './AppHeader/index.vue'
-import AppCenter from './AppCenter.vue'
+import AppCenter from './AppCenter/index.vue'
 import AppFooter from './AppFooter.vue'
 import ActionsHistory from './ActionsHistory.vue'
 

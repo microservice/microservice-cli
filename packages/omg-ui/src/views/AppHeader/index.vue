@@ -41,7 +41,7 @@
   </Flex>
 </template>
 
-<script>
+<script lang="ts">
 import { mapGetters } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
