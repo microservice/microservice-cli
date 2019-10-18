@@ -36,7 +36,7 @@ Commands:
 
 ### Contributing
 
-After cloning this repository, open up a shell in said directory and execute the following
+After cloning this repository, open up a shell in repo directory and execute the following
 
 ```
 $ yarn bootstrap

@@ -114,6 +114,9 @@ const getters = {
       health: validationHealth,
     }
   },
+  getConfigValidationErrors(state: ConfigState): string[] {
+    return state.validationErrors
+  },
 }
 
 export default {

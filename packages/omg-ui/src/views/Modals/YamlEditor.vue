@@ -1,8 +1,5 @@
 <template>
-  <Flex
-    :flex="1"
-    row
-  >
+  <Flex :flex="1" row>
     <Flex
       :ph="2"
       :pt="2"
@@ -12,21 +9,12 @@
       background="linear-gradient(180deg, #323F4B 0%, #1F2933 100%)"
       width="10%"
     >
-      <Flex
-        :ph="1"
-        row
-      >
+      <Flex :ph="1" row>
         <Button :onPress="dismissModal">
-          <Photo
-            :source="iconBackSource"
-            :size="3"
-          />
+          <Photo :source="iconBackSource" :size="3" />
         </Button>
       </Flex>
-      <Flex
-        :mt="8"
-        column
-      >
+      <Flex :mt="8" column>
         <Flex
           :ph="2"
           :pv="1"
@@ -34,57 +22,29 @@
           v-bind:key="validationItem[0]"
           row
         >
-          <Words
-            color="white"
-            size="large"
-          >
-            {{ validationItem[0] }}
-          </Words>
-          <Flex
-            :flex="1"
-            row
-            justify-content="flex-end"
-            align-items="center"
-          >
-            <Photo
-              :source="iconCircleCheck"
-              :size="2"
-              v-if="validationItem[1]"
-            />
-            <Photo
-              :source="iconCircleTimes"
-              :size="2"
-              v-if="!validationItem[1]"
-            />
+          <Words color="white" size="large">{{ validationItem[0] }}</Words>
+          <Flex :flex="1" row justify-content="flex-end" align-items="center">
+            <Photo :source="iconCircleCheck" :size="2" v-if="validationItem[1]" />
+            <Photo :source="iconCircleTimes" :size="2" v-if="!validationItem[1]" />
           </Flex>
         </Flex>
       </Flex>
     </Flex>
-    <Flex
-      :flex="1"
-      column
-    >
+    <Flex :flex="1" column>
       <Flex
         :pv="1"
         row
         justify-content="center"
         background="linear-gradient(180deg, #323F4B 0%, #1F2933 100%)"
       >
-        <Words color="white">
-          microservice.yaml
-        </Words>
+        <Words color="white">microservice.yaml</Words>
       </Flex>
-      <Flex
-        :flex="1"
-        :pv="1.5"
-        :ph="1.5"
-        column
-        background="white"
-      >
+      <Flex :flex="1" :pv="1.5" :ph="1.5" column background="white">
         <Monaco
           :minimapEnabled="true"
           :code="configContents"
-          :onChange="writeConfig"
+          :onChange="handleEditorChanged"
+          :onCreated="handleEditorCreated"
           language="yaml"
           line-numbers="on"
         />
@@ -95,8 +55,10 @@
 
 <script lang="ts">
 import { debounce } from 'lodash'
+import { CompositeDisposable } from 'event-kit'
 import { mapMutations, mapGetters } from 'vuex'
-import { writeConfig } from '~/rpc'
+import { writeConfig, handleConfigUpdated } from '~/rpc'
+import { getValidationMarkers } from '~/services/config'
 
 import Flex from '~/components/Flex.vue'
 import Photo from '~/components/Photo.vue'
@@ -113,6 +75,7 @@ export default {
   computed: {
     ...mapGetters({
       configValidationsRaw: 'getConfigValidation',
+      configValidationErrors: 'getConfigValidationErrors',
     }),
     configValidations() {
       return [
@@ -126,8 +89,8 @@ export default {
   },
   methods: {
     ...mapMutations(['dismissModal']),
-    writeConfig: debounce(
-      function debouncedWriteConfig(contents) {
+    handleEditorChanged: debounce(
+      function handleEditorChanged(contents) {
         const { configContents } = this
         if (configContents !== contents) {
           writeConfig(contents).then(() => {
@@ -141,6 +104,29 @@ export default {
       1000,
       { trailing: true },
     ),
+    handleEditorCreated(editor, monaco) {
+      function handleValidation(validationErrors: string[]) {
+        monaco.editor.setModelMarkers(
+          editor.getModel(),
+          'app-yaml-editor',
+          getValidationMarkers({
+            monaco,
+            validationErrors,
+            text: editor.getValue(),
+          }),
+        )
+      }
+
+      this.subscriptions.add(
+        handleConfigUpdated(({ validationErrors }) => {
+          handleValidation(validationErrors)
+        }),
+      )
+      const onChangeDisposable = editor.onDidChangeModelContent(() => {
+        onChangeDisposable.dispose()
+        handleValidation(this.configValidationErrors)
+      })
+    },
   },
   created() {
     fetch('/api/configRaw')
@@ -150,10 +136,14 @@ export default {
       })
   },
   data: () => ({
+    subscriptions: new CompositeDisposable(),
     configContents: '',
     iconBackSource,
     iconCircleCheck,
     iconCircleTimes,
   }),
+  destroyed() {
+    this.subscriptions.dispose()
+  },
 }
 </script>

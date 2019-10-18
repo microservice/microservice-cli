@@ -3,6 +3,7 @@
 </template>
 <script lang="ts">
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import 'monaco-editor/esm/vs/editor/contrib/hover/hover'
 import 'monaco-editor/esm/vs/language/json/monaco.contribution'
 import 'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution'
 import 'monaco-editor/esm/vs/editor/contrib/format/formatActions'
@@ -52,6 +53,11 @@ export default {
     },
     onChange: {
       type: Function,
+      default: null,
+    },
+    onCreated: {
+      type: Function,
+      default: null,
     },
   },
   watch: {
@@ -89,7 +95,9 @@ export default {
         this.onChange(this.$editor.getValue())
       }
     })
+    if (this.onCreated) {
+      this.onCreated(this.$editor, monaco)
+    }
   },
-  methods: {},
 }
 </script>

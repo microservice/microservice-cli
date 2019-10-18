@@ -112,7 +112,7 @@ function oneOf(...validators: Validator[]): Validator {
 
 function enumValues(values: string[]): Validator {
   const callback = (value: any): boolean => values.includes(value)
-  const message = `one of ${values}`
+  const message = `one of ${values.join(', ')}`
 
   return { message, validate: callback }
 }
