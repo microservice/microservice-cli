@@ -1,40 +1,86 @@
 <template>
-  <Flex row :mv="1" :mh="2">
-    <Flex row :flex="1">
+  <Flex
+    :mv="1"
+    :mh="2"
+    row
+  >
+    <Flex
+      :flex="1"
+      row
+    >
       <Flex column>
-        <Photo :source="appLogo" :size="3" />
+        <Photo
+          :source="appLogo"
+          :size="3"
+        />
       </Flex>
-      <Flex column :mh="1.5" justifyContent="center">
-        <Words size="large">Open Microservice Guide</Words>
+      <Flex
+        :mh="1.5"
+        column
+        justify-content="center"
+      >
+        <Words size="large">
+          Open Microservice Guide
+        </Words>
       </Flex>
     </Flex>
-    <Flex row :flex="1" justifyContent="center">
-      <Flex column justifyContent="center">
+    <Flex
+      :flex="1"
+      row
+      justify-content="center"
+    >
+      <Flex
+        column
+        justify-content="center"
+      >
         <Button
+          :p="1"
+          v-text="appStatus"
           theme="borderless"
           bold
           color="blue"
-          backgroundColor="grey10"
-          :p="1"
-          v-text="appStatus"
-        ></Button>
+          background-color="grey10"
+        />
       </Flex>
-      <Flex column :ml="1.5" justifyContent="center">
-        <Button theme="borderless" bold color="blue" backgroundColor="grey10" :p="1">Completeness</Button>
-      </Flex>
-    </Flex>
-    <Flex row :flex="1" justifyContent="flex-end">
-      <Flex row justifyContent="center">
+      <Flex
+        :ml="1.5"
+        column
+        justify-content="center"
+      >
         <Button
+          :p="1"
           theme="borderless"
           bold
-          backgroundColor="blue50"
-          color="white"
+          color="blue"
+          background-color="grey10"
+        >
+          Completeness
+        </Button>
+      </Flex>
+    </Flex>
+    <Flex
+      :flex="1"
+      row
+      justify-content="flex-end"
+    >
+      <Flex
+        row
+        justify-content="center"
+      >
+        <Button
           :p="1"
           :onPress="handleContributeOnGithub"
+          theme="borderless"
+          bold
+          background-color="blue50"
+          color="white"
         >
           Contribute on Github
-          <Photo :source="githubLogo" :size="2" :ml="1" />
+          <Photo
+            :source="githubLogo"
+            :size="2"
+            :ml="1"
+          />
         </Button>
       </Flex>
     </Flex>

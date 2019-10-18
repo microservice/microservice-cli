@@ -1,23 +1,63 @@
 <template>
-  <Flex column v-bind:class="{'app-footer': true, 'expanded': showLogs}">
-    <Flex column :bv="1">
-      <Flex row justifyContent="space-between" :ph="2" :pv="1">
+  <Flex
+    v-bind:class="{'app-footer': true, 'expanded': showLogs}"
+    column
+  >
+    <Flex
+      :bv="1"
+      column
+    >
+      <Flex
+        :ph="2"
+        :pv="1"
+        row
+        justify-content="space-between"
+      >
         <Words>Container Logs</Words>
-        <Photo :source="iconResizeKnob" :width="1.5" :height="2" />
-        <Flex row :mr="1">
-          <ToggleVertical :enabled="showLogs" :onToggle="toggleShowLogs" />
+        <Photo
+          :source="iconResizeKnob"
+          :width="1.5"
+          :height="2"
+        />
+        <Flex
+          :mr="1"
+          row
+        >
+          <ToggleVertical
+            :enabled="showLogs"
+            :onToggle="toggleShowLogs"
+          />
         </Flex>
       </Flex>
-      <Flex column :bt="1" :pl="2" overflow="hidden" v-if="showLogs">
-        <Words color="grey60" overflowY="scroll">
+      <Flex
+        :bt="1"
+        :pl="2"
+        v-if="showLogs"
+        column
+        overflow="hidden"
+      >
+        <Words
+          color="grey60"
+          overflow-y="scroll"
+        >
           <pre v-text="logsAllReverse" />
         </Words>
       </Flex>
     </Flex>
-    <Flex row :ph="2" :pv="1" userSelect="none">
-      <ToggleHorizontal :enabled="showHistory" :onToggle="toggleShowHistory" />
+    <Flex
+      :ph="2"
+      :pv="1"
+      row
+      user-select="none"
+    >
+      <ToggleHorizontal
+        :enabled="showHistory"
+        :onToggle="toggleShowHistory"
+      />
       <Flex :ml="1">
-        <Words size="small">Show History</Words>
+        <Words size="small">
+          Show History
+        </Words>
       </Flex>
     </Flex>
   </Flex>

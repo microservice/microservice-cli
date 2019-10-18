@@ -1,51 +1,92 @@
 <template>
-  <Flex row :flex="1">
+  <Flex
+    :flex="1"
+    row
+  >
     <Flex
-      column
       :ph="2"
       :pt="2"
       :br="1"
+      column
       bordercolor="grey80"
       background="linear-gradient(180deg, #323F4B 0%, #1F2933 100%)"
       width="10%"
     >
-      <Flex row :ph="1">
+      <Flex
+        :ph="1"
+        row
+      >
         <Button :onPress="dismissModal">
-          <Photo :source="iconBackSource" :size="3" />
+          <Photo
+            :source="iconBackSource"
+            :size="3"
+          />
         </Button>
       </Flex>
-      <Flex column :mt="8">
+      <Flex
+        :mt="8"
+        column
+      >
         <Flex
-          row
           :ph="2"
           :pv="1"
           v-for="validationItem in configValidations"
           v-bind:key="validationItem[0]"
+          row
         >
-          <Words color="white" size="large">{{validationItem[0]}}</Words>
-          <Flex :flex="1" row justifyContent="flex-end" alignItems="center">
-            <Photo :source="iconCircleCheck" :size="2" v-if="validationItem[1]" />
-            <Photo :source="iconCircleTimes" :size="2" v-if="!validationItem[1]" />
+          <Words
+            color="white"
+            size="large"
+          >
+            {{ validationItem[0] }}
+          </Words>
+          <Flex
+            :flex="1"
+            row
+            justify-content="flex-end"
+            align-items="center"
+          >
+            <Photo
+              :source="iconCircleCheck"
+              :size="2"
+              v-if="validationItem[1]"
+            />
+            <Photo
+              :source="iconCircleTimes"
+              :size="2"
+              v-if="!validationItem[1]"
+            />
           </Flex>
         </Flex>
       </Flex>
     </Flex>
-    <Flex :flex="1" column>
+    <Flex
+      :flex="1"
+      column
+    >
       <Flex
-        row
-        justifyContent="center"
         :pv="1"
+        row
+        justify-content="center"
         background="linear-gradient(180deg, #323F4B 0%, #1F2933 100%)"
       >
-        <Words color="white">microservice.yaml</Words>
+        <Words color="white">
+          microservice.yaml
+        </Words>
       </Flex>
-      <Flex column :flex="1" background="white" :pv="1.5" :ph="1.5">
+      <Flex
+        :flex="1"
+        :pv="1.5"
+        :ph="1.5"
+        column
+        background="white"
+      >
         <Monaco
-          language="yaml"
-          lineNumbers="on"
           :minimapEnabled="true"
           :code="configContents"
           :onChange="writeConfig"
+          language="yaml"
+          line-numbers="on"
         />
       </Flex>
     </Flex>

@@ -1,13 +1,18 @@
 <template>
   <Flex
-    row
     :b="1"
     v-on:click="onToggle"
     :class="{'oms-toggle': true, enabled}"
+    row
     bordercolor="blue40"
   >
     <Flex class="spacer-1" />
-    <Flex :flex="1" borderRadius="2px" margin="2px" class="bullet" />
+    <Flex
+      :flex="1"
+      border-radius="2px"
+      margin="2px"
+      class="bullet"
+    />
     <Flex class="spacer-2" />
   </Flex>
 </template>
@@ -16,6 +21,7 @@
 import Flex from './Flex.vue'
 
 export default {
+  components: { Flex },
   inheritAttrs: false,
 
   props: {
@@ -28,7 +34,6 @@ export default {
       required: true,
     },
   },
-  components: { Flex },
 }
 </script>
 <style lang="less" scoped>

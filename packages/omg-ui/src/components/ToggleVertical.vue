@@ -1,12 +1,15 @@
 <template>
   <Flex
-    row
-    justifyContent="center"
-    alignItems="center"
     v-on:click="onToggle"
     :class="{'oms-toggle': true, enabled}"
+    row
+    justify-content="center"
+    align-items="center"
   >
-    <Dropdown :color="dropdownColor" :size="1" />
+    <Dropdown
+      :color="dropdownColor"
+      :size="1"
+    />
   </Flex>
 </template>
 
@@ -15,12 +18,8 @@ import Flex from './Flex.vue'
 import Dropdown from '~/icons/Dropdown'
 
 export default {
+  components: { Flex, Dropdown },
   inheritAttrs: false,
-  computed: {
-    dropdownColor() {
-      return this.enabled ? 'grey60' : 'blue40'
-    },
-  },
   props: {
     enabled: {
       type: Boolean,
@@ -31,7 +30,11 @@ export default {
       required: true,
     },
   },
-  components: { Flex, Dropdown },
+  computed: {
+    dropdownColor() {
+      return this.enabled ? 'grey60' : 'blue40'
+    },
+  },
 }
 </script>
 <style lang="less" scoped>

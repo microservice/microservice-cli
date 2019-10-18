@@ -1,88 +1,192 @@
 <template>
-  <Flex column :flex="1">
-    <Flex column height="auto">
-      <Flex row :ph="2" :pv="1.5" :bb="1" backgroundColor="white" minHeight="24px">
-        <Button :onPress="dismissModal" v-if="appStatus === 'started'">
-          <Photo :size="3" :source="iconClose" />
+  <Flex
+    :flex="1"
+    column
+  >
+    <Flex
+      column
+      height="auto"
+    >
+      <Flex
+        :ph="2"
+        :pv="1.5"
+        :bb="1"
+        row
+        background-color="white"
+        min-height="24px"
+      >
+        <Button
+          :onPress="dismissModal"
+          v-if="appStatus === 'started'"
+        >
+          <Photo
+            :size="3"
+            :source="iconClose"
+          />
         </Button>
       </Flex>
     </Flex>
-    <Flex row :flex="1" overflow="hidden">
-      <Flex column backgroundColor="grey10" :p="2" width="25%">
-        <Flex column height="auto" backgroundColor="white" :p="4" :flex="1">
-          <Flex column height="auto" v-if="configEnvs.length">
+    <Flex
+      :flex="1"
+      row
+      overflow="hidden"
+    >
+      <Flex
+        :p="2"
+        column
+        background-color="grey10"
+        width="25%"
+      >
+        <Flex
+          :p="4"
+          :flex="1"
+          column
+          height="auto"
+          background-color="white"
+        >
+          <Flex
+            v-if="configEnvs.length"
+            column
+            height="auto"
+          >
             <Flex row>
-              <Words size="xLarge" fontWeight="500">Environment</Words>
+              <Words
+                size="xLarge"
+                font-weight="500"
+              >
+                Environment
+              </Words>
             </Flex>
-            <Flex row :mt="1">
+            <Flex
+              :mt="1"
+              row
+            >
               <Words>Enter environment variables for your app below.</Words>
             </Flex>
-            <Flex column :mt="6">
-              <Flex column :mb="2" v-bind:key="envVar.name" v-for="envVar in configEnvs">
+            <Flex
+              :mt="6"
+              column
+            >
+              <Flex
+                :mb="2"
+                v-bind:key="envVar.name"
+                v-for="envVar in configEnvs"
+                column
+              >
                 <Flex row>
-                  <Words color="grey60" size="small">
-                    {{envVar.name}}
+                  <Words
+                    color="grey60"
+                    size="small"
+                  >
+                    {{ envVar.name }}
                     <span v-if="envVar.required">*</span>
                   </Words>
                 </Flex>
-                <Flex row :mt="0.5">
+                <Flex
+                  :mt="0.5"
+                  row
+                >
                   <input
-                    class="modal-env-input"
-                    type="text"
-                    placeholder="String"
                     v-bind:name="envVar.name"
                     v-bind:value="configEnvValues[envVar.name]"
                     @input="setEnvVar"
-                  />
+                    class="modal-env-input"
+                    type="text"
+                    placeholder="String"
+                  >
                 </Flex>
               </Flex>
             </Flex>
           </Flex>
-          <Flex column :mt="1">
+          <Flex
+            :mt="1"
+            column
+          >
             <Button
               :pv="1"
-              color="white"
-              justifyContent="center"
-              backgroundColor="teal60"
               :onPress="handleBuild"
-            >Save and Rebuild</Button>
+              color="white"
+              justify-content="center"
+              background-color="teal60"
+            >
+              Save and Rebuild
+            </Button>
           </Flex>
-          <Flex column :mt="4" v-if="showRebuildingMessage">
-            <Flex row justifyContent="center" color="teal60">
+          <Flex
+            :mt="4"
+            v-if="showRebuildingMessage"
+            column
+          >
+            <Flex
+              row
+              justify-content="center"
+              color="teal60"
+            >
               <Words>Rebuilding</Words>
             </Flex>
           </Flex>
         </Flex>
       </Flex>
-      <Flex column :ph="4" :pv="6" :flex="1" backgroundColor="white" overflow="hidden">
+      <Flex
+        :ph="4"
+        :pv="6"
+        :flex="1"
+        column
+        background-color="white"
+        overflow="hidden"
+      >
         <Flex row>
-          <Words size="xLarge" fontWeight="500">Docker Logs</Words>
-          <Flex row :ml="3" :pv="0.5" :ph="1.5" backgroundColor="teal20">
-            <Words size="small" color="teal80" fontWeight="500">$ docker inspect</Words>
+          <Words
+            size="xLarge"
+            font-weight="500"
+          >
+            Docker Logs
+          </Words>
+          <Flex
+            :ml="3"
+            :pv="0.5"
+            :ph="1.5"
+            row
+            background-color="teal20"
+          >
+            <Words
+              size="small"
+              color="teal80"
+              font-weight="500"
+            >
+              $ docker inspect
+            </Words>
           </Flex>
         </Flex>
         <Flex
           key="env-logs-non-empty"
-          column
           :mt="3"
-          overflowY="scroll"
           v-if="logsAllReverse.length"
+          column
+          overflow-y="scroll"
         >
           <Words color="grey60">
-            <pre class="modal-env-logs" v-text="logsAllReverse"></pre>
+            <pre
+              v-text="logsAllReverse"
+              class="modal-env-logs"
+            />
           </Words>
         </Flex>
         <Flex
           key="env-logs-empty"
-          column
           :mt="3"
           :flex="1"
-          alignItems="center"
-          justifyContent="center"
           v-if="!logsAllReverse.length"
+          column
+          align-items="center"
+          justify-content="center"
         >
-          <Words size="large">There's nothing to show here yet.</Words>
-          <Words size="large">Try adding some environment variables and hitting Save & Rebuild!</Words>
+          <Words size="large">
+            There's nothing to show here yet.
+          </Words>
+          <Words size="large">
+            Try adding some environment variables and hitting Save & Rebuild!
+          </Words>
         </Flex>
       </Flex>
     </Flex>

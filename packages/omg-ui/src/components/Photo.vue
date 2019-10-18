@@ -1,6 +1,14 @@
 <template>
-  <Flex column justifyContent="center" v-bind="componentStyle" v-on:click="onPress">
-    <img :src="source" :style="imageStyle" />
+  <Flex
+    v-bind="componentStyle"
+    v-on:click="onPress"
+    column
+    justify-content="center"
+  >
+    <img
+      :src="source"
+      :style="imageStyle"
+    >
   </Flex>
 </template>
 
@@ -39,6 +47,7 @@ function propsToStyles(props: Partial<PropsPhoto>) {
 }
 
 export default {
+  components: { Flex },
   inheritAttrs: false,
 
   props: {
@@ -59,7 +68,6 @@ export default {
       default: defaultOnPress,
     },
   },
-  components: { Flex },
   data(cc) {
     return { imageStyle: propsToStyles(cc._props), componentStyle: cc.$attrs }
   },

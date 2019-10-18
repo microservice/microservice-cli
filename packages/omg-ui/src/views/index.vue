@@ -1,11 +1,23 @@
 <template>
   <div v-if="appReady">
     <Words size="medium">
-      <Flex column flex="1" v-bind:class="{'content-hidden': !!activeModal}">
+      <Flex
+        v-bind:class="{'content-hidden': !!activeModal}"
+        column
+        flex="1"
+      >
         <AppHeader />
-        <Flex row :flex="1" height="100%">
+        <Flex
+          :flex="1"
+          row
+          height="100%"
+        >
           <ActionsHistory v-if="showHistory" />
-          <Flex column :flex="1" overflow="hidden">
+          <Flex
+            :flex="1"
+            column
+            overflow="hidden"
+          >
             <AppCenter />
             <AppFooter />
           </Flex>

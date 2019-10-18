@@ -5,7 +5,7 @@
     v-on:click="handlePress"
     v-bind:class="{'disabled': disabled}"
     class="app-button"
-    alignItems="center"
+    align-items="center"
   >
     <slot />
   </Flex>
@@ -31,6 +31,8 @@ function propsToStyles(props: Partial<PropsButton>, extraProps: Record<string, a
 }
 
 export default {
+
+  components: { Flex },
   inheritAttrs: false,
 
   props: {
@@ -45,6 +47,9 @@ export default {
       default() {},
     },
   },
+  data(cc) {
+    return { componentStyle: propsToStyles(cc._props, cc.$attrs) }
+  },
 
   methods: {
     handlePress(e) {
@@ -55,11 +60,6 @@ export default {
         this.onPress(e)
       }
     },
-  },
-
-  components: { Flex },
-  data(cc) {
-    return { componentStyle: propsToStyles(cc._props, cc.$attrs) }
   },
 }
 </script>

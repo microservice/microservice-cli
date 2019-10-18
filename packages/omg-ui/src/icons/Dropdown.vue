@@ -1,7 +1,15 @@
 
 <template>
-  <svg viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg" :style="svgStyle">
-    <path d="M4 4.66675L0 0.666748H8L4 4.66675Z" :fill="fillColor" />
+  <svg
+    :style="svgStyle"
+    viewBox="0 0 8 5"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      :fill="fillColor"
+      d="M4 4.66675L0 0.666748H8L4 4.66675Z"
+    />
   </svg>
 </template>
 

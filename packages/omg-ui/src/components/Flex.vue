@@ -1,5 +1,8 @@
 <template>
-  <div :style="componentStyle" v-on="parentListeners">
+  <div
+    :style="componentStyle"
+    v-on="parentListeners"
+  >
     <slot />
   </div>
 </template>

@@ -1,5 +1,8 @@
 <template>
-  <div :style="{height: '100%'}" ref="editor"></div>
+  <div
+    ref="editor"
+    :style="{height: '100%'}"
+  />
 </template>
 <script lang="ts">
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
@@ -20,6 +23,7 @@ self.MonacoEnvironment = {
 }
 
 export default {
+  components: {},
   props: {
     code: {
       type: String,
@@ -63,8 +67,6 @@ export default {
       }
     },
   },
-  components: {},
-  methods: {},
   mounted() {
     this.$lastValue = this.code
     this.$editor = monaco.editor.create(this.$refs.editor, {
@@ -91,5 +93,6 @@ export default {
       }
     })
   },
+  methods: {},
 }
 </script>
