@@ -17,8 +17,13 @@
         </Flex>
       </Flex>
     </Flex>
-    <Flex :flex="1" column>
+    <Flex :flex="1" column position="relative">
       <Monaco :code="activeActionTab.result" language="json" readonly />
+      <Overlay v-if="!activeActionTab.result">
+        <Flex column alignItems="center" justifyContent="center">
+          <Words color="grey90" size="xLarge">Perform an Action to see it's Result</Words>
+        </Flex>
+      </Overlay>
     </Flex>
   </Flex>
 </template>
@@ -28,15 +33,19 @@ import { mapGetters } from 'vuex'
 import Flex from '~/components/Flex.vue'
 import Words from '~/components/Words.vue'
 import Monaco from '~/components/Monaco.vue'
+import Overlay from '~/components/Overlay.vue'
 
 import { COPY_SUPPORTED } from './common'
 
 export default {
-  components: { Flex, Words, Monaco },
+  components: { Flex, Words, Monaco, Overlay },
   computed: {
     ...mapGetters({
       activeActionTab: 'getActiveActionTab',
     }),
+    copySupported() {
+      return COPY_SUPPORTED && this.activeActionTab.result
+    },
   },
   methods: {
     handleCopyResult() {
@@ -48,8 +57,5 @@ export default {
       })
     },
   },
-  data: () => ({
-    copySupported: COPY_SUPPORTED,
-  }),
 }
 </script>

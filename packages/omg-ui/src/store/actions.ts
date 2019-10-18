@@ -2,7 +2,7 @@ import { getRandomString } from '~/common'
 import { executeAction } from '~/rpc'
 import { setHistoricTabs } from '~/persistence'
 
-const DEFAULT_PAYLOAD = `{\n\t"parameter": "value"\n}`
+const DEFAULT_PAYLOAD = ``
 const DEFAULT_RESULT = ''
 const DEFAULT_TITLE = 'New Tab'
 

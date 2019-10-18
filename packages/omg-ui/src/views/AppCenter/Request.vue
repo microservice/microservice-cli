@@ -19,6 +19,11 @@
     </Flex>
     <Flex :flex="1" column position="relative">
       <Monaco :code="activeActionTab.payload" :onChange="setActionPayload" language="json" />
+      <Overlay v-if="!activeActionTab.actionName">
+        <Flex column alignItems="center" justifyContent="center">
+          <Words color="grey90" size="xLarge">Select an Action to perform</Words>
+        </Flex>
+      </Overlay>
     </Flex>
   </Flex>
 </template>
@@ -28,15 +33,19 @@ import { mapGetters, mapMutations } from 'vuex'
 import Flex from '~/components/Flex.vue'
 import Words from '~/components/Words.vue'
 import Monaco from '~/components/Monaco.vue'
+import Overlay from '~/components/Overlay.vue'
 
 import { COPY_SUPPORTED } from './common'
 
 export default {
-  components: { Flex, Words, Monaco },
+  components: { Flex, Words, Monaco, Overlay },
   computed: {
     ...mapGetters({
       activeActionTab: 'getActiveActionTab',
     }),
+    copySupported() {
+      return COPY_SUPPORTED && this.activeActionTab.actionName
+    },
   },
   methods: {
     ...mapMutations(['setActionPayload']),
@@ -49,8 +58,5 @@ export default {
       })
     },
   },
-  data: () => ({
-    copySupported: COPY_SUPPORTED,
-  }),
 }
 </script>
