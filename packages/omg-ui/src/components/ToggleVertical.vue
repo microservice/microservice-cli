@@ -44,8 +44,14 @@ export default {
   background-color: white;
   box-shadow: 0px 1px 5px rgba(24, 59, 140, 0.186325);
 
+  svg {
+    transform: rotate(180deg);
+  }
   &.enabled {
     background-color: #cbd2d9;
+    svg {
+      transform: none;
+    }
   }
 }
 </style>
