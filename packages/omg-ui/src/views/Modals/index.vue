@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-bind:class="{hidden: !activeModal}"
-    class="modals-wrapper"
-  >
+  <div v-bind:class="{hidden: !activeModal}" class="modals-wrapper">
     <YamlEditor v-if="openYamlEditorModal" />
     <Environment v-if="showEnvironmentModal" />
   </div>

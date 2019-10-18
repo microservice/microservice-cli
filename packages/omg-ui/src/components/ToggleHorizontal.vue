@@ -7,12 +7,7 @@
     bordercolor="blue40"
   >
     <Flex class="spacer-1" />
-    <Flex
-      :flex="1"
-      border-radius="2px"
-      margin="2px"
-      class="bullet"
-    />
+    <Flex :flex="1" border-radius="2px" margin="2px" class="bullet" />
     <Flex class="spacer-2" />
   </Flex>
 </template>

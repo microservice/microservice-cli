@@ -31,7 +31,6 @@ function propsToStyles(props: Partial<PropsButton>, extraProps: Record<string, a
 }
 
 export default {
-
   components: { Flex },
   inheritAttrs: false,
 

@@ -7,66 +7,22 @@
     box-shadow="4px 0px 5px rgba(0, 0, 0, 0.05)"
     z-index="1"
   >
-    <Flex
-      :pv="1"
-      :ph="2"
-      column
-      height="auto"
-    >
-      <Words color="grey90">
-        History
-      </Words>
-      <Flex
-        :mt="1"
-        row
-      >
-        <input
-          v-model="searchTerm"
-          type="text"
-          placeholder="Filter"
-          class="hsearch"
-        >
-        <Flex
-          column
-          height="auto"
-          justify-content="center"
-          position="relative"
-        >
-          <img
-            :src="iconMagnifyingGlass"
-            class="search-icon"
-          >
+    <Flex :pv="1" :ph="2" column height="auto">
+      <Words color="grey90">History</Words>
+      <Flex :mt="1" row>
+        <input v-model="searchTerm" type="text" placeholder="Filter" class="hsearch" />
+        <Flex column height="auto" justify-content="center" position="relative">
+          <img :src="iconMagnifyingGlass" class="search-icon" />
         </Flex>
       </Flex>
     </Flex>
-    <Flex
-      :pv="0.5"
-      :ph="2"
-      :bv="1"
-      row
-      background-color="grey10"
-      justify-content="flex-end"
-    >
+    <Flex :pv="0.5" :ph="2" :bv="1" row background-color="grey10" justify-content="flex-end">
       <Button :onPress="clearHistoricTabs">
-        <Words
-          :class="{'clear-all-dimmed': !historicTabs.length}"
-          size="small"
-        >
-          Clear all
-        </Words>
+        <Words :class="{'clear-all-dimmed': !historicTabs.length}" size="small">Clear all</Words>
       </Button>
     </Flex>
-    <Flex
-      :p="3"
-      :flex="1"
-      column
-    >
-      <Flex
-        key="hitems-non-empty"
-        v-if="historicTabs.length"
-        :flex="1"
-        column
-      >
+    <Flex :p="3" :flex="1" column>
+      <Flex key="hitems-non-empty" v-if="historicTabs.length" :flex="1" column>
         <Flex
           :pb="1"
           :pl="2"
@@ -78,11 +34,7 @@
           <Button :onPress="() => {restoreHistoricTab(historicTab)}">
             <Words>{{ historicTab.title || 'Action' }}</Words>
           </Button>
-          <Flex
-            :flex="1"
-            row
-            justify-content="flex-end"
-          >
+          <Flex :flex="1" row justify-content="flex-end">
             <Photo
               :source="iconBookmark"
               :onPress="() => {toggleHistoricTabBookmark(historicTab.id)}"
@@ -98,10 +50,7 @@
               class="hitem-delete"
             />
             <Words color="grey60">
-              <Timeago
-                :datetime="historicTab.timestamp"
-                :auto-update="60"
-              />
+              <Timeago :datetime="historicTab.timestamp" :auto-update="60" />
             </Words>
           </Flex>
         </Flex>
@@ -114,9 +63,7 @@
         justify-content="center"
         align-items="center"
       >
-        <Words size="large">
-          There's nothing to show here yet.
-        </Words>
+        <Words size="large">There's nothing to show here yet.</Words>
         <Words
           v-text="searchTerm ? 'Try searching with something else!' : 'Try executing an Action or two!'"
           size="large"

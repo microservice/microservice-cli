@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="editor"
-    :style="{height: '100%'}"
-  />
+  <div ref="editor" :style="{height: '100%'}" />
 </template>
 <script lang="ts">
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'

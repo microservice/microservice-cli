@@ -1,38 +1,15 @@
 <template>
-  <Flex
-    :mv="1"
-    :mh="2"
-    row
-  >
-    <Flex
-      :flex="1"
-      row
-    >
+  <Flex :mv="1" :mh="2" row>
+    <Flex :flex="1" row>
       <Flex column>
-        <Photo
-          :source="appLogo"
-          :size="3"
-        />
+        <Photo :source="appLogo" :size="3" />
       </Flex>
-      <Flex
-        :mh="1.5"
-        column
-        justify-content="center"
-      >
-        <Words size="large">
-          Open Microservice Guide
-        </Words>
+      <Flex :mh="1.5" column justify-content="center">
+        <Words size="large">Open Microservice Guide</Words>
       </Flex>
     </Flex>
-    <Flex
-      :flex="1"
-      row
-      justify-content="center"
-    >
-      <Flex
-        column
-        justify-content="center"
-      >
+    <Flex :flex="1" row justify-content="center">
+      <Flex column justify-content="center">
         <Button
           :p="1"
           v-text="appStatus"
@@ -42,31 +19,12 @@
           background-color="grey10"
         />
       </Flex>
-      <Flex
-        :ml="1.5"
-        column
-        justify-content="center"
-      >
-        <Button
-          :p="1"
-          theme="borderless"
-          bold
-          color="blue"
-          background-color="grey10"
-        >
-          Completeness
-        </Button>
+      <Flex :ml="1.5" column justify-content="center">
+        <Button :p="1" theme="borderless" bold color="blue" background-color="grey10">Completeness</Button>
       </Flex>
     </Flex>
-    <Flex
-      :flex="1"
-      row
-      justify-content="flex-end"
-    >
-      <Flex
-        row
-        justify-content="center"
-      >
+    <Flex :flex="1" row justify-content="flex-end">
+      <Flex row justify-content="center">
         <Button
           :p="1"
           :onPress="handleContributeOnGithub"
@@ -76,11 +34,7 @@
           color="white"
         >
           Contribute on Github
-          <Photo
-            :source="githubLogo"
-            :size="2"
-            :ml="1"
-          />
+          <Photo :source="githubLogo" :size="2" :ml="1" />
         </Button>
       </Flex>
     </Flex>

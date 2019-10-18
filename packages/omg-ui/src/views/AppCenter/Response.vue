@@ -1,28 +1,8 @@
 <template>
-  <Flex
-    column
-    width="calc(50% - 12px)"
-    background-color="white"
-  >
-    <Flex
-      :pv="1"
-      :ph="2.5"
-      :bb="1"
-      row
-      align-items="center"
-    >
-      <Words
-        size="medium"
-        font-weight="500"
-      >
-        Response
-      </Words>
-      <Flex
-        :flex="1"
-        v-if="copySupported"
-        row
-        justify-content="flex-end"
-      >
+  <Flex column width="calc(50% - 12px)" background-color="white">
+    <Flex :pv="1" :ph="2.5" :bb="1" row align-items="center">
+      <Words size="medium" font-weight="500">Response</Words>
+      <Flex :flex="1" v-if="copySupported" row justify-content="flex-end">
         <Flex
           :b="1"
           :ph="1"
@@ -33,21 +13,12 @@
           cursor="pointer"
           user-select="none"
         >
-          <Words size="small">
-            Copy
-          </Words>
+          <Words size="small">Copy</Words>
         </Flex>
       </Flex>
     </Flex>
-    <Flex
-      :flex="1"
-      column
-    >
-      <Monaco
-        :code="activeActionTab.result"
-        language="json"
-        readonly
-      />
+    <Flex :flex="1" column>
+      <Monaco :code="activeActionTab.result" language="json" readonly />
     </Flex>
   </Flex>
 </template>

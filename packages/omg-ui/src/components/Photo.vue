@@ -1,14 +1,6 @@
 <template>
-  <Flex
-    v-bind="componentStyle"
-    v-on:click="onPress"
-    column
-    justify-content="center"
-  >
-    <img
-      :src="source"
-      :style="imageStyle"
-    >
+  <Flex v-bind="componentStyle" v-on:click="onPress" column justify-content="center">
+    <img :src="source" :style="imageStyle" />
   </Flex>
 </template>
 

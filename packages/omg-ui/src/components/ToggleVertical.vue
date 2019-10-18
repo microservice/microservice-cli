@@ -6,10 +6,7 @@
     justify-content="center"
     align-items="center"
   >
-    <Dropdown
-      :color="dropdownColor"
-      :size="1"
-    />
+    <Dropdown :color="dropdownColor" :size="1" />
   </Flex>
 </template>
 
