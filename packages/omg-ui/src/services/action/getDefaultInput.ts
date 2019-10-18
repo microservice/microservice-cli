@@ -1,7 +1,7 @@
 import store from '~/store'
 import { ConfigSchema, Argument } from '~/types'
 
-export default function getDefaultInputForAction(actionName: string | null) {
+export default function getDefaultInput(actionName: string | null) {
   if (!actionName) {
     return ''
   }

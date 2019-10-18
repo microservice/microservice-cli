@@ -1,1 +1,1 @@
-export { default as getDefaultInputForAction } from './getDefaultInputForAction'
+export { default as getDefaultInput } from './getDefaultInput'

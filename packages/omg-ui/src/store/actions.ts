@@ -1,7 +1,7 @@
 import { getRandomString } from '~/common'
 import { executeAction } from '~/rpc'
 import { setHistoricTabs } from '~/persistence'
-import { getDefaultInputForAction } from '~/services/action'
+import { getDefaultInput } from '~/services/action'
 
 const DEFAULT_PAYLOAD = ''
 const DEFAULT_RESULT = ''
@@ -95,7 +95,7 @@ const mutations = {
     activeTab.title = name || DEFAULT_TITLE
     activeTab.actionName = name || null
     if (!activeTab.payload) {
-      activeTab.payload = getDefaultInputForAction(name)
+      activeTab.payload = getDefaultInput(name)
     }
   },
   setActionPayload(state: ActionsState, payload: string) {
