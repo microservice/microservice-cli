@@ -8,7 +8,7 @@
 import * as colors from '~/theme/colors'
 import * as textSizes from '~/theme/textSizes'
 
-type PropsText = {
+interface PropsText {
   color?: keyof typeof colors
   size?: keyof typeof textSizes
 }

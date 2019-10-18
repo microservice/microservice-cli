@@ -1,11 +1,11 @@
 <template>
   <Flex
-    class="app-button"
-    alignItems="center"
     v-bind="componentStyle"
     v-bind:style="{cursor: disabled ? 'initial' : 'pointer', filter: disabled ? 'contrast(0.7)' : 'none'}"
     v-on:click="handlePress"
     v-bind:class="{'disabled': disabled}"
+    class="app-button"
+    alignItems="center"
   >
     <slot />
   </Flex>
@@ -14,7 +14,7 @@
 <script lang="ts">
 import Flex from './Flex.vue'
 
-type PropsButton = {
+interface PropsButton {
   bold?: boolean
   disabled?: boolean
   onPress?: () => void

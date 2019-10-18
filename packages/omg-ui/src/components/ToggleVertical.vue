@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import Flex from './Flex.vue'
-import Photo from './Photo.vue'
 import Dropdown from '~/icons/Dropdown'
 
 export default {
@@ -32,7 +31,7 @@ export default {
       required: true,
     },
   },
-  components: { Flex, Photo, Dropdown },
+  components: { Flex, Dropdown },
 }
 </script>
 <style lang="less" scoped>

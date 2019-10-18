@@ -7,18 +7,20 @@ export function getRandomString() {
 }
 
 export function configHasRequiredEnvs(config: ConfigSchema, envValues: Record<string, string>): boolean {
-  if (config && config.environment && typeof config.environment === 'object') {
-    for (const key in config.environment) {
-      if (!{}.hasOwnProperty.call(config.environment, key)) {
-        continue
-      }
+  let hasRequiredEnvs = false
 
-      const value = config.environment[key]
-      if (value && typeof value === 'object' && value.required && !envValues[key]) {
-        return true
-      }
+  if (config && typeof config === 'object') {
+    const { environment } = config
+
+    if (environment && typeof environment === 'object') {
+      Object.keys(environment).forEach(key => {
+        const value = environment[key]
+        if (value && typeof value === 'object' && value.required && !envValues[key]) {
+          hasRequiredEnvs = true
+        }
+      })
     }
   }
 
-  return false
+  return hasRequiredEnvs
 }

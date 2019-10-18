@@ -7,7 +7,7 @@
 <script lang="ts">
 import * as colors from '~/theme/colors'
 
-type PropsFlex = {
+interface PropsFlex {
   row?: boolean
   column?: boolean
 

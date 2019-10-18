@@ -2,12 +2,13 @@
   <div :style="{height: '100%'}" ref="editor"></div>
 </template>
 <script lang="ts">
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
-import 'monaco-editor/esm/vs/language/json/monaco.contribution.js'
-import 'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution.js'
-import 'monaco-editor/esm/vs/editor/contrib/format/formatActions.js'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import 'monaco-editor/esm/vs/language/json/monaco.contribution'
+import 'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution'
+import 'monaco-editor/esm/vs/editor/contrib/format/formatActions'
 
 // @ts-ignore
+// eslint-disable-next-line no-restricted-globals
 self.MonacoEnvironment = {
   getWorkerUrl(moduleId, label) {
     if (label === 'json') {
@@ -85,7 +86,9 @@ export default {
       scrollBeyondLastLine: false,
     })
     this.$editor.onDidChangeModelContent(() => {
-      if (this.onChange) [this.onChange(this.$editor.getValue())]
+      if (this.onChange) {
+        this.onChange(this.$editor.getValue())
+      }
     })
   },
 }

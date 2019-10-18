@@ -8,13 +8,11 @@
 <script lang="ts">
 import { mapGetters } from 'vuex'
 
-import Flex from '~/components/Flex.vue'
 import YamlEditor from './YamlEditor.vue'
 import Environment from './Environment.vue'
 
 export default {
-  components: { Flex, YamlEditor, Environment },
-  methods: {},
+  components: { YamlEditor, Environment },
   computed: {
     ...mapGetters({
       activeModal: 'getActiveModal',
@@ -26,6 +24,7 @@ export default {
       return this.activeModal === 'ENVIRONMENT'
     },
   },
+  methods: {},
 }
 </script>
 <style lang="less" scoped>

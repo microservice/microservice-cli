@@ -63,6 +63,10 @@ import Button from '~/components/Button.vue'
 import Words from '~/components/Words.vue'
 import Monaco from '~/components/Monaco.vue'
 
+import iconBackSource from '~/images/icon-back.svg'
+import iconCircleCheck from '~/images/icon-circle-check.svg'
+import iconCircleTimes from '~/images/icon-circle-times.svg'
+
 export default {
   components: { Flex, Photo, Button, Words, Monaco },
   computed: {
@@ -82,7 +86,7 @@ export default {
   methods: {
     ...mapMutations(['dismissModal']),
     writeConfig: debounce(
-      function(contents) {
+      function debouncedWriteConfig(contents) {
         const { configContents } = this
         if (configContents !== contents) {
           writeConfig(contents).then(() => {
@@ -106,9 +110,9 @@ export default {
   },
   data: () => ({
     configContents: '',
-    iconBackSource: require('~/images/icon-back.svg'),
-    iconCircleCheck: require('~/images/icon-circle-check.svg'),
-    iconCircleTimes: require('~/images/icon-circle-times.svg'),
+    iconBackSource,
+    iconCircleCheck,
+    iconCircleTimes,
   }),
 }
 </script>

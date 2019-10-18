@@ -147,6 +147,7 @@ const actions = {
     }).then(response => {
       let result = response
       if (result.status === 'ok') {
+        // eslint-disable-next-line prefer-destructuring
         result = result.result
       } else if (result.status === 'error') {
         result = { error: result.error }

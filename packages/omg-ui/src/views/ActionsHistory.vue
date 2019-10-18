@@ -12,7 +12,7 @@
       <Flex row :mt="1">
         <input type="text" placeholder="Filter" class="hsearch" v-model="searchTerm" />
         <Flex column height="auto" justifyContent="center" position="relative">
-          <img :src="iconMagnifyingGlassSource" class="search-icon" />
+          <img :src="iconMagnifyingGlass" class="search-icon" />
         </Flex>
       </Flex>
     </Flex>
@@ -36,14 +36,14 @@
           </Button>
           <Flex row :flex="1" justifyContent="flex-end">
             <Photo
-              :source="iconBookmarkSource"
+              :source="iconBookmark"
               :onPress="() => {toggleHistoricTabBookmark(historicTab.id)}"
               :size="1.5"
               :mr="1"
               :class="{'hitem-bookmark': true, 'hitem-bookmarked': historicTab.bookmark}"
             />
             <Photo
-              :source="iconCircleTimesSource"
+              :source="iconCircleTimes"
               :onPress="() => {destroyHistoricTab(historicTab.id)}"
               :size="1.5"
               :mr="1"
@@ -73,13 +73,16 @@
   </Flex>
 </template>
 <script lang="ts">
-import { DateTime } from 'luxon'
 import { mapGetters, mapMutations } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
 import Words from '~/components/Words.vue'
 import Button from '~/components/Button.vue'
 import Photo from '~/components/Photo.vue'
+
+import iconBookmark from '~/images/icon-bookmark.svg'
+import iconCircleTimes from '~/images/icon-circle-times.svg'
+import iconMagnifyingGlass from '~/images/icon-magnifying-glass.svg'
 
 export default {
   components: { Flex, Words, Button, Photo },
@@ -116,9 +119,9 @@ export default {
   },
   data: () => ({
     searchTerm: '',
-    iconCircleTimesSource: require('~/images/icon-circle-times.svg'),
-    iconBookmarkSource: require('~/images/icon-bookmark.svg'),
-    iconMagnifyingGlassSource: require('~/images/icon-magnifyingglass.svg'),
+    iconBookmark,
+    iconCircleTimes,
+    iconMagnifyingGlass,
   }),
 }
 </script>

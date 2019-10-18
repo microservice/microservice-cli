@@ -3,7 +3,7 @@
     <Flex column height="auto">
       <Flex row :ph="2" :pv="1.5" :bb="1" backgroundColor="white" minHeight="24px">
         <Button :onPress="dismissModal" v-if="appStatus === 'started'">
-          <Photo :size="3" :source="iconCloseSource" />
+          <Photo :size="3" :source="iconClose" />
         </Button>
       </Flex>
     </Flex>
@@ -97,6 +97,8 @@ import Button from '~/components/Button.vue'
 import Words from '~/components/Words.vue'
 import Photo from '~/components/Photo.vue'
 
+import iconClose from '~/images/icon-close.svg'
+
 import { buildImage } from '~/rpc'
 import { AppStatus } from '~/types'
 
@@ -125,7 +127,7 @@ export default {
     },
   },
   data: () => ({
-    iconCloseSource: require('~/images/icon-close.svg'),
+    iconClose,
   }),
 }
 </script>

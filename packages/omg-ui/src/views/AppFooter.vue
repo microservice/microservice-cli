@@ -3,7 +3,7 @@
     <Flex column :bv="1">
       <Flex row justifyContent="space-between" :ph="2" :pv="1">
         <Words>Container Logs</Words>
-        <Photo :source="iconResizeKnobSource" :width="1.5" :height="2" />
+        <Photo :source="iconResizeKnob" :width="1.5" :height="2" />
         <Flex row :mr="1">
           <ToggleVertical :enabled="showLogs" :onToggle="toggleShowLogs" />
         </Flex>
@@ -27,14 +27,15 @@
 import { mapGetters, mapMutations } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
-import Button from '~/components/Button.vue'
 import Photo from '~/components/Photo.vue'
 import Words from '~/components/Words.vue'
 import ToggleVertical from '~/components/ToggleVertical.vue'
 import ToggleHorizontal from '~/components/ToggleHorizontal.vue'
 
+import iconResizeKnob from '~/images/icon-resize-knob.svg'
+
 export default {
-  components: { Flex, Button, Words, Photo, ToggleVertical, ToggleHorizontal },
+  components: { Flex, Words, Photo, ToggleVertical, ToggleHorizontal },
   methods: {
     ...mapMutations(['toggleShowHistory', 'toggleShowLogs']),
   },
@@ -46,7 +47,7 @@ export default {
     }),
   },
   data: () => ({
-    iconResizeKnobSource: require('~/images/icon-resize-knob.svg'),
+    iconResizeKnob,
   }),
 }
 </script>

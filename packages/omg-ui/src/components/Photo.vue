@@ -7,7 +7,7 @@
 <script lang="ts">
 import Flex from './Flex.vue'
 
-type PropsPhoto = {
+interface PropsPhoto {
   size?: number
   width?: number
   height?: number

@@ -24,7 +24,7 @@
             v-if="showTabCloseButton"
             :flex="1"
             :mr="1"
-            :source="iconCloseSource"
+            :source="iconClose"
             :size="2"
             :onPress="(e) => handleTabClosePress(e, tab.id)"
           />
@@ -39,7 +39,7 @@
           backgroundColor="blue10"
           :onPress="createActionsTab"
         >
-          <Photo :source="iconPlusSource" :size="3" />
+          <Photo :source="iconPlus" :size="3" />
         </Button>
       </Flex>
     </Flex>
@@ -76,17 +76,17 @@
       </Flex>
       <Flex row :flex="1" :ml="2" justifyContent="flex-end">
         <Button :pv="1" bold color="grey70" :onPress="openEnvironmentModal">
-          <Photo :source="iconFileCodeSource" :size="3" :mr="1" />Setup
+          <Photo :source="iconFileCode" :size="3" :mr="1" />Setup
         </Button>
         <Button :pl="3" :pv="1" bold color="grey70" :onPress="openYamlEditorModal">
-          <Photo :source="iconBookmarkSource" :size="3" :mr="1" />Edit the YAML
+          <Photo :source="iconBookmark" :size="3" :mr="1" />Edit the YAML
         </Button>
       </Flex>
     </Flex>
     <Flex row :ph="2" :pv="1" :flex="1" height="100%">
       <Request />
       <Flex :ph="0.5">
-        <Photo :source="iconResizeKnobSource" :width="2" :height="2" class="editor-resize-knob" />
+        <Photo :source="iconResizeKnob" :width="2" :height="2" class="editor-resize-knob" />
       </Flex>
       <Response />
     </Flex>
@@ -99,14 +99,19 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
 import Photo from '~/components/Photo.vue'
-import Words from '~/components/Words.vue'
 import Button from '~/components/Button.vue'
+
+import iconPlus from '~/images/icon-plus.svg'
+import iconClose from '~/images/icon-close.svg'
+import iconBookmark from '~/images/icon-bookmark.svg'
+import iconFileCode from '~/images/icon-file-code.svg'
+import iconResizeKnob from '~/images/icon-resize-knob.svg'
 
 import Request from './Request.vue'
 import Response from './Response.vue'
 
 export default {
-  components: { Flex, Photo, Words, Button, VSelect, Request, Response },
+  components: { Flex, Photo, Button, VSelect, Request, Response },
   computed: {
     ...mapGetters({
       showLogs: 'getShowLogs',
@@ -114,8 +119,8 @@ export default {
       allActionTabs: 'getAllActionTabs',
       activeActionTab: 'getActiveActionTab',
     }),
-    showTabCloseButton(state) {
-      return state.allActionTabs.length > 1
+    showTabCloseButton() {
+      return this.allActionTabs.length > 1
     },
     allowActionSend() {
       return !!this.activeActionTab.actionName
@@ -141,11 +146,11 @@ export default {
     },
   },
   data: () => ({
-    iconPlusSource: require('~/images/icon-plus.svg'),
-    iconCloseSource: require('~/images/icon-close.svg'),
-    iconBookmarkSource: require('~/images/icon-bookmark.svg'),
-    iconFileCodeSource: require('~/images/icon-file-code.svg'),
-    iconResizeKnobSource: require('~/images/icon-resize-knob.svg'),
+    iconPlus,
+    iconClose,
+    iconBookmark,
+    iconFileCode,
+    iconResizeKnob,
   }),
 }
 </script>
