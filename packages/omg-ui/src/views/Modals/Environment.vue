@@ -56,7 +56,7 @@
       </Flex>
       <Flex :ph="4" :pv="6" :flex="1" column background-color="white" overflow="hidden">
         <Flex row>
-          <Words size="xLarge" font-weight="500">Docker Logs</Words>
+          <Words size="xLarge" font-weight="500">Docker/Container Logs</Words>
           <Flex :ml="3" :pv="0.5" :ph="1.5" row background-color="teal20">
             <Words size="small" color="teal80" font-weight="500">$ docker inspect</Words>
           </Flex>
