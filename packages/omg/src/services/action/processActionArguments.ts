@@ -16,6 +16,7 @@ interface ProcessActionArgumentsOptions {
 }
 
 interface ProcessActionArgumentsResponse {
+  extra: string[]
   missing: string[]
   invalid: string[]
   values: Record<string, any>
@@ -48,6 +49,7 @@ export default function processActionArguments({
     actionArgs = event.arguments
   }
 
+  const extra: string[] = []
   const missing: string[] = []
   const invalid: string[] = []
 
@@ -70,10 +72,7 @@ export default function processActionArguments({
     }
   })
   if (argsUsed.size !== argsNames.length) {
-    const extraArgs = argsNames.filter(item => !argsUsed.has(item))
-    throw new CLIError(
-      `Unexpected argument${extraArgs.length > 1 ? 's' : ''} '${extraArgs.join("', '")}' for Action#${actionName}`,
-    )
+    extra.push(...argsNames.filter(item => !argsUsed.has(item)))
   }
 
   // Step 2 - Transform
@@ -112,7 +111,6 @@ export default function processActionArguments({
 
     invalid.push(...validateArgout(arg, value).map(item => `${argName}${item.slice(1)}`))
   })
-  // TODO: Validate/transform types here
 
-  return { missing, invalid, values }
+  return { extra, missing, invalid, values }
 }

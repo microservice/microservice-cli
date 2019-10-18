@@ -11,7 +11,7 @@ interface ValidateActionArgumentsOptions {
 }
 
 export function validateActionArguments({ actionName, eventName, args, config }: ValidateActionArgumentsOptions): boolean {
-  const { missing, invalid } = processActionArguments({
+  const { extra, missing, invalid } = processActionArguments({
     actionName,
     eventName,
     args,
@@ -24,7 +24,10 @@ export function validateActionArguments({ actionName, eventName, args, config }:
   if (invalid.length) {
     logger.error(`Invalid argument${invalid.length > 1 ? 's' : ''}: ${invalid.join(', ')}`)
   }
-  if (missing.length || invalid.length) {
+  if (extra.length) {
+    logger.error(`Unexpected argument${extra.length > 1 ? 's' : ''} ${extra.join(', ')}`)
+  }
+  if (missing.length || invalid.length || extra.length) {
     logger.info(
       'You can specify arguments with -a key="value". These arguments may be JSON encoded for `map` and `object` types.',
     )

@@ -35,22 +35,26 @@ export default async function executeAction({
   }
 
   // Validate all actions have requested arguments
-  const { missing: missingArgs, invalid: invalidArgs, values: argsMap } = processActionArguments({
+  const { extra: extraArgs, missing: missingArgs, invalid: invalidArgs, values: argsMap } = processActionArguments({
     actionName,
     eventName,
     args: transformedArgs || (args as Args),
     config,
     transform: !transformedArgs,
   })
-  if (missingArgs.length || invalidArgs.length) {
+  const totalCount = missingArgs.length + invalidArgs.length + extraArgs.length
+  if (totalCount > 0) {
     const chunks: string[] = []
     if (missingArgs.length) {
-      chunks.push(`${missingArgs.join(', ')} are missing`)
+      chunks.push(`${missingArgs.join(', ')} ${missingArgs.length > 1 ? 'are' : 'is'} missing`)
     }
     if (invalidArgs.length) {
-      chunks.push(`${invalidArgs.join(', ')}`)
+      chunks.push(`${invalidArgs.join(', ')} ${invalidArgs.length > 1 ? 'are' : 'is'} invalid`)
     }
-    throw new CLIError(`Invalid arguments for Action#${actionName}: ${chunks.join(' and ')}`)
+    if (extraArgs.length) {
+      chunks.push(`${extraArgs.join(', ')} ${extraArgs.length > 1 ? 'are' : 'is'} unrecognized`)
+    }
+    throw new CLIError(`Invalid argument${totalCount > 1 ? 's' : ''} for Action#${actionName}: ${chunks.join(' and ')}`)
   }
 
   if (action.http != null) {
