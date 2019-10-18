@@ -1,7 +1,11 @@
 import store from '~/store'
 import { ConfigSchema, Argument } from '~/types'
 
-export default function getDefaultInputForAction(actionName: string) {
+export default function getDefaultInputForAction(actionName: string | null) {
+  if (!actionName) {
+    return ''
+  }
+
   let args: Record<string, Argument> | null = null
   const config: ConfigSchema = store.getters.getConfig
 
@@ -25,7 +29,7 @@ export default function getDefaultInputForAction(actionName: string) {
       const isLastItem = index === arr.length - 1
       return `  ${JSON.stringify(key)}: ${isLastItem ? '' : ','}`
     })
-    return `{\n${keys}\n}`
+    return `{\n${keys.join('\n')}\n}`
   }
 
   return `{\n}`
