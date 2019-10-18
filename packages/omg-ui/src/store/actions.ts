@@ -36,6 +36,14 @@ function getActionTab(): ActionTab {
   }
 }
 
+function isTabInDefaultState(tab: ActionTab) {
+  return (
+    tab.title === DEFAULT_TITLE &&
+    tab.actionName === null &&
+    tab.payload === DEFAULT_PAYLOAD &&
+    tab.result === DEFAULT_RESULT
+  )
+}
 function getActiveTabFromState(state: ActionsState) {
   const { tabs, activeTabId } = state
   const activeTab = tabs.find(item => item.id === activeTabId)
@@ -91,14 +99,18 @@ const mutations = {
     setHistoricTabs(state.history)
   },
   restoreHistoricTab(state: ActionsState, historicTab: ActionTabHistoric) {
-    const newTab = getActionTab()
-    newTab.title = historicTab.title
-    newTab.actionName = historicTab.actionName
-    newTab.payload = historicTab.payload
-    newTab.result = historicTab.result
+    let tabToUse = state.tabs.find(item => isTabInDefaultState(item))
+    if (!tabToUse) {
+      tabToUse = getActionTab()
+      state.tabs.push(tabToUse)
+    }
 
-    state.tabs.push(newTab)
-    state.activeTabId = newTab.id
+    tabToUse.title = historicTab.title
+    tabToUse.actionName = historicTab.actionName
+    tabToUse.payload = historicTab.payload
+    tabToUse.result = historicTab.result
+
+    state.activeTabId = tabToUse.id
   },
   setHistoricTabs(state: ActionsState, historicTabs: ActionTabHistoric[]) {
     state.history = historicTabs
