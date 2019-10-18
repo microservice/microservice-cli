@@ -98,7 +98,7 @@ export default async function executeHttpAction({
   } catch (error) {
     // Got HTTP Error
     if (error && error.gotOptions) {
-      const err = new CLIError(`Net Error ${error.code} on ${error.url}`)
+      const err = new CLIError(`Network Error ${error.code} on ${error.url}`)
       throw err
     }
     throw error

@@ -56,13 +56,12 @@ export default class Dashboard {
       appStatus: this.appStatus,
       executeAction: async ({ name, args }) => {
         // Start the daemon if it dieded.
-        const { daemon } = this
-        if (!daemon) {
-          throw new CLIError('Container is not running')
+        if (!this.daemon) {
+          await this.reload()
         }
         let response = null
         await executeAction({
-          daemon,
+          daemon: this.daemon!,
           actionName: name,
           args,
           config: this.microserviceConfig,
