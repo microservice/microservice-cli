@@ -19,9 +19,9 @@
           background-color="grey10"
         />
       </Flex>
-      <Flex :ml="1.5" column justify-content="center">
+      <!--<Flex :ml="1.5" column justify-content="center">
         <Button :p="1" theme="borderless" bold color="blue" background-color="grey10">Completeness</Button>
-      </Flex>
+      </Flex>-->
     </Flex>
     <Flex :flex="1" row justify-content="flex-end">
       <Flex row justify-content="center">
@@ -58,7 +58,7 @@ export default {
   computed: {
     ...mapGetters(['appStatus']),
     containerStatus() {
-      return startCase(this.appStatus)
+      return `Container state: ${startCase(this.appStatus)}`
     },
   },
   methods: {
