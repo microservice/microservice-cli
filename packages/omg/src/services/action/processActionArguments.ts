@@ -52,17 +52,29 @@ export default function processActionArguments({
   const invalid: string[] = []
 
   const argsMap = argsToMap(args)
+  const argsNames = Object.keys(argsMap)
+  const argsUsed = new Set()
   // Step 1 - Map
   Object.entries(actionArgs || {}).forEach(([argName, arg]) => {
     const value = argsMap[argName]
     if (typeof value !== 'undefined') {
-      values[argName] = value
+      argsUsed.add(argName)
+      if (value !== null) {
+        // ^ Null is eq to undefined in storyscript world
+        values[argName] = value
+      }
     } else if (arg.required) {
       missing.push(argName)
     } else if (arg.default) {
       values[argName] = arg.default
     }
   })
+  if (argsUsed.size !== argsNames.length) {
+    const extraArgs = argsNames.filter(item => !argsUsed.has(item))
+    throw new CLIError(
+      `Unexpected argument${extraArgs.length > 1 ? 's' : ''} '${extraArgs.join("', '")}' for Action#${actionName}`,
+    )
+  }
 
   // Step 2 - Transform
   if (transform) {
