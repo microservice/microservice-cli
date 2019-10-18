@@ -45,8 +45,12 @@ function isTabInDefaultState(tab: ActionTab) {
   )
 }
 
-function areTabsSame(tabA: ActionTab, tabB: ActionTab) {
+function tabsHaveSameAction(tabA: ActionTab, tabB: ActionTab) {
   return tabA.title === tabB.title && tabA.actionName === tabB.actionName
+}
+
+function tabsAreSame(tabA: ActionTab, tabB: ActionTab) {
+  return tabsHaveSameAction(tabA, tabB) && tabA.payload === tabB.payload && tabA.result === tabB.result
 }
 
 // Checks if tab is within last hour
@@ -111,7 +115,7 @@ const mutations = {
 
     // Only replace recent tabs that have same action/title
     const recentDuplicateTab = state.history.find(
-      item => !item.bookmark && areTabsSame(item, historicTab) && isTabRecent(item),
+      item => !item.bookmark && tabsHaveSameAction(item, historicTab) && isTabRecent(item),
     )
     if (recentDuplicateTab) {
       state.history = state.history.filter(item => item.id !== recentDuplicateTab.id)
@@ -121,6 +125,13 @@ const mutations = {
     setHistoricTabs(state.history)
   },
   restoreHistoricTab(state: ActionsState, historicTab: ActionTabHistoric) {
+    const siblingTab = state.tabs.find(item => tabsAreSame(item, historicTab))
+    if (siblingTab) {
+      // Activate tab with same state and return
+      state.activeTabId = siblingTab.id
+      return
+    }
+
     let tabToUse = state.tabs.find(item => isTabInDefaultState(item))
     if (!tabToUse) {
       tabToUse = getActionTab()
