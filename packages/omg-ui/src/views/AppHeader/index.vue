@@ -12,7 +12,7 @@
       <Flex column justify-content="center">
         <Button
           :p="1"
-          v-text="appStatus"
+          v-text="containerStatus"
           theme="borderless"
           bold
           color="blue"
@@ -42,6 +42,7 @@
 </template>
 
 <script lang="ts">
+import { startCase } from 'lodash'
 import { mapGetters } from 'vuex'
 
 import Flex from '~/components/Flex.vue'
@@ -56,6 +57,9 @@ export default {
   components: { Flex, Button, Words, Photo },
   computed: {
     ...mapGetters(['appStatus']),
+    containerStatus() {
+      return startCase(this.appStatus)
+    },
   },
   methods: {
     handleContributeOnGithub() {
