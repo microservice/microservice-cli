@@ -22,8 +22,24 @@ async function main() {
   // @ts-ignore
   const reader = response.body.getReader()
 
+  function retry() {
+    setTimeout(() => {
+      main().catch(console.error)
+    }, 5000)
+  }
+
   async function read() {
-    const { done, value } = await reader.read()
+    let result
+
+    try {
+      result = await reader.read()
+    } catch (error) {
+      console.error('Error reading from event stream', error)
+      retry()
+      return
+    }
+
+    const { done, value } = result
     const contents = new TextDecoder('utf-8')
       .decode(value)
       .split('\n')
@@ -44,9 +60,7 @@ async function main() {
       }
     })
     if (done) {
-      setTimeout(() => {
-        main().catch(console.error)
-      }, 1000)
+      retry()
     } else {
       // Reset stack
       setTimeout(read, 100)
