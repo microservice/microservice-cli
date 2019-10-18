@@ -114,7 +114,11 @@ const mutations = {
     }
 
     // Only replace recent tabs that have same action/title
-    const recentDuplicateTab = state.history.find(
+    const reversedHistory = state.history.slice()
+    reversedHistory.reverse()
+    // ^ Reversing because we store recent most at the bottom
+
+    const recentDuplicateTab = reversedHistory.find(
       item => !item.bookmark && tabsHaveSameAction(item, historicTab) && isTabRecent(item),
     )
     if (recentDuplicateTab) {
