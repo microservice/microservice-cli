@@ -9,7 +9,7 @@
     </Flex>
     <Flex :flex="1" row overflow="hidden">
       <Flex :p="2" column background-color="grey10" width="25%">
-        <Flex :p="4" :pr="0" :flex="1" column height="auto" background-color="white">
+        <Flex :p="4" :flex="1" column height="auto" background-color="white">
           <Flex v-if="configEnvs.length" column height="auto">
             <Flex row>
               <Words size="xLarge" font-weight="500">Environment</Words>
