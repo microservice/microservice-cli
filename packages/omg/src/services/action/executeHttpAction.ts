@@ -131,11 +131,13 @@ export default async function executeHttpAction({
     parsed = null
   }
 
-  validateActionOutput({
-    action,
-    actionName,
-    output: parsed,
-  })
+  if (outputType !== OUTPUT_TYPE_TO_IGNORE) {
+    validateActionOutput({
+      action,
+      actionName,
+      output: parsed,
+    })
+  }
 
   return {
     response: parsed,
