@@ -19,15 +19,17 @@
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-vue": "^5.2.3",
     "lerna": "^3.16.4",
     "prettier-cli": "^0.1.0",
-    "sb-babel-cli": "^2.0.0"
+    "sb-babel-cli": "^2.0.0",
+    "vue-eslint-parser": "^6.0.4"
   },
   "scripts": {
     "prettier:fix": "prettier --write packages/*/{src,__tests__}/**/*.{js,ts}",
     "lint": "yarn lint:prettier && yarn lint:eslint",
     "lint:prettier": "prettier --list-different packages/*/{src,__tests__}/**/*.{js,ts}",
-    "lint:eslint": "eslint . --ext .js,.ts --quiet",
+    "lint:eslint": "eslint . --ext .js,.ts,.vue,.tsx --quiet",
     "bootstrap": "lerna bootstrap --npm-client=yarn",
     "test": "lerna run --parallel test",
     "coverage": "lerna run --parallel coverage",

@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "omg-ui"
+		},
+		{
+			"path": "omg-validate"
+		},
+		{
+			"path": "omg"
+		}
+	],
+	"settings": {}
+}

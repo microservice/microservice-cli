@@ -1,12 +1,19 @@
-const { rules, parser, plugins } = require('../../.eslintrc.js')
-
 module.exports = {
-  root: true,
-  rules,
-  parser,
-  plugins,
-  extends: ['prettier', 'plugin:@typescript-eslint/recommended'],
+  parser: 'vue-eslint-parser',
+  extends: ['plugin:vue/recommended'],
+  rules: {
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: true,
+        optionalDependencies: false,
+      },
+    ],
+  },
   env: {
     browser: true,
+  },
+  parserOptions: {
+    parser: '@typescript-eslint/parser',
   },
 }
