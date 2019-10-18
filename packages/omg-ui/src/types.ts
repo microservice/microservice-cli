@@ -1,6 +1,6 @@
 import { ConfigSchema } from 'omg-validate'
 import { UIAppStatus } from 'omg/src/types'
-import { InputType } from 'omg-validate/src/types'
+import { InputType, Argument } from 'omg-validate/src/types'
 
 export interface ConsoleLine {
   contents: string
@@ -11,4 +11,4 @@ export interface DockerLine {
   stream: 'stdout' | 'stderr'
 }
 
-export { ConfigSchema, InputType, UIAppStatus as AppStatus }
+export { ConfigSchema, InputType, Argument, UIAppStatus as AppStatus }
