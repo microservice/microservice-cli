@@ -58,13 +58,7 @@
         <Flex row>
           <Words size="xLarge" font-weight="500">Docker/Container Logs</Words>
         </Flex>
-        <Flex
-          key="env-logs-non-empty"
-          :mt="3"
-          v-if="logsAllReverse.length"
-          column
-          overflow-y="auto"
-        >
+        <Flex key="env-logs-non-empty" :mt="3" v-if="logsAllReverse.length" column overflow="auto">
           <Words color="grey60">
             <pre v-text="logsAllReverse" class="modal-env-logs" />
           </Words>
