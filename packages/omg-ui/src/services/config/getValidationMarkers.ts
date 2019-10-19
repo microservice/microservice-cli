@@ -50,7 +50,7 @@ export default function getValidationMarkers({
 
   // Kind.MAPPING is top-level document, has .mappings
   // Kind.MAPPING is a value object, has .value.mappings
-  function findNode(node: YAMLNode, path: string[]): { node: YAMLNode; path: string[] } {
+  function findNode(node: YAMLNode, path: string[]): { node: YAMLNode } {
     let relevantMappings: any[] = []
 
     if (node.kind === Kind.MAP) {
@@ -68,12 +68,12 @@ export default function getValidationMarkers({
       }
     }
 
-    return { node, path }
+    return { node }
   }
 
   const lineStartPositions = getLineStartPositions(text)
   parsedErrors.forEach(parsedError => {
-    const { node, path } = findNode(yamlDocument, parsedError.path)
+    const { node } = findNode(yamlDocument, parsedError.path)
 
     if (!node) {
       return
@@ -82,14 +82,13 @@ export default function getValidationMarkers({
     let indexStart = node.startPosition
     let indexEnd = node.endPosition
 
-    const message = path.length ? `.${path.join('.')} ${parsedError.message}` : `Item ${parsedError.message}`
-    const preferredNode = path.length ? 'key' : 'value'
+    const message = `.${parsedError.path.join('.')} ${parsedError.message}`
     // ^ If path is unresolved, paint error at the key def
     // if it's the resolved item, paint on value
 
-    if (node[preferredNode]) {
-      indexStart = node[preferredNode].startPosition
-      indexEnd = node[preferredNode].endPosition
+    if (node.key) {
+      indexStart = node.key.startPosition
+      indexEnd = node.key.endPosition
     }
     const posStart = getPosition(indexStart, lineStartPositions)
     const posEnd = getPosition(indexEnd, lineStartPositions)
