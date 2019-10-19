@@ -2,9 +2,10 @@ import fs from 'sb-fs'
 import jsYaml from 'js-yaml'
 import * as logger from '~/logger'
 
-import getValidationErrors from './getValidationErrors'
 import { CLIError } from '~/errors'
 import { ConfigSchema } from '~/types'
+import { HELP_OMG_SPEC_WEBSITE } from '~/common'
+import getValidationErrors from './getValidationErrors'
 
 interface ParseMicroserviceConfigOptions {
   validate: boolean
@@ -31,7 +32,7 @@ export default async function parseMicroserviceConfig(options: ParseMicroservice
   if (options.validate) {
     if (getValidationErrors(parsed).length) {
       logger.fatal(
-        `Config file has errors (found at: ${options.configPath})\nRun 'omg validate' to get a detailed explanation.`,
+        `Config file has errors (found at: ${options.configPath})\nRun 'omg validate' to get a detailed explanation or goto ${HELP_OMG_SPEC_WEBSITE} for a schema overview.`,
       )
     }
   }

@@ -23,3 +23,4 @@ export function getCliOptions(): Record<string, any> {
 
 export const HELP_OMG_LIST = `Try 'omg list' to get a list of available actions`
 export const HELP_OMG_LIST_DETAILS = `Try 'omg list --details' to get a detailed list of available actions`
+export const HELP_OMG_SPEC_WEBSITE = 'https://microservice.guide/schema/info/'

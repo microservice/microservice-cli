@@ -1,4 +1,5 @@
 import * as logger from '~/logger'
+import { HELP_OMG_SPEC_WEBSITE } from '~/common'
 import { CommandPayload, CommandOptionsDefault } from '~/types'
 import { getConfigPaths, getValidationErrors, parseMicroserviceConfig } from '~/services/config'
 
@@ -28,7 +29,9 @@ export default async function validate({ options }: CommandPayload<ActionOptions
       logger.error(JSON.stringify({ status: 'error', errors: validationErrors }))
     } else {
       logger.error(
-        `Validation failed with the following errors: \n${validationErrors.map(item => `  - ${item}`).join('\n')}`,
+        `Validation failed with the following errors: \n${validationErrors
+          .map(item => `  - ${item}`)
+          .join('\n')}.\nGoto ${HELP_OMG_SPEC_WEBSITE} for a schema reference.`,
       )
     }
   }
