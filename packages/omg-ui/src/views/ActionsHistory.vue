@@ -31,24 +31,28 @@
           row
           class="hitem"
         >
-          <Button :onPress="() => {restoreHistoricTab(historicTab)}">
+          <Button :onPress="() => {restoreHistoricTab(historicTab)}" :flex="1">
             <Words>{{ historicTab.title || 'Action' }}</Words>
           </Button>
-          <Flex :flex="1" row justify-content="flex-end">
-            <Photo
-              :source="iconBookmark"
-              :onPress="() => {toggleHistoricTabBookmark(historicTab.id)}"
-              :size="1.5"
-              :mr="1"
-              :class="{'hitem-bookmark': true, 'hitem-bookmarked': historicTab.bookmark}"
-            />
-            <Photo
-              :source="iconCircleTimes"
-              :onPress="() => {destroyHistoricTab(historicTab.id)}"
-              :size="1.5"
-              :mr="1"
-              class="hitem-delete"
-            />
+          <Flex row justify-content="flex-end">
+            <div title="Bookmark this item">
+              <Photo
+                :source="iconBookmark"
+                :onPress="() => {toggleHistoricTabBookmark(historicTab.id)}"
+                :size="1.5"
+                :mr="1"
+                :class="{'hitem-bookmark': true, 'hitem-bookmarked': historicTab.bookmark}"
+              />
+            </div>
+            <div title="Remove this item from history">
+              <Photo
+                :source="iconCircleTimes"
+                :onPress="() => {destroyHistoricTab(historicTab.id)}"
+                :size="1.5"
+                :mr="1"
+                class="hitem-delete"
+              />
+            </div>
             <Words color="grey60">
               <Timeago :datetime="historicTab.timestamp" :auto-update="60" />
             </Words>
