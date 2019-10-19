@@ -83,6 +83,8 @@ const mutations = {
   destroyActionsTab(state: ActionsState, tabId: string) {
     if (state.tabs.length > 1) {
       state.tabs = state.tabs.filter(item => item.id !== tabId)
+    } else {
+      state.tabs = [getActionTab()]
     }
   },
   createActionsTab(state: ActionsState) {

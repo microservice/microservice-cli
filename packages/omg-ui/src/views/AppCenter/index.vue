@@ -32,7 +32,6 @@
         >
           <span>{{ tab.title }}</span>
           <Photo
-            v-if="showTabCloseButton"
             :flex="1"
             :mr="1"
             :source="iconClose"
@@ -181,9 +180,6 @@ export default {
       allActionTabs: 'getAllActionTabs',
       activeActionTab: 'getActiveActionTab',
     }),
-    showTabCloseButton() {
-      return this.allActionTabs.length > 1
-    },
     allowActionSend() {
       return !!this.activeActionTab.actionName
     },
