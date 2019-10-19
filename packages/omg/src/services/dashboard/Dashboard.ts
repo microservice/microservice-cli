@@ -2,7 +2,6 @@ import getPort from 'get-port'
 import { CompositeDisposable } from 'event-kit'
 
 import * as logger from '~/logger'
-import { CLIError } from '~/errors'
 import { Daemon } from '~/services/daemon'
 import { executeAction } from '~/services/action'
 import { ConfigSchema, Args, UIAppStatus } from '~/types'
@@ -83,7 +82,7 @@ export default class Dashboard {
     subscriptions.add(httpServer)
     subscriptions.add(
       watchConfigFile({
-        validate: false,
+        validate: true,
         configPath: this.configPaths.microservice as string,
         onConfigUpdated: microserviceConfig => {
           this.microserviceConfig = microserviceConfig

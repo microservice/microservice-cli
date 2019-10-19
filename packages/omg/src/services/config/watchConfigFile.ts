@@ -5,6 +5,7 @@ import { Disposable } from 'event-kit'
 import * as logger from '~/logger'
 import { ConfigSchema } from '~/types'
 
+import getValidationErrors from './getValidationErrors'
 import parseMicroserviceConfig from './parseMicroserviceConfig'
 
 const DEBOUNCE_MS = 500
@@ -28,9 +29,19 @@ export default function watchConfigFile({
     throttle(() => {
       parseMicroserviceConfig({
         configPath,
-        validate,
+        validate: false,
       })
-        .then(configParsed => onConfigUpdated(configParsed))
+        .then(configParsed => {
+          if (validate) {
+            const validationErrors = getValidationErrors(configParsed)
+            if (validationErrors.length) {
+              // Ignore If we were asked to validate but the newly changed config file
+              // is malformed
+              return
+            }
+          }
+          onConfigUpdated(configParsed)
+        })
         .catch(logger.error)
     }, DEBOUNCE_MS),
   )

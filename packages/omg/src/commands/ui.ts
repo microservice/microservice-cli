@@ -18,7 +18,7 @@ export default async function ui({ options }: CommandPayload<ActionOptions>) {
   const configPaths = await getConfigPaths(options, true, !options.image)
   const microserviceConfig = await parseMicroserviceConfig({
     configPath: configPaths.microservice,
-    validate: false,
+    validate: true,
   })
 
   if (!options.image && !(await pingDaemon())) {
