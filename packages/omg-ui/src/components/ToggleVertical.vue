@@ -6,7 +6,8 @@
     justify-content="center"
     align-items="center"
   >
-    <Dropdown :color="dropdownColor" :size="1" />
+    <Dropdown key="dropdown-enabled" class="dropdown-enabled" v-if="enabled" />
+    <Dropdown key="dropdown-disabled" class="dropdown-disabled" v-if="!enabled" />
   </Flex>
 </template>
 
@@ -27,11 +28,6 @@ export default {
       required: true,
     },
   },
-  computed: {
-    dropdownColor() {
-      return this.enabled ? 'grey60' : 'blue40'
-    },
-  },
 }
 </script>
 <style lang="less" scoped>
@@ -43,14 +39,15 @@ export default {
   background-color: white;
   box-shadow: 0px 1px 5px rgba(24, 59, 140, 0.186325);
 
-  svg {
+  .dropdown-disabled {
     transform: rotate(180deg);
+    fill: #477bf3;
+  }
+  .dropdown-enabled {
+    fill: #616e7c;
   }
   &.enabled {
     background-color: #cbd2d9;
-    svg {
-      transform: none;
-    }
   }
 }
 </style>
