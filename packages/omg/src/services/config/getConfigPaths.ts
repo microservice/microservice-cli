@@ -3,6 +3,7 @@
 import fs from 'sb-fs'
 import path from 'path'
 import * as logger from '~/logger'
+import { HELP_OMG_GETTING_STARTED_WEBSITE } from '~/common'
 
 interface ConfigOptions {
   directory?: string
@@ -79,7 +80,11 @@ export default async function getConfigPaths(
   }
 
   if (chunks.length) {
-    logger.fatal(`Must be ran in a directory with ${chunks.join(' and ')}`)
+    logger.fatal(
+      `Must be ran in a directory with ${chunks.join(
+        ' and ',
+      )}.\nVisit ${HELP_OMG_GETTING_STARTED_WEBSITE} to get more info on getting started!`,
+    )
   }
 
   return {

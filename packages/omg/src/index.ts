@@ -83,9 +83,7 @@ export default async function main() {
     .option('-r --verbose', 'Show docker build logs')
     .option('--silent', 'Hide output except for action result')
     .option('--debug', 'Show container logs in CLI (for debugging purpose)')
-    .description(
-      'Run actions defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
-    )
+    .description('Run actions defined in your `microservice.yml`')
     .action(async (action, options) => {
       setCliOptions(options)
       if (options.silent || options.verbose) {
@@ -122,9 +120,7 @@ export default async function main() {
     .option('-r --verbose', 'Show docker build logs')
     .option('--silent', 'Hide output except for action result')
     .option('--debug', 'Show container logs in CLI (for debugging purpose)')
-    .description(
-      'Subscribe to an event defined in your `microservice.yml`. Must be ran in a working directory with a `Dockerfile` and a `microservice.yml`',
-    )
+    .description('Subscribe to an event defined in your `microservice.yml`')
     .action(async (action, event, options) => {
       setCliOptions(options)
       if (options.silent || options.verbose) {
