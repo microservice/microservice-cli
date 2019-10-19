@@ -94,7 +94,9 @@ const mutations = {
     const activeTab = getActiveTabFromState(state)
     activeTab.title = name || DEFAULT_TITLE
     activeTab.actionName = name || null
-    if (!activeTab.payload) {
+    if (!name) {
+      activeTab.payload = ''
+    } else if (!activeTab.payload) {
       activeTab.payload = getDefaultInput(name)
     }
   },
