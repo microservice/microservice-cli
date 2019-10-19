@@ -5,7 +5,7 @@ import * as logger from '~/logger'
 
 interface ActionOptions extends CommandOptionsDefault {
   tag?: string
-  raw?: boolean
+  verbose?: boolean
 }
 
 export default async function build({ options }: CommandPayload<ActionOptions>) {
@@ -20,7 +20,7 @@ export default async function build({ options }: CommandPayload<ActionOptions>) 
       configPath: configPaths.docker,
       name: tagName,
       onLog(line) {
-        if (options.raw) {
+        if (options.verbose) {
           logger.info(line)
         }
       },

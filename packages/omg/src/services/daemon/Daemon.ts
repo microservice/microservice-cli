@@ -20,7 +20,7 @@ interface DaemonOptions {
 interface DaemonStartOptions {
   envs: Args
   image?: string | null
-  raw: boolean
+  verbose: boolean
   inheritEnv: boolean
 }
 
@@ -43,7 +43,7 @@ export default class Daemon {
     lifecycleDisposables.add(this)
   }
 
-  public async start({ image, envs, raw, inheritEnv }: DaemonStartOptions): Promise<void> {
+  public async start({ image, envs, verbose, inheritEnv }: DaemonStartOptions): Promise<void> {
     if (this.containerState) {
       throw new CLIError('Cannot start when already started')
     }
@@ -54,7 +54,7 @@ export default class Daemon {
       await buildForDaemon({
         imageName,
         configPath: this.configPaths.docker as string,
-        raw,
+        verbose,
       })
     }
 

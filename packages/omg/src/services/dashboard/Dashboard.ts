@@ -123,7 +123,7 @@ export default class Dashboard {
     try {
       await newDaemon.start({
         envs: this.envs,
-        raw: true,
+        verbose: true,
         image: this.image,
         inheritEnv: this.inheritEnv,
       })

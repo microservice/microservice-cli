@@ -5,11 +5,11 @@ import { buildImage } from '~/services/docker'
 export default async function buildForDaemon({
   imageName,
   configPath,
-  raw,
+  verbose,
 }: {
   imageName: string
   configPath: string
-  raw: boolean
+  verbose: boolean
 }): Promise<void> {
   logger.spinnerStart('Building Docker image')
 
@@ -18,7 +18,7 @@ export default async function buildForDaemon({
       configPath,
       name: imageName,
       onLog(line) {
-        if (raw) {
+        if (verbose) {
           logger.info(line)
         }
       },

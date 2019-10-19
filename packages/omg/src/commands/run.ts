@@ -11,7 +11,7 @@ interface ActionOptions extends CommandOptionsDefault {
   image?: string
   args?: Args
   envs?: Args
-  raw?: boolean
+  verbose?: boolean
   debug?: boolean
   silent?: boolean
   inheritEnv?: boolean
@@ -51,7 +51,7 @@ export default async function run({ options, parameters }: CommandPayload<Action
   await daemon.start({
     envs: options.envs || [],
     image: options.image,
-    raw: !!options.raw,
+    verbose: !!options.verbose,
     inheritEnv: !!options.inheritEnv,
   })
   if (options.debug) {
@@ -67,7 +67,7 @@ export default async function run({ options, parameters }: CommandPayload<Action
   logger.spinnerStart('Performing Healthcheck')
   if (!(await daemon.ping())) {
     logger.spinnerFail('Healthcheck failed')
-    if (options.raw) {
+    if (options.verbose) {
       logger.error('Healthcheck failed')
     }
     process.exitCode = 1

@@ -46,13 +46,13 @@ export default async function main() {
   program
     .command('build')
     .option('-t --tag, <t>', 'The tag name of the image')
-    .option('-r --raw', 'Show Docker build logs')
+    .option('-r --verbose', 'Show Docker build logs')
     .description(
       'Builds the microservice defined by the `Dockerfile`. Image will be tagged with `omg/$gihub_user/$repo_name`, unless the tag flag is given. If no git config present a random string will be used',
     )
     .action(options => {
       setCliOptions(options)
-      if (options.raw) {
+      if (options.verbose) {
         logger.setSpinnerAllowed(false)
       }
       actionPromise = commands.build({
@@ -80,7 +80,7 @@ export default async function main() {
       [],
     )
     .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
-    .option('-r --raw', 'Show docker build logs')
+    .option('-r --verbose', 'Show docker build logs')
     .option('--silent', 'Hide output except for action result')
     .option('--debug', 'Show container logs in CLI (for debugging purpose)')
     .description(
@@ -88,7 +88,7 @@ export default async function main() {
     )
     .action(async (action, options) => {
       setCliOptions(options)
-      if (options.silent || options.raw) {
+      if (options.silent || options.verbose) {
         logger.setSpinnerAllowed(false)
       }
       if (options.silent) {
@@ -119,7 +119,7 @@ export default async function main() {
       [],
     )
     .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
-    .option('-r --raw', 'Show docker build logs')
+    .option('-r --verbose', 'Show docker build logs')
     .option('--silent', 'Hide output except for action result')
     .option('--debug', 'Show container logs in CLI (for debugging purpose)')
     .description(
@@ -127,7 +127,7 @@ export default async function main() {
     )
     .action(async (action, event, options) => {
       setCliOptions(options)
-      if (options.silent || options.raw) {
+      if (options.silent || options.verbose) {
         logger.setSpinnerAllowed(false)
       }
       if (options.silent) {
