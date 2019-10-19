@@ -226,7 +226,12 @@ export interface State {
   onError: ErrorCallback
 }
 
-export interface Validator {
-  message: string
-  validate(value: any): boolean
-}
+export type Validator =
+  | ({
+      message: string
+      validate(value: any): boolean
+    })
+  | ({
+      validate?: undefined
+      validateForMessage(value: any): string | null
+    })

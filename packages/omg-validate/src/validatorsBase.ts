@@ -1,8 +1,21 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 
 import _get from 'lodash/get'
 import arrayToSentence from 'array-to-sentence'
+import { object as validatorObject } from './validatorsArgout'
 import { State, Validator, ErrorCallback } from './types'
+
+// Invokes validator and returns error message or null if validation was a success
+function invokeValidator(value: any, validator: Validator): string | null {
+  if (validator.validate) {
+    if (!validator.validate(value)) {
+      return validator.message
+    }
+    return null
+  }
+  return validator.validateForMessage(value)
+}
 
 function validate(
   state: State,
@@ -40,11 +53,14 @@ function validateObject(
   state.visited.push(prop)
 
   const newState: State = { ...state, visited: [] }
+
   validate(newState, prop, required, ({ state, error }) => {
-    if (typeof state.value !== 'object' || !state.value) {
-      error('must be a valid object')
+    const rootError = invokeValidator(state.value, validatorObject)
+    if (rootError) {
+      error(rootError)
       return
     }
+
     callback({ state, error })
     const currentKeys = Object.keys(state.value)
     const unknownKeys = currentKeys.filter(item => !newState.visited.includes(item))
@@ -71,43 +87,48 @@ function validateAssocObject(
 
 function validateWith(state: State, prop: string, required: boolean, validator: Validator) {
   validate(state, prop, required, ({ state, error }) => {
-    if (!validator.validate(state.value)) {
-      error(`must be ${validator.message}`)
+    const errorMessage = invokeValidator(state.value, validator)
+    if (errorMessage) {
+      error(`must be ${errorMessage}`)
     }
   })
 }
 
 function array(validator: Validator): Validator {
-  const callback = (value: any): boolean => {
-    if (!Array.isArray(value) || !value.every(validator.validate)) {
-      return false
-    }
-    return true
+  return {
+    validateForMessage(value) {
+      if (!Array.isArray(value)) {
+        return `an array`
+      }
+      let errorMessage: string | null = null
+      value.forEach(item => {
+        errorMessage = errorMessage || invokeValidator(item, validator)
+      })
+      if (!errorMessage) {
+        return null
+      }
+      return `an array of ${errorMessage || 'valid items'}`
+    },
   }
-
-  let origMessage = validator.message
-  if (origMessage.startsWith('a ')) {
-    origMessage = origMessage.slice(2)
-  }
-  const message = `an array of ${origMessage}`
-
-  return { message, validate: callback }
 }
 
 function oneOf(...validators: Validator[]): Validator {
-  const callback = (value: any): boolean => {
-    if (validators.some((validator: Validator) => validator.validate(value))) {
-      return true
-    }
+  return {
+    validateForMessage(value) {
+      const errorMessages = validators.map(validator => invokeValidator(value, validator)).filter(Boolean)
 
-    return false
+      if (errorMessages.length !== validators.length) {
+        // Value passed one or more validators
+        return null
+      }
+
+      const messagesCombined = arrayToSentence(errorMessages, {
+        lastSeparator: ' or ',
+      })
+
+      return `one of ${messagesCombined}`
+    },
   }
-  const messagesCombined = arrayToSentence(validators.map(item => item.message), {
-    lastSeparator: ' or ',
-  })
-  const message = `one of ${messagesCombined}`
-
-  return { message, validate: callback }
 }
 
 function enumValues(values: string[]): Validator {

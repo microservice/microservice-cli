@@ -38,26 +38,25 @@ export const list: Validator = {
     }
   },
 }
-export const map: Validator = {
-  message: 'a valid map',
-  validate: item => {
-    try {
-      return !Array.isArray(item) && typeof item === 'object'
-    } catch (e) {
-      return false
-    }
-  },
-}
+
 export const object: Validator = {
-  message: 'a valid object',
-  validate: item => {
-    try {
-      return !Array.isArray(item) && typeof item === 'object'
-    } catch (e) {
-      return false
+  validateForMessage(item) {
+    if (Array.isArray(item)) {
+      return 'a valid object (not an Array)'
     }
+    if (!item) {
+      return 'a valid object (not empty/falsy)'
+    }
+    if (typeof item !== 'object') {
+      return ` valid object (not ${item})`
+    }
+
+    return null
   },
 }
+
+export const map: Validator = object
+
 export const path: Validator = {
   message: 'a valid path',
   validate: item => {
