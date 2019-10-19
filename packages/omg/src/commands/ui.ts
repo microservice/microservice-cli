@@ -1,7 +1,9 @@
 import open from 'open'
 
 import * as logger from '~/logger'
+import { CLIError } from '~/errors'
 import { Dashboard } from '~/services/dashboard'
+import { pingDaemon } from '~/services/docker'
 import { CommandPayload, CommandOptionsDefault } from '~/types'
 import { getConfigPaths, parseMicroserviceConfig } from '~/services/config'
 
@@ -18,6 +20,10 @@ export default async function ui({ options }: CommandPayload<ActionOptions>) {
     configPath: configPaths.microservice,
     validate: false,
   })
+
+  if (!options.image && !(await pingDaemon())) {
+    throw new CLIError('Docker daemon must be running before build images')
+  }
 
   logger.spinnerStart('Booting up UI')
   const dashboard = new Dashboard({
