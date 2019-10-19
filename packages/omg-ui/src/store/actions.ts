@@ -182,6 +182,11 @@ const actions = {
     const activeTab = getActiveTabFromState(context.state)
     const { actionName } = activeTab
 
+    if (!actionName) {
+      // No action selected, ignore.
+      return
+    }
+
     let parsed
     try {
       parsed = JSON.parse(activeTab.payload)
