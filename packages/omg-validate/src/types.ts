@@ -81,6 +81,7 @@ export interface Action {
         unsubscribe?: {
           path: string
           method: HttpMethod
+          contentType?: ContentType
         }
       }
       output: {

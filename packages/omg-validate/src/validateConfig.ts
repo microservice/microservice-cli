@@ -102,6 +102,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
         validateObject(state, 'unsubscribe', false, ({ state }) => {
           validateWith(state, 'path', true, v.pathname)
           validateWith(state, 'method', true, enumValues(HTTP_METHODS))
+          validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
         })
       })
       validateObject(state, 'output', false, ({ state }) => {
