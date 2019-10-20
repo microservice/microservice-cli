@@ -1,0 +1,106 @@
+@use "variables";
+
+@mixin flex($column, $row, $p, $pv, $ph, $pt, $pr, $pb, $pl, $m, $mv, $mh, $mt, $mr, $mb, $ml) {
+  display: flex;
+
+  @if $column {
+    flex-direction: column;
+  }
+  @if $row {
+    flex-direction: row;
+  }
+
+  // Padding
+  @if $p {
+    padding-top: ($p * $unit-base) + 0px;
+    padding-right: ($p * $unit-base) + 0px;
+    padding-bottom: ($p * $unit-base) + 0px;
+    padding-left: ($p * $unit-base) + 0px;
+  }
+
+  @if $pv {
+    padding-top: ($pv * $unit-base) + 0px;
+    padding-bottom: ($pv * $unit-base) + 0px;
+  }
+
+  @if $ph {
+    padding-right: ($ph * $unit-base) + 0px;
+    padding-left: ($ph * $unit-base) + 0px;
+  }
+
+  @if $pt {
+    padding-top: ($pt * $unit-base) + 0px;
+  }
+  @if $pr {
+    padding-right: ($pr * $unit-base) + 0px;
+  }
+  @if $pb {
+    padding-bottom: ($pb * $unit-base) + 0px;
+  }
+  @if $pl {
+    padding-left: ($pl * $unit-base) + 0px;
+  }
+
+  // Margin
+  @if $m {
+    margin-top: ($m * $unit-base) + 0px;
+    margin-right: ($m * $unit-base) + 0px;
+    margin-bottom: ($m * $unit-base) + 0px;
+    margin-left: ($m * $unit-base) + 0px;
+  }
+
+  @if $mv {
+    margin-top: ($mv * $unit-base) + 0px;
+    margin-bottom: ($mv * $unit-base) + 0px;
+  }
+
+  @if $mh {
+    margin-right: ($mh * $unit-base) + 0px;
+    margin-left: ($mh * $unit-base) + 0px;
+  }
+
+  @if $mt {
+    margin-top: ($mt * $unit-base) + 0px;
+  }
+  @if $mr {
+    margin-right: ($mr * $unit-base) + 0px;
+  }
+  @if $mb {
+    margin-bottom: ($mb * $unit-base) + 0px;
+  }
+  @if $ml {
+    margin-left: ($ml * $unit-base) + 0px;
+  }
+}
+
+@mixin border($color, $b, $bv, $bh, $bt, $br, $bb, $bl) {
+  @if $b {
+    border-top: (($b * $unit-base) + 0px) solid $color;
+    border-right: (($b * $unit-base) + 0px) solid $color;
+    border-bottom: (($b * $unit-base) + 0px) solid $color;
+    border-left: (($b * $unit-base) + 0px) solid $color;
+  }
+
+  @if $bv {
+    border-top: (($bv * $unit-base) + 0px) solid $color;
+    border-bottom: (($bv * $unit-base) + 0px) solid $color;
+  }
+
+  @if $bh {
+    border-right: (($bh * $unit-base) + 0px) solid $color;
+    border-left: (($bh * $unit-base) + 0px) solid $color;
+  }
+
+  @if $bt {
+    border-top: (($bt * $unit-base) + 0px) solid $color;
+  }
+  @if $br {
+    border-right: (($br * $unit-base) + 0px) solid $color;
+  }
+  @if $bb {
+    border-bottom: (($bb * $unit-base) + 0px) solid $color;
+  }
+  @if $bl {
+    border-left: (($bl * $unit-base) + 0px) solid $color;
+  }
+}
