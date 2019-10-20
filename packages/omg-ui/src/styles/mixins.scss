@@ -1,5 +1,25 @@
 @use "variables";
 
+@mixin text-small {
+  font-size: 12px;
+  line-height: 18px;
+}
+
+@mixin text-medium {
+  font-size: 13px;
+  line-height: 19px;
+}
+
+@mixin text-large {
+  font-size: 14px;
+  line-height: 21px;
+}
+
+@mixin text-xlarge {
+  font-size: 18px;
+  line-height: 27px;
+}
+
 @mixin flex($column, $row, $p, $pv, $ph, $pt, $pr, $pb, $pl, $m, $mv, $mh, $mt, $mr, $mb, $ml) {
   display: flex;
 
