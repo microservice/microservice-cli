@@ -20,7 +20,7 @@
     <Flex :flex="1" column position="relative">
       <Monaco :code="activeActionTab.payload" :onChange="setActionPayload" language="json" />
       <Overlay v-if="!activeActionTab.actionName">
-        <Flex column alignItems="center" justifyContent="center">
+        <Flex :flex="1" column alignItems="center" justifyContent="center">
           <Words color="grey90" size="xLarge">Select an Action to perform</Words>
         </Flex>
       </Overlay>

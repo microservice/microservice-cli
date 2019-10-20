@@ -1,5 +1,5 @@
 <template>
-  <Flex v-bind:class="{'app-footer': true, 'expanded': showLogs}" column>
+  <Flex class="app-footer" v-bind:class="{'expanded': showLogs}" column>
     <Flex :bv="1" column>
       <Flex :ph="2" :pv="1" row justify-content="space-between">
         <Words>Container Logs</Words>

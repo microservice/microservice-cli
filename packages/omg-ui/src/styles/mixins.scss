@@ -1,4 +1,4 @@
-@use "variables";
+@use "variables" as *;
 
 @mixin text-small {
   font-size: 12px;
@@ -119,7 +119,7 @@
 }
 
 @mixin border(
-  $color,
+  $color: $grey20,
   $b: "",
   $bv: "",
   $bh: "",
@@ -129,32 +129,32 @@
   $bl: ""
 ) {
   @if $b != "" {
-    border-top: (($b * $unit-base) + 0px) solid $color;
-    border-right: (($b * $unit-base) + 0px) solid $color;
-    border-bottom: (($b * $unit-base) + 0px) solid $color;
-    border-left: (($b * $unit-base) + 0px) solid $color;
+    border-top: ($b +0px) solid $color;
+    border-right: ($b +0px) solid $color;
+    border-bottom: ($b +0px) solid $color;
+    border-left: ($b +0px) solid $color;
   }
 
   @if $bv != "" {
-    border-top: (($bv * $unit-base) + 0px) solid $color;
-    border-bottom: (($bv * $unit-base) + 0px) solid $color;
+    border-top: ($bv +0px) solid $color;
+    border-bottom: ($bv +0px) solid $color;
   }
 
   @if $bh != "" {
-    border-right: (($bh * $unit-base) + 0px) solid $color;
-    border-left: (($bh * $unit-base) + 0px) solid $color;
+    border-right: ($bh +0px) solid $color;
+    border-left: ($bh +0px) solid $color;
   }
 
   @if $bt != "" {
-    border-top: (($bt * $unit-base) + 0px) solid $color;
+    border-top: ($bt +0px) solid $color;
   }
   @if $br != "" {
-    border-right: (($br * $unit-base) + 0px) solid $color;
+    border-right: ($br +0px) solid $color;
   }
   @if $bb != "" {
-    border-bottom: (($bb * $unit-base) + 0px) solid $color;
+    border-bottom: ($bb +0px) solid $color;
   }
   @if $bl != "" {
-    border-left: (($bl * $unit-base) + 0px) solid $color;
+    border-left: ($bl +0px) solid $color;
   }
 }

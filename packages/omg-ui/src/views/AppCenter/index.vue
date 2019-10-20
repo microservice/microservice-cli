@@ -1,7 +1,7 @@
 <template>
   <div class="app-center">
-    <Flex :bv="1" row>
-      <Flex :mt="1.5" :mh="2" row width="calc(100% - 24px)" overflow-y="auto">
+    <div class="center-header">
+      <div class="center-header-content">
         <Button
           :pl="3"
           :pv="1.5"
@@ -40,10 +40,10 @@
         >
           <Photo :source="iconPlus" :size="3" />
         </Button>
-      </Flex>
-    </Flex>
-    <Flex :ph="2" :pv="2" row>
-      <Flex :flex="1" row>
+      </div>
+    </div>
+    <div class="center-actions">
+      <div class="center-actions-left">
         <VSelect
           @input="selectAction"
           :value="activeActionTab.actionName"
@@ -72,23 +72,23 @@
           bordercolor="blue20"
           background-color="blue20"
         >Save</Button>
-      </Flex>
-      <Flex :flex="1" :ml="2" row justify-content="flex-end">
+      </div>
+      <div class="center-actions-right">
         <Button :pv="1" :onPress="openEnvironmentModal" bold color="grey70">
           <Photo :source="iconFileCode" :size="3" :mr="1" />Setup
         </Button>
         <Button :pl="3" :pv="1" :onPress="openYamlEditorModal" bold color="grey70">
           <Photo :source="iconBookmark" :size="3" :mr="1" />Edit the YAML
         </Button>
-      </Flex>
-    </Flex>
-    <Flex :ph="2" :pv="1" :flex="1" row height="100%">
+      </div>
+    </div>
+    <div class="center-editors">
       <Request />
-      <Flex :ph="0.5">
-        <Photo :source="iconResizeKnob" :width="2" :height="2" class="editor-resize-knob" />
-      </Flex>
+      <div class="center-editors-resize">
+        <Photo :source="iconResizeKnob" :width="2" :height="2" class="knob" />
+      </div>
       <Response />
-    </Flex>
+    </div>
   </div>
 </template>
 
@@ -96,7 +96,6 @@
 import VSelect from 'vue-select'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 
-import Flex from '~/components/Flex.vue'
 import Photo from '~/components/Photo.vue'
 import Button from '~/components/Button.vue'
 
@@ -110,7 +109,7 @@ import Request from './Request.vue'
 import Response from './Response.vue'
 
 export default {
-  components: { Flex, Photo, Button, VSelect, Request, Response },
+  components: { Photo, Button, VSelect, Request, Response },
   computed: {
     ...mapGetters({
       showLogs: 'getShowLogs',
@@ -157,8 +156,37 @@ export default {
   background-color: $grey10;
   @include flex($column: true, $grow: 1);
 }
-</style>
-<style lang="less" scoped>
+.center-header {
+  @include flex($row: true);
+  @include border($bv: 1);
+}
+.center-header-content {
+  width: calc(100% - 24px);
+  overflow-y: auto;
+  @include flex($row: true, $mt: 1.5, $mh: 2);
+}
+.center-actions {
+  @include flex($row: true, $ph: 2, $pv: 2);
+}
+.center-actions-left {
+  @include flex($row: true, $flex: 1);
+}
+.center-actions-right {
+  justify-content: flex-end;
+  @include flex($row: true, $flex: 1, $ml: 2);
+}
+.center-editors {
+  @include flex($row: true, $flex: 1, $ph: 2, $pv: 1);
+}
+.center-editors-resize {
+  justify-content: center;
+  @include flex($column: true, $ph: 0.5);
+
+  .knob {
+    user-select: none;
+    transform: rotate(90deg);
+  }
+}
 .tab {
   .close-button {
     display: none !important;
@@ -166,22 +194,20 @@ export default {
   &:hover .close-button {
     display: flex !important;
   }
-}
-.tab-active {
-  border-top: 3px solid #477bf3 !important;
-}
-.editor-resize-knob {
-  transform: rotate(90deg);
+  &.tab-active {
+    border-top: 3px solid #477bf3 !important;
+  }
 }
 </style>
-<style lang="less">
+<style lang="scss">
 .center-tab-vselect {
-  background-color: white;
   width: 100%;
+  display: flex;
+  background-color: white;
   box-shadow: 0px 1px 5px rgba(24, 59, 140, 0.2);
 
   .vs__dropdown-toggle {
-    height: 100%;
+    flex: 1;
     border: none;
     border-radius: 0;
   }

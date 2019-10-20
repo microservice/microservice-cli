@@ -8,6 +8,7 @@ export default {}
 </script>
 <style scoped lang="less">
 .overlay {
+  display: flex;
   user-select: none;
   position: absolute;
   top: 0;

@@ -20,7 +20,7 @@
     <Flex :flex="1" column position="relative">
       <Monaco :code="activeActionTab.result" language="json" readonly />
       <Overlay v-if="!activeActionTab.result">
-        <Flex column alignItems="center" justifyContent="center">
+        <Flex :flex="1" column alignItems="center" justifyContent="center">
           <Words color="grey90" size="xLarge">Perform an Action to see it's Result</Words>
         </Flex>
       </Overlay>
