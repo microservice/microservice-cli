@@ -1,20 +1,7 @@
 <template>
-  <Flex
-    column
-    background-color="grey10"
-    overflow="hidden"
-  >
-    <Flex
-      :bv="1"
-      row
-    >
-      <Flex
-        :mt="1.5"
-        :mh="2"
-        row
-        width="calc(100% - 24px)"
-        overflow-y="auto"
-      >
+  <Flex column background-color="grey10" overflow="hidden">
+    <Flex :bv="1" row>
+      <Flex :mt="1.5" :mh="2" row width="calc(100% - 24px)" overflow-y="auto">
         <Button
           :pl="3"
           :pv="1.5"
@@ -51,22 +38,12 @@
           bordercolor="blue20"
           background-color="blue10"
         >
-          <Photo
-            :source="iconPlus"
-            :size="3"
-          />
+          <Photo :source="iconPlus" :size="3" />
         </Button>
       </Flex>
     </Flex>
-    <Flex
-      :ph="2"
-      :pv="2"
-      row
-    >
-      <Flex
-        :flex="1"
-        row
-      >
+    <Flex :ph="2" :pv="2" row>
+      <Flex :flex="1" row>
         <VSelect
           @input="selectAction"
           :value="activeActionTab.actionName"
@@ -82,9 +59,7 @@
           :disabled="!allowActionSend"
           color="white"
           background-color="blue50"
-        >
-          Send
-        </Button>
+        >Send</Button>
         <Button
           :ph="2"
           :pv="1.5"
@@ -96,58 +71,21 @@
           font-weight="500"
           bordercolor="blue20"
           background-color="blue20"
-        >
-          Save
-        </Button>
+        >Save</Button>
       </Flex>
-      <Flex
-        :flex="1"
-        :ml="2"
-        row
-        justify-content="flex-end"
-      >
-        <Button
-          :pv="1"
-          :onPress="openEnvironmentModal"
-          bold
-          color="grey70"
-        >
-          <Photo
-            :source="iconFileCode"
-            :size="3"
-            :mr="1"
-          />Setup
+      <Flex :flex="1" :ml="2" row justify-content="flex-end">
+        <Button :pv="1" :onPress="openEnvironmentModal" bold color="grey70">
+          <Photo :source="iconFileCode" :size="3" :mr="1" />Setup
         </Button>
-        <Button
-          :pl="3"
-          :pv="1"
-          :onPress="openYamlEditorModal"
-          bold
-          color="grey70"
-        >
-          <Photo
-            :source="iconBookmark"
-            :size="3"
-            :mr="1"
-          />Edit the YAML
+        <Button :pl="3" :pv="1" :onPress="openYamlEditorModal" bold color="grey70">
+          <Photo :source="iconBookmark" :size="3" :mr="1" />Edit the YAML
         </Button>
       </Flex>
     </Flex>
-    <Flex
-      :ph="2"
-      :pv="1"
-      :flex="1"
-      row
-      height="100%"
-    >
+    <Flex :ph="2" :pv="1" :flex="1" row height="100%">
       <Request />
       <Flex :ph="0.5">
-        <Photo
-          :source="iconResizeKnob"
-          :width="2"
-          :height="2"
-          class="editor-resize-knob"
-        />
+        <Photo :source="iconResizeKnob" :width="2" :height="2" class="editor-resize-knob" />
       </Flex>
       <Response />
     </Flex>
