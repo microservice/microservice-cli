@@ -1,6 +1,6 @@
 <template>
   <div v-if="appReady" class="app-root">
-    <Flex v-bind:class="{'content-hidden': !!activeModal}" column flex="1">
+    <div v-bind:class="{'app-content': true, 'hidden': !!activeModal}">
       <AppHeader />
       <Flex :flex="1" row height="100%">
         <ActionsHistory v-if="showHistory" />
@@ -9,7 +9,7 @@
           <AppFooter />
         </Flex>
       </Flex>
-    </Flex>
+    </div>
     <Modals />
   </div>
 </template>
@@ -42,7 +42,12 @@ export default {
 @use "~/styles/mixins" as *;
 
 .app-root {
+  height: 100%;
+  overflow: hidden;
   @include text-medium;
+}
+.app-content {
+  @include flex($column: true, $flex: 1);
 }
 .content-hidden {
   filter: blur(2px);

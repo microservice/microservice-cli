@@ -10,7 +10,7 @@
       </Flex>
       <Flex :bt="1" :pl="2" v-if="showLogs" column overflow="hidden">
         <Words color="grey60" overflow-y="scroll">
-          <pre v-text="logsAllReverse" />
+          <!-- <pre v-text="logsAllReverse" /> -->
         </Words>
       </Flex>
     </Flex>
