@@ -8,6 +8,8 @@
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.0.0",
+    "autoprefixer": "^9.6.5",
+    "core-js": "2.x",
     "eslint": "^5.16.0 || ^6.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
@@ -39,7 +41,9 @@
   },
   "main": "./index.js",
   "browserslist": [
-    "last 10 Chrome versions"
+    "last 5 chrome versions",
+    "last 5 firefox versions",
+    "last 5 safari versions"
   ],
   "description": "UI used in the cli with the command 'omg ui'",
   "bugs": {

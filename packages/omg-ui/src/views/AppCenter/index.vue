@@ -1,5 +1,5 @@
 <template>
-  <Flex column background-color="grey10" overflow="hidden">
+  <div class="app-center">
     <Flex :bv="1" row>
       <Flex :mt="1.5" :mh="2" row width="calc(100% - 24px)" overflow-y="auto">
         <Button
@@ -89,7 +89,7 @@
       </Flex>
       <Response />
     </Flex>
-  </Flex>
+  </div>
 </template>
 
 <script lang="ts">
@@ -150,6 +150,14 @@ export default {
   }),
 }
 </script>
+<style lang="scss" scoped>
+@use "~/styles/mixins" as *;
+@use "~/styles/variables" as *;
+.app-center {
+  background-color: $grey10;
+  @include flex($column: true, $grow: 1);
+}
+</style>
 <style lang="less" scoped>
 .tab {
   .close-button {

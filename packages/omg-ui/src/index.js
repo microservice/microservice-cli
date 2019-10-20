@@ -1,3 +1,5 @@
+import 'core-js'
+
 import Vue from 'vue'
 import VueToasted from 'vue-toasted'
 import VueTimeago from 'vue-timeago'

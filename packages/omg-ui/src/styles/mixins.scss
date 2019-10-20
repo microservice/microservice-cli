@@ -22,6 +22,7 @@
 
 @mixin flex(
   $flex: "",
+  $grow: "",
   $column: false,
   $row: false,
   $p: "",
@@ -43,6 +44,9 @@
 
   @if $flex != "" {
     flex: $flex;
+  }
+  @if $grow != "" {
+    flex-grow: $grow;
   }
   @if $column {
     flex-direction: column;

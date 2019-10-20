@@ -1,14 +1,14 @@
 <template>
   <div v-if="appReady" class="app-root">
-    <div v-bind:class="{'app-content': true, 'hidden': !!activeModal}">
+    <div class="app-wrapper">
       <AppHeader />
-      <Flex :flex="1" row height="100%">
+      <div class="app-content">
         <ActionsHistory v-if="showHistory" />
-        <Flex :flex="1" column overflow="hidden">
+        <div class="app-content-right">
           <AppCenter />
           <AppFooter />
-        </Flex>
-      </Flex>
+        </div>
+      </div>
     </div>
     <Modals />
   </div>
@@ -16,8 +16,6 @@
 
 <script lang="ts">
 import { mapGetters } from 'vuex'
-
-import Flex from '~/components/Flex.vue'
 
 import AppHeader from './AppHeader/index.vue'
 import AppCenter from './AppCenter/index.vue'
@@ -27,7 +25,7 @@ import ActionsHistory from './ActionsHistory.vue'
 import Modals from './Modals/index.vue'
 
 export default {
-  components: { Flex, AppHeader, AppCenter, ActionsHistory, AppFooter, Modals },
+  components: { AppHeader, AppCenter, ActionsHistory, AppFooter, Modals },
   computed: {
     ...mapGetters({
       appReady: 'getAppReady',
@@ -42,14 +40,19 @@ export default {
 @use "~/styles/mixins" as *;
 
 .app-root {
+  display: flex;
   height: 100%;
   overflow: hidden;
   @include text-medium;
 }
-.app-content {
+.app-wrapper {
   @include flex($column: true, $flex: 1);
 }
-.content-hidden {
-  filter: blur(2px);
+.app-content {
+  @include flex($row: true, $flex: 1);
+}
+.app-content-right {
+  overflow: hidden;
+  @include flex($column: true, $flex: 1);
 }
 </style>
