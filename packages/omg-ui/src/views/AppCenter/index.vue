@@ -18,15 +18,14 @@
           class="tab"
         >
           <span>{{ tab.title }}</span>
-          <Photo
-            :flex="1"
-            :mr="1"
-            :source="iconClose"
-            :size="2"
-            :onPress="(e) => handleTabClosePress(e, tab.id)"
-            class="close-button"
-            align-items="flex-end"
-          />
+          <div class="close-button-wrapper">
+            <Photo
+              :source="iconClose"
+              :size="2"
+              :onPress="(e) => handleTabClosePress(e, tab.id)"
+              class="close-button"
+            />
+          </div>
         </Button>
         <Button
           :ph="1.5"
@@ -188,6 +187,10 @@ export default {
   }
 }
 .tab {
+  .close-button-wrapper {
+    justify-content: flex-end;
+    @include flex($row: true, $flex: 1, $mr: 1);
+  }
   .close-button {
     display: none !important;
   }
