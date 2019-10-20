@@ -1,9 +1,10 @@
 <template>
   <div class="app-footer">
-    <div class="logs-wrapper" v-bind:class="{expanded: showLogs}">
+    <div class="logs-wrapper">
       <div class="logs-header">
         <div>Container Logs</div>
-        <Photo :source="iconResizeKnob" :width="1.5" :height="2" />
+        <div v-if="!showLogs" />
+        <Photo :source="iconResizeKnob" :width="1.5" :height="2" v-if="showLogs" />
         <div class="logs-toggle">
           <ToggleVertical :enabled="showLogs" :onToggle="toggleShowLogs" />
         </div>
@@ -50,21 +51,15 @@ export default {
 @use "~/styles/variables" as *;
 
 .app-footer {
-  max-height: 20%;
+  height: 100%;
   overflow: hidden;
   @include flex($column: true);
 }
 .logs-wrapper {
+  height: 100%;
   min-height: 0;
   @include border($bv: 1);
   @include flex($column: true);
-
-  &.expanded {
-    height: 100%;
-    .logs-container {
-      height: 100%;
-    }
-  }
 }
 .logs-header {
   justify-content: space-between;

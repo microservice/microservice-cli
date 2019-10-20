@@ -5,8 +5,12 @@
       <div class="app-content">
         <ActionsHistory v-if="showHistory" />
         <div class="app-content-right">
-          <AppCenter />
-          <AppFooter />
+          <div :style="styleCenter">
+            <AppCenter />
+          </div>
+          <div :style="styleFooter">
+            <AppFooter />
+          </div>
         </div>
       </div>
     </div>
@@ -26,12 +30,31 @@ import Modals from './Modals/index.vue'
 
 export default {
   components: { AppHeader, AppCenter, ActionsHistory, AppFooter, Modals },
+  data: () => ({
+    heightLogs: 25,
+    heightLogsMinimized: 8.5,
+  }),
   computed: {
     ...mapGetters({
+      showLogs: 'getShowLogs',
       appReady: 'getAppReady',
       activeModal: 'getActiveModal',
       showHistory: 'getShowHistory',
     }),
+    styleCenter() {
+      const heightLogs = this.showLogs ? this.heightLogs : this.heightLogsMinimized
+
+      return {
+        height: `${100 - heightLogs}%`,
+      }
+    },
+    styleFooter() {
+      const heightLogs = this.showLogs ? this.heightLogs : this.heightLogsMinimized
+
+      return {
+        height: `${heightLogs}%`,
+      }
+    },
   },
 }
 </script>

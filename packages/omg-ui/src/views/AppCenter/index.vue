@@ -152,8 +152,9 @@ export default {
 @use "~/styles/mixins" as *;
 @use "~/styles/variables" as *;
 .app-center {
+  height: 100%;
   background-color: $grey10;
-  @include flex($column: true, $grow: 1);
+  @include flex($column: true);
 }
 .center-header {
   @include flex($row: true);
