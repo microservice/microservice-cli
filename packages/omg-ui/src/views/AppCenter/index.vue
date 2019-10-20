@@ -9,7 +9,7 @@
           :mr="1"
           v-bind:key="tab.id"
           v-for="tab in allActionTabs"
-          v-bind:class="{'tab-active': tab.id === activeActionTab.id}"
+          v-bind:class="{active: tab.id === activeActionTab.id}"
           v-bind:onPress="e => selectActionsTab(tab.id)"
           min-width="100px"
           border-bottom="none"
@@ -197,7 +197,7 @@ export default {
   &:hover .close-button {
     display: flex !important;
   }
-  &.tab-active {
+  &.active {
     border-top: 3px solid #477bf3 !important;
   }
 }

@@ -36,6 +36,7 @@ export default {
   left: 0;
   overflow: hidden;
   display: flex;
+  z-index: 1;
 }
 .modals-wrapper.hidden {
   display: none;

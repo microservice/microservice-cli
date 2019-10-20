@@ -49,6 +49,7 @@ export default {
   @include flex($column: true, $flex: 1);
 }
 .app-content {
+  min-height: 0;
   @include flex($row: true, $flex: 1);
 }
 .app-content-right {
