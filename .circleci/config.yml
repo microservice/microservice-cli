@@ -59,6 +59,15 @@ jobs:
           name: Linting
           command: yarn lint
 
+  regression:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Run the regression test suite
+          command: ./tests/regression/test.sh
+
   # Run tests on all packages
   test:
     <<: *defaults
@@ -163,6 +172,12 @@ workflows:
           requires:
             - build
       - test-post-build:
+          filters:
+            tags:
+              only: /.*/
+          requires:
+            - build
+      - regression:
           filters:
             tags:
               only: /.*/
