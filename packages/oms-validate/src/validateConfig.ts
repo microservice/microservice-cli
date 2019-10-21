@@ -51,7 +51,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   }
   // -Local validator mixins
 
-  validate(root, 'oms', true, ({ state, error }) => {
+  validate(root, root.value.omg ? 'omg' : 'oms', true, ({ state, error }) => {
     if (typeof state.value !== 'number') {
       error('must be a valid number')
     } else if (state.value !== 1) {

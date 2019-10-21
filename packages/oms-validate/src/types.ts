@@ -144,7 +144,8 @@ export interface Action {
 }
 
 export interface ConfigSchema {
-  oms: 1
+  oms?: 1
+  omg?: 1
   info: {
     title: string
     version: string
