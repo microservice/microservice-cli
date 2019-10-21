@@ -74,13 +74,22 @@ jobs:
       - run:
           command: sudo apt-get install nodejs
       - run:
-          command: nvm install `nodejs --version`
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install `nodejs --version`
       - run:
-          command: nvm alias default `nodejs --version`
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm alias default `nodejs --version`
       - run:
           command: npm install -g yarn
       - run:
-          command: nvm install `nodejs --version`
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install `nodejs --version`
       - run:
           command: yarn
       - run:
