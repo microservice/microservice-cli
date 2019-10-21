@@ -66,13 +66,20 @@ jobs:
     steps:
       - checkout
       - run:
-          command: sudo apt-get update
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install v11.15.0
       - run:
-          command: curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm alias default v11.15.0
       - run:
-          command: curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-      - run:
-          command: sudo apt-get install nodejs
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm install -g yarn
       - run:
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
@@ -82,20 +89,17 @@ jobs:
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm alias default `nodejs --version`
-      - run:
-          command: npm install -g yarn
+            yarn
       - run:
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install `nodejs --version`
+            yarn bootstrap
       - run:
-          command: yarn
-      - run:
-          command: yarn bootstrap
-      - run:
-          command: ./tests/regression/test.sh
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            ./tests/regression/test.sh
 
   # Run tests on all packages
   test:
