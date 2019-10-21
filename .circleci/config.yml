@@ -66,6 +66,16 @@ jobs:
     steps:
       - checkout
       - run:
+          command: sudo apt-get update
+      - run:
+          command: curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
+      - run:
+          command: curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      - run:
+          command: echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+      - run:
+          command: sudo apt-get update && sudo apt-get install yarn
+      - run:
           name: Installing Lerna
           command: yarn
       - run:
