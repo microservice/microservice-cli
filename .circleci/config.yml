@@ -72,17 +72,18 @@ jobs:
       - run:
           command: curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
       - run:
-          command: echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+          command: nvm install `nodejs --version`
       - run:
-          command: sudo apt-get update && sudo apt-get install yarn
+          command: nvm alias default `nodejs --version`
       - run:
-          name: Installing Lerna
+          command: npm install -g yarn
+      - run:
+          command: nvm install `nodejs --version`
+      - run:
           command: yarn
       - run:
-          name: Install local dependencies
           command: yarn bootstrap
       - run:
-          name: Run the regression test suite
           command: ./tests/regression/test.sh
 
   # Run tests on all packages
