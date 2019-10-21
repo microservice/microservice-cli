@@ -4,18 +4,20 @@ cd $(dirname $0)/../../
 
 OMS_PATH=$PWD/packages/oms/lib/cli.js
 
+WORK_DIR=`mktemp -d`
+echo "Working in ${WORK_DIR}"
+
 echo "===== OMS VERSION ====="
 $OMS_PATH -v
 
 echo "===== HELLO WORLD TEMPLATES ===="
-mkdir repos
-cd repos
+cd ${WORK_DIR}
 for repo in clojure d go node java python php ruby rust scala ; do
     echo "===== Testing $repo ====="
     git clone -q --depth 1 "https://github.com/microservices/${repo}.git"
     cd "$repo"
     output="$($OMS_PATH run --silent message -a name="Peter" | jq -c .)"
-    if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "$output"; exit 1; fi
+    if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "ERROR: Output mismatch: $output"; exit 1; fi
     cd ..
 done
 
@@ -57,3 +59,6 @@ if [ "$output" != '{"method":"sha1","digest":"9F60EE4B05E590A7F3FAC552BFB9D98FA4
 # if [ "$output" != 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiaGVsbG8gd29ybGQiLCJpYXQiOjE1NDM5MjMyMTAsImV4cCI6MTU0MzkzMDQxMH0.FCsstg1m01goffz0cFYxZIUe0uPybUAqzGRnZPJgGBw' ] ; then echo "$output"; exit 1; fi
 # output="$($OMS_PATH run --silent verify -a token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiaGVsbG8gd29ybGQiLCJpYXQiOjE1NDM5MjMyMTAsImV4cCI6MTU0MzkzMDQxMH0.FCsstg1m01goffz0cFYxZIUe0uPybUAqzGRnZPJgGBw" | jq -c .)"
 # if [ "$output" != '{"data":"hello world","iat":1543923210,"exp":1543930410}' ] ; then echo "$output"; exit 1; fi
+
+echo "Success! Cleaning work dir"
+rm -rf ${WORK_DIR}
