@@ -64,8 +64,13 @@ jobs:
     machine:
       image: circleci/classic:201808-01
     steps:
-      - attach_workspace:
-          at: ~/project
+      - checkout
+      - run:
+          name: Installing Lerna
+          command: yarn
+      - run:
+          name: Install local dependencies
+          command: yarn bootstrap
       - run:
           name: Run the regression test suite
           command: ./tests/regression/test.sh
