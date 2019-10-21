@@ -137,7 +137,6 @@ export default class Daemon {
 
   // Stops gracefully (presumably.)
   public async stop(): Promise<void> {
-    logger.info('Cleaning up the Docker state')
     const { containerState } = this
 
     if (!containerState) {
