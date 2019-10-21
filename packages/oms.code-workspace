@@ -1,13 +1,13 @@
 {
 	"folders": [
 		{
-			"path": "omg-ui"
+			"path": "oms-ui"
 		},
 		{
-			"path": "omg-validate"
+			"path": "oms-validate"
 		},
 		{
-			"path": "omg"
+			"path": "oms"
 		}
 	],
 	"settings": {}

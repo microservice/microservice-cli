@@ -13,7 +13,7 @@ function build_package {
   pkg package.json $@
 }
 
-OUTPUT_NAME="omg"
+OUTPUT_NAME="oms"
 OUTPUT_NODE_VERSION="10"
 OUTPUT_PLATFORMS="linux-x64 macos-x64 win-x64"
 
@@ -21,5 +21,5 @@ rm -rf built/*
 for PLATFORM in $OUTPUT_PLATFORMS; do
   OUTPUT_TARGET="node$OUTPUT_NODE_VERSION-$PLATFORM"
   echo "Generating $OUTPUT_TARGET"
-  build_package --target $OUTPUT_TARGET --output built/omg-$PLATFORM
+  build_package --target $OUTPUT_TARGET --output built/oms-$PLATFORM
 done

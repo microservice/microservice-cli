@@ -9,10 +9,10 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/microservices/omg.git"
+    "url": "git+https://github.com/microservices/oms.git"
   },
   "keywords": [
-    "omg",
+    "oms",
     "validation",
     "microservice",
     "yml",
@@ -21,10 +21,10 @@
   "author": "Aurelien ARINO <aurelien@storyscript.io>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/microservices/omg/issues"
+    "url": "https://github.com/microservices/oms/issues"
   },
-  "homepage": "https://github.com/microservices/omg#readme",
+  "homepage": "https://github.com/microservices/oms#readme",
   "dependencies": {
-    "omg-validate": "^0.14.0"
+    "oms-validate": "^0.14.0"
   }
 }

@@ -1,6 +1,6 @@
 {
-  "name": "omg",
-  "bin": "./packages/omg/lib/cli.js",
+  "name": "oms",
+  "bin": "./packages/oms/lib/cli.js",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -40,7 +40,7 @@
     "version": "lerna version --no-git-tag-version --no-push"
   },
   "pkg": {
-    "assets": "src/omg-ui/lib/*"
+    "assets": "src/oms-ui/lib/*"
   },
   "postcss": {
     "plugins": {

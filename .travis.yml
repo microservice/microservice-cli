@@ -6,7 +6,7 @@ services:
   - docker
 
 before_script:
-  - yarn build && (cd packages/omg; yarn link)
+  - yarn build && (cd packages/oms; yarn link)
 
 script:
   - cd tests/regression && ./travis.sh

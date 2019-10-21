@@ -1,0 +1,60 @@
+{
+  "name": "oms",
+  "description": "A CLI to interact with microservices built with the OMS standard.",
+  "keywords": [
+    "oms",
+    "cli",
+    "microservice",
+    "microservices"
+  ],
+  "version": "1.0.0-alpha6",
+  "main": "oms",
+  "scripts": {
+    "build": "sb-babel-cli src -o lib --typescript",
+    "watch": "yarn build -w",
+    "dev": "yarn watch -x lib/cli"
+  },
+  "bin": {
+    "oms": "./lib/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microservices/oms.git",
+    "directory": "packages/oms"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "chokidar": "^3.1.0",
+    "commander": "^3.0.0",
+    "dockerode": "^2.5.8",
+    "event-kit": "^2.5.3",
+    "execa": "^2.0.3",
+    "express": "^4.17.1",
+    "form-data": "^2.5.0",
+    "get-port": "^5.0.0",
+    "git-url-parse": "^11.1.2",
+    "got": "^9.6.0",
+    "js-yaml": "^3.13.1",
+    "lodash": "^4.17.15",
+    "log-symbols": "^3.0.0",
+    "oms-ui": "^1.0.0-alpha6",
+    "oms-validate": "^1.0.0-alpha6",
+    "open": "^6.4.0",
+    "ora": "^3.4.0",
+    "sb-fs": "^4.0.0",
+    "strip-ansi": "^5.2.0",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^2.5.20",
+    "@types/event-kit": "^2.4.0",
+    "@types/express": "^4.17.1",
+    "@types/git-url-parse": "^9.0.0",
+    "@types/got": "^9.6.7",
+    "@types/js-yaml": "^3.12.1",
+    "@types/lodash": "^4.14.137",
+    "@types/uuid": "^3.4.5",
+    "typescript": "^3.1.6"
+  }
+}

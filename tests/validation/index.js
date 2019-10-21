@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { OMGValidate } from 'omg-validate'
+import { OMSValidate } from 'oms-validate'
 
 const FILES_PATH = path.join(__dirname, 'files')
 const EXPECT_PATH = path.join(__dirname, 'expectations')
@@ -57,7 +57,7 @@ const start = async () => {
         console.log(`===== Testing ${test} =====`)
         let output = ''
         try {
-          output = new OMGValidate(tests[test].content).validate()
+          output = new OMSValidate(tests[test].content).validate()
         } catch (e) {
           output = e
         }
