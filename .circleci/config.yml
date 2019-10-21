@@ -61,6 +61,8 @@ jobs:
 
   regression:
     <<: *defaults
+    machine:
+      image: circleci/classic:201808-01
     steps:
       - attach_workspace:
           at: ~/project
@@ -181,5 +183,3 @@ workflows:
           filters:
             tags:
               only: /.*/
-          requires:
-            - build
