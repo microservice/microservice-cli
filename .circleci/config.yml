@@ -72,6 +72,8 @@ jobs:
       - run:
           command: curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
       - run:
+          command: sudo apt-get install nodejs
+      - run:
           command: nvm install `nodejs --version`
       - run:
           command: nvm alias default `nodejs --version`
