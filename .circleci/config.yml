@@ -60,7 +60,7 @@ jobs:
           command: yarn lint
 
   regression:
-    <<: *defaults
+    working_directory: ~/project/oms
     machine:
       image: circleci/classic:201808-01
     steps:
