@@ -37,7 +37,7 @@
         justify-content="center"
         background="linear-gradient(180deg, #323F4B 0%, #1F2933 100%)"
       >
-        <Words color="white">microservice.yaml</Words>
+        <Words color="white">oms.yaml</Words>
       </Flex>
       <Flex :flex="1" :pv="1.5" :ph="1.5" column background="white">
         <Monaco

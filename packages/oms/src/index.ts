@@ -32,7 +32,7 @@ export default async function main() {
     .command('validate')
     .option('-j --json', 'Formats output to JSON')
     .option('-s --silent', 'Only feedback is the status exit code')
-    .description('Validate the structure of a `microservice.yml` in the working directory')
+    .description('Validate the structure of a `oms.yml` in the working directory')
     .action(options => {
       setCliOptions(options)
       if (options.json) {
@@ -80,11 +80,11 @@ export default async function main() {
       getCollector('envs'),
       [],
     )
-    .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
+    .option('--inherit-env', 'Binds host env variable asked in the oms.yml to the container env')
     .option('-r --verbose', 'Show docker build logs')
     .option('--silent', 'Hide output except for action result')
     .option('--debug', 'Show container logs in CLI (for debugging purpose)')
-    .description('Run actions defined in your `microservice.yml`')
+    .description('Run actions defined in your `oms.yml`')
     .action(async (action, options) => {
       setCliOptions(options)
       if (options.silent || options.verbose) {
@@ -117,11 +117,11 @@ export default async function main() {
       getCollector('envs'),
       [],
     )
-    .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
+    .option('--inherit-env', 'Binds host env variable asked in the oms.yml to the container env')
     .option('-r --verbose', 'Show docker build logs')
     .option('--silent', 'Hide output except for action result')
     .option('--debug', 'Show container logs in CLI (for debugging purpose)')
-    .description('Subscribe to an event defined in your `microservice.yml`')
+    .description('Subscribe to an event defined in your `oms.yml`')
     .action(async (action, event, options) => {
       setCliOptions(options)
       if (options.silent || options.verbose) {
@@ -148,7 +148,7 @@ export default async function main() {
       '--experimental',
       "The OMS UI is still a WIP. Specify this option to acknowledge you understand it's experimental and behavior is subject to change",
     )
-    .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
+    .option('--inherit-env', 'Binds host env variable asked in the oms.yml to the container env')
     .description('Starts to oms-app which monitors your microservice.')
     .action(options => {
       if (!options.experimental) {

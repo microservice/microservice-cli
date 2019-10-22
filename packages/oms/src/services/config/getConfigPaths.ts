@@ -54,18 +54,33 @@ export default async function getConfigPaths(
   const workingDirectory = options.directory || process.cwd()
 
   const dockerConfigPath = path.join(workingDirectory, 'Dockerfile')
+  const omsYml = path.join(workingDirectory, 'oms.yml')
+  const omsYaml = path.join(workingDirectory, 'oms.yaml')
   const microserviceYml = path.join(workingDirectory, 'microservice.yml')
   const microserviceYaml = path.join(workingDirectory, 'microservice.yaml')
 
-  const [dockerConfigPathExists, microserviceYmlExists, microserviceYamlExists] = await Promise.all([
+  const [
+    dockerConfigPathExists,
+    omsYmlExists,
+    omsYamlExists,
+    microserviceYmlExists,
+    microserviceYamlExists,
+  ] = await Promise.all([
     fs.exists(dockerConfigPath),
+    fs.exists(omsYml),
+    fs.exists(omsYaml),
     fs.exists(microserviceYml),
     fs.exists(microserviceYaml),
   ])
 
   const foundDockerPath = dockerConfigPathExists ? dockerConfigPath : null
   let foundMicroservicePath: string | null = null
-  if (microserviceYmlExists && microserviceYml) {
+
+  if (omsYmlExists) {
+    foundMicroservicePath = omsYml
+  } else if (omsYamlExists) {
+    foundMicroservicePath = omsYaml
+  } else if (microserviceYmlExists) {
     foundMicroservicePath = microserviceYml
   } else if (microserviceYamlExists) {
     foundMicroservicePath = microserviceYaml
@@ -73,7 +88,7 @@ export default async function getConfigPaths(
 
   const chunks: string[] = []
   if (microserviceRequired && !foundMicroservicePath) {
-    chunks.push('a `microservice.y[a]ml`')
+    chunks.push('a `oms.y[a]ml`')
   }
   if (dockerRequired && !foundDockerPath) {
     chunks.push('a `Dockerfile`')
