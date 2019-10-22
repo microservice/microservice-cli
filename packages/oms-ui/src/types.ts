@@ -1,6 +1,6 @@
-import { ConfigSchema } from 'oms-validate'
-import { UIAppStatus } from 'oms/src/types'
-import { InputType, Argument } from 'oms-validate/src/types'
+import { UIAppStatus } from '@microservices/cli/src/types'
+import { ConfigSchema } from '@microservices/validate'
+import { InputType, Argument } from '@microservices/validate/src/types'
 
 export interface ConsoleLine {
   contents: string

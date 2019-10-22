@@ -1,5 +1,5 @@
-import { validateArgout } from 'oms-validate'
-import { InputType } from 'oms-validate/src/types'
+import { validateArgout } from '@microservices/validate'
+import { InputType } from '@microservices/validate/src/types'
 import argsToMap from '~/helpers/argsToMap'
 import { CLIError } from '~/errors'
 import { Args, ArgsTransformed, ConfigSchema, ConfigSchemaAction } from '~/types'

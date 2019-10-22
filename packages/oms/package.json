@@ -1,14 +1,16 @@
 {
-  "name": "oms",
+  "name": "@microservices/cli",
   "description": "A CLI to interact with microservices built with the OMS standard.",
   "keywords": [
     "oms",
+    "omg",
     "cli",
+    "open",
     "microservice",
-    "microservices"
+    "microservices",
+    "specification"
   ],
   "version": "1.0.0-alpha6",
-  "main": "oms",
   "scripts": {
     "build": "sb-babel-cli src -o lib --typescript",
     "watch": "yarn build -w",
@@ -38,8 +40,8 @@
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
     "log-symbols": "^3.0.0",
-    "oms-ui": "^1.0.0-alpha6",
-    "oms-validate": "^1.0.0-alpha6",
+    "@microservices/ui": "^1.0.0-alpha6",
+    "@microservices/validate": "^1.0.0-alpha6",
     "open": "^6.4.0",
     "ora": "^3.4.0",
     "sb-fs": "^4.0.0",

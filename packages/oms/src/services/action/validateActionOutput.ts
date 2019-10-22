@@ -1,4 +1,4 @@
-import { validateArgout } from 'oms-validate'
+import { validateArgout } from '@microservices/validate'
 import { CLIError } from '~/errors'
 import { ConfigSchemaAction } from '~/types'
 

@@ -1,7 +1,7 @@
 import got from 'got'
 import FormData from 'form-data'
 import querystring from 'querystring'
-import { OutputType } from 'oms-validate/src/types'
+import { OutputType } from '@microservices/validate/src/types'
 
 import { CLIError } from '~/errors'
 import { Daemon } from '~/services/daemon'

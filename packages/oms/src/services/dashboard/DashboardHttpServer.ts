@@ -4,7 +4,7 @@ import stripAnsi from 'strip-ansi'
 import bodyParser from 'body-parser'
 import express, { Response } from 'express'
 import { CompositeDisposable, Emitter, Disposable } from 'event-kit'
-import OmsUiPath from 'oms-ui'
+import OmsUiPath from '@microservices/ui'
 
 import * as logger from '~/logger'
 import mapToArgs from '~/helpers/mapToArgs'

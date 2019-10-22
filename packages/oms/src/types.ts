@@ -1,4 +1,4 @@
-import { Action, ConfigSchema } from 'oms-validate'
+import { Action, ConfigSchema } from '@microservices/validate'
 
 export type Args = [string, string][]
 export type ArgsTransformed = [string, any][]

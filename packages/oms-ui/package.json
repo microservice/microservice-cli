@@ -1,5 +1,5 @@
 {
-  "name": "oms-ui",
+  "name": "@microservices/ui",
   "version": "1.0.0-alpha6",
   "scripts": {
     "build": "yarn build-app; ./scripts/build-workers.sh",
@@ -19,7 +19,7 @@
     "lodash": "^4.17.15",
     "monaco-editor": "^0.18.1",
     "normalize.css": "^8.0.1",
-    "oms-validate": "^1.0.0-alpha6",
+    "@microservices/validate": "^1.0.0-alpha6",
     "parcel-bundler": "^1.12.3",
     "promise.defer": "^1.0.1",
     "sass": "^1.23.0",
