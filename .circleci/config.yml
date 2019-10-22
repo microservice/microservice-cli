@@ -49,22 +49,13 @@ jobs:
     machine:
       image: ubuntu-1604:201903-01
     steps:
-      - checkout
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Install NodeJS and YarnPKG
           command: |
             source ~/.bashrc
-            export DEBIAN_FRONTEND=noninteractive
             nvm install v12 && nvm alias default 12
-            curl -o- -L https://yarnpkg.com/install.sh | bash
-      - run:
-          command: |
-            source ~/.bashrc
-            yarn
-      - run:
-          command: |
-            source ~/.bashrc
-            yarn bootstrap
       - run:
           command: |
             source ~/.bashrc
