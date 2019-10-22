@@ -207,6 +207,7 @@ export interface ConfigSchema {
       http: {
         path: string
         port: number
+        method: HttpMethod
       }
     }
   >

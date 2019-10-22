@@ -197,6 +197,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     validateObject(state, 'http', true, ({ state }) => {
       validateWith(state, 'path', true, v.pathname)
       validateWith(state, 'port', true, v.number)
+      validateWith(state, 'method', true, enumValues(HTTP_METHODS))
     })
   })
 
