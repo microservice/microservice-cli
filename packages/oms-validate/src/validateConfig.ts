@@ -87,70 +87,81 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
 
   validateAssocObject(root, 'actions', true, ({ state }) => {
     validateWith(state, 'help', false, v.string)
-    validateObject(state, 'format', false, ({ state }) => {
-      validateWith(state, 'command', true, oneOf(v.string, array(v.string)))
-    })
-    validateAssocObject(state, 'events', false, ({ state }) => {
-      validateWith(state, 'help', false, v.string)
-      validateObject(state, 'http', true, ({ state }) => {
-        validateWith(state, 'port', true, v.number)
-        validateObject(state, 'subscribe', true, ({ state }) => {
-          validateWith(state, 'path', true, v.pathname)
-          validateWith(state, 'method', true, enumValues(HTTP_METHODS))
-          validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
+    if (state.value.events) {
+      validateWith(state, 'rpc', false, v.notDefined('when events is defined'))
+      validateWith(state, 'http', false, v.notDefined('when events is defined'))
+      validateAssocObject(state, 'events', true, ({ state }) => {
+        validateWith(state, 'help', false, v.string)
+        validateObject(state, 'http', true, ({ state }) => {
+          validateWith(state, 'port', true, v.number)
+          validateObject(state, 'subscribe', true, ({ state }) => {
+            validateWith(state, 'path', true, v.pathname)
+            validateWith(state, 'method', true, enumValues(HTTP_METHODS))
+            validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
+          })
+          validateObject(state, 'unsubscribe', false, ({ state }) => {
+            validateWith(state, 'path', true, v.pathname)
+            validateWith(state, 'method', true, enumValues(HTTP_METHODS))
+            validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
+          })
         })
-        validateObject(state, 'unsubscribe', false, ({ state }) => {
-          validateWith(state, 'path', true, v.pathname)
-          validateWith(state, 'method', true, enumValues(HTTP_METHODS))
+        validateObject(state, 'output', false, ({ state }) => {
+          validateWith(state, 'actions', false, v.any)
           validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
+          validateTOutput({ state })
+        })
+        validateAssocObject(state, 'arguments', false, ({ state }) => {
+          validateTArgument({ state, validateIn: true })
         })
       })
-      validateObject(state, 'output', false, ({ state }) => {
-        validateWith(state, 'actions', false, v.any)
+    } else if (state.value.rpc) {
+      validateWith(state, 'events', false, v.notDefined('when rpc is defined'))
+      validateWith(state, 'http', false, v.notDefined('when rpc is defined'))
+      validateObject(state, 'rpc', true, ({ state }) => {
+        validateWith(state, 'port', true, v.number)
+        validateObject(state, 'framework', true, ({ state }) => {
+          validateObject(state, 'grpc', true, ({ state }) => {
+            validateWith(state, 'version', true, v.number)
+            validateObject(state, 'proto', true, ({ state }) => {
+              validateWith(state, 'path', true, v.string)
+            })
+          })
+        })
+        validateObject(state, 'client', true, ({ state }) => {
+          validateWith(state, 'endpoint', true, v.string)
+          validateWith(state, 'port', true, v.number)
+          validateWith(state, 'tls', true, v.boolean)
+        })
+      })
+    } else if (state.value.http) {
+      validateWith(state, 'events', false, v.notDefined('when http is defined'))
+      validateWith(state, 'rpc', false, v.notDefined('when http is defined'))
+      validateObject(state, 'http', true, ({ state }) => {
+        validateWith(state, 'method', true, enumValues(HTTP_METHODS))
         validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
-        validateTOutput({ state })
+
+        if (state.value.port) {
+          validateWith(state, 'path', true, v.pathname)
+          validateWith(state, 'port', true, v.number)
+          validateWith(state, 'url', false, v.notDefined('when port is defined'))
+        } else {
+          validateWith(state, 'path', false, v.notDefined('when url is defined'))
+          validateWith(state, 'port', false, v.notDefined('when url is defined'))
+          validateWith(state, 'url', true, v.string)
+        }
       })
       validateAssocObject(state, 'arguments', false, ({ state }) => {
         validateTArgument({ state, validateIn: true })
       })
-    })
-    validateObject(state, 'rpc', false, ({ state }) => {
-      validateWith(state, 'port', true, v.number)
-      validateObject(state, 'framework', true, ({ state }) => {
-        validateObject(state, 'grpc', true, ({ state }) => {
-          validateWith(state, 'version', true, v.number)
-          validateObject(state, 'proto', true, ({ state }) => {
-            validateWith(state, 'path', true, v.string)
-          })
-        })
+      validateObject(state, 'output', true, ({ state }) => {
+        validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
+        validateTOutput({ state })
       })
-      validateObject(state, 'client', true, ({ state }) => {
-        validateWith(state, 'endpoint', true, v.string)
-        validateWith(state, 'port', true, v.number)
-        validateWith(state, 'tls', true, v.boolean)
-      })
-    })
-    validateObject(state, 'http', false, ({ state }) => {
-      validateWith(state, 'method', true, enumValues(HTTP_METHODS))
-      validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
-
-      if (state.value.port) {
-        validateWith(state, 'path', true, v.pathname)
-        validateWith(state, 'port', true, v.number)
-        validateWith(state, 'url', false, v.notDefined('when port is defined'))
-      } else {
-        validateWith(state, 'path', false, v.notDefined('when url is defined'))
-        validateWith(state, 'port', false, v.notDefined('when url is defined'))
-        validateWith(state, 'url', true, v.string)
-      }
-    })
-    validateAssocObject(state, 'arguments', false, ({ state }) => {
-      validateTArgument({ state, validateIn: true })
-    })
-    validateObject(state, 'output', true, ({ state }) => {
-      validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
-      validateTOutput({ state })
-    })
+    } else {
+      validateWith(state, 'http', true, v.any)
+      validateWith(state, 'events', true, v.any)
+      validateWith(state, 'rpc', true, v.any)
+    }
   })
 
   validateWith(root, 'hostedExternally', false, v.boolean)

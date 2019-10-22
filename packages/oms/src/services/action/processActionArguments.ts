@@ -1,8 +1,8 @@
 import { validateArgout } from '@microservices/validate'
-import { InputType } from '@microservices/validate/src/types'
+import { ActionHttp, InputType } from '@microservices/validate/src/types'
 import argsToMap from '~/helpers/argsToMap'
 import { CLIError } from '~/errors'
-import { Args, ArgsTransformed, ConfigSchema, ConfigSchemaAction } from '~/types'
+import { Args, ArgsTransformed, ConfigSchema } from '~/types'
 
 const TYPES_TO_JSON_DECODE: InputType[] = ['list', 'object', 'map', 'int', 'number', 'float', 'boolean']
 // Non-object ones are added to eg. convert from String int to Number int before validation
@@ -35,7 +35,7 @@ export default function processActionArguments({
     throw new CLIError(`Action#${actionName} not found`)
   }
 
-  let actionArgs: ConfigSchemaAction['arguments']
+  let actionArgs: ActionHttp['arguments']
   if (action.http) {
     actionArgs = action.arguments
   } else if (action.events) {

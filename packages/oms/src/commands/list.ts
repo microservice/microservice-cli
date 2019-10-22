@@ -28,10 +28,9 @@ export default async function list({ options }: CommandPayload<ActionOptions>) {
   if (options.details) {
     Object.entries(actions).forEach(([actionName, action], i, actionEntries) => {
       logger.info(`${actionName}: ${action.help ? action.help.trim() : 'No help provided'}`)
-      const { events, http } = action
-      if (http) {
+      if (action.http) {
         const args = Object.entries(action.arguments || {})
-        let uri = `:${http.port}${http.path}`
+        let uri = `:${action.http.port}${action.http.path}`
         const query = args
           .filter(([_, arg]) => arg.in === 'query')
           .map(([name]) => `${name}=<arg>`)
@@ -41,9 +40,9 @@ export default async function list({ options }: CommandPayload<ActionOptions>) {
         if (query.length) {
           uri = `${uri}?${query}`
         }
-        logger.info(`${http.method.toUpperCase()} ${uri} ${body.join(' ')}`)
-      } else if (events) {
-        Object.entries(events).forEach(([eventName, event]) => {
+        logger.info(`${action.http.method.toUpperCase()} ${uri} ${body.join(' ')}`)
+      } else if (action.events) {
+        Object.entries(action.events).forEach(([eventName, event]) => {
           logger.info(`  ${eventName}: ${event.help ? event.help.trim() : 'No help provided'}`)
           // TODO: Subscribe/Unsubscribe?
         })

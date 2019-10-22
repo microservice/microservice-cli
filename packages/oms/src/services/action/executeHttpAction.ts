@@ -1,7 +1,7 @@
 import got from 'got'
 import FormData from 'form-data'
 import querystring from 'querystring'
-import { OutputType } from '@microservices/validate/src/types'
+import { ActionHttp, OutputType } from '@microservices/validate/src/types'
 
 import { CLIError } from '~/errors'
 import { Daemon } from '~/services/daemon'
@@ -25,7 +25,8 @@ export default async function executeHttpAction({
   actionName,
   argsMap,
 }: ExecuteHttpActionOptions): Promise<{ response: any; disposable: null }> {
-  const { path, method, port, url, contentType } = action.http!
+  const actionHttp = action as ActionHttp
+  const { path, method, port, url, contentType } = actionHttp.http
 
   let uri: string
 
@@ -46,7 +47,7 @@ export default async function executeHttpAction({
     Accept: 'application/json,text/plain,*/*',
   }
 
-  Object.entries(action.arguments || {}).forEach(([argName, arg]) => {
+  Object.entries(actionHttp.arguments || {}).forEach(([argName, arg]) => {
     const argValue = argsMap[argName] || arg.default
     if (arg.in === 'query' && argValue) {
       hasQueryArgs = true
@@ -118,7 +119,7 @@ export default async function executeHttpAction({
     throw err
   }
 
-  const outputType: any = action.output.type
+  const outputType: any = actionHttp.output.type
 
   let parsed: any = response.body
   if (OUTPUT_TYPES_TO_PARSE.includes(outputType)) {
@@ -133,7 +134,7 @@ export default async function executeHttpAction({
 
   if (outputType !== OUTPUT_TYPE_TO_IGNORE) {
     validateActionOutput({
-      action,
+      action: actionHttp,
       actionName,
       output: parsed,
     })

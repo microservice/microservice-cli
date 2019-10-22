@@ -62,12 +62,43 @@ export interface Argument {
   default: any // <== default value for the argument
 }
 
-export interface Action {
+export interface ActionHttp {
   help?: string
-  format?: {
-    command: string | string[]
+  rpc?: undefined
+  events?: undefined
+  http: {
+    contentType?: ContentType
+    method: HttpMethod
+  } & (
+    | {
+        path: string
+        port: number
+        url?: undefined
+      }
+    | {
+        path?: undefined
+        port?: undefined
+        url: string
+      })
+  arguments?: Record<string, Argument>
+  output: {
+    type?: OutputType
+    contentType?: ContentType
+    properties?: Record<
+      string,
+      {
+        type: OutputType
+        help?: string
+      }
+    >
   }
-  events?: Record<
+}
+
+export interface ActionEvents {
+  help?: string
+  http?: undefined
+  rpc?: undefined
+  events: Record<
     string,
     {
       help?: string
@@ -99,7 +130,13 @@ export interface Action {
       arguments?: Record<string, Argument> // TODO: Type this properly
     }
   >
-  rpc?: {
+}
+
+export interface ActionRpc {
+  help?: string
+  http?: undefined
+  events?: undefined
+  rpc: {
     port: number
     framework: {
       grpc: {
@@ -115,33 +152,9 @@ export interface Action {
       tls: boolean
     }
   }
-  http?: {
-    contentType?: ContentType
-    method: HttpMethod
-  } & (
-    | {
-        path: string
-        port: number
-        url?: undefined
-      }
-    | {
-        path?: undefined
-        port?: undefined
-        url: string
-      })
-  arguments?: Record<string, Argument>
-  output: {
-    type?: OutputType
-    contentType?: ContentType
-    properties?: Record<
-      string,
-      {
-        type: OutputType
-        help?: string
-      }
-    >
-  }
 }
+
+export type Action = ActionHttp | ActionEvents | ActionRpc
 
 export interface ConfigSchema {
   oms?: 1
