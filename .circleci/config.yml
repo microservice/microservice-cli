@@ -64,21 +64,21 @@ jobs:
 
   regression_validation:
     working_directory: ~/project/oms
-      machine:
-        image: ubuntu-1604:201903-01
-      steps:
-        - attach_workspace:
-            at: ~/project
-        - run:
-            name: Install NodeJS and YarnPKG
-            command: |
-              source ~/.bashrc
-              nvm install v12 && nvm alias default 12
-        - run:
-            command: |
-              source ~/.bashrc
-              cd tests/regression/
-              ./test_validation_against_certified_services.sh
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Install NodeJS and YarnPKG
+          command: |
+            source ~/.bashrc
+            nvm install v12 && nvm alias default 12
+      - run:
+          command: |
+            source ~/.bashrc
+            cd tests/regression/
+            ./test_validation_against_certified_services.sh
 
   # Run tests on all packages
   test:
