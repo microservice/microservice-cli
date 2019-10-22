@@ -7,11 +7,6 @@ source functions.sh
 
 OMS_PATH=`get_oms_path`
 
-if [[ "$OMS_PATH" -eq "" ]]; then
-    echo "Usage: test_validation_against_certified_services.sh /path/to/oms/cli.js"
-    exit 1
-fi
-
 WORK_DIR=`mktemp -d`
 echo "Working in ${WORK_DIR}"
 pushd ${WORK_DIR}
