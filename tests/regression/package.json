@@ -3,9 +3,7 @@
   "version": "0.14.0",
   "description": "Tests checking for regressions on oms-cli",
   "main": "index.js",
-  "scripts": {
-    "test-post-build-disable": "./test.sh"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microservices/oms.git"

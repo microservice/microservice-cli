@@ -3,9 +3,7 @@
   "version": "0.14.0",
   "description": "Tests for the validation system",
   "main": "index.js",
-  "scripts": {
-    "test-post-build": "node index.js"
-  },
+  "scripts": {},
   "private": true,
   "repository": {
     "type": "git",

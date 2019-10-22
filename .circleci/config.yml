@@ -7,43 +7,28 @@ defaults: &defaults
 
 jobs:
   # Install dependencies, restore/save them to cache, add them to the current workspace
-  install:
+  install_and_build:
     <<: *defaults
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v3-dependencies-oms-{{ checksum "packages/oms/yarn.lock" }}
-            - v3-dependencies-oms
-      - restore_cache:
-          keys:
-            - v3-dependencies-oms-ui-{{ checksum "packages/oms-ui/yarn.lock" }}
-            - v3-dependencies-oms-ui
-      - restore_cache:
-          keys:
-            - v3-dependencies-oms-validate-{{ checksum "packages/oms-validate/yarn.lock" }}
-            - v3-dependencies-oms-validate
+            - v4-dependencies-{{ checksum "yarn.lock" }}
+            - v4-dependencies
       - run:
-          name: Installing Lerna
+          name: Install monorepo dependencies
           command: yarn
       - run:
-          name: Install local dependencies
+          name: Install packages dependencies / Build sources
           command: yarn bootstrap
       - save_cache:
-          key: v3-dependencies-oms-{{ checksum "packages/oms/yarn.lock" }}
+          key: v4-dependencies-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
-            - packages/oms/node_modules
-      - save_cache:
-          key: v3-dependencies-oms-ui-{{ checksum "packages/oms-ui/yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-            - packages/oms-ui/node_modules
-      - save_cache:
-          key: v3-dependencies-oms-validate-{{ checksum "packages/oms-validate/yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-            - packages/oms-validate/node_modules
+            - node_modules
+            - packages/omg/node_modules
+            - packages/omg-ui/node_modules
+            - packages/omg-validate/node_modules
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -98,75 +83,12 @@ jobs:
           name: Uploading to Codecov
           command: bash <(curl -s https://codecov.io/bash)
 
-  # Build all packages in production mode
-  build:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - restore_cache:
-          keys:
-            - v3-dist-oms-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v3-dist-oms-
-      - restore_cache:
-          keys:
-            - v3-dist-oms-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v3-dist-oms-ui-
-      - restore_cache:
-          keys:
-            - v3-dist-oms-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v3-dist-oms-validate-
-      - run:
-          name: Building
-          command: yarn build
-      - save_cache:
-          key: v3-dist-oms-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - packages/oms/dist
-      - save_cache:
-          key: v3-dist-oms-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - packages/oms-ui/dist
-      - save_cache:
-          key: v3-dist-oms-ui-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - packages/oms-validate/dist
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - oms
-
-  test-post-build:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - restore_cache:
-          keys:
-            - v3-dist-oms-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v3-dist-oms-
-      - restore_cache:
-          keys:
-            - v3-dist-oms-validate-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-            - v3-dist-oms-validate-
-      - run:
-          name: Run test
-          command: yarn test-post-build
-      - save_cache:
-          key: v3-test-post-build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - tests
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - oms
-
 workflows:
   version: 2
 
   release:
     jobs:
-      - install:
+      - install_and_build:
           filters:
             tags:
               only: /.*/
@@ -175,26 +97,16 @@ workflows:
             tags:
               only: /.*/
           requires:
-            - install
-      - build:
-          filters:
-            tags:
-              only: /.*/
-          requires:
-            - install
+            - install_and_build
       - test:
           filters:
             tags:
               only: /.*/
           requires:
-            - build
-      - test-post-build:
-          filters:
-            tags:
-              only: /.*/
-          requires:
-            - build
+            - install_and_build
       - regression:
           filters:
             tags:
               only: /.*/
+          requires:
+            - install_and_build
