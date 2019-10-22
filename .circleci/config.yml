@@ -66,34 +66,23 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install NodeJS and YarnPKG
           command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install v11.15.0
+            source ~/.bashrc
+            export DEBIAN_FRONTEND=noninteractive
+            nvm install v12 && nvm alias default 12
+            curl -o- -L https://yarnpkg.com/install.sh | bash
       - run:
           command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm alias default v11.15.0
-      - run:
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm install -g yarn
-      - run:
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            source ~/.bashrc
             yarn
       - run:
           command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            source ~/.bashrc
             yarn bootstrap
       - run:
           command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            source ~/.bashrc
             ./tests/regression/test.sh
 
   # Run tests on all packages
