@@ -42,8 +42,8 @@ export const OUTPUT_TYPES: OutputType[] = [
 export type EnvType = 'int' | 'float' | 'string' | 'boolean'
 export const ENV_TYPES: EnvType[] = ['int', 'float', 'string', 'boolean']
 
-export type ContentType = 'application/json' | 'application/x-www-form-urlencoded' | 'multipart/form-data'
-export const CONTENT_TYPES: ContentType[] = ['application/json', 'application/x-www-form-urlencoded', 'multipart/form-data']
+export type ContentType = 'application/json' | 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'application/octet-stream'
+export const CONTENT_TYPES: ContentType[] = ['application/json', 'application/x-www-form-urlencoded', 'multipart/form-data', 'application/octet-stream']
 
 export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 export const HTTP_METHODS: HttpMethod[] = ['get', 'post', 'put', 'delete', 'patch']
