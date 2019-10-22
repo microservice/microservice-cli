@@ -2,9 +2,9 @@
 
 set -e  # Exit abruptly on any error.
 
-cd $(dirname $0)/../../
+source functions.sh
 
-OMS_PATH=$PWD/packages/oms/lib/cli.js
+OMS_PATH=`get_oms_path`
 
 WORK_DIR=`mktemp -d`
 echo "Working in ${WORK_DIR}"
