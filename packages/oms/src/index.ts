@@ -5,6 +5,7 @@ import * as commands from './commands'
 import * as logger from './logger'
 import { Args } from '~/types'
 import { setCliOptions } from './common'
+import { CLIError } from '~/errors'
 
 function getCollector(name: string) {
   return (val: string, memo: Args) => {
@@ -143,9 +144,20 @@ export default async function main() {
     )
     .option('-p --port, <p>', 'The port to bind')
     .option('--no-open', 'Do not open in browser')
+    .option(
+      '--experimental',
+      "The OMS UI is still a WIP. Specify this option to acknowledge you understand it's experimental and behavior is subject to change",
+    )
     .option('--inherit-env', 'Binds host env variable asked in the microservice.yml to the container env')
     .description('Starts to oms-app which monitors your microservice.')
     .action(options => {
+      if (!options.experimental) {
+        actionPromise = new Promise((resolve, reject) => {
+          reject(new CLIError(`OMS UI is still experimental. Rerun the command with --experimental to use it`))
+        })
+        return
+      }
+
       setCliOptions(options)
       actionPromise = commands.ui({
         options,
