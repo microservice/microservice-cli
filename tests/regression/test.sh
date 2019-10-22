@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e  # Exit abruptly on any error.
+
 cd $(dirname $0)/../../
 
 OMS_PATH=$PWD/packages/oms/lib/cli.js
