@@ -71,6 +71,17 @@ export interface Argument {
   default: any // <== default value for the argument
 }
 
+interface OutputChild {
+  type: OutputType
+  required?: boolean
+  properties?: Record<string, OutputChild>
+}
+
+interface OutputRoot {
+  type?: OutputType
+  properties?: Record<string, OutputChild>
+}
+
 export interface ActionHttp {
   help?: string
   rpc?: undefined
@@ -90,16 +101,8 @@ export interface ActionHttp {
         url: string
       })
   arguments?: Record<string, Argument>
-  output: {
-    type?: OutputType
+  output: OutputRoot & {
     contentType?: ContentType
-    properties?: Record<
-      string,
-      {
-        type: OutputType
-        help?: string
-      }
-    >
   }
 }
 
@@ -124,17 +127,8 @@ export interface ActionEvents {
           contentType?: ContentType
         }
       }
-      output: {
+      output: OutputRoot & {
         actions?: Record<string, any> // TODO: Type this properly
-        type?: OutputType
-        contentType?: ContentType
-        properties?: Record<
-          string,
-          {
-            type: OutputType
-            help?: string
-          }
-        >
       }
       arguments?: Record<string, Argument> // TODO: Type this properly
     }

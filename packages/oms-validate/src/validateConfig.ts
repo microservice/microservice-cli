@@ -23,12 +23,16 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
 
   const root: State = { path: [], value: config, visited: [], onError: rootError }
   // +Local validator mixins
-  function validateTOutput({ state }: { state: State }) {
-    validateWith(state, 'help', false, v.string)
+  function validateTOutput({ state, isTopLevel }: { state: State; isTopLevel: boolean }) {
     validateWith(state, 'type', true, enumValues(OUTPUT_TYPES))
-    validateAssocObject(state, 'properties', state.value.type === 'object', ({ state }) => {
-      validateTOutput({ state })
-    })
+    if (!isTopLevel) {
+      validateWith(state, 'required', false, v.string)
+    }
+    if (state.value.type === 'object') {
+      validateAssocObject(state, 'properties', true, ({ state }) => {
+        validateTOutput({ state, isTopLevel: false })
+      })
+    }
   }
   function validateTArgument({ state, validateIn }: { state: State; validateIn: boolean }) {
     validateWith(state, 'help', false, v.string)
@@ -108,7 +112,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
         validateObject(state, 'output', false, ({ state }) => {
           validateWith(state, 'actions', false, v.any)
           validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
-          validateTOutput({ state })
+          validateTOutput({ state, isTopLevel: true })
         })
         validateAssocObject(state, 'arguments', false, ({ state }) => {
           validateTArgument({ state, validateIn: true })
@@ -155,7 +159,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       })
       validateObject(state, 'output', true, ({ state }) => {
         validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
-        validateTOutput({ state })
+        validateTOutput({ state, isTopLevel: true })
       })
     } else {
       validateWith(state, 'http', true, v.any)
