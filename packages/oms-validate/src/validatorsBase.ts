@@ -3,7 +3,7 @@
 
 import _get from 'lodash/get'
 import arrayToSentence from 'array-to-sentence'
-import { object as validatorObject } from './validatorsArgout'
+import { object as validatorObject, list as validatorList } from './validatorsArgout'
 import { State, Validator, ErrorCallback } from './types'
 
 // Invokes validator and returns error message or null if validation was a success
@@ -71,6 +71,29 @@ function validateObject(
     }
   })
 }
+function validateArray(
+  state: State,
+  prop: string,
+  required: boolean,
+  callback: (params: { state: State; error: ErrorCallback }) => void,
+) {
+  // Since we're overwriting state visited, mark current prop as visited
+  state.visited.push(prop)
+
+  const newState: State = { ...state, visited: [] }
+
+  validate(newState, prop, required, ({ state, error }) => {
+    const rootError = invokeValidator(state.value, validatorList)
+    if (rootError) {
+      error(rootError)
+      return
+    }
+
+    for (let i = 0, { length } = state.value; i < length; i += 1) {
+      validate(state, i.toString(), true, callback)
+    }
+  })
+}
 // Associative object validation
 function validateAssocObject(
   state: State,
@@ -85,6 +108,12 @@ function validateAssocObject(
   })
 }
 
+function validateNode(state: State, validator: Validator) {
+  const errorMessage = invokeValidator(state.value, validator)
+  if (errorMessage) {
+    state.onError(`must be ${errorMessage}`)
+  }
+}
 function validateWith(state: State, prop: string, required: boolean, validator: Validator) {
   validate(state, prop, required, ({ state, error }) => {
     const errorMessage = invokeValidator(state.value, validator)
@@ -138,4 +167,4 @@ function enumValues(values: string[]): Validator {
   return { message, validate: callback }
 }
 
-export { validate, validateWith, validateObject, validateAssocObject, array, enumValues, oneOf }
+export { validate, validateWith, validateNode, validateObject, validateArray, validateAssocObject, array, enumValues, oneOf }

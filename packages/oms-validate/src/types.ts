@@ -57,29 +57,25 @@ export const CONTENT_TYPES: ContentType[] = [
 export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 export const HTTP_METHODS: HttpMethod[] = ['get', 'post', 'put', 'delete', 'patch']
 
-export interface Argument {
-  type: InputType
-  help?: string
-  in: 'query' | 'path' | 'requestBody' | 'header'
+interface ArgOut<Type> {
+  type: Type
+  required?: boolean
   pattern?: string
   enum?: string[]
+  properties?: Record<string, ArgOut<Type>>
+  keys?: ArgOut<Type>
+  values?: ArgOut<Type>
   range?: {
     min?: number
     max?: number
   }
-  required?: boolean
+  elements?: ArgOut<Type>[]
+}
+
+export type Argument = ArgOut<InputType> & {
+  in: 'query' | 'path' | 'requestBody' | 'header'
   default: any // <== default value for the argument
-}
-
-interface OutputChild {
-  type: OutputType
-  required?: boolean
-  properties?: Record<string, OutputChild>
-}
-
-interface OutputRoot {
-  type?: OutputType
-  properties?: Record<string, OutputChild>
+  help?: string
 }
 
 export interface ActionHttp {
@@ -101,7 +97,7 @@ export interface ActionHttp {
         url: string
       })
   arguments?: Record<string, Argument>
-  output: OutputRoot & {
+  output: ArgOut<OutputType> & {
     contentType?: ContentType
   }
 }
@@ -127,7 +123,7 @@ export interface ActionEvents {
           contentType?: ContentType
         }
       }
-      output: OutputRoot & {
+      output: ArgOut<OutputType> & {
         actions?: Record<string, any> // TODO: Type this properly
       }
       arguments?: Record<string, Argument> // TODO: Type this properly

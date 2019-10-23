@@ -13,12 +13,7 @@ export default function getDefaultInput(actionName: string | null) {
     const { actions } = config
     if (actions && typeof actions === 'object') {
       const actionConfig = actions[actionName]
-      if (
-        actionConfig &&
-        typeof actionConfig === 'object' &&
-        actionConfig.arguments &&
-        typeof actionConfig.arguments === 'object'
-      ) {
+      if (actionConfig && actionConfig.http && actionConfig.arguments) {
         args = actionConfig.arguments
       }
     }

@@ -1,7 +1,17 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
 import * as v from './validatorsConfig'
-import { validate, validateWith, validateObject, validateAssocObject, enumValues, oneOf, array } from './validatorsBase'
+import {
+  validate,
+  validateWith,
+  validateNode,
+  validateObject,
+  validateArray,
+  validateAssocObject,
+  enumValues,
+  oneOf,
+  array,
+} from './validatorsBase'
 import {
   ConfigSchema,
   INPUT_TYPES,
@@ -13,6 +23,8 @@ import {
   ErrorCallback,
 } from './types'
 
+const DEFAULT_BANNED_FOR = ['object', 'map']
+
 export default function validateConfig(config: ConfigSchema, rootError: ErrorCallback): void {
   if (typeof config !== 'object' || !config) {
     rootError('Config is malformed')
@@ -23,35 +35,59 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
 
   const root: State = { path: [], value: config, visited: [], onError: rootError }
   // +Local validator mixins
-  function validateTOutput({ state, isTopLevel }: { state: State; isTopLevel: boolean }) {
-    validateWith(state, 'type', true, enumValues(OUTPUT_TYPES))
-    if (!isTopLevel) {
-      validateWith(state, 'required', false, v.string)
+  function validateTArgOut({
+    state,
+    allowIn,
+    allowRequired,
+    allowDefault,
+    allowedTypes,
+  }: {
+    state: State
+    allowIn: boolean
+    allowRequired: boolean
+    allowDefault: boolean
+    allowedTypes: string[]
+  }) {
+    validateWith(state, 'type', true, enumValues(allowedTypes))
+    const { type } = state.value
+
+    if (allowRequired) {
+      validateWith(state, 'required', false, v.boolean)
     }
-    if (state.value.type === 'object') {
-      validateAssocObject(state, 'properties', true, ({ state }) => {
-        validateTOutput({ state, isTopLevel: false })
-      })
+    if (allowDefault && !DEFAULT_BANNED_FOR.includes(type)) {
+      validateWith(state, 'default', false, v.any)
     }
-  }
-  function validateTArgument({ state, validateIn }: { state: State; validateIn: boolean }) {
-    validateWith(state, 'help', false, v.string)
-    validateWith(state, 'type', true, enumValues(INPUT_TYPES))
-    if (validateIn) {
+    if (allowIn) {
       validateWith(state, 'in', true, enumValues(['query', 'path', 'requestBody', 'header']))
     }
 
-    validateWith(state, 'enum', false, array(v.string))
-    validateObject(state, 'range', false, ({ state }) => {
-      validateWith(state, 'min', false, v.number)
-      validateWith(state, 'max', false, v.number)
-    })
-    validateWith(state, 'required', false, v.boolean)
-    validateWith(state, 'default', false, v.any)
-
-    validateAssocObject(state, 'properties', state.value.type === 'object', ({ state }) => {
-      validateTArgument({ state, validateIn: false })
-    })
+    if (type === 'object') {
+      validateAssocObject(state, 'properties', true, ({ state }) => {
+        validateTArgOut({ state, allowedTypes, allowRequired: true, allowDefault: false, allowIn: false })
+      })
+    } else if (type === 'map') {
+      validateObject(state, 'keys', true, ({ state }) => {
+        validateTArgOut({ state, allowedTypes, allowRequired: false, allowDefault: false, allowIn: false })
+      })
+      validateObject(state, 'values', true, ({ state }) => {
+        validateTArgOut({ state, allowedTypes, allowRequired: false, allowDefault: false, allowIn: false })
+      })
+    } else if (type === 'string') {
+      validateWith(state, 'pattern', false, v.string)
+    } else if (type === 'enum') {
+      validateArray(state, 'enum', true, ({ state }) => {
+        validateNode(state, v.string)
+      })
+    } else if (type === 'int' || type === 'float') {
+      validateObject(state, 'range', false, ({ state }) => {
+        validateWith(state, 'min', false, v.number)
+        validateWith(state, 'max', false, v.number)
+      })
+    } else if (type === 'list') {
+      validateObject(state, 'elements', true, ({ state }) => {
+        validateTArgOut({ state, allowedTypes, allowRequired: false, allowDefault: false, allowIn: false })
+      })
+    }
   }
   // -Local validator mixins
 
@@ -112,10 +148,23 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
         validateObject(state, 'output', false, ({ state }) => {
           validateWith(state, 'actions', false, v.any)
           validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
-          validateTOutput({ state, isTopLevel: true })
+          validateTArgOut({
+            state,
+            allowedTypes: OUTPUT_TYPES,
+            allowIn: false,
+            allowDefault: false,
+            allowRequired: false,
+          })
         })
         validateAssocObject(state, 'arguments', false, ({ state }) => {
-          validateTArgument({ state, validateIn: true })
+          validateWith(state, 'help', false, v.string)
+          validateTArgOut({
+            state,
+            allowedTypes: INPUT_TYPES,
+            allowIn: true,
+            allowDefault: true,
+            allowRequired: true,
+          })
         })
       })
     } else if (state.value.rpc) {
@@ -155,11 +204,24 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
         }
       })
       validateAssocObject(state, 'arguments', false, ({ state }) => {
-        validateTArgument({ state, validateIn: true })
+        validateWith(state, 'help', false, v.string)
+        validateTArgOut({
+          state,
+          allowedTypes: INPUT_TYPES,
+          allowIn: true,
+          allowDefault: true,
+          allowRequired: true,
+        })
       })
       validateObject(state, 'output', true, ({ state }) => {
         validateWith(state, 'contentType', false, enumValues(CONTENT_TYPES))
-        validateTOutput({ state, isTopLevel: true })
+        validateTArgOut({
+          state,
+          allowedTypes: OUTPUT_TYPES,
+          allowIn: false,
+          allowDefault: false,
+          allowRequired: true,
+        })
       })
     } else {
       validateWith(state, 'http', true, v.any)
