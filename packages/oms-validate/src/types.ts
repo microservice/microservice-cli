@@ -22,6 +22,7 @@ export const INPUT_TYPES: InputType[] = [
   'object',
   'boolean',
   'path',
+  'enum',
   'any',
 ]
 export type OutputType = InputType | 'none'
@@ -57,15 +58,19 @@ export const CONTENT_TYPES: ContentType[] = [
 export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 export const HTTP_METHODS: HttpMethod[] = ['get', 'post', 'put', 'delete', 'patch']
 
-interface ArgOut<Type> {
+export interface ArgOut<Type> {
   help?: string
   type: Type
   required?: boolean
   pattern?: string
   enum?: string[]
-  properties?: Record<string, ArgOut<Type>>
-  keys?: ArgOut<Type>
-  values?: ArgOut<Type>
+  list?: {
+    properties: Record<string, ArgOut<Type>>
+  }
+  map?: {
+    keys: ArgOut<Type>
+    values: ArgOut<Type>
+  }
   range?: {
     min?: number
     max?: number
