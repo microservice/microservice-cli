@@ -48,6 +48,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     allowDefault: boolean
     allowedTypes: string[]
   }) {
+    validateWith(state, 'help', false, v.string)
     validateWith(state, 'type', true, enumValues(allowedTypes))
     const { type } = state.value
 
@@ -157,7 +158,6 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
           })
         })
         validateAssocObject(state, 'arguments', false, ({ state }) => {
-          validateWith(state, 'help', false, v.string)
           validateTArgOut({
             state,
             allowedTypes: INPUT_TYPES,
@@ -204,7 +204,6 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
         }
       })
       validateAssocObject(state, 'arguments', false, ({ state }) => {
-        validateWith(state, 'help', false, v.string)
         validateTArgOut({
           state,
           allowedTypes: INPUT_TYPES,

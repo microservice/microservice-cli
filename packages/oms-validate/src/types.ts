@@ -58,6 +58,7 @@ export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch'
 export const HTTP_METHODS: HttpMethod[] = ['get', 'post', 'put', 'delete', 'patch']
 
 interface ArgOut<Type> {
+  help?: string
   type: Type
   required?: boolean
   pattern?: string
@@ -75,7 +76,6 @@ interface ArgOut<Type> {
 export type Argument = ArgOut<InputType> & {
   in: 'query' | 'path' | 'requestBody' | 'header'
   default: any // <== default value for the argument
-  help?: string
 }
 
 export interface ActionHttp {
