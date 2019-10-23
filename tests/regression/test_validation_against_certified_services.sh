@@ -17,10 +17,6 @@ failed_services=""
 for i in `curl -s 'https://api.storyscript.io/graphql' -H 'Content-Type: application/json' --data '{"query":"query Services { allServices(condition: { isCertified: true }) { nodes { name uuid}}}"}' | jq -c ".data.allServices.nodes[]"`; do
     service_uuid=`echo ${i} | jq -r ".uuid"`
     service_name=`echo ${i} | jq -r ".name"`
-    # todo: redis,psql can be removed from this list
-    if [[ "$service_name" == "log" || "$service_name" == "http" || "$service_name" == "file" || "$service_name" == "json" || "$service_name" == "psql" ]]; then
-        continue
-    fi
     service_details=`curl -s "https://api.storyscript.io/graphql" -H "Content-Type: application/json" \
         --data "{\"query\":\"query Services { getServiceRepository(serviceUuid: \\\\\"${service_uuid}\\\\\") { ownerName repoName service } } \"}"`
     owner_name=`echo ${service_details} | jq -rc ".data.getServiceRepository.ownerName"`
