@@ -133,11 +133,18 @@ export default async function executeHttpAction({
   }
 
   if (outputType !== OUTPUT_TYPE_TO_IGNORE) {
-    validateActionOutput({
-      action: actionHttp,
-      actionName,
-      output: parsed,
-    })
+    try {
+      validateActionOutput({
+        action: actionHttp,
+        actionName,
+        output: parsed,
+      })
+    } catch (error) {
+      if (error) {
+        error.response = parsed
+      }
+      throw error
+    }
   }
 
   return {

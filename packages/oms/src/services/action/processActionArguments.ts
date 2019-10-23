@@ -1,4 +1,4 @@
-import { validateArgout } from '@microservices/validate'
+import { validateArgument } from '@microservices/validate'
 import { ActionHttp, InputType } from '@microservices/validate/src/types'
 import argsToMap from '~/helpers/argsToMap'
 import { CLIError } from '~/errors'
@@ -109,7 +109,7 @@ export default function processActionArguments({
       return
     }
 
-    invalid.push(...validateArgout(arg, value).map(item => `${argName}${item.slice(1)}`))
+    invalid.push(...validateArgument(arg, value).map(item => `${argName} ${item}`))
   })
 
   return { extra, missing, invalid, values }

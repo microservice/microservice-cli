@@ -26,7 +26,7 @@ function serialize(message: string | Error) {
     const extraInfo = pick(message, Object.keys(message))
     // ^ Only pick enumerable keys
     if (Object.keys(extraInfo).length > 0) {
-      content = `${content} ${util.inspect(extraInfo, false, 5, false)}`
+      content = `${content}\n  ${util.inspect(extraInfo, false, 5, false)}`
     }
 
     return content

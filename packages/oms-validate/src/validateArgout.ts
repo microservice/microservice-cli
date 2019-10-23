@@ -1,41 +1,97 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
-import { InputType, OutputType, State, ErrorCallback } from './types'
-import { validateWith, validateObject, enumValues } from './validatorsBase'
+import { InputType, OutputType, State, ErrorCallback, Argument, ArgOut } from './types'
+import { validateNode, validate as _validate } from './validatorsBase'
 
 import * as v from './validatorsArgout'
 
-export interface ValidateArgoutOptions {
-  type: InputType | OutputType
-  enum?: string[]
-  properties?: Record<string, ValidateArgoutOptions>
+interface ValidationState<Type extends ArgOut<InputType | OutputType>> extends State {
+  spec: Type
 }
 
-export default function validateArgout(rootOptions: ValidateArgoutOptions, value: any, rootError: ErrorCallback): void {
-  function errorCallback(message: string) {
-    if (message.startsWith('.root')) {
-      rootError(`.${message.slice(5)}`)
-    } else {
-      rootError(message)
+function validate<T extends ArgOut<InputType | OutputType>>(
+  state: ValidationState<T>,
+  prop: string,
+  newSpec: T,
+  required: boolean,
+  callback: (params: { state: ValidationState<T>; error: ErrorCallback }) => void,
+) {
+  _validate(state, prop, required, ({ state, error }) => {
+    const validationState: ValidationState<T> = { ...state, spec: newSpec }
+
+    callback({ state: validationState, error })
+  })
+}
+
+function validateTArgOut<Type extends ArgOut<InputType | OutputType>>({
+  state,
+  error,
+}: {
+  state: ValidationState<Type>
+  error: ErrorCallback
+}) {
+  const { type } = state.spec
+
+  if (v[type]) {
+    const passedValidation = validateNode(state, error, v[type])
+    if (!passedValidation) {
+      return
     }
   }
 
-  function validateItem(state: State, prop: string, options: ValidateArgoutOptions) {
-    if (options.type === 'object') {
-      validateObject(state, prop, true, ({ state }) => {
-        const { properties } = options
-        if (properties) {
-          Object.entries(properties).forEach(([k, propOptions]) => {
-            validateItem(state, k, propOptions)
-          })
-        }
-      })
-    } else if (options.type === 'enum') {
-      validateWith(state, prop, true, enumValues((options.enum as any) || []))
-    } else {
-      validateWith(state, prop, true, v[options.type])
-    }
+  if (type === 'none') {
+    // Do not validate for "none"
+    return
   }
 
-  validateItem({ path: [], value: { root: value }, visited: [], onError: errorCallback }, 'root', rootOptions)
+  if (type === 'object') {
+    const specProperties = state.spec.properties || {}
+    Object.keys(specProperties).forEach(propName => {
+      const propSpec = specProperties[propName]
+      validate(state, propName, propSpec, !!propSpec.required, validateTArgOut)
+    })
+  } else if (type === 'map') {
+    // TODO: Validate .keys and .values for maps
+    // const {map} = state.spec
+  } else if (type === 'list') {
+    // TODO: Validate .elements for lists
+    // const {list} = state.spec
+  } else if (type === 'int' || type === 'float') {
+    // TODO: Validate range for numbers
+    // const {range} = state.spec
+  }
+}
+
+export function validateArgument(spec: Argument, value: any, onError: ErrorCallback): void {
+  const state = {
+    path: [],
+    value,
+    spec,
+    visited: [],
+    onError,
+  }
+
+  validateTArgOut<Argument>({
+    state,
+    error(message) {
+      onError(`Output ${message}`)
+    },
+  })
+}
+
+export function validateOutput(spec: ArgOut<OutputType>, value: any, onError: ErrorCallback) {
+  const state = {
+    path: [],
+    value,
+    spec,
+    visited: [],
+    onError,
+  }
+
+  validateTArgOut({
+    state,
+    error(message) {
+      onError(`Output ${message}`)
+    },
+  })
 }

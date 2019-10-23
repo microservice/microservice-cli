@@ -1,6 +1,6 @@
 import _validateConfig from './validateConfig'
-import _validateArgout, { ValidateArgoutOptions } from './validateArgout'
-import { ConfigSchema, Action } from './types'
+import { validateArgument as _validateArgument, validateOutput as _validateOutput } from './validateArgout'
+import { ConfigSchema, Action, OutputType, ArgOut, Argument } from './types'
 
 export default function validateConfig(config: ConfigSchema): string[] {
   const errors: string[] = []
@@ -14,12 +14,23 @@ export default function validateConfig(config: ConfigSchema): string[] {
   return errors
 }
 
-// Argout = Argument + Output
-export function validateArgout(options: ValidateArgoutOptions, value: any): string[] {
+export function validateArgument(spec: Argument, value: any) {
   const errors: string[] = []
 
   try {
-    _validateArgout(options, value, message => errors.push(message))
+    _validateArgument(spec, value, message => errors.push(message))
+  } catch (error) {
+    errors.push(`Error validating config: ${error.stack}`)
+  }
+
+  return errors
+}
+
+export function validateOutput(spec: ArgOut<OutputType>, value: any) {
+  const errors: string[] = []
+
+  try {
+    _validateOutput(spec, value, message => errors.push(message))
   } catch (error) {
     errors.push(`Error validating config: ${error.stack}`)
   }

@@ -78,8 +78,8 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     } else if (type === 'string') {
       validateWith(state, 'pattern', false, v.string)
     } else if (type === 'enum') {
-      validateArray(state, 'enum', true, ({ state }) => {
-        validateNode(state, v.string)
+      validateArray(state, 'enum', true, ({ state, error }) => {
+        validateNode(state, error, v.string)
       })
     } else if (type === 'int' || type === 'float') {
       validateObject(state, 'range', false, ({ state }) => {

@@ -108,11 +108,13 @@ function validateAssocObject(
   })
 }
 
-function validateNode(state: State, validator: Validator) {
+function validateNode(state: State, error: ErrorCallback, validator: Validator): boolean {
   const errorMessage = invokeValidator(state.value, validator)
   if (errorMessage) {
-    state.onError(`must be ${errorMessage}`)
+    error(`must be ${errorMessage}`)
+    return false
   }
+  return true
 }
 function validateWith(state: State, prop: string, required: boolean, validator: Validator) {
   validate(state, prop, required, ({ state, error }) => {
