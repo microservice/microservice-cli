@@ -51,6 +51,8 @@ done
 
 if [[ ${failed_services} != "" ]]; then
     exit 1
+else
+    echo "No failures to report"
 fi
 
 echo "===== Completed! ====="
