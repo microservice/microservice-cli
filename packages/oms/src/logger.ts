@@ -2,6 +2,7 @@
 // and logs accordingly.
 
 import util from 'util'
+import pick from 'lodash/pick'
 import logSymbols from 'log-symbols'
 import ora, { Ora } from 'ora'
 import { CLIError } from '~/errors'
@@ -11,6 +12,28 @@ let spinner: Ora | null = null
 
 export type LogConsumer = (payload: { severity: 'info' | 'warn' | 'error'; contents: string }) => void
 export const logConsumers: Set<LogConsumer> = new Set()
+
+function serialize(message: string | Error) {
+  if (typeof message === 'string') {
+    return message
+  }
+
+  if (DEBUG_CLI) {
+    return util.inspect(message, false, 5, false)
+  }
+  if (message instanceof CLIError) {
+    let content = `${message.message}`
+    const extraInfo = pick(message, Object.keys(message))
+    // ^ Only pick enumerable keys
+    if (Object.keys(extraInfo).length > 0) {
+      content = `${content} ${util.inspect(extraInfo, false, 5, false)}`
+    }
+
+    return content
+  }
+
+  return util.inspect(message, false, 5, false)
+}
 
 let spinnerAllowed = true
 
@@ -55,9 +78,7 @@ export function warn(message: string) {
 }
 
 export function error(err: string | Error) {
-  const itemToLog =
-    DEBUG_CLI || (err instanceof Error && !(err instanceof CLIError)) ? util.inspect(err, false, 5, false) : err
-  let contents = itemToLog instanceof Error ? itemToLog.message : itemToLog.toString()
+  let contents = serialize(err)
   if (symbolsAllowed) {
     contents = `${logSymbols.error} ${contents}`
   }
