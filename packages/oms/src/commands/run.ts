@@ -76,20 +76,22 @@ export default async function run({ options, parameters }: CommandPayload<Action
   logger.spinnerSucceed('Healthcheck successful')
   logger.spinnerStart(`Running action '${actionName}'`)
 
-  await executeAction({
-    config: microserviceConfig,
-    daemon,
-    actionName,
-    args: options.args || [],
-    callback(response) {
-      if (options.silent) {
-        logger.info(response && typeof response === 'object' ? JSON.stringify(response, null, 2) : response)
-      } else {
-        logger.info(`Output: ${JSON.stringify(response, null, 2)}`)
-      }
-    },
-  })
-  logger.spinnerSucceed(`Ran action '${actionName}' successfully`)
-
-  await daemon.stop()
+  try {
+    await executeAction({
+      config: microserviceConfig,
+      daemon,
+      actionName,
+      args: options.args || [],
+      callback(response) {
+        if (options.silent) {
+          logger.info(response && typeof response === 'object' ? JSON.stringify(response, null, 2) : response)
+        } else {
+          logger.info(`Output: ${JSON.stringify(response, null, 2)}`)
+        }
+      },
+    })
+    logger.spinnerSucceed(`Ran action '${actionName}' successfully`)
+  } finally {
+    await daemon.stop()
+  }
 }
