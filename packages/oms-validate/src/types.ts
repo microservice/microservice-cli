@@ -65,7 +65,7 @@ export interface ArgOut<Type> {
   pattern?: string
   enum?: string[]
   list?: {
-    properties: Record<string, ArgOut<Type>>
+    elements?: ArgOut<Type>[]
   }
   map?: {
     keys: ArgOut<Type>
@@ -75,7 +75,7 @@ export interface ArgOut<Type> {
     min?: number
     max?: number
   }
-  elements?: ArgOut<Type>[]
+  properties: Record<string, ArgOut<Type>>
 }
 
 export type Argument = ArgOut<InputType> & {
