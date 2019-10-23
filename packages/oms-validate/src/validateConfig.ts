@@ -66,10 +66,10 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
         validateTArgOut({ state, allowedTypes, allowRequired: true, allowDefault: false, allowIn: false })
       })
     } else if (type === 'map') {
-      validateObject(state, 'keys', true, ({ state }) => {
+      validateObject(state, 'keys', false, ({ state }) => {
         validateTArgOut({ state, allowedTypes, allowRequired: false, allowDefault: false, allowIn: false })
       })
-      validateObject(state, 'values', true, ({ state }) => {
+      validateObject(state, 'values', false, ({ state }) => {
         validateTArgOut({ state, allowedTypes, allowRequired: false, allowDefault: false, allowIn: false })
       })
     } else if (type === 'string') {
@@ -84,7 +84,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
         validateWith(state, 'max', false, v.number)
       })
     } else if (type === 'list') {
-      validateObject(state, 'elements', true, ({ state }) => {
+      validateObject(state, 'elements', false, ({ state }) => {
         validateTArgOut({ state, allowedTypes, allowRequired: false, allowDefault: false, allowIn: false })
       })
     }
