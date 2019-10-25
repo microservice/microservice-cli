@@ -1,12 +1,13 @@
 {
   "name": "@microservices/ui",
-  "version": "1.0.0-alpha6",
+  "version": "0.2.0",
   "scripts": {
     "build": "yarn build-app; ./scripts/build-workers.sh",
     "build-app": "rm -rf lib/*; parcel build src/index.html --out-dir lib --no-source-maps",
     "watch": "parcel watch src/index.html --out-dir lib --no-hmr"
   },
   "devDependencies": {
+    "@microservices/validate": "^0.2.0",
     "@vue/component-compiler-utils": "^3.0.0",
     "autoprefixer": "^9.6.5",
     "core-js": "2.x",
@@ -19,7 +20,6 @@
     "lodash": "^4.17.15",
     "monaco-editor": "^0.18.1",
     "normalize.css": "^8.0.1",
-    "@microservices/validate": "^1.0.0-alpha6",
     "parcel-bundler": "^1.12.3",
     "promise.defer": "^1.0.1",
     "sass": "^1.23.0",

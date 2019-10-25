@@ -10,7 +10,7 @@
     "microservices",
     "specification"
   ],
-  "version": "1.0.0-alpha6",
+  "version": "0.2.0",
   "scripts": {
     "build": "sb-babel-cli src -o lib --typescript",
     "watch": "yarn build -w",
@@ -26,6 +26,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@microservices/ui": "^0.2.0",
+    "@microservices/validate": "^0.2.0",
     "body-parser": "^1.19.0",
     "chokidar": "^3.1.0",
     "commander": "^3.0.0",
@@ -40,8 +42,6 @@
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
     "log-symbols": "^3.0.0",
-    "@microservices/ui": "^1.0.0-alpha6",
-    "@microservices/validate": "^1.0.0-alpha6",
     "open": "^6.4.0",
     "ora": "^3.4.0",
     "sb-fs": "^4.0.0",
