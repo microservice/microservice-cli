@@ -1,6 +1,5 @@
 {
   "name": "oms",
-  "bin": "./packages/oms/lib/cli.js",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -37,6 +36,10 @@
     "watch": "lerna run --parallel watch",
     "publish": "yarn bootstrap && yarn test && lerna publish",
     "version": "lerna version --no-git-tag-version --no-push"
+  },
+  "bin": {
+    "omg": "./oms",
+    "oms": "./oms"
   },
   "pkg": {
     "assets": "src/oms-ui/lib/*"
