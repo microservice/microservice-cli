@@ -17,6 +17,9 @@
     "url": "git+https://github.com/microservices/oms.git",
     "directory": "packages/oms"
   },
+  "bin": {
+    "oms": "./oms"
+  },
   "license": "MIT",
   "dependencies": {
     "@microservices/cli": "0.2.1",
