@@ -1,6 +1,6 @@
 # OMS
 
-Welcome to OMS Repo! Check out [https://microservice.guide/][website] to see what it's all about
+Welcome to OMS Repo! Check out [openmicroservices.org][website] to see what it's all about
 
 ### Installation
 
@@ -55,4 +55,4 @@ $ yarn watch
 OMS packages including the CLI, the UI package and the Validation package are licensed under the terms of the MIT License.
 See the LICENSE file in the repository for more information.
 
-[website]:https://microservice.guide/
+[website]:https://openmicroservices.org/

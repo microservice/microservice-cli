@@ -1,7 +1,7 @@
 # `oms run` example
 
-## [command](https://microservice.guide/schema/interface/#command)
-The [random](https://github.com/microservice/random) microservice is used for this example.
+## [command](https://openmicroservices.org/schema/interface/#command)
+The [random](https://github.com/oms-services/random) microservice is used for this example.
 
 ### Input
 ```
@@ -29,8 +29,8 @@ Successfully tagged oms/microservice/random:latest
 ✔ Stopped Docker container: 99d7c66fa964
 ```
 
-## [http](https://microservice.guide/schema/interface/#http)
-The [slack](https://github.com/microservice/slack) microservice is used for this example.
+## [http](https://openmicroservices.org/schema/interface/#http)
+The [slack](https://github.com/oms-services/slack) microservice is used for this example.
 
 ### Input
 ```
@@ -73,5 +73,5 @@ Successfully tagged oms/microservice/slack:latest
 ✔ Stopped Docker container: f7517a661efe
 ```
 
-## An action that has [events](https://microservice.guide/schema/events/)
+## An action that has [events](https://openmicroservices.org/schema/events/)
 [See](/docs/example-subscribe.md).
