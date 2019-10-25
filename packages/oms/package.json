@@ -10,7 +10,7 @@
     "microservices",
     "specification"
   ],
-  "version": "0.2.1",
+  "version": "0.16.0",
   "main": "oms",
   "repository": {
     "type": "git",
