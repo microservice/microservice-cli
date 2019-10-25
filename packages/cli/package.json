@@ -17,8 +17,9 @@
     "dev": "yarn watch -x lib/cli"
   },
   "bin": {
-    "oms": "./lib/cli.js" 
+    "oms": "./lib/cli.js"
   },
+  "main": "./lib/cli.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microservices/oms.git",
