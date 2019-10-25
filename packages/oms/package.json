@@ -10,7 +10,7 @@
     "microservices",
     "specification"
   ],
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "build": "sb-babel-cli src -o lib --typescript",
     "watch": "yarn build -w",
