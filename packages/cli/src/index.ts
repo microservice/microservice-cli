@@ -7,7 +7,7 @@ import { Args } from '~/types'
 import { setCliOptions } from './common'
 import { CLIError } from '~/errors'
 
-function getCollector (name: string) {
+function getCollector(name: string) {
   return (val: string, memo: Args) => {
     const eqIdx = val.indexOf('=')
     if (eqIdx === -1) {
@@ -20,7 +20,7 @@ function getCollector (name: string) {
   }
 }
 
-export default async function main () {
+export default async function main() {
   let actionPromise
 
   program
@@ -48,7 +48,8 @@ export default async function main () {
     .command('build')
     .option('-t --tag, <t>', 'The tag name of the image')
     .option('-r --verbose', 'Show Docker build logs')
-    .description(`
+    .description(
+      `
       Builds the microservice defined by the \`Dockerfile\`. 
       
       If the \`-t --tag\` is not provided, the image will be tagged with \`oms/$github_user/$repo_name\`. If no git config is present a random string will be used.

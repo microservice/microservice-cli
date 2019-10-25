@@ -24,7 +24,7 @@ Options:
 Commands:
   validate [options]                    Validate the structure of a `microservice.yml` in the working directory
   build [options]                       Builds the microservice defined by the `Dockerfile`. Image will be tagged
-                                        with `oms/$gihub_user/$repo_name`, unless the tag flag is
+                                        with `oms/$github_user/$repo_name`, unless the tag flag is
                                         given. If no git config present a random string will be used
   run [options] <action>                Run actions defined in your `microservice.yml`. Must be ran in a working
                                         directory with a `Dockerfile` and a `microservice.yml`

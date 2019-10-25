@@ -3,7 +3,7 @@ import { CompositeDisposable, Disposable } from 'event-kit'
 export const DEBUG_CLI = {}.hasOwnProperty.call(process.env, 'OMS_CLI_DEBUG')
 export const lifecycleDisposables = new CompositeDisposable()
 
-export function disposableInterval (callback: () => void, timeout: number): Disposable {
+export function disposableInterval(callback: () => void, timeout: number): Disposable {
   const intervalId = setInterval(callback, timeout)
 
   return new Disposable(() => {
@@ -13,11 +13,11 @@ export function disposableInterval (callback: () => void, timeout: number): Disp
 
 let options: Record<string, any> = {}
 
-export function setCliOptions (newOptions: Record<string, any>) {
+export function setCliOptions(newOptions: Record<string, any>) {
   options = newOptions
 }
 
-export function getCliOptions (): Record<string, any> {
+export function getCliOptions(): Record<string, any> {
   return options
 }
 
