@@ -1,13 +1,13 @@
 {
   "name": "@microservices/ui",
-  "version": "0.2.1",
+  "version": "0.16.1",
   "scripts": {
     "build": "yarn build-app; ./scripts/build-workers.sh",
     "build-app": "rm -rf lib/*; parcel build src/index.html --out-dir lib --no-source-maps",
     "watch": "parcel watch src/index.html --out-dir lib --no-hmr"
   },
   "devDependencies": {
-    "@microservices/validate": "^0.2.0",
+    "@microservices/validate": "^0.16.1",
     "@vue/component-compiler-utils": "^3.0.0",
     "autoprefixer": "^9.6.5",
     "core-js": "2.x",
