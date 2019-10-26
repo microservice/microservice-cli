@@ -24,9 +24,10 @@ export default async function main() {
   let actionPromise
 
   program
-    .version(manifest.version, '-v --version', 'Show version information and exit.')
+    .version(manifest.version, '-v, --version', 'Display version information and exit.')
     .description('For more details on the commands below, run `oms `(build|list|run|subscribe|validate|ui)` --help`.')
     .option('-d, --directory', 'Directory to use as root.')
+    .helpOption('-h, --help', 'Display this message and exit.')
 
   program
     .command('validate')
@@ -48,13 +49,7 @@ export default async function main() {
     .command('build')
     .option('-t, --tag, <t>', 'The tag name of the image.')
     .option('-r, --verbose', 'Display Docker build logs.')
-    .description(
-      `
-      Builds the microservice defined in the \`Dockerfile\`. 
-      
-      If the \`-t --tag\` is not provided, the image will be tagged with \`oms/$github_user/$repo_name\`. If no git config is present a random string will be used.
-      `,
-    )
+    .description('Builds the microservice defined in the `Dockerfile`.')
     .action(options => {
       setCliOptions(options)
       if (options.verbose) {
@@ -111,21 +106,21 @@ export default async function main() {
     )
     .option(
       '-a, --args <a>',
-      'Arguments to be passed to the event, must be of the form `key = "value"`. These arguments may be JSON encoded for `map`, `list` and `object` types.',
+      'Arguments to be passed to the event, must be in the form `key = "value"`. These arguments may be JSON encoded for `map`, `list` and `object` types.',
       getCollector('args'),
       [],
     )
     .option(
       '-e, --envs <e>',
-      'Environment variables to be passed to run environment, must be in the form `key = "value"`',
+      'Environment variables to be passed to run environment, must be in the form `key = "value"`.',
       getCollector('envs'),
       [],
     )
-    .option('--inherit-env', 'Binds host env variable specified in the `oms.yml` to the container environment')
-    .option('-r, --verbose', 'Show docker build logs')
-    .option('--silent', 'Hide output except for action result')
-    .option('--debug', 'Show container logs in CLI (for debugging purpose)')
-    .description('Subscribe to an event defined in your `oms.yml`')
+    .option('--inherit-env', 'Binds host environment variable(s) specified in the `oms.yml` to the container environment.')
+    .option('-r, --verbose', 'Display Docker build logs.')
+    .option('--silent', 'Hide output except for action result.')
+    .option('--debug', 'Display container logs in CLI (for debugging purpose).')
+    .description('Subscribe to an event defined in your `oms.yml`.')
     .action(async (action, event, options) => {
       setCliOptions(options)
       if (options.silent || options.verbose) {
@@ -144,20 +139,20 @@ export default async function main() {
     .command('ui')
     .option(
       '-i, --image <i>',
-      'The name of the image to spin up the microservice. If not provided a fresh image will be built using the `Dockerfile`',
+      'The name of the image to spin up the microservice. If not provided a fresh image will be built using the `Dockerfile`.',
     )
-    .option('-p, --port, <p>', 'The port to bind')
-    .option('--no-open', 'Do not open in browser')
+    .option('-p, --port, <p>', 'The port to bind.')
+    .option('--no-open', 'Do not open in browser.')
     .option(
       '--experimental',
-      "The OMS UI is still a WIP. Specify this option to acknowledge you understand it's experimental and it's behavior is subject to change",
+      "The OMS UI is still a WIP. Specify this option to acknowledge you understand it's experimental and it's behavior is subject to change.",
     )
-    .option('--inherit-env', 'Binds host env variable asked in the `oms.yml` to the container env')
+    .option('--inherit-env', 'Binds host env variable asked in the `oms.yml` to the container environment.')
     .description('Starts the OMS UI which monitors your microservice.')
     .action(options => {
       if (!options.experimental) {
         actionPromise = new Promise((resolve, reject) => {
-          reject(new CLIError('OMS UI is still experimental. Please re-run the command with `--experimental` to use it'))
+          reject(new CLIError('OMS UI is still experimental. Please re-run the command with `--experimental` to use it.'))
         })
         return
       }
@@ -189,7 +184,7 @@ export default async function main() {
   program.on('--help', () => {
     console.log('')
     console.log('Environment Variables recognized by the CLI:')
-    console.log('  OMS_CLI_DEBUG=true\t\t\tTo print stack traces of errors/issues')
+    console.log('  OMS_CLI_DEBUG=true\t\t\tDisplay stack traces of errors/issues.')
   })
 
   // The order is important, this has to be before the args length check.

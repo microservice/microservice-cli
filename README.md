@@ -4,8 +4,8 @@ Welcome to OMS Repo! Check out [openmicroservices.org][website] to see what it's
 
 ### Installation
 
-```
-$ yarn global add oms
+``` sh
+yarn global add @microservices/oms
 ```
 
 ### Usage
@@ -38,16 +38,16 @@ Commands:
 
 After cloning this repository, open up a shell in repo directory and execute the following
 
-```
-$ yarn bootstrap
-$ yarn link
-$ yarn build
+``` sh
+yarn bootstrap
+yarn link
+yarn build
 ```
 
 When working on the sources and want your changes to be transpiled as you work on them, do:
 
-```
-$ yarn watch
+``` sh
+yarn watch
 ```
 
 ### License
