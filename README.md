@@ -1,11 +1,11 @@
 # OMS
 
-Welcome to OMS Repo! Check out [https://microservice.guide/][website] to see what it's all about
+Welcome to OMS Repo! Check out [openmicroservices.org][website] to see what it's all about
 
 ### Installation
 
-```
-$ yarn global add oms
+``` sh
+yarn global add @microservices/oms
 ```
 
 ### Usage
@@ -24,7 +24,7 @@ Options:
 Commands:
   validate [options]                    Validate the structure of a `microservice.yml` in the working directory
   build [options]                       Builds the microservice defined by the `Dockerfile`. Image will be tagged
-                                        with `oms/$gihub_user/$repo_name`, unless the tag flag is
+                                        with `oms/$github_user/$repo_name`, unless the tag flag is
                                         given. If no git config present a random string will be used
   run [options] <action>                Run actions defined in your `microservice.yml`. Must be ran in a working
                                         directory with a `Dockerfile` and a `microservice.yml`
@@ -38,16 +38,16 @@ Commands:
 
 After cloning this repository, open up a shell in repo directory and execute the following
 
-```
-$ yarn bootstrap
-$ yarn link
-$ yarn build
+``` sh
+yarn bootstrap
+yarn link
+yarn build
 ```
 
 When working on the sources and want your changes to be transpiled as you work on them, do:
 
-```
-$ yarn watch
+``` sh
+yarn watch
 ```
 
 ### License
@@ -55,4 +55,4 @@ $ yarn watch
 OMS packages including the CLI, the UI package and the Validation package are licensed under the terms of the MIT License.
 See the LICENSE file in the repository for more information.
 
-[website]:https://microservice.guide/
+[website]:https://openmicroservices.org/
