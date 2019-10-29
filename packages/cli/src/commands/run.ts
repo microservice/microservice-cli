@@ -83,10 +83,11 @@ export default async function run({ options, parameters }: CommandPayload<Action
       actionName,
       args: options.args || [],
       callback(response) {
+        const responseToShow = typeof response === 'string' ? response : JSON.stringify(response, null, 2)
         if (options.silent) {
-          logger.info(response && typeof response === 'object' ? JSON.stringify(response, null, 2) : response)
+          logger.info(responseToShow)
         } else {
-          logger.info(`Output: ${JSON.stringify(response, null, 2)}`)
+          logger.info(`Output: ${responseToShow}`)
         }
       },
     })
