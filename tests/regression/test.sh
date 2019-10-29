@@ -23,13 +23,13 @@ for repo in clojure d go node java python php ruby rust scala ; do
   cd ..
 done
 
-# for repo in python-events node-events ; do
-#     echo "===== Testing $repo ====="
-#     git clone -q "https://github.com/microservices/${repo}.git"
-#     ( cd "$repo";
-#         ./test/all.js
-#     )
-# done
+for repo in python-events node-events ; do
+    echo "===== Testing $repo ====="
+    git clone -q "https://github.com/microservices/${repo}.git"
+    ( cd "$repo";
+        ./test/all.js
+    )
+done
 
 echo "===== PULLING REPOSITORIES ===="
 cd $WORK_DIR
