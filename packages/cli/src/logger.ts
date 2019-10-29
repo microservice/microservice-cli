@@ -121,6 +121,7 @@ export function spinnerStart(message: string) {
   if (spinnerAllowed) {
     spinner = ora(message).start()
   }
+  return spinner
 }
 
 export function spinnerStop() {

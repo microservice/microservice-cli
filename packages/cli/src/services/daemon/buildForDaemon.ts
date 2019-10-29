@@ -11,7 +11,8 @@ export default async function buildForDaemon({
   configPath: string
   verbose: boolean
 }): Promise<void> {
-  logger.spinnerStart('Building Docker image')
+  const buildingText = 'Building Docker image'
+  const spinner = logger.spinnerStart(buildingText)
 
   try {
     await buildImage({
@@ -20,6 +21,9 @@ export default async function buildForDaemon({
       onLog(line) {
         if (verbose) {
           logger.info(line)
+        }
+        if (spinner) {
+          spinner.text = `${buildingText}\n${line}`
         }
       },
     })

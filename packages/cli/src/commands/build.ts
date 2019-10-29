@@ -9,11 +9,11 @@ interface ActionOptions extends CommandOptionsDefault {
 }
 
 export default async function build({ options }: CommandPayload<ActionOptions>) {
+  const buildingText = 'Building Docker image'
   const configPaths = await getConfigPaths(options, true, true)
-
   const tagName = options.tag || (await getImageName({ configPath: configPaths.docker })).name
 
-  logger.spinnerStart('Building Docker image')
+  const spinner = logger.spinnerStart(buildingText)
 
   try {
     await buildImage({
@@ -22,6 +22,9 @@ export default async function build({ options }: CommandPayload<ActionOptions>) 
       onLog(line) {
         if (options.verbose) {
           logger.info(line)
+        }
+        if (spinner) {
+          spinner.text = `${buildingText}\n${line}`
         }
       },
     })
