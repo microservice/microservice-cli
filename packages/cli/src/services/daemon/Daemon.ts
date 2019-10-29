@@ -1,5 +1,5 @@
 import execa from 'execa'
-import Dockerode from 'dockerode'
+import Dockerode, { ContainerInspectInfo } from 'dockerode'
 import { CompositeDisposable } from 'event-kit'
 
 import * as logger from '~/logger'
@@ -95,6 +95,16 @@ export default class Daemon {
     })
 
     return daemonLogger
+  }
+
+  public async inspectContainer(): Promise<ContainerInspectInfo> {
+    const { containerState } = this
+
+    if (!containerState) {
+      throw new Error(`Cannot inspect a stopped daemon`)
+    }
+
+    return containerState.container.inspect()
   }
 
   public async ping(): Promise<boolean> {

@@ -71,6 +71,8 @@ export default async function executeEventsAction({
 
   const subscribePath = event.http.subscribe.path
   const subscribeMethod = event.http.subscribe.method
+  const inspectionResult = await daemon.inspectContainer()
+  const hostIp = inspectionResult.NetworkSettings.IPAddress || 'host.docker.internal'
 
   // Subscribe to events
   try {
@@ -81,7 +83,7 @@ export default async function executeEventsAction({
       },
       body: JSON.stringify({
         id,
-        endpoint: `http://host.docker.internal:${httpServerPort}`,
+        endpoint: `http://${hostIp}:${httpServerPort}`,
         event: eventName,
         data: argsMap,
       }),
