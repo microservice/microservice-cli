@@ -103,7 +103,7 @@ export default function processActionArguments({
 
   // Step 3 - Validate
   Object.entries(actionArgs || {}).forEach(([argName, arg]) => {
-    const value = argsMap[argName]
+    const value = values[argName]
     if (typeof value === 'undefined') {
       // Skip missing ones
       return
