@@ -131,8 +131,11 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   })
 
   validateAssocObject(root, 'actions', true, ({ state }) => {
+    let foundInterface = false
+
     validateWith(state, 'help', false, v.string)
     if (state.value.events) {
+      foundInterface = true
       validateWith(state, 'rpc', false, v.notDefined('when events is defined'))
       validateAssocObject(state, 'events', true, ({ state }) => {
         validateWith(state, 'help', false, v.string)
@@ -172,6 +175,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       })
     }
     if (state.value.rpc) {
+      foundInterface = true
       validateWith(state, 'events', false, v.notDefined('when rpc is defined'))
       validateWith(state, 'http', false, v.notDefined('when rpc is defined'))
       validateObject(state, 'rpc', true, ({ state }) => {
@@ -192,6 +196,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
       })
     }
     if (state.value.http) {
+      foundInterface = true
       validateWith(state, 'rpc', false, v.notDefined('when http is defined'))
       validateObject(state, 'http', true, ({ state }) => {
         validateWith(state, 'method', true, enumValues(HTTP_METHODS))
@@ -226,7 +231,9 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
           allowRequired: true,
         })
       })
-    } else {
+    }
+
+    if (!foundInterface) {
       validateWith(state, 'http', true, v.any)
       validateWith(state, 'events', true, v.any)
       validateWith(state, 'rpc', true, v.any)
