@@ -56,7 +56,9 @@ export default async function list({ options }: CommandPayload<ActionOptions>) {
     return
   }
 
-  Object.entries(actions).forEach(([key, value], i) => {
-    logger.info(`${key}: ${value.help ? value.help.trim() : 'No help provided'}\n`)
+  Object.entries(actions).forEach(([key, value], i, arr) => {
+    const lastLine = i === arr.length - 1
+    logger.info(`${key}: ${value.help ? value.help.trim() : 'No help provided'}${lastLine ? '' : '\n'}`)
   })
+  logger.info(`Run again with --details for a more detailed look at your Microservice Config`)
 }
