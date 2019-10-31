@@ -11,7 +11,7 @@ function getCollector(name: string) {
   return (val: string, memo: Args) => {
     const eqIdx = val.indexOf('=')
     if (eqIdx === -1) {
-      logger.fatal(`Invalid value for \`${name}'s\` expected format of key=val: ${val}`)
+      logger.fatal(`Invalid value for --${name} expected format of key=val but got '${val}'`)
     }
     const key = val.slice(0, eqIdx)
     const value = val.slice(eqIdx + 1)
