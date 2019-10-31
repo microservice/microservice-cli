@@ -1,19 +1,6 @@
-export type InputType =
-  | 'int'
-  | 'number'
-  | 'float'
-  | 'string'
-  | 'uuid'
-  | 'list'
-  | 'map'
-  | 'object'
-  | 'boolean'
-  | 'path'
-  | 'enum'
-  | 'any'
+export type InputType = 'int' | 'float' | 'string' | 'uuid' | 'list' | 'map' | 'object' | 'boolean' | 'path' | 'enum' | 'any'
 export const INPUT_TYPES: InputType[] = [
   'int',
-  'number',
   'float',
   'string',
   'uuid',
@@ -28,7 +15,6 @@ export const INPUT_TYPES: InputType[] = [
 export type OutputType = InputType | 'none'
 export const OUTPUT_TYPES: OutputType[] = [
   'int',
-  'number',
   'float',
   'string',
   'uuid',

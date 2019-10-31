@@ -4,7 +4,7 @@ import argsToMap from '~/helpers/argsToMap'
 import { CLIError } from '~/errors'
 import { Args, ArgsTransformed, ConfigSchema } from '~/types'
 
-const TYPES_TO_JSON_DECODE: InputType[] = ['list', 'object', 'map', 'int', 'number', 'float', 'boolean']
+const TYPES_TO_JSON_DECODE: InputType[] = ['list', 'object', 'map', 'int', 'float', 'boolean']
 // Non-object ones are added to eg. convert from String int to Number int before validation
 
 interface ProcessActionArgumentsOptions {
