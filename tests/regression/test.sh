@@ -13,17 +13,8 @@ echo "===== OMS VERSION ====="
 $OMS_PATH -v
 
 echo "===== HELLO WORLD TEMPLATES ===="
-for repo in clojure d go node java python php ruby rust scala ; do
-  cd $WORK_DIR
-  echo "===== Testing $repo ====="
-  git clone -q --depth 1 "https://github.com/microservices/${repo}.git"
-  cd "$repo"
-  output="$($OMS_PATH run --silent message -a name="Peter" | jq -c .)"
-  if [ "$output" != '{"message":"Hello Peter"}' ] ; then echo "ERROR: Output mismatch: $output"; exit 1; fi
-  cd ..
-done
 
-for repo in python-events node-events ; do
+for repo in node-events python-events; do
     echo "===== Testing $repo ====="
     git clone -q "https://github.com/microservices/${repo}.git"
     ( cd "$repo";
