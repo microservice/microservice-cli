@@ -72,7 +72,8 @@ export default async function executeEventsAction({
   const subscribePath = event.http.subscribe.path
   const subscribeMethod = event.http.subscribe.method
   const inspectionResult = await daemon.inspectContainer()
-  const hostIp = inspectionResult.NetworkSettings.IPAddress || 'host.docker.internal'
+  const dockerHostIp = inspectionResult.NetworkSettings.IPAddress
+  const hostIp = process.platform === 'darwin' ? 'host.docker.internal' : dockerHostIp
 
   // Subscribe to events
   try {
