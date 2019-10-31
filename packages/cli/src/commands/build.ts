@@ -21,7 +21,7 @@ export default async function build({ options }: CommandPayload<ActionOptions>) 
       name: tagName,
       onLog(line) {
         if (options.verbose) {
-          logger.info(line)
+          logger.info(`[Docker Build] ${line}`)
         }
         if (spinner) {
           spinner.text = `${buildingText}\n${line}`

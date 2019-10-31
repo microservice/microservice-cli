@@ -20,7 +20,7 @@ export default async function buildForDaemon({
       name: imageName,
       onLog(line) {
         if (verbose) {
-          logger.info(line)
+          logger.info(`[Docker Build] ${line}`)
         }
         if (spinner) {
           spinner.text = `${buildingText}\n${line}`
