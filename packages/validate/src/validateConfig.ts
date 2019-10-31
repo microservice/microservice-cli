@@ -134,7 +134,6 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     validateWith(state, 'help', false, v.string)
     if (state.value.events) {
       validateWith(state, 'rpc', false, v.notDefined('when events is defined'))
-      validateWith(state, 'http', false, v.notDefined('when events is defined'))
       validateAssocObject(state, 'events', true, ({ state }) => {
         validateWith(state, 'help', false, v.string)
         validateObject(state, 'http', true, ({ state }) => {
@@ -171,7 +170,8 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
           })
         })
       })
-    } else if (state.value.rpc) {
+    }
+    if (state.value.rpc) {
       validateWith(state, 'events', false, v.notDefined('when rpc is defined'))
       validateWith(state, 'http', false, v.notDefined('when rpc is defined'))
       validateObject(state, 'rpc', true, ({ state }) => {
@@ -190,8 +190,8 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
           validateWith(state, 'tls', true, v.boolean)
         })
       })
-    } else if (state.value.http) {
-      validateWith(state, 'events', false, v.notDefined('when http is defined'))
+    }
+    if (state.value.http) {
       validateWith(state, 'rpc', false, v.notDefined('when http is defined'))
       validateObject(state, 'http', true, ({ state }) => {
         validateWith(state, 'method', true, enumValues(HTTP_METHODS))
