@@ -73,9 +73,7 @@ export function validateArgument(spec: Argument, value: any, onError: ErrorCallb
 
   validateTArgOut<Argument>({
     state,
-    error(message) {
-      onError(`Output ${message}`)
-    },
+    error: onError,
   })
 }
 
