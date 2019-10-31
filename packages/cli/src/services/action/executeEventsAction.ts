@@ -20,6 +20,8 @@ interface ExecuteEventsActionOptions {
   callback: (payload: any) => void | Promise<void>
 }
 
+const SHOULD_USE_NAMED = ['darwin', 'win32'].includes(process.platform)
+
 export default async function executeEventsAction({
   daemon,
   argsMap,
@@ -73,7 +75,7 @@ export default async function executeEventsAction({
   const subscribeMethod = event.http.subscribe.method
   const inspectionResult = await daemon.inspectContainer()
   const dockerHostIp = inspectionResult.NetworkSettings.IPAddress
-  const hostIp = process.platform === 'darwin' ? 'host.docker.internal' : dockerHostIp
+  const hostIp = SHOULD_USE_NAMED ? 'host.docker.internal' : dockerHostIp
 
   // Subscribe to events
   try {

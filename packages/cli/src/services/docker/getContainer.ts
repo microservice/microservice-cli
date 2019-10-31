@@ -2,7 +2,6 @@ import _get from 'lodash/get'
 import getPort from 'get-port'
 import Dockerode from 'dockerode'
 
-import getHostIp from '~/helpers/getHostIp'
 import { CLIError } from '~/errors'
 import { Args, ConfigSchema } from '~/types'
 import { getContainerPorts } from '~/services/config'
@@ -22,7 +21,6 @@ interface GetContainerResult {
   portsMap: Map<number, number>
 }
 
-const SHOULD_MAP_TO_LOCALHOST = !['darwin', 'win32'].includes(process.platform)
 export default async function getContainer({
   config,
   envs,
@@ -71,7 +69,6 @@ export default async function getContainer({
     portBindings[`${containerPort}/tcp`] = [{ HostPort: freePort.toString() }]
   }
 
-  const hostIp = SHOULD_MAP_TO_LOCALHOST ? await getHostIp() : null
   const container = await dockerode.createContainer({
     Image: image,
     Cmd: _get(config, 'lifecycle.startup.command', null),
@@ -79,7 +76,6 @@ export default async function getContainer({
     ExposedPorts: portsExposed,
     HostConfig: {
       PortBindings: portBindings,
-      ExtraHosts: SHOULD_MAP_TO_LOCALHOST || !hostIp ? [] : [hostIp],
     },
   })
 
