@@ -14,18 +14,37 @@ pushd ${WORK_DIR}
 
 echo "===== Testing certified services from the Storyscript Hub ====="
 failed_services=""
-for i in `curl -s 'https://api.storyscript.io/graphql' -H 'Content-Type: application/json' --data '{"query":"query Services { allServices(condition: { isCertified: true }) { nodes { name uuid}}}"}' | jq -c ".data.allServices.nodes[]"`; do
-    service_uuid=`echo ${i} | jq -r ".uuid"`
-    service_name=`echo ${i} | jq -r ".name"`
-    service_details=`curl -s "https://api.storyscript.io/graphql" -H "Content-Type: application/json" \
-        --data "{\"query\":\"query Services { getServiceRepository(serviceUuid: \\\\\"${service_uuid}\\\\\") { ownerName repoName service } } \"}"`
-    owner_name=`echo ${service_details} | jq -rc ".data.getServiceRepository.ownerName"`
-    repo_name=`echo ${service_details} | jq -rc ".data.getServiceRepository.repoName"`
-    service_provider=`echo ${service_details} | jq -rc ".data.getServiceRepository.service"`
-    if [[ ! "$service_provider" == "GITHUB" ]]; then
-        continue
-    fi
+test_services='[
+    {"name":"awesome","owner":"oms-services"},
+    {"name":"log","owner":"storyscript"},
+    {"name":"http","owner":"storyscript"},
+    {"name":"file","owner":"storyscript"},
+    {"name":"redis","owner":"oms-services"},
+    {"name":"psql","owner":"oms-services"},
+    {"name":"json","owner":"storyscript"},
+    {"name":"twilio","owner":"oms-services"},
+    {"name":"gmaps","owner":"oms-services"},
+    {"name":"clevertap","owner":"oms-services"},
+    {"name":"openapi2oms","owner":"microservices"},
+    {"name":"mongodb","owner":"oms-services"},
+    {"name":"storage","owner":"storyscript"},
+    {"name":"amqp1","owner":"oms-services"},
+    {"name":"rabbitmq","owner":"oms-services"},
+    {"name":"oms-validate","owner":"oms-services"},
+    {"name":"stackdriver","owner":"oms-services"},
+    {"name":"nexmo","owner":"oms-services"},
+    {"name":"sendgrid","owner":"oms-services"},
+    {"name":"uuid","owner":"oms-services"},
+    {"name":"slack","owner":"oms-services"}
+]'
 
+for row in $(echo "${test_services}" | jq -c '.[]'); do
+    _jq() {
+        echo ${row} | jq -r ${1}
+    }
+
+    repo_name=$(_jq '.name')
+    owner_name=$(_jq '.owner')
     clone_url="https://github.com/${owner_name}/${repo_name}.git"
     git clone ${clone_url}
     cd ${repo_name}
