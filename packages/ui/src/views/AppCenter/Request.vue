@@ -77,6 +77,7 @@ export default {
 }
 .content-wrapper {
   position: relative;
+  overflow: hidden;
   @include flex($column: true, $flex: 1);
 }
 .content-overlay {
