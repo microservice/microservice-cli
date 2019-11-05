@@ -56,10 +56,7 @@ export default async function executeEventsAction({
   })
 
   const httpServerPort = await getPort()
-  const httpServerSocket = httpServer.listen({
-    port: httpServerPort,
-    hostname: '127.0.0.1',
-  })
+  const httpServerSocket = httpServer.listen(httpServerPort, '0.0.0.0')
   const disposable = new Disposable(() => {
     httpServerSocket.close()
   })
@@ -74,7 +71,7 @@ export default async function executeEventsAction({
   const subscribePath = event.http.subscribe.path
   const subscribeMethod = event.http.subscribe.method
   const inspectionResult = await daemon.inspectContainer()
-  const dockerHostIp = inspectionResult.NetworkSettings.IPAddress
+  const dockerHostIp = inspectionResult.NetworkSettings.Gateway
   const hostIp = SHOULD_USE_NAMED ? 'host.docker.internal' : dockerHostIp
 
   // Subscribe to events
