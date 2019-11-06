@@ -10,29 +10,8 @@ yarn global add @microservices/oms
 
 ### Usage
 
-```
-Usage: oms [options] [command]
-
-For more details on the commands below, run `oms `(validate|build|run|subscribe)` --help`
-
-Options:
-  -V, --version                         output the version number
-  -v --version                          Show OMS CLI version
-  -d --directory                        Directory to use as root
-  -h, --help                            output usage information
-
-Commands:
-  validate [options]                    Validate the structure of a `microservice.yml` in the working directory
-  build [options]                       Builds the microservice defined by the `Dockerfile`. Image will be tagged
-                                        with `oms/$github_user/$repo_name`, unless the tag flag is
-                                        given. If no git config present a random string will be used
-  run [options] <action>                Run actions defined in your `microservice.yml`. Must be ran in a working
-                                        directory with a `Dockerfile` and a `microservice.yml`
-  subscribe [options] <action> <event>  Subscribe to an event defined in your `microservice.yml`. Must be ran in
-                                        a working directory with a `Dockerfile` and a `microservice.yml`
-  ui [options]                          Starts to oms-app which monitors your microservice.
-  list [options]                        Lists all actions available in microservice.
-```
+[![Open Microservices CLI](https://raw.githubusercontent.com/microservices/oms/master/./github/oms-cli-usage-carbon.png)](
+https://raw.githubusercontent.com/microservices/oms/master/./github/oms-cli-usage-carbon.png)
 
 ### Contributing
 
