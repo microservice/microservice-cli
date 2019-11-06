@@ -3,7 +3,6 @@
   "description": "A CLI to interact with microservices built with the OMS standard.",
   "keywords": [
     "oms",
-    "omg",
     "cli",
     "open",
     "microservice",
