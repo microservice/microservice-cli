@@ -36,7 +36,7 @@
     "event-kit": "^2.5.3",
     "execa": "^2.0.3",
     "express": "^4.17.1",
-    "form-data": "^2.5.0",
+    "form-data": "^3.0.0",
     "get-port": "^5.0.0",
     "git-url-parse": "^11.1.2",
     "got": "^9.6.0",
