@@ -4,7 +4,7 @@
       <div class="branding-logo">
         <Photo :source="appLogo" :size="3" />
       </div>
-      <div class="branding-name">Open Microservice Guide</div>
+      <div class="branding-name">Open Microservices</div>
     </div>
     <div class="header-actions">
       <div class="header-action">
