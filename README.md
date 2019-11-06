@@ -1,17 +1,24 @@
-# OMS
+# Open Microservices CLI
 
-Welcome to OMS Repo! Check out [openmicroservices.org][website] to see what it's all about
+Welcome to Open Microservices CLI project! If you're just getting started, check out [openmicroservices.org][website] to see what it's all about.
 
 ### Installation
+
+If you're using `yarn`:
 
 ``` sh
 yarn global add @microservices/oms
 ```
 
+Or if you're using `npm`:
+
+``` sh
+npm i @microservices/oms -g
+```
+
 ### Usage
 
-[![Open Microservices CLI](https://raw.githubusercontent.com/microservices/oms/master/./github/oms-cli-usage-carbon.png)](
-https://raw.githubusercontent.com/microservices/oms/master/./github/oms-cli-usage-carbon.png)
+[![Open Microservices CLI](https://raw.githubusercontent.com/microservices/oms/master/.github/oms-cli-usage-carbon.png)](https://raw.githubusercontent.com/microservices/oms/master/.github/oms-cli-usage-carbon.png)
 
 ### Contributing
 
