@@ -18,7 +18,7 @@
     "eslint-config-prettier": "6.5.0",
     "eslint-plugin-import": "2.18.2",
     "eslint-plugin-prettier": "3.1.1",
-    "eslint-plugin-vue": "5.2.3",
+    "eslint-plugin-vue": "6.0.1",
     "lerna": "3.18.4",
     "prettier-cli": "0.1.0",
     "sb-babel-cli": "2.0.0",
