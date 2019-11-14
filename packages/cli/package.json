@@ -55,7 +55,7 @@
     "@types/git-url-parse": "9.0.0",
     "@types/got": "9.6.9",
     "@types/js-yaml": "3.12.1",
-    "@types/lodash": "4.14.146",
+    "@types/lodash": "4.14.147",
     "@types/uuid": "3.4.6",
     "typescript": "3.7.2"
   }
