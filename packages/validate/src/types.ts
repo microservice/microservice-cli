@@ -86,7 +86,8 @@ export interface ActionHttp {
         path?: undefined
         port?: undefined
         url: string
-      })
+      }
+  )
   arguments?: Record<string, Argument>
   output: ArgOut<OutputType> & {
     contentType?: ContentType
@@ -233,11 +234,11 @@ export interface State {
 }
 
 export type Validator =
-  | ({
+  | {
       message: string
       validate(value: any): boolean
-    })
-  | ({
+    }
+  | {
       validate?: undefined
       validateForMessage(value: any): string | null
-    })
+    }
