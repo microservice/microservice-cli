@@ -12,6 +12,7 @@ export const INPUT_TYPES: InputType[] = [
   'enum',
   'any',
 ]
+
 export type OutputType = InputType | 'none'
 export const OUTPUT_TYPES: OutputType[] = [
   'int',
@@ -78,15 +79,15 @@ export interface ActionHttp {
     method: HttpMethod
   } & (
     | {
-      path: string
-      port: number
-      url?: undefined
-    }
+        path: string
+        port: number
+        url?: undefined
+      }
     | {
-      path?: undefined
-      port?: undefined
-      url: string
-    }
+        path?: undefined
+        port?: undefined
+        url: string
+      }
   )
   arguments?: Record<string, Argument>
   output: ArgOut<OutputType> & {
@@ -235,10 +236,10 @@ export interface State {
 
 export type Validator =
   | {
-    message: string
-    validate (value: any): boolean
-  }
+      message: string
+      validate(value: any): boolean
+    }
   | {
-    validate?: undefined
-    validateForMessage (value: any): string | null
-  }
+      validate?: undefined
+      validateForMessage(value: any): string | null
+    }

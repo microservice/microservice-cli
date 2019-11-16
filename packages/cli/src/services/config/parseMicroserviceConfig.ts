@@ -12,7 +12,7 @@ interface ParseMicroserviceConfigOptions {
   configPath: string
 }
 
-export default async function parseMicroserviceConfig (options: ParseMicroserviceConfigOptions): Promise<ConfigSchema> {
+export default async function parseMicroserviceConfig(options: ParseMicroserviceConfigOptions): Promise<ConfigSchema> {
   let parsed
   let errorPosition: string | null = null
 
