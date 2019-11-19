@@ -2,7 +2,7 @@
 
 > Welcome to Open Microservices CLI project! If you're just getting started, check out [openmicroservices.org][website] to see what it's all about.
 
-[![CircleCI](https://circleci.com/gh/microservices/oms.svg?style=svg)](https://circleci.com/gh/microservices/oms)
+[![CircleCI](https://circleci.com/gh/microservices/cli.svg?style=svg)](https://circleci.com/gh/microservices/cli)
 [![Spectrum Chat](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/open-microservices)
 [![npm version](https://img.shields.io/npm/v/@microservices/oms)](https://img.shields.io/npm/v/@microservices/oms)
 [![NPM downloads](https://img.shields.io/npm/dm/@microservices/oms.svg)](https://www.npmjs.com/package/@microservices/oms)
