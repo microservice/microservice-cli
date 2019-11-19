@@ -112,7 +112,7 @@ const mutations = {
       relevantTab.result = typeof result === 'string' ? result : JSON.stringify(result, null, 2)
     }
   },
-  saveActiveAction(state: ActionsState, bookmark: boolean = true) {
+  saveActiveAction(state: ActionsState, bookmark = true) {
     const activeTab = getActiveTabFromState(state)
     const historicTab: ActionTabHistoric = {
       ...activeTab,

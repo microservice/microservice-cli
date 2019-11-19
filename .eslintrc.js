@@ -18,6 +18,7 @@ const rules = {
   '@typescript-eslint/explicit-member-accessibility': 'warn',
   '@typescript-eslint/camelcase': 'warn',
   '@typescript-eslint/no-non-null-assertion': 'warn',
+  '@typescript-eslint/ban-ts-ignore': 'off'
 }
 
 module.exports = {
@@ -29,6 +30,6 @@ module.exports = {
   rules,
   env: {
     jest: true,
-    node: true,
-  },
+    node: true
+  }
 }
