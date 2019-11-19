@@ -12,6 +12,7 @@ export const INPUT_TYPES: InputType[] = [
   'enum',
   'any',
 ]
+
 export type OutputType = InputType | 'none'
 export const OUTPUT_TYPES: OutputType[] = [
   'int',
@@ -115,9 +116,9 @@ export interface ActionEvents {
         }
       }
       output: ArgOut<OutputType> & {
-        actions?: Record<string, any> // TODO: Type this properly
+        actions?: Record<string, any>
       }
-      arguments?: Record<string, Argument> // TODO: Type this properly
+      arguments?: Record<string, Argument>
     }
   >
 }
@@ -233,11 +234,11 @@ export interface State {
 }
 
 export type Validator =
-  | ({
+  | {
       message: string
       validate(value: any): boolean
-    })
-  | ({
+    }
+  | {
       validate?: undefined
       validateForMessage(value: any): string | null
-    })
+    }

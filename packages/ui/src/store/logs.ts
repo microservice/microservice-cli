@@ -2,11 +2,7 @@ import { ConsoleLine, DockerLine, AppStatus } from '~/types'
 
 export interface LogsState {
   status: AppStatus
-  logs: (
-    | ({
-        type: 'console'
-      } & ConsoleLine)
-    | ({ type: 'docker' } & DockerLine))[]
+  logs: (({ type: 'console' } & ConsoleLine) | ({ type: 'docker' } & DockerLine))[]
 }
 
 const defaultState: LogsState = {
@@ -21,10 +17,20 @@ const mutations = {
     state.status = payload
   },
   logConsoleLine(state: LogsState, payload: ConsoleLine) {
-    state.logs = state.logs.slice(-MAX_HISTORY_LINES).concat([{ type: 'console', ...payload }])
+    state.logs = state.logs.slice(-MAX_HISTORY_LINES).concat([
+      {
+        type: 'console',
+        ...payload,
+      },
+    ])
   },
   logDockerLine(state: LogsState, payload: DockerLine) {
-    state.logs = state.logs.slice(-MAX_HISTORY_LINES).concat([{ type: 'docker', ...payload }])
+    state.logs = state.logs.slice(-MAX_HISTORY_LINES).concat([
+      {
+        type: 'docker',
+        ...payload,
+      },
+    ])
   },
 }
 

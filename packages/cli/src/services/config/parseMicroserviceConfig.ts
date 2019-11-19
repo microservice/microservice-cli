@@ -31,6 +31,7 @@ export default async function parseMicroserviceConfig(options: ParseMicroservice
       })\nIt's probably because of a syntax error${errorPosition} in the Config file.`,
     )
   }
+
   if (options.validate) {
     if (getValidationErrors(parsed).length) {
       logger.fatal(
