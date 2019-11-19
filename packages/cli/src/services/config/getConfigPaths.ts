@@ -48,8 +48,8 @@ export default async function getConfigPaths(
 }>
 export default async function getConfigPaths(
   options: ConfigOptions,
-  microserviceRequired: boolean = true,
-  dockerRequired: boolean = true,
+  microserviceRequired = true,
+  dockerRequired = true,
 ): Promise<ConfigPaths> {
   const workingDirectory = options.directory || process.cwd()
 
