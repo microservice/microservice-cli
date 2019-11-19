@@ -42,8 +42,7 @@ export default {
       type: Boolean,
     },
     onPress: {
-      type: Function,
-      default() {},
+      type: Function
     },
   },
   data(cc) {
