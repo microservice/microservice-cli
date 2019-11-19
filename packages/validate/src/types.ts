@@ -87,8 +87,7 @@ export interface ActionHttp {
         path?: undefined
         port?: undefined
         url: string
-      }
-  )
+      })
   arguments?: Record<string, Argument>
   output: ArgOut<OutputType> & {
     contentType?: ContentType
@@ -117,9 +116,9 @@ export interface ActionEvents {
         }
       }
       output: ArgOut<OutputType> & {
-        actions?: Record<string, any> // TODO: Type this properly
+        actions?: Record<string, any>
       }
-      arguments?: Record<string, Argument> // TODO: Type this properly
+      arguments?: Record<string, Argument>
     }
   >
 }
