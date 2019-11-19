@@ -176,6 +176,7 @@ export default {
   @include flex($row: true, $flex: 1, $ml: 2);
 }
 .center-editors {
+  overflow: hidden;
   @include flex($row: true, $flex: 1, $ph: 2, $pv: 1);
 }
 .center-editors-resize {

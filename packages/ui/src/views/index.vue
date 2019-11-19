@@ -46,6 +46,7 @@ export default {
 
       return {
         height: `${100 - heightLogs}%`,
+        overflow: 'hidden',
       }
     },
     styleFooter() {
