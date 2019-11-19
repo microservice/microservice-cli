@@ -8,45 +8,54 @@ const EXPECT_PATH = path.join(__dirname, 'expectations')
 const tests = {}
 
 const loading = () => {
-  return new Promise(async (resolve, reject) => {
-    await fs.readdir(EXPECT_PATH, (err, files) => {
-      if (err) {
-        console.log("Unable to scan directory 'expectations'")
-        reject()
-      }
-      console.log('===== LOADING EXPECTATIONS =====')
-      files.forEach(file => {
-        if (file !== 'microservice.txt') {
-          const content = fs.readFileSync(path.join(EXPECT_PATH, file), {
-            encoding: 'utf8',
-          })
-          const key = file.replace('.txt', '')
-          tests[key] = { expect: '', content: '' }
-          tests[key].expect = content
-          console.log(`${file} loaded`)
+  const loadExpectations = () => {
+    return new Promise((resolve, reject) => {
+      fs.readdir(EXPECT_PATH, (err, files) => {
+        if (err) {
+          console.log("Unable to scan directory 'expectations'")
+          reject(err)
         }
+        console.log('===== LOADING EXPECTATIONS =====')
+        files.forEach(file => {
+          if (file !== 'microservice.txt') {
+            const content = fs.readFileSync(path.join(EXPECT_PATH, file), {
+              encoding: 'utf8'
+            })
+            const key = file.replace('.txt', '')
+            tests[key] = { expect: '', content: '' }
+            tests[key].expect = content
+            console.log(`${file} loaded`)
+          }
+        })
+        resolve()
       })
     })
+  }
 
-    await fs.readdir(FILES_PATH, (err, files) => {
-      if (err) {
-        console.log("Unable to scan directory 'files'")
-        reject()
-      }
-      console.log('===== LOADING FILES =====')
-      files.forEach(file => {
-        if (file !== 'Dockerfile' && file !== 'microservice.yml') {
-          const content = fs.readFileSync(path.join(FILES_PATH, file), {
-            encoding: 'utf8',
-          })
-          const key = file.replace('.yml', '')
-          tests[key].content = content
-          console.log(`${file} loaded`)
+  const loadFiles = () => {
+    return new Promise((resolve, reject) => {
+      fs.readdir(FILES_PATH, (err, files) => {
+        if (err) {
+          console.log("Unable to scan directory 'files'")
+          reject(err)
         }
+        console.log('===== LOADING FILES =====')
+        files.forEach(file => {
+          if (file !== 'Dockerfile' && file !== 'microservice.yml') {
+            const content = fs.readFileSync(path.join(FILES_PATH, file), {
+              encoding: 'utf8'
+            })
+            const key = file.replace('.yml', '')
+            tests[key].content = content
+            console.log(`${file} loaded`)
+          }
+        })
+        resolve()
       })
-      resolve()
     })
-  })
+  }
+
+  return Promise.all([loadExpectations, loadFiles])
 }
 
 const start = async () => {
