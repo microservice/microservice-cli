@@ -87,7 +87,8 @@ export interface ActionHttp {
         path?: undefined
         port?: undefined
         url: string
-      })
+      }
+  )
   arguments?: Record<string, Argument>
   output: ArgOut<OutputType> & {
     contentType?: ContentType

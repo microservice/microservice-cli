@@ -26,18 +26,14 @@ export default async function parseMicroserviceConfig(options: ParseMicroservice
 
   if (typeof parsed !== 'object' || !parsed) {
     throw new CLIError(
-      `Malformed config file (found at: ${
-        options.configPath
-      })\nIt's probably because of a syntax error${errorPosition} in the Config file.`,
+      `Malformed config file (found at: ${options.configPath})\nIt's probably because of a syntax error${errorPosition} in the Config file.`,
     )
   }
 
   if (options.validate) {
     if (getValidationErrors(parsed).length) {
       logger.fatal(
-        `Config file has errors (found at: ${
-          options.configPath
-        })\nRun 'oms validate' to get a detailed explanation or goto ${HELP_OMS_SPEC_WEBSITE} for a schema overview.`,
+        `Config file has errors (found at: ${options.configPath})\nRun 'oms validate' to get a detailed explanation or goto ${HELP_OMS_SPEC_WEBSITE} for a schema overview.`,
       )
     }
   }
