@@ -6,7 +6,7 @@
 [![Spectrum Chat](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/open-microservices)
 [![npm version](https://img.shields.io/npm/v/@microservices/oms)](https://img.shields.io/npm/v/@microservices/oms)
 [![NPM downloads](https://img.shields.io/npm/dm/@microservices/oms.svg)](https://www.npmjs.com/package/@microservices/oms)
-[![Renovate badge](https://badges.renovateapi.com/github/microservices/oms)](https://renovatebot.com/)
+[![Renovate badge](https://badges.renovateapi.com/github/microservices/cli)](https://renovatebot.com/)
 
 ### Installation
 
