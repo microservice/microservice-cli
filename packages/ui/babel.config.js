@@ -6,10 +6,10 @@ module.exports = {
       {
         useBuiltIns: 'entry',
         corejs: {
-          version: 2,
-        },
-      },
-    ],
+          version: 2
+        }
+      }
+    ]
   ],
   plugins: [
     '@babel/plugin-proposal-class-properties',
@@ -18,9 +18,9 @@ module.exports = {
       {
         root: ['.'],
         alias: {
-          '~': './src',
-        },
-      },
-    ],
-  ],
+          '~': './src'
+        }
+      }
+    ]
+  ]
 }

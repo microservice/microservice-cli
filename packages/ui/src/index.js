@@ -1,5 +1,3 @@
-import 'core-js'
-
 import Vue from 'vue'
 import VueToasted from 'vue-toasted'
 import VueTimeago from 'vue-timeago'
@@ -12,14 +10,14 @@ import 'normalize.css'
 import 'vue-select/dist/vue-select.css'
 
 Vue.use(VueTimeago, {
-  name: 'Timeago',
+  name: 'Timeago'
 })
 Vue.use(VueToasted)
 
 // Render the App
 new Vue({
   store,
-  render: h => h(App),
+  render: h => h(App)
 }).$mount('#app')
 
 window.addEventListener('keydown', handleKeyboardEvent)
