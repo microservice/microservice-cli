@@ -72,6 +72,7 @@ export type Argument = ArgOut<InputType> & {
 
 export interface ActionHttp {
   help?: string
+  format?: undefined
   rpc?: undefined
   events?: undefined
   http: {
@@ -79,15 +80,15 @@ export interface ActionHttp {
     method: HttpMethod
   } & (
     | {
-        path: string
-        port: number
-        url?: undefined
-      }
+      path: string
+      port: number
+      url?: undefined
+    }
     | {
-        path?: undefined
-        port?: undefined
-        url: string
-      }
+      path?: undefined
+      port?: undefined
+      url: string
+    }
   )
   arguments?: Record<string, Argument>
   output: ArgOut<OutputType> & {
@@ -97,6 +98,7 @@ export interface ActionHttp {
 
 export interface ActionEvents {
   help?: string
+  format?: undefined
   http?: undefined
   rpc?: undefined
   events: Record<
@@ -126,6 +128,7 @@ export interface ActionEvents {
 
 export interface ActionRpc {
   help?: string
+  format?: undefined
   http?: undefined
   events?: undefined
   rpc: {
@@ -236,10 +239,10 @@ export interface State {
 
 export type Validator =
   | {
-      message: string
-      validate(value: any): boolean
-    }
+    message: string
+    validate(value: any): boolean
+  }
   | {
-      validate?: undefined
-      validateForMessage(value: any): string | null
-    }
+    validate?: undefined
+    validateForMessage(value: any): string | null
+  }

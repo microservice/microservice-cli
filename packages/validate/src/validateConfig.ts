@@ -234,6 +234,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     }
 
     if (!foundInterface) {
+      validateWith(state, 'format', true, v.any)
       validateWith(state, 'http', true, v.any)
       validateWith(state, 'events', true, v.any)
       validateWith(state, 'rpc', true, v.any)
