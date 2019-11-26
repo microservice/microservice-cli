@@ -26,8 +26,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@microservices/ui": "^0.16.4",
-    "@microservices/validate": "^0.16.4",
+    "@microservices/ui": "0.16.4",
+    "@microservices/validate": "0.16.4",
     "body-parser": "^1.19.0",
     "chokidar": "^3.1.0",
     "commander": "^4.0.0",

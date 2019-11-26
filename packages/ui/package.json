@@ -7,7 +7,7 @@
     "watch": "parcel watch src/index.html --out-dir lib --no-hmr"
   },
   "devDependencies": {
-    "@microservices/validate": "^0.16.4",
+    "@microservices/validate": "0.16.4",
     "@vue/component-compiler-utils": "3.0.2",
     "autoprefixer": "9.7.2",
     "core-js": "3.4.1",
