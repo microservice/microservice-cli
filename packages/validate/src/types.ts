@@ -206,13 +206,12 @@ export interface ConfigSchema {
     desired?: number
     cooldown?: number
   }
-  forward?: Record<
+  forwards?: Record<
     string,
     {
       http: {
         path: string
         port: number
-        method: HttpMethod
       }
     }
   >

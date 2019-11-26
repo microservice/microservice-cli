@@ -130,7 +130,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     })
   })
 
-  validateAssocObject(root, 'actions', true, ({ state }) => {
+  validateAssocObject(root, 'actions', false, ({ state }) => {
     let foundInterface = false
 
     validateWith(state, 'help', false, v.string)
@@ -248,12 +248,13 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     validateWith(state, 'sensitive', false, v.boolean)
     validateWith(state, 'help', false, v.string)
 
-    if (typeof state.value.required !== 'undefined') {
-      validateWith(state, 'default', false, v.notDefined('when port is defined'))
-      validateWith(state, 'required', false, v.boolean)
+    // . Default values can't be set if the env variable is set as required
+    if (typeof state.value.required !== 'undefined' && state.value.required) {
+      validateWith(state, 'default', false, v.notDefined('when value is required'))
+      validateWith(state, 'required', true, v.boolean)
     } else {
-      validateWith(state, 'required', false, v.notDefined('when port is defined'))
-      validateWith(state, 'default', false, v.string)
+      validateWith(state, 'required', false, v.notDefined('when environment is not required'))
+      validateWith(state, 'default', false, v.any)
     }
   })
 
@@ -284,7 +285,6 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     validateObject(state, 'http', true, ({ state }) => {
       validateWith(state, 'path', true, v.pathname)
       validateWith(state, 'port', true, v.number)
-      validateWith(state, 'method', true, enumValues(HTTP_METHODS))
     })
   })
 
