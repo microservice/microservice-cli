@@ -247,8 +247,8 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     validateWith(state, 'pattern', false, v.string)
     validateWith(state, 'sensitive', false, v.boolean)
     validateWith(state, 'help', false, v.string)
-    console.log(state.value.required)
-    // . Default values can't be set if this variable is set as required
+
+    // . Default values can't be set if the env variable is set as required
     if (typeof state.value.required !== 'undefined' && state.value.required) {
       validateWith(state, 'default', false, v.notDefined('when value is required'))
       validateWith(state, 'required', true, v.boolean)
@@ -281,7 +281,6 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
   })
 
   validateAssocObject(root, 'forwards', false, ({ state }) => {
-    validateWith(root, 'actions', false, v.string)
     validateWith(state, 'help', false, v.string)
     validateObject(state, 'http', true, ({ state }) => {
       validateWith(state, 'path', true, v.pathname)
