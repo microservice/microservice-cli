@@ -70,12 +70,16 @@ export type Argument = ArgOut<InputType> & {
   default: any // <== default value for the argument
 }
 
+export type CommandArgument = ArgOut<InputType> & {
+  default: any // <== default value for the argument
+}
+
 export interface ActionCommand {
   help?: string
   format?: {
     command?: string
   }
-  arguments?: Record<string, Argument>
+  arguments?: Record<string, CommandArgument>
   output: ArgOut<OutputType> & {
     contentType?: ContentType
   }
