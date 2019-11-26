@@ -70,6 +70,17 @@ export type Argument = ArgOut<InputType> & {
   default: any // <== default value for the argument
 }
 
+export interface ActionCommand {
+  help?: string
+  format?: {
+    command?: string
+  }
+  arguments?: Record<string, Argument>
+  output: ArgOut<OutputType> & {
+    contentType?: ContentType
+  }
+}
+
 export interface ActionHttp {
   help?: string
   format?: undefined
@@ -80,15 +91,15 @@ export interface ActionHttp {
     method: HttpMethod
   } & (
     | {
-      path: string
-      port: number
-      url?: undefined
-    }
+        path: string
+        port: number
+        url?: undefined
+      }
     | {
-      path?: undefined
-      port?: undefined
-      url: string
-    }
+        path?: undefined
+        port?: undefined
+        url: string
+      }
   )
   arguments?: Record<string, Argument>
   output: ArgOut<OutputType> & {
@@ -149,7 +160,7 @@ export interface ActionRpc {
   }
 }
 
-export type Action = ActionHttp | ActionEvents | ActionRpc
+export type Action = ActionCommand | ActionHttp | ActionEvents | ActionRpc
 
 export interface ConfigSchema {
   oms?: 1
@@ -239,10 +250,10 @@ export interface State {
 
 export type Validator =
   | {
-    message: string
-    validate(value: any): boolean
-  }
+      message: string
+      validate(value: any): boolean
+    }
   | {
-    validate?: undefined
-    validateForMessage(value: any): string | null
-  }
+      validate?: undefined
+      validateForMessage(value: any): string | null
+    }

@@ -174,8 +174,20 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
         })
       })
     }
+
+    if (state.value.format) {
+      foundInterface = true
+      validateWith(state, 'rpc', false, v.notDefined('when format is defined'))
+      validateWith(state, 'http', false, v.notDefined('when format is defined'))
+      validateWith(state, 'events', false, v.notDefined('when format is defined'))
+      validateObject(state, 'format', true, ({ state }) => {
+        validateWith(state, 'command', true, oneOf(v.string, array(v.string)))
+      })
+    }
+
     if (state.value.rpc) {
       foundInterface = true
+      validateWith(state, 'format', false, v.notDefined('when rpc is defined'))
       validateWith(state, 'events', false, v.notDefined('when rpc is defined'))
       validateWith(state, 'http', false, v.notDefined('when rpc is defined'))
       validateObject(state, 'rpc', true, ({ state }) => {

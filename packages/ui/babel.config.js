@@ -4,12 +4,10 @@ module.exports = {
     [
       '@babel/preset-env',
       {
-        useBuiltIns: 'entry',
-        corejs: {
-          version: 2,
-        },
-      },
-    ],
+        useBuiltIns: 'usage',
+        corejs: { version: '3.4' }
+      }
+    ]
   ],
   plugins: [
     '@babel/plugin-proposal-class-properties',
@@ -18,9 +16,9 @@ module.exports = {
       {
         root: ['.'],
         alias: {
-          '~': './src',
-        },
-      },
-    ],
-  ],
+          '~': './src'
+        }
+      }
+    ]
+  ]
 }
