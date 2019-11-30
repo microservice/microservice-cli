@@ -26,7 +26,6 @@ test_services='[
     {"name":"gmaps","owner":"oms-services"},
     {"name":"clevertap","owner":"oms-services"},
     {"name":"openapi2oms","owner":"microservices"},
-    {"name":"mongodb","owner":"oms-services"},
     {"name":"storage","owner":"storyscript"},
     {"name":"amqp1","owner":"oms-services"},
     {"name":"rabbitmq","owner":"oms-services"},
