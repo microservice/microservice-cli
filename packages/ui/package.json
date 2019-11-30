@@ -24,7 +24,7 @@
     "promise.defer": "1.0.1",
     "sass": "1.23.7",
     "vue": "2.6.10",
-    "vue-select": "3.2.0",
+    "vue-select": "3.3.0",
     "vue-template-compiler": "2.6.10",
     "vue-timeago": "5.1.2",
     "vue-toasted": "1.1.27",
