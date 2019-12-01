@@ -248,12 +248,13 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     validateWith(state, 'sensitive', false, v.boolean)
     validateWith(state, 'help', false, v.string)
 
-    // . Default values can't be set if the env variable is set as required
-    if (typeof state.value.required !== 'undefined' && state.value.required) {
-      validateWith(state, 'default', false, v.notDefined('when value is required'))
+    // Default values can't be set if the env variable is set as required
+    const isRequired = typeof state.value.required !== 'undefined' && state.value.required
+    if (isRequired) {
       validateWith(state, 'required', true, v.boolean)
+      validateWith(state, 'default', false, v.notDefined("when environment variable is required"))
     } else {
-      validateWith(state, 'required', false, v.notDefined('when environment is not required'))
+      validateWith(state, 'required', false, v.boolean)
       validateWith(state, 'default', false, v.any)
     }
   })
