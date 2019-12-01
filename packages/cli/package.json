@@ -38,7 +38,7 @@
     "form-data": "^3.0.0",
     "get-port": "^5.0.0",
     "git-url-parse": "^11.1.2",
-    "got": "^9.6.0",
+    "got": "^10.0.0",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
     "log-symbols": "^3.0.0",
