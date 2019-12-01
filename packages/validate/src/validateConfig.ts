@@ -252,7 +252,7 @@ export default function validateConfig(config: ConfigSchema, rootError: ErrorCal
     const isRequired = typeof state.value.required !== 'undefined' && state.value.required
     if (isRequired) {
       validateWith(state, 'required', true, v.boolean)
-      validateWith(state, 'default', false, v.notDefined("when environment variable is required"))
+      validateWith(state, 'default', false, v.notDefined('when environment variable is required'))
     } else {
       validateWith(state, 'required', false, v.boolean)
       validateWith(state, 'default', false, v.any)
