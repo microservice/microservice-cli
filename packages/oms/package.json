@@ -9,7 +9,7 @@
     "microservices",
     "specification"
   ],
-  "version": "0.16.5",
+  "version": "0.16.6",
   "main": "oms",
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@microservices/cli": "^0.16.5",
-    "@microservices/ui": "^0.16.5"
+    "@microservices/cli": "^0.16.6",
+    "@microservices/ui": "^0.16.6"
   }
 }
