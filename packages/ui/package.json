@@ -10,7 +10,7 @@
     "@microservices/validate": "^0.16.6",
     "@vue/component-compiler-utils": "3.0.2",
     "autoprefixer": "9.7.3",
-    "eslint": "6.7.2",
+    "eslint": "6.8.0",
     "eslint-plugin-import": "2.18.2",
     "eslint-plugin-jsx-a11y": "6.2.3",
     "event-kit": "2.5.3",
