@@ -9893,10 +9893,10 @@ vue-eslint-parser@^6.0.5:
     esquery "^1.0.1"
     lodash "^4.17.11"
 
-vue-select@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/vue-select/-/vue-select-3.3.0.tgz#8e14b86f3169c70332defbffc844511089d2d714"
-  integrity sha512-cqfeROwwnKTJvCfg/un3PKB/xUcxFr4+TULp1R+EOfip1SJPQ5lqnECTS6cf+LW8rbITskEtMnOAxwx5ZJNq5w==
+vue-select@3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/vue-select/-/vue-select-3.4.0.tgz#e56b0612845d13d10162cd8df81bfb46af2083ac"
+  integrity sha512-UHd0fiUjPgRmHIGhI6yUKtnJsHOdvzD00QUGUtD+FaxWWZRWF2AAb7KPZRj0j/egVfZQvey6M6woHn78GbTogA==
 
 vue-template-compiler@2.6.10:
   version "2.6.10"
