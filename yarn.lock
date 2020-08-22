@@ -1652,10 +1652,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/dockerode@2.5.20":
-  version "2.5.20"
-  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-2.5.20.tgz#d37a3c6cd0651d9cc49e51b3769124e956d075b4"
-  integrity sha512-g2eM9q+pur7iZc897K/OSq8sCL7VdVcCPzNkdeTukUokfvgl3TaP+nT7G8BMpnSSojrJFKl7VdTciP7hbVgfKA==
+"@types/dockerode@2.5.34":
+  version "2.5.34"
+  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-2.5.34.tgz#9adb884f7cc6c012a6eb4b2ad794cc5d01439959"
+  integrity sha512-LcbLGcvcBwBAvjH9UrUI+4qotY+A5WCer5r43DR5XHv2ZIEByNXFdPLo1XxR+v/BjkGjlggW8qUiXuVEhqfkpA==
   dependencies:
     "@types/node" "*"
 
