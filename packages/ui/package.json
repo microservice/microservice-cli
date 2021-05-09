@@ -16,7 +16,7 @@
     "event-kit": "2.5.3",
     "idb-keyval": "3.2.0",
     "less": "3.10.3",
-    "lodash": "4.17.15",
+    "lodash": "4.17.21",
     "monaco-editor": "0.18.1",
     "normalize.css": "8.0.1",
     "parcel-bundler": "1.12.4",
